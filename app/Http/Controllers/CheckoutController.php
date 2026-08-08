@@ -28,7 +28,7 @@ class CheckoutController extends Controller
         $amount = $product->discount_price ?? $product->price;
 
         $order = Order::create([
-            'invoice_number' => 'INV-' . time() . '-' . Str::random(5),
+            'invoice_number' => 'RHN-' . date('ym') . '-' . Str::random(5),
             'product_id' => $product->id,
             'customer_name' => $validated['customer_name'],
             'customer_email' => $validated['customer_email'],
