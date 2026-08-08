@@ -13,9 +13,9 @@ class GatewayAppSeeder extends Seeder
     public function run(): void
     {
         \App\Models\GatewayApp::firstOrCreate(
-            ['prefix' => 'NOC-'],
+            ['name' => 'NOC Rhantech'],
             [
-                'name' => 'NOC Rhantech',
+                'prefix' => '*',
                 'callback_url' => 'https://noc.rhantech.com/api/webhooks/midtrans/callback',
                 'is_active' => true,
             ]

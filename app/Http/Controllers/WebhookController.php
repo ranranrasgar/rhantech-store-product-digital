@@ -25,18 +25,23 @@ class WebhookController extends Controller
             // Cocokkan awalan order_id dengan prefix di database
             $fallbackApp = null;
             foreach ($apps as $app) {
-                // Gunakan aplikasi NOC sebagai fallback (karena order_id lama NOC mungkin tidak pakai prefix NOC-)
-                if ($app->name === 'NOC Rhantech' || $app->prefix === 'NOC-') {
+                // Jika prefix diset menjadi *, jadikan sebagai fallback
+                if (trim($app->prefix) === '*') {
                     $fallbackApp = $app;
+                    continue;
                 }
 
-                if (Str::startsWith($orderId, $app->prefix)) {
-                    $targetApp = $app;
-                    break;
+                // Mendukung multi-prefix dengan pemisah koma (contoh: "PLT-, INV-, NOC-")
+                $prefixes = array_map('trim', explode(',', $app->prefix));
+                foreach ($prefixes as $p) {
+                    if ($p !== '' && Str::startsWith($orderId, $p)) {
+                        $targetApp = $app;
+                        break 2; // keluar dari 2 lapis foreach
+                    }
                 }
             }
 
-            // Jika tidak ada prefix yang cocok, gunakan NOC sebagai default (seperti sebelum pakai DB)
+            // Jika tidak ada prefix yang cocok, gunakan fallback (yang prefix-nya *)
             if (!$targetApp && $fallbackApp) {
                 $targetApp = $fallbackApp;
             }

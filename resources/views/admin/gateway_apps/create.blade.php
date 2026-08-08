@@ -24,7 +24,7 @@
         <div>
             <label for="prefix" class="block font-label-md font-bold text-on-surface mb-2">Order Prefix</label>
             <input type="text" name="prefix" id="prefix" value="{{ old('prefix') }}" placeholder="e.g., NOC-" class="w-full bg-surface-container-low border @error('prefix') border-error @else border-outline-variant @enderror rounded-lg px-4 py-2 text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" required>
-            <p class="text-sm text-on-surface-variant mt-1">The prefix used in order IDs to identify this app (must be unique).</p>
+            <p class="text-sm text-on-surface-variant mt-1">Anda bisa memasukkan beberapa awalan dipisah koma (contoh: <code>PLT-, INV-, NOC-</code>). Gunakan tanda bintang (<code>*</code>) agar aplikasi ini menjadi <b>Default/Fallback</b> untuk semua transaksi yang tidak memiliki prefix.</p>
             @error('prefix')
                 <p class="text-error text-sm mt-1">{{ $message }}</p>
             @enderror
