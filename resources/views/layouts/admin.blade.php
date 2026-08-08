@@ -4,6 +4,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>@yield('title', 'Admin Panel') - {{ $company->company_name ?? 'Admin' }}</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
@@ -166,18 +167,22 @@
 <span class="material-symbols-outlined">mail</span>
                     Messages
                 </a>
+<a class="font-label-md text-label-md {{ request()->routeIs('admin.users.*') ? 'bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary shadow-sm font-bold translate-x-1' : 'text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant/50 hover:bg-surface-variant dark:hover:bg-surface-variant/20' }} px-md py-sm flex items-center gap-sm transition-all rounded-lg" href="{{ route('admin.users.index') }}">
+<span class="material-symbols-outlined">manage_accounts</span>
+                    Users
+                </a>
 </nav>
 </div>
-<div class="p-md border-t border-outline-variant/30 flex items-center gap-sm">
-<img alt="Admin Avatar" class="w-10 h-10 rounded-full bg-surface-variant object-cover" src="https://ui-avatars.com/api/?name=Admin+User&background=random"/>
-<div class="flex flex-col flex-1">
-<span class="font-label-md text-label-md font-bold">Admin User</span>
-<span class="font-code-sm text-code-sm text-on-surface-variant">admin@rhantech.com</span>
+<div class="p-4 border-t border-outline-variant/30 flex items-center gap-3 w-full overflow-hidden">
+<img alt="Admin Avatar" class="w-9 h-9 rounded-full bg-surface-variant object-cover flex-shrink-0" src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name ?? 'Admin') }}&background=random"/>
+<div class="flex flex-col flex-1 min-w-0">
+<span class="font-label-md text-label-md font-bold truncate">{{ auth()->user()->name ?? 'Admin User' }}</span>
+<span class="text-xs text-on-surface-variant truncate">{{ auth()->user()->email ?? 'admin@rhantech.com' }}</span>
 </div>
-<form action="{{ route('logout') }}" method="POST" class="inline">
+<form action="{{ route('logout') }}" method="POST" class="inline flex-shrink-0">
     @csrf
-    <button type="submit" class="text-on-surface-variant hover:text-error transition-colors p-2" title="Logout">
-        <span class="material-symbols-outlined">logout</span>
+    <button type="submit" class="text-on-surface-variant hover:text-error transition-colors p-1 rounded hover:bg-error/10" title="Logout">
+        <span class="material-symbols-outlined text-[1.25rem]">logout</span>
     </button>
 </form>
 </div>
@@ -197,9 +202,26 @@
 <button class="text-on-surface-variant hover:bg-surface-container-high p-2 rounded-full transition-colors relative">
 <span class="material-symbols-outlined">notifications</span>
 </button>
-<button class="text-on-surface-variant hover:bg-surface-container-high p-2 rounded-full transition-colors">
+<div class="relative" x-data="{ open: false }">
+<button @click="open = !open" @click.outside="open = false" class="text-on-surface-variant hover:bg-surface-container-high p-2 rounded-full transition-colors focus:outline-none">
 <span class="material-symbols-outlined">account_circle</span>
 </button>
+<div x-show="open" style="display: none;" x-transition class="absolute right-0 mt-2 w-48 bg-surface-container-lowest border border-outline-variant rounded-xl shadow-lg py-1 z-50">
+    <div class="px-4 py-2 border-b border-outline-variant/50 mb-1">
+        <div class="text-sm font-bold text-on-surface truncate">{{ auth()->user()->name ?? 'Admin' }}</div>
+        <div class="text-xs text-on-surface-variant truncate">{{ auth()->user()->email ?? '' }}</div>
+    </div>
+    <a href="{{ route('home') }}" target="_blank" class="block px-4 py-2 text-sm text-on-surface hover:bg-surface-container-low transition-colors">
+        <span class="flex items-center gap-2"><span class="material-symbols-outlined text-[1rem]">open_in_new</span> View Site</span>
+    </a>
+    <form action="{{ route('logout') }}" method="POST">
+        @csrf
+        <button type="submit" class="w-full text-left px-4 py-2 text-sm text-error hover:bg-error/10 transition-colors">
+            <span class="flex items-center gap-2"><span class="material-symbols-outlined text-[1rem]">logout</span> Logout</span>
+        </button>
+    </form>
+</div>
+</div>
 </div>
 </header>
 <!-- Page Content -->

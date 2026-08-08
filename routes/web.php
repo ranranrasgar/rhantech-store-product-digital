@@ -35,6 +35,7 @@ Route::post('/logout', [\App\Http\Controllers\Auth\AuthController::class, 'destr
 
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
+    Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
     Route::resource('company', CompanyProfileController::class);
     Route::resource('services', ServiceController::class);
     Route::resource('clients', ClientController::class);
