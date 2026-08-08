@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             CompanyProfileSeeder::class,
+            MasterDataSeeder::class,
         ]);
 
         // Seed exact amounts requested
@@ -53,6 +54,8 @@ class DatabaseSeeder extends Seeder
 
         $this->command->info('Seeding Contact Messages...');
         \App\Models\ContactMessage::factory(100)->create();
+
+
 
         $this->command->info('Seeding completed successfully!');
     }
