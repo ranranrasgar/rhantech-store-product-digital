@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
             CompanyProfileSeeder::class,
             MasterDataSeeder::class,
             ProductSeeder::class,
+            GatewayAppSeeder::class,
         ]);
 
         // Seed exact amounts requested

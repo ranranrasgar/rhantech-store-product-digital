@@ -15,18 +15,38 @@ class WebhookController extends Controller
     public function midtrans(Request $request)
     {
         $orderId = $request->order_id;
-        
-        // Forward ke noc.rhantech.com jika bukan milik rhantech.com (tidak berawalan RHN)
-        if ($orderId && !Str::startsWith($orderId, 'RHN-')) {
-            try {
-                $response = Http::post('https://noc.rhantech.com/api/webhooks/midtrans/callback', $request->all());
-                return response()->json([
-                    'message' => 'forwarded', 
-                    'target_status' => $response->status()
-                ]);
-            } catch (\Exception $e) {
-                Log::error("Failed to forward webhook to NOC: " . $e->getMessage());
-                return response()->json(['message' => 'forward failed'], 500);
+
+        // Jika order_id berawalan RHN-, tidak perlu di-forward
+        if ($orderId && !Str::startsWith($orderId, 'INV-RHN-')) {
+            // Ambil semua gateway apps yang aktif
+            $apps = \App\Models\GatewayApp::where('is_active', true)->get();
+            $targetApp = null;
+
+            // Cocokkan awalan order_id dengan prefix di database
+            foreach ($apps as $app) {
+                if (Str::startsWith($orderId, $app->prefix)) {
+                    $targetApp = $app;
+                    break;
+                }
+            }
+
+            if ($targetApp) {
+                try {
+                    $response = Http::post($targetApp->callback_url, $request->all());
+
+                    return response()->json([
+                        'message' => 'forwarded',
+                        'target' => $targetApp->name,
+                        'target_status' => $response->status()
+                    ]);
+                } catch (\Exception $e) {
+                    Log::error("Failed to forward webhook to {$targetApp->name}: " . $e->getMessage());
+                    return response()->json(['message' => 'forward failed'], 500);
+                }
+            } else {
+                // Tidak ada prefix yang cocok, abaikan atau catat log
+                Log::warning("Webhook received with unknown prefix: {$orderId}");
+                return response()->json(['message' => 'ignored, unknown prefix'], 200);
             }
         }
 
@@ -39,7 +59,7 @@ class WebhookController extends Controller
                 $order = Order::where('invoice_number', $request->order_id)->first();
                 if ($order && $order->status === 'pending') {
                     $order->update(['status' => 'paid']);
-                    
+
                     // Send Email
                     try {
                         Mail::to($order->customer_email)->send(new OrderPaidMail($order));

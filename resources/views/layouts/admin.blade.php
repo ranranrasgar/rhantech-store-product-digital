@@ -171,6 +171,10 @@
 <span class="material-symbols-outlined">manage_accounts</span>
                     Users
                 </a>
+<a class="font-label-md text-label-md {{ request()->routeIs('admin.gateway_apps.*') ? 'bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary shadow-sm font-bold translate-x-1' : 'text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant/50 hover:bg-surface-variant dark:hover:bg-surface-variant/20' }} px-md py-sm flex items-center gap-sm transition-all rounded-lg" href="{{ route('admin.gateway_apps.index') }}">
+<span class="material-symbols-outlined">api</span>
+                    Gateway Apps
+                </a>
 </nav>
 </div>
 <div class="p-4 border-t border-outline-variant/30 flex items-center gap-3 w-full overflow-hidden">

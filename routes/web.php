@@ -49,4 +49,5 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::resource('projects', ProjectController::class);
     Route::resource('testimonials', TestimonialController::class);
     Route::resource('messages', ContactMessageController::class);
+    Route::resource('gateway_apps', \App\Http\Controllers\Admin\GatewayAppController::class);
 });
