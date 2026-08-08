@@ -1,0 +1,54 @@
+@extends('layouts.admin')
+@section('title', 'Product Types')
+@section('content')
+<div class="p-lg md:p-xl flex-1 max-w-5xl mx-auto w-full">
+    <div class="flex items-center justify-between mb-lg">
+        <h1 class="font-headline-sm font-bold">Product Types</h1>
+        <form action="{{ route('admin.product_types.store') }}" method="POST" class="flex gap-2">
+            @csrf
+            <input type="text" name="name" required placeholder="New Type Name" class="pl-4 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-secondary focus:ring-1 focus:ring-secondary/20">
+            <button type="submit" class="bg-[#06B6D4] text-white px-4 py-2 rounded-lg font-bold hover:bg-[#0891B2] transition">Add</button>
+        </form>
+    </div>
+
+    <div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-surface-container-low border-b border-outline-variant">
+                        <th class="p-4 font-label-md font-bold text-on-surface-variant">Name</th>
+                        <th class="p-4 font-label-md font-bold text-on-surface-variant">Slug</th>
+                        <th class="p-4 font-label-md font-bold text-on-surface-variant text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-outline-variant">
+                    @forelse($types as $type)
+                    <tr class="hover:bg-surface-container-low/50 transition">
+                        <td class="p-4">
+                            <form action="{{ route('admin.product_types.update', $type) }}" method="POST" class="flex gap-2">
+                                @csrf @method('PUT')
+                                <input type="text" name="name" value="{{ $type->name }}" required class="px-2 py-1 bg-transparent border border-transparent focus:border-outline-variant rounded">
+                                <button type="submit" class="text-xs bg-surface-container-high px-2 py-1 rounded hover:bg-surface-container-highest transition">Update</button>
+                            </form>
+                        </td>
+                        <td class="p-4 text-on-surface-variant">{{ $type->slug }}</td>
+                        <td class="p-4 text-right">
+                            <form action="{{ route('admin.product_types.destroy', $type) }}" method="POST" onsubmit="return confirm('Delete this type?');" class="inline">
+                                @csrf @method('DELETE')
+                                <button type="submit" class="p-2 text-error hover:bg-error/10 rounded-lg transition" title="Delete">
+                                    <span class="material-symbols-outlined text-[1.25rem]">delete</span>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="3" class="p-8 text-center text-on-surface-variant">No types found.</td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@endsection

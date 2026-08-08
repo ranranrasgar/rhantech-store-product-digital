@@ -1,0 +1,65 @@
+@extends('layouts.public')
+@section('title', 'Payment - ' . $order->invoice_number)
+@section('content')
+<main class="pt-24 pb-2xl min-h-screen bg-surface dark:bg-surface-container-lowest flex items-center justify-center">
+    <div class="max-w-md w-full px-lg text-center">
+        
+        <div class="bg-surface-container-lowest border border-outline-variant rounded-2xl p-lg shadow-sm">
+            <span class="material-symbols-outlined text-5xl text-[#06B6D4] mb-4">payments</span>
+            <h1 class="font-headline-md font-black text-on-surface mb-2">Complete Your Payment</h1>
+            <p class="text-on-surface-variant font-body-sm mb-6">Order <strong>{{ $order->invoice_number }}</strong></p>
+            
+            <div class="text-left bg-surface-container-high rounded-lg p-4 mb-6">
+                <div class="flex justify-between text-sm mb-2">
+                    <span class="text-on-surface-variant">Product</span>
+                    <span class="font-bold text-on-surface line-clamp-1 max-w-[150px]">{{ $order->product->name }}</span>
+                </div>
+                <div class="flex justify-between text-sm mb-2">
+                    <span class="text-on-surface-variant">Email</span>
+                    <span class="font-bold text-on-surface">{{ $order->customer_email }}</span>
+                </div>
+                <div class="flex justify-between text-sm pt-2 border-t border-outline-variant">
+                    <span class="text-on-surface-variant">Total Amount</span>
+                    <span class="font-black text-[#06B6D4]">Rp {{ number_format($order->amount, 0, ',', '.') }}</span>
+                </div>
+            </div>
+
+            <button id="pay-button" class="w-full bg-[#06B6D4] text-white font-bold font-label-lg py-4 rounded-xl hover:bg-[#0891B2] transition shadow-md">
+                Pay Now
+            </button>
+            <p class="text-xs text-on-surface-variant mt-4">Secured by Midtrans</p>
+        </div>
+    </div>
+</main>
+
+@if(config('midtrans.is_production'))
+    <script src="https://app.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.client_key') }}"></script>
+@else
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.client_key') }}"></script>
+@endif
+
+<script type="text/javascript">
+    document.getElementById('pay-button').onclick = function(){
+        snap.pay('{{ $order->snap_token }}', {
+            onSuccess: function(result){
+                alert("Payment success!");
+                window.location.href = "{{ route('products.index') }}"; // Redirect to a success page later if needed
+            },
+            onPending: function(result){
+                alert("Waiting for payment!");
+            },
+            onError: function(result){
+                alert("Payment failed!");
+            },
+            onClose: function(){
+                console.log('User closed the popup without finishing the payment');
+            }
+        });
+    };
+    
+    // Auto click the pay button when page loads
+    window.onload = function() {
+        document.getElementById('pay-button').click();
+    };
+</script>
+@endsection
