@@ -23,11 +23,22 @@ class WebhookController extends Controller
             $targetApp = null;
 
             // Cocokkan awalan order_id dengan prefix di database
+            $fallbackApp = null;
             foreach ($apps as $app) {
+                // Gunakan aplikasi NOC sebagai fallback (karena order_id lama NOC mungkin tidak pakai prefix NOC-)
+                if ($app->name === 'NOC Rhantech' || $app->prefix === 'NOC-') {
+                    $fallbackApp = $app;
+                }
+
                 if (Str::startsWith($orderId, $app->prefix)) {
                     $targetApp = $app;
                     break;
                 }
+            }
+
+            // Jika tidak ada prefix yang cocok, gunakan NOC sebagai default (seperti sebelum pakai DB)
+            if (!$targetApp && $fallbackApp) {
+                $targetApp = $fallbackApp;
             }
 
             if ($targetApp) {
