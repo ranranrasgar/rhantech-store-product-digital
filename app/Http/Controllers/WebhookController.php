@@ -48,7 +48,9 @@ class WebhookController extends Controller
 
             if ($targetApp) {
                 try {
+                    Log::info("Forwarding webhook for Order {$orderId} to App: {$targetApp->name} at {$targetApp->callback_url}");
                     $response = Http::post($targetApp->callback_url, $request->all());
+                    Log::info("Forward response status: " . $response->status());
 
                     return response()->json([
                         'message' => 'forwarded',
