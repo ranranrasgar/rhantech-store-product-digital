@@ -17,7 +17,7 @@ class WebhookController extends Controller
         $orderId = $request->order_id;
 
         // Jika order_id berawalan RHN-, tidak perlu di-forward
-        if ($orderId && !Str::startsWith($orderId, 'INV-RHN-')) {
+        if ($orderId && !Str::startsWith($orderId, 'RHN-')) {
             // Ambil semua gateway apps yang aktif
             $apps = \App\Models\GatewayApp::where('is_active', true)->get();
             $targetApp = null;
