@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             CompanyProfileSeeder::class,
             MasterDataSeeder::class,
+            ProductSeeder::class,
         ]);
 
         // Seed exact amounts requested
