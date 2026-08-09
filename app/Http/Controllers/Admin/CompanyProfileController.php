@@ -11,7 +11,7 @@ class CompanyProfileController extends Controller
 {
     public function index()
     {
-        $profile = CompanyProfile::first();
+        $profile = CompanyProfile::query()->first();
         return view('admin.company.index', compact('profile'));
     }
 
@@ -33,7 +33,7 @@ class CompanyProfileController extends Controller
             'favicon' => 'nullable|image|max:1024',
         ]);
 
-        $profile = CompanyProfile::first();
+        $profile = CompanyProfile::query()->first();
 
         if (!$profile) {
             $profile = new CompanyProfile();

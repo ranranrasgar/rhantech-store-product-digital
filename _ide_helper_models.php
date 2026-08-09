@@ -133,12 +133,203 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property int $id
+ * @property string $name
+ * @property string $prefix
+ * @property string $callback_url
+ * @property int $is_active
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|GatewayApp newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|GatewayApp newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|GatewayApp query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|GatewayApp whereCallbackUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|GatewayApp whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|GatewayApp whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|GatewayApp whereIsActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|GatewayApp whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|GatewayApp wherePrefix($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|GatewayApp whereUpdatedAt($value)
+ */
+	class GatewayApp extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property string $invoice_number
+ * @property int|null $product_id
+ * @property string $customer_name
+ * @property string $customer_email
+ * @property string $customer_phone
+ * @property numeric $amount
+ * @property string $status
+ * @property string|null $download_token
+ * @property string|null $snap_token
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Product|null $product
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereCustomerEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereCustomerName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereCustomerPhone($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereDownloadToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereInvoiceNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereProductId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereSnapToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Order whereUpdatedAt($value)
+ */
+	class Order extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property int $store_id
+ * @property numeric $amount
+ * @property string $status
+ * @property string|null $notes
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Store $store
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PayoutRequest newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PayoutRequest newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PayoutRequest query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PayoutRequest whereAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PayoutRequest whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PayoutRequest whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PayoutRequest whereNotes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PayoutRequest whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PayoutRequest whereStoreId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PayoutRequest whereUpdatedAt($value)
+ */
+	class PayoutRequest extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property int|null $store_id
+ * @property string $name
+ * @property string $slug
+ * @property string|null $description
+ * @property int|null $product_category_id
+ * @property int|null $product_type_id
+ * @property string|null $demo_url
+ * @property numeric $price
+ * @property numeric|null $discount_price
+ * @property string|null $file_path
+ * @property array<array-key, mixed>|null $download_links
+ * @property int $is_active
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\ProductCategory|null $category
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductImage> $images
+ * @property-read int|null $images_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Order> $orders
+ * @property-read int|null $orders_count
+ * @property-read \App\Models\Store|null $store
+ * @property-read \App\Models\ProductType|null $type
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereDemoUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereDiscountPrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereDownloadLinks($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereFilePath($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereIsActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product wherePrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereProductCategoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereProductTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereStoreId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereUpdatedAt($value)
+ */
+	class Product extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property string $name
+ * @property string $slug
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Product> $products
+ * @property-read int|null $products_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductCategory newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductCategory newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductCategory query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductCategory whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductCategory whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductCategory whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductCategory whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductCategory whereUpdatedAt($value)
+ */
+	class ProductCategory extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property int $product_id
+ * @property string $image_path
+ * @property int $is_main
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Product $product
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductImage newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductImage newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductImage query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductImage whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductImage whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductImage whereImagePath($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductImage whereIsMain($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductImage whereProductId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductImage whereUpdatedAt($value)
+ */
+	class ProductImage extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property string $name
+ * @property string $slug
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Product> $products
+ * @property-read int|null $products_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductType newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductType newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductType query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductType whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductType whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductType whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductType whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductType whereUpdatedAt($value)
+ */
+	class ProductType extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
  * @property int|null $client_id
+ * @property int|null $project_category_id
  * @property string $title
  * @property string $slug
  * @property string|null $short_description
  * @property string|null $description
- * @property string|null $category
  * @property string|null $thumbnail
  * @property string|null $project_url
  * @property array<array-key, mixed>|null $technologies
@@ -150,17 +341,18 @@ namespace App\Models{
  * @property-read \App\Models\Client|null $client
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProjectImage> $images
  * @property-read int|null $images_count
+ * @property-read \App\Models\ProjectCategory|null $projectCategory
  * @method static \Database\Factories\ProjectFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Project newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Project newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Project query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Project whereCategory($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Project whereClientId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Project whereCompletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Project whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Project whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Project whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Project whereIsFeatured($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Project whereProjectCategoryId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Project whereProjectUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Project whereShortDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Project whereSlug($value)
@@ -171,6 +363,27 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Project whereUpdatedAt($value)
  */
 	class Project extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property string $name
+ * @property string $slug
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Project> $projects
+ * @property-read int|null $projects_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectCategory newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectCategory newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectCategory query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectCategory whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectCategory whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectCategory whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectCategory whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProjectCategory whereUpdatedAt($value)
+ */
+	class ProjectCategory extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -233,6 +446,38 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property int $id
+ * @property int $user_id
+ * @property string $name
+ * @property string $slug
+ * @property string|null $description
+ * @property numeric $balance
+ * @property string|null $bank_account_info
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PayoutRequest> $payoutRequests
+ * @property-read int|null $payout_requests_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Product> $products
+ * @property-read int|null $products_count
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Store newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Store newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Store query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Store whereBalance($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Store whereBankAccountInfo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Store whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Store whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Store whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Store whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Store whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Store whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Store whereUserId($value)
+ */
+	class Store extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
  * @property int|null $client_id
  * @property string $name
  * @property string|null $position
@@ -272,6 +517,7 @@ namespace App\Models{
  * @property string $email
  * @property \Illuminate\Support\Carbon|null $email_verified_at
  * @property string $password
+ * @property string $role
  * @property string|null $remember_token
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -288,6 +534,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRememberToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRole($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
  */
 	class User extends \Eloquent {}

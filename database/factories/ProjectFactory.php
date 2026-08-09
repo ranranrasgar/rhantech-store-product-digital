@@ -91,7 +91,7 @@ class ProjectFactory extends Factory
         $fullDescription = "<p>{$app['desc']}</p>\n<h3>Fitur Utama:</h3>\n<pre>{$app['features']}</pre>\n<h3>Harga Retail / UMKM:</h3>\n<p><strong>{$app['price']}</strong></p>";
 
         return [
-            'client_id' => Client::query()->inRandomOrder()->value('id') ?? Client::factory(null),
+            'client_id' => Client::query()->inRandomOrder()->value('id') ?? Client::factory(),
             'title' => $title,
             'slug' => Str::slug($title) . '-' . uniqid(),
             'short_description' => $app['desc'],
