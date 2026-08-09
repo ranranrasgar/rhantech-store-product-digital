@@ -10,8 +10,8 @@ class Project extends Model
     use HasFactory;
 
     protected $fillable = [
-        'client_id', 'title', 'slug', 'short_description', 'description',
-        'category', 'thumbnail', 'project_url', 'technologies', 
+        'client_id', 'project_category_id', 'title', 'slug', 'short_description', 'description',
+        'thumbnail', 'project_url', 'technologies', 
         'completed_at', 'is_featured', 'status'
     ];
 
@@ -23,6 +23,11 @@ class Project extends Model
     public function client()
     {
         return $this->belongsTo(Client::class);
+    }
+
+    public function projectCategory()
+    {
+        return $this->belongsTo(ProjectCategory::class);
     }
 
     public function images()

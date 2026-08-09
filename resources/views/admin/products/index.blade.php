@@ -39,6 +39,9 @@
                                 <div>
                                     <div class="font-bold text-on-surface">{{ $product->name }}</div>
                                     <div class="text-on-surface-variant text-xs">{{ $product->slug }}</div>
+                                    @if($product->store)
+                                        <div class="text-primary text-xs mt-1 font-bold">Store: {{ $product->store->name }}</div>
+                                    @endif
                                 </div>
                             </div>
                         </td>

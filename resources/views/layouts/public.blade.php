@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    @include('components.theme-init')
     <title>@yield('title', ($company->company_name ?? 'rhantech') . ' - We Build Digital Experiences')</title>
     <meta name="description" content="@yield('meta_description', $company->about_text ?? 'We build scalable, modern, and impactful digital solutions for businesses worldwide.')"/>
     <meta name="keywords" content="digital agency, web development, mobile app development, UI/UX design, cloud infrastructure"/>
@@ -25,18 +26,18 @@
                     "colors": {
                         "secondary-container": "#57dffe",
                         "on-tertiary-container": "#7073ff",
-                        "surface-container-low": "#eff4ff",
+                        "surface-container-low": "rgb(var(--theme-surface-low) / <alpha-value>)",
                         "tertiary-fixed-dim": "#c0c1ff",
                         "secondary-fixed-dim": "#4cd7f6",
-                        "surface-variant": "#d3e4fe",
-                        "background": "#f8f9ff",
+                        "surface-variant": "rgb(var(--theme-surface-variant) / <alpha-value>)",
+                        "background": "rgb(var(--theme-background) / <alpha-value>)",
                         "on-secondary-container": "#006172",
                         "error-container": "#ffdad6",
                         "surface-dim": "#cbdbf5",
                         "on-secondary-fixed-variant": "#004e5c",
-                        "surface-container-lowest": "#ffffff",
+                        "surface-container-lowest": "rgb(var(--theme-surface-lowest) / <alpha-value>)",
                         "secondary": "#00687a",
-                        "surface-container-highest": "#d3e4fe",
+                        "surface-container-highest": "rgb(var(--theme-surface-highest) / <alpha-value>)",
                         "tertiary-container": "#07006c",
                         "on-primary": "#ffffff",
                         "inverse-surface": "#213145",
@@ -46,16 +47,16 @@
                         "on-primary-fixed-variant": "#3f465c",
                         "on-error": "#ffffff",
                         "inverse-primary": "#bec6e0",
-                        "outline": "#76777d",
-                        "outline-variant": "#c6c6cd",
-                        "surface": "#f8f9ff",
+                        "outline": "rgb(var(--theme-outline) / <alpha-value>)",
+                        "outline-variant": "rgb(var(--theme-outline-variant) / <alpha-value>)",
+                        "surface": "rgb(var(--theme-surface) / <alpha-value>)",
                         "surface-tint": "#565e74",
-                        "surface-container-high": "#dce9ff",
-                        "on-background": "#0b1c30",
-                        "on-surface": "#0b1c30",
-                        "on-primary-container": "#7c839b",
+                        "surface-container-high": "rgb(var(--theme-surface-high) / <alpha-value>)",
+                        "on-background": "rgb(var(--theme-on-background) / <alpha-value>)",
+                        "on-surface": "rgb(var(--theme-on-surface) / <alpha-value>)",
+                        "on-primary-container": "rgb(var(--theme-on-primary-container) / <alpha-value>)",
                         "tertiary": "#000000",
-                        "primary": "#000000",
+                        "primary": "rgb(var(--theme-primary) / <alpha-value>)",
                         "on-secondary-fixed": "#001f26",
                         "tertiary-fixed": "#e1e0ff",
                         "error": "#ba1a1a",
@@ -65,11 +66,11 @@
                         "primary-fixed-dim": "#bec6e0",
                         "on-tertiary-fixed-variant": "#2f2ebe",
                         "on-tertiary-fixed": "#07006c",
-                        "on-surface-variant": "#45464d",
+                        "on-surface-variant": "rgb(var(--theme-on-surface-variant) / <alpha-value>)",
                         "primary-fixed": "#dae2fd",
                         "surface-bright": "#f8f9ff",
                         "primary-container": "#131b2e",
-                        "surface-container": "#e5eeff"
+                        "surface-container": "rgb(var(--theme-surface-container) / <alpha-value>)"
                     },
                     "borderRadius": {
                         "DEFAULT": "0.25rem",
@@ -112,6 +113,7 @@
             }
         }
     </script>
+    @include('components.theme-styles')
     <style>
         .material-symbols-outlined {
             font-family: 'Material Symbols Outlined';
@@ -138,18 +140,21 @@
                 <img src="{{ isset($company) && $company->logo ? asset('storage/' . $company->logo) : asset('logo.png') }}" alt="{{ $company->company_name ?? 'rhantech' }}" class="h-8 w-auto">
                 {{ $company->company_name ?? 'rhantech' }}
             </a>
-            <div class="hidden md:flex items-center gap-lg">
-                <a class="text-secondary dark:text-secondary-fixed-dim hover:text-secondary transition-colors duration-200" href="{{ url('/#home') }}">Home</a>
-                <a class="text-on-surface-variant dark:text-on-surface-variant/80 hover:text-secondary transition-colors duration-200" href="{{ url('/#about') }}">About</a>
-                <a class="text-secondary dark:text-secondary-fixed-dim hover:text-secondary transition-colors duration-200" href="{{ url('/#services') }}">Services</a>
-                <a class="text-secondary dark:text-secondary-fixed-dim hover:text-secondary transition-colors duration-200" href="{{ route('projects.index') }}">Projects</a>
-                <a class="text-secondary dark:text-secondary-fixed-dim hover:text-secondary transition-colors duration-200" href="{{ route('products.index') }}">Store</a>
-                <a class="text-secondary dark:text-secondary-fixed-dim hover:text-secondary transition-colors duration-200" href="{{ route('clients.index') }}">Clients</a>
-                <a class="text-on-surface-variant dark:text-on-surface-variant/80 hover:text-secondary transition-colors duration-200" href="{{ url('/contact') }}">Contact</a>
+            <div class="hidden md:flex items-center gap-lg nav-links">
+                <a class="nav-link {{ request()->is('/') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-secondary transition-colors duration-200" href="{{ url('/#home') }}">Home</a>
+                <a class="nav-link text-on-surface-variant dark:text-on-surface-variant/80 hover:text-secondary transition-colors duration-200" href="{{ url('/#about') }}">About</a>
+                <a class="nav-link text-on-surface-variant dark:text-on-surface-variant/80 hover:text-secondary transition-colors duration-200" href="{{ url('/#services') }}">Services</a>
+                <a class="nav-link {{ request()->routeIs('projects.*') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-secondary transition-colors duration-200" href="{{ route('projects.index') }}">Projects</a>
+                <a class="nav-link {{ request()->routeIs('products.*') || request()->routeIs('checkout.*') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-secondary transition-colors duration-200" href="{{ route('products.index') }}">Store</a>
+                <a class="nav-link {{ request()->routeIs('clients.*') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-secondary transition-colors duration-200" href="{{ route('clients.index') }}">Clients</a>
+                <a class="nav-link {{ request()->routeIs('contact') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-secondary transition-colors duration-200" href="{{ url('/contact') }}">Contact</a>
             </div>
-            <a class="hidden md:inline-flex items-center justify-center px-6 py-2.5 bg-[#06B6D4] text-on-primary rounded-lg font-label-md text-label-md hover:opacity-90 transition-opacity" href="{{ url('/contact') }}">
-                Let's Talk
-            </a>
+            <div class="flex items-center gap-sm">
+                <x-theme-toggle />
+                <a class="hidden md:inline-flex items-center justify-center px-6 py-2.5 bg-[#06B6D4] text-on-primary rounded-lg font-label-md text-label-md hover:opacity-90 transition-opacity" href="{{ url('/contact') }}">
+                    Let's Talk
+                </a>
+            </div>
             <button aria-label="Open menu" class="md:hidden p-2 text-on-surface">
                 <span class="material-symbols-outlined" data-icon="menu">menu</span>
             </button>
@@ -260,14 +265,62 @@
             toastEl.classList.remove('translate-y-0', 'opacity-100', 'pointer-events-auto');
         }
 
-        // Start showing toasts every 15 seconds
+        // Show a single testimonial toast shortly after page load
         if (toastData.length > 0) {
+            toastIndex = Math.floor(Math.random() * toastData.length);
             setTimeout(() => {
                 showNextToast();
-                setInterval(showNextToast, 15000);
             }, 3000); // initial delay
         }
     </script>
     @endif
+
+    <!-- Navigation Active State Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentPath = window.location.pathname;
+            
+            // Only apply scroll spy on the home page
+            if (currentPath === '/' || currentPath === '/index.php') {
+                const sections = document.querySelectorAll('section[id]');
+                const navLinks = document.querySelectorAll('.nav-link');
+                
+                const observerOptions = {
+                    root: null,
+                    rootMargin: '-50% 0px -50% 0px', // Trigger halfway through viewport
+                    threshold: 0
+                };
+
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const id = entry.target.getAttribute('id');
+                            
+                            // Remove active class from all hash links
+                            navLinks.forEach(link => {
+                                const href = link.getAttribute('href');
+                                if (href && href.includes('/#')) {
+                                    link.classList.remove('active', 'text-secondary', 'dark:text-secondary-fixed-dim', 'font-semibold');
+                                    link.classList.add('text-on-surface-variant', 'dark:text-on-surface-variant/80');
+                                }
+                            });
+
+                            // Add active class to corresponding link
+                            const activeLink = document.querySelector(`.nav-link[href$="/#${id}"]`);
+                            if (activeLink) {
+                                activeLink.classList.remove('text-on-surface-variant', 'dark:text-on-surface-variant/80');
+                                activeLink.classList.add('active', 'text-secondary', 'dark:text-secondary-fixed-dim', 'font-semibold');
+                            }
+                        }
+                    });
+                }, observerOptions);
+
+                sections.forEach(section => {
+                    observer.observe(section);
+                });
+            }
+        });
+    </script>
+    @include('components.theme-manager')
 </body>
 </html>

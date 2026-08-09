@@ -25,7 +25,7 @@
                 </div>
                 @endif
                 <div class="absolute top-sm right-sm bg-surface-bright/90 backdrop-blur text-on-surface font-label-md text-label-md px-sm py-xs rounded">
-                    {{ $project->category ?? 'Project' }}
+                    {{ $project->projectCategory->name ?? 'Uncategorized' }}
                 </div>
             </div>
             <div class="p-lg">

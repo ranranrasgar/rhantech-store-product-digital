@@ -75,7 +75,7 @@
                                     </div>
                                     <div>
                                         <p class="font-label-md text-label-md font-bold text-on-surface group-hover:text-[#06B6D4] transition-colors">{{ $project->title }}</p>
-                                        <p class="font-code-sm text-code-sm text-on-surface-variant">{{ $project->category ?? 'Uncategorized' }}</p>
+                                        <p class="font-code-sm text-code-sm text-on-surface-variant">{{ $project->projectCategory->name ?? 'Uncategorized' }}</p>
                                     </div>
                                 </div>
                             </td>

@@ -61,11 +61,11 @@
             </div>
             <div class="grid grid-cols-2 gap-md">
                 <div class="bg-surface-container rounded-xl p-lg text-center border border-outline-variant/30">
-                    <div class="font-display-lg text-secondary mb-xs">5+</div>
+                    <div class="font-display-lg text-secondary mb-xs">25+</div>
                     <div class="font-label-md text-on-surface">Years Experience</div>
                 </div>
                 <div class="bg-surface-container rounded-xl p-lg text-center border border-outline-variant/30">
-                    <div class="font-display-lg text-secondary mb-xs">100+</div>
+                    <div class="font-display-lg text-secondary mb-xs">1500+</div>
                     <div class="font-label-md text-on-surface">Projects Delivered</div>
                 </div>
             </div>
@@ -121,7 +121,7 @@
                     </div>
                     @endif
                     <div class="absolute top-sm right-sm bg-surface-bright/90 backdrop-blur text-on-surface font-label-md px-sm py-xs rounded">
-                        {{ $project->category ?? 'Project' }}
+                        {{ $project->projectCategory->name ?? 'Uncategorized' }}
                     </div>
                 </div>
                 <div class="p-md">

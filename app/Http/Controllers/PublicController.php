@@ -55,7 +55,14 @@ class PublicController extends Controller
             'message' => 'required|string',
         ]);
 
-        ContactMessage::create($validated);
+        $contactMessage = ContactMessage::create($validated);
+
+        // Send auto-reply email to the sender
+        try {
+            \Illuminate\Support\Facades\Mail::to($contactMessage->email)->send(new \App\Mail\ContactMessageNotification($contactMessage));
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Failed to send contact auto-reply email: ' . $e->getMessage());
+        }
 
         return redirect()->back()->with('success', 'Your message has been sent successfully. We will get back to you soon!');
     }

@@ -78,6 +78,11 @@ class WebhookController extends Controller
                 if ($order && $order->status === 'pending') {
                     $order->update(['status' => 'paid']);
 
+                    // Add balance to store if product belongs to a store
+                    if ($order->product && $order->product->store_id) {
+                        $order->product->store->increment('balance', $order->total_price);
+                    }
+
                     // Send Email
                     try {
                         Mail::to($order->customer_email)->send(new OrderPaidMail($order));

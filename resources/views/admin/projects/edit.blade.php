@@ -46,8 +46,13 @@
                     </div>
                     <div>
                         <label class="block font-label-md text-on-surface mb-xs">Category</label>
-                        <input type="text" name="category" value="{{ old('category', $project->category) }}" class="w-full bg-surface-container-low border border-[#CBD5E1] rounded-lg py-2 px-4 font-body-md text-body-md text-on-surface focus:outline-none focus:border-[#06B6D4] focus:ring-4 focus:ring-[#06B6D4]/10 transition-all">
-                        @error('category')<span class="text-error text-xs">{{ $message }}</span>@enderror
+                        <select name="project_category_id" class="w-full bg-surface-container-low border border-[#CBD5E1] rounded-lg py-2 px-4 font-body-md text-body-md text-on-surface focus:outline-none focus:border-[#06B6D4] focus:ring-4 focus:ring-[#06B6D4]/10 transition-all">
+                            <option value="">Select Category</option>
+                            @foreach($categories as $category)
+                                <option value="{{ $category->id }}" {{ old('project_category_id', $project->project_category_id) == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('project_category_id')<span class="text-error text-xs">{{ $message }}</span>@enderror
                     </div>
                 </div>
 
@@ -59,7 +64,8 @@
 
                 <div>
                     <label class="block font-label-md text-on-surface mb-xs">Full Description</label>
-                    <textarea name="description" rows="5" class="w-full bg-surface-container-low border border-[#CBD5E1] rounded-lg py-2 px-4 font-body-md text-body-md text-on-surface focus:outline-none focus:border-[#06B6D4] focus:ring-4 focus:ring-[#06B6D4]/10 transition-all">{{ old('description', $project->description) }}</textarea>
+                    <div id="editor-container" class="w-full bg-surface-container-low border border-[#CBD5E1] rounded-b-lg font-body-md text-body-md text-on-surface" style="min-height: 250px;"></div>
+                    <input type="hidden" name="description" id="description" value="{{ old('description', $project->description) }}">
                     @error('description')<span class="text-error text-xs">{{ $message }}</span>@enderror
                 </div>
 
@@ -117,4 +123,44 @@
         </div>
     </div>
 </div>
+
+<!-- Quill Rich Text Editor -->
+<link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var quill = new Quill('#editor-container', {
+            theme: 'snow',
+            placeholder: 'Write the full description here...',
+            modules: {
+                toolbar: [
+                    [{ 'header': [1, 2, 3, false] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    [{ 'align': [] }],
+                    ['link', 'image', 'video'],
+                    ['clean']
+                ]
+            }
+        });
+        
+        const oldDesc = document.getElementById('description').value;
+        if (oldDesc) {
+            quill.root.innerHTML = oldDesc;
+        }
+
+        // Add custom styles to match theme
+        document.querySelector('.ql-toolbar').classList.add('bg-surface-container', 'border-[#CBD5E1]', 'rounded-t-lg');
+        document.querySelector('.ql-container').classList.add('border-t-0', 'border-[#CBD5E1]', 'rounded-b-lg', 'bg-surface-container-low');
+
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const descriptionInput = document.getElementById('description');
+            if (quill.root.innerHTML === '<p><br></p>') {
+                descriptionInput.value = '';
+            } else {
+                descriptionInput.value = quill.root.innerHTML;
+            }
+        });
+    });
+</script>
 @endsection

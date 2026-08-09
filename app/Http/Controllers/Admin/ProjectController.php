@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Project;
 use App\Models\Client;
+use App\Models\ProjectCategory;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
@@ -30,7 +31,8 @@ class ProjectController extends Controller
     public function create()
     {
         $clients = Client::query()->orderBy('name', 'asc')->get();
-        return view('admin.projects.create', compact('clients'));
+        $categories = ProjectCategory::orderBy('name', 'asc')->get();
+        return view('admin.projects.create', compact('clients', 'categories'));
     }
 
     /**
@@ -42,7 +44,7 @@ class ProjectController extends Controller
             'title' => 'required|string|max:255',
             'client_id' => 'nullable|exists:clients,id',
             'slug' => 'nullable|string|max:255|unique:projects',
-            'category' => 'nullable|string|max:255',
+            'project_category_id' => 'nullable|exists:project_categories,id',
             'short_description' => 'nullable|string',
             'description' => 'nullable|string',
             'project_url' => 'nullable|url',
@@ -71,7 +73,8 @@ class ProjectController extends Controller
     public function edit(Project $project)
     {
         $clients = Client::query()->orderBy('name', 'asc')->get();
-        return view('admin.projects.edit', compact('project', 'clients'));
+        $categories = ProjectCategory::orderBy('name', 'asc')->get();
+        return view('admin.projects.edit', compact('project', 'clients', 'categories'));
     }
 
     /**
@@ -83,7 +86,7 @@ class ProjectController extends Controller
             'title' => 'required|string|max:255',
             'client_id' => 'nullable|exists:clients,id',
             'slug' => 'nullable|string|max:255|unique:projects,slug,' . $project->id,
-            'category' => 'nullable|string|max:255',
+            'project_category_id' => 'nullable|exists:project_categories,id',
             'short_description' => 'nullable|string',
             'description' => 'nullable|string',
             'project_url' => 'nullable|url',

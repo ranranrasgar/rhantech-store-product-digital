@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html class="light" lang="en"><head>
+<html lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+@include('components.theme-init')
 <title>@yield('title', 'Admin Panel') - {{ $company->company_name ?? 'Admin' }}</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -19,46 +20,46 @@
                       "secondary-fixed": "#acedff",
                       "on-tertiary-container": "#7073ff",
                       "primary-fixed": "#dae2fd",
-                      "surface-bright": "#f8f9ff",
+                      "surface-bright": "rgb(var(--theme-surface) / <alpha-value>)",
                       "error": "#ba1a1a",
-                      "outline-variant": "#c6c6cd",
+                      "outline-variant": "rgb(var(--theme-outline-variant) / <alpha-value>)",
                       "on-tertiary-fixed": "#07006c",
                       "tertiary": "#000000",
                       "secondary": "#00687a",
-                      "surface": "#f8f9ff",
+                      "surface": "rgb(var(--theme-surface) / <alpha-value>)",
                       "error-container": "#ffdad6",
                       "on-secondary-fixed-variant": "#004e5c",
                       "on-tertiary": "#ffffff",
                       "inverse-primary": "#bec6e0",
-                      "surface-container-highest": "#d3e4fe",
-                      "surface-container": "#e5eeff",
+                      "surface-container-highest": "rgb(var(--theme-surface-highest) / <alpha-value>)",
+                      "surface-container": "rgb(var(--theme-surface-container) / <alpha-value>)",
                       "tertiary-fixed-dim": "#c0c1ff",
                       "tertiary-fixed": "#e1e0ff",
                       "inverse-on-surface": "#eaf1ff",
-                      "on-surface": "#0b1c30",
+                      "on-surface": "rgb(var(--theme-on-surface) / <alpha-value>)",
                       "on-error-container": "#93000a",
-                      "surface-container-lowest": "#ffffff",
+                      "surface-container-lowest": "rgb(var(--theme-surface-lowest) / <alpha-value>)",
                       "on-primary-fixed-variant": "#3f465c",
                       "surface-dim": "#cbdbf5",
-                      "background": "#f8f9ff",
+                      "background": "rgb(var(--theme-background) / <alpha-value>)",
                       "on-secondary": "#ffffff",
-                      "outline": "#76777d",
+                      "outline": "rgb(var(--theme-outline) / <alpha-value>)",
                       "primary-fixed-dim": "#bec6e0",
                       "on-error": "#ffffff",
-                      "surface-container-high": "#dce9ff",
-                      "on-primary-container": "#7c839b",
+                      "surface-container-high": "rgb(var(--theme-surface-high) / <alpha-value>)",
+                      "on-primary-container": "rgb(var(--theme-on-primary-container) / <alpha-value>)",
                       "inverse-surface": "#213145",
-                      "on-surface-variant": "#45464d",
+                      "on-surface-variant": "rgb(var(--theme-on-surface-variant) / <alpha-value>)",
                       "on-tertiary-fixed-variant": "#2f2ebe",
-                      "surface-variant": "#d3e4fe",
+                      "surface-variant": "rgb(var(--theme-surface-variant) / <alpha-value>)",
                       "secondary-fixed-dim": "#4cd7f6",
                       "tertiary-container": "#07006c",
-                      "on-background": "#0b1c30",
+                      "on-background": "rgb(var(--theme-on-background) / <alpha-value>)",
                       "primary-container": "#131b2e",
                       "on-primary-fixed": "#131b2e",
-                      "primary": "#000000",
+                      "primary": "rgb(var(--theme-primary) / <alpha-value>)",
                       "surface-tint": "#565e74",
-                      "surface-container-low": "#eff4ff",
+                      "surface-container-low": "rgb(var(--theme-surface-low) / <alpha-value>)",
                       "on-secondary-container": "#006172"
               },
               "borderRadius": {
@@ -108,6 +109,7 @@
           }
         }
 </script>
+@include('components.theme-styles')
 </head>
 <body class="bg-background text-on-background font-body-md min-h-screen flex">
 <!-- SideNavBar -->
@@ -139,6 +141,10 @@
 <span class="material-symbols-outlined">folder</span>
                     Projects
                 </a>
+<a class="font-label-md text-label-md {{ request()->routeIs('admin.project_categories.*') ? 'bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary shadow-sm font-bold translate-x-1' : 'text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant/50 hover:bg-surface-variant dark:hover:bg-surface-variant/20' }} pl-12 pr-md py-sm flex items-center gap-sm transition-all rounded-lg text-sm" href="{{ route('admin.project_categories.index') }}">
+<span class="material-symbols-outlined text-[1rem]">category</span>
+                    Categories
+                </a>
 <a class="font-label-md text-label-md {{ request()->routeIs('admin.clients.*') ? 'bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary shadow-sm font-bold translate-x-1' : 'text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant/50 hover:bg-surface-variant dark:hover:bg-surface-variant/20' }} px-md py-sm flex items-center gap-sm transition-all rounded-lg" href="{{ route('admin.clients.index') }}">
 <span class="material-symbols-outlined">groups</span>
                     Clients
@@ -167,13 +173,25 @@
 <span class="material-symbols-outlined">mail</span>
                     Messages
                 </a>
-<a class="font-label-md text-label-md {{ request()->routeIs('admin.users.*') ? 'bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary shadow-sm font-bold translate-x-1' : 'text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant/50 hover:bg-surface-variant dark:hover:bg-surface-variant/20' }} px-md py-sm flex items-center gap-sm transition-all rounded-lg" href="{{ route('admin.users.index') }}">
-<span class="material-symbols-outlined">manage_accounts</span>
-                    Users
+
+<!-- Multi-Tenant -->
+<div class="pt-sm mt-sm mb-xs border-t border-outline-variant/30 text-xs font-bold text-on-surface-variant tracking-wider uppercase px-md">Tenant</div>
+<a class="font-label-md text-label-md {{ request()->routeIs('admin.stores.*') ? 'bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary shadow-sm font-bold translate-x-1' : 'text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant/50 hover:bg-surface-variant dark:hover:bg-surface-variant/20' }} px-md py-sm flex items-center gap-sm transition-all rounded-lg" href="{{ route('admin.stores.index') }}">
+<span class="material-symbols-outlined">storefront</span>
+                    Stores
+                </a>
+<a class="font-label-md text-label-md {{ request()->routeIs('admin.payouts.*') ? 'bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary shadow-sm font-bold translate-x-1' : 'text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant/50 hover:bg-surface-variant dark:hover:bg-surface-variant/20' }} px-md py-sm flex items-center gap-sm transition-all rounded-lg" href="{{ route('admin.payouts.index') }}">
+<span class="material-symbols-outlined">payments</span>
+                    Payouts
                 </a>
 <a class="font-label-md text-label-md {{ request()->routeIs('admin.gateway_apps.*') ? 'bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary shadow-sm font-bold translate-x-1' : 'text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant/50 hover:bg-surface-variant dark:hover:bg-surface-variant/20' }} px-md py-sm flex items-center gap-sm transition-all rounded-lg" href="{{ route('admin.gateway_apps.index') }}">
 <span class="material-symbols-outlined">api</span>
                     Gateway Apps
+                </a>
+
+                <a class="font-label-md text-label-md {{ request()->routeIs('admin.users.*') ? 'bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary shadow-sm font-bold translate-x-1' : 'text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant/50 hover:bg-surface-variant dark:hover:bg-surface-variant/20' }} px-md py-sm flex items-center gap-sm transition-all rounded-lg" href="{{ route('admin.users.index') }}">
+<span class="material-symbols-outlined">manage_accounts</span>
+                    Users
                 </a>
 </nav>
 </div>
@@ -199,6 +217,7 @@
 <h2 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg font-bold text-primary">@yield('title')</h2>
 </div>
 <div class="flex items-center gap-md">
+<x-theme-toggle />
 <div class="relative hidden md:block">
 <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
 <input class="pl-10 pr-4 py-2 bg-surface-container-low border border-outline-variant rounded-lg font-body-md text-body-md focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary/20 transition-all w-64 text-on-surface placeholder:text-on-surface-variant" placeholder="Search..." type="text"/>
@@ -231,4 +250,5 @@
 <!-- Page Content -->
 @yield('content')
 </main>
+@include('components.theme-manager')
 </body></html>

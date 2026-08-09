@@ -11,9 +11,18 @@ class Product extends Model
 
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'download_links' => 'array',
+    ];
+
     public function images()
     {
         return $this->hasMany(ProductImage::class);
+    }
+
+    public function store()
+    {
+        return $this->belongsTo(Store::class);
     }
 
     public function category()

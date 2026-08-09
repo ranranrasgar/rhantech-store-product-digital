@@ -43,10 +43,10 @@
                 </div>
                 @endif
                 
-                @if($project->category)
+                @if($project->projectCategory)
                 <div class="mb-md">
                     <h4 class="font-label-md text-on-surface-variant uppercase tracking-wider mb-xs">Category</h4>
-                    <p class="font-body-md text-on-surface font-semibold">{{ $project->category }}</p>
+                    <p class="font-body-md text-on-surface font-semibold">{{ $project->projectCategory->name }}</p>
                 </div>
                 @endif
 

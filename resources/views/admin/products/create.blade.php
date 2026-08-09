@@ -68,10 +68,22 @@
             </div>
 
             <div class="p-md bg-secondary-container/20 border border-secondary-container rounded-lg">
-                <label class="block font-label-md text-on-surface mb-xs">Digital File (ZIP/RAR) *</label>
-                <p class="text-xs text-on-surface-variant mb-2">This is the file the customer will download after payment. Max 100MB.</p>
-                <input type="file" name="file" required class="w-full pl-4 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-secondary focus:ring-1 focus:ring-secondary/20">
+                <label class="block font-label-md text-on-surface mb-xs">Digital File (ZIP/RAR) (Optional)</label>
+                <p class="text-xs text-on-surface-variant mb-2">Upload a file directly. Max 100MB.</p>
+                <input type="file" name="file" class="w-full pl-4 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-secondary focus:ring-1 focus:ring-secondary/20">
                 @error('file')<span class="text-error text-xs">{{ $message }}</span>@enderror
+            </div>
+
+            <div class="p-md bg-surface-container-low border border-outline-variant rounded-lg">
+                <div class="flex justify-between items-center mb-xs">
+                    <label class="block font-label-md text-on-surface">External Download Links (Optional)</label>
+                    <button type="button" onclick="addLink()" class="text-xs bg-[#06B6D4] text-white px-3 py-1 rounded font-bold hover:bg-[#0891B2] transition">+ Add Link</button>
+                </div>
+                <p class="text-xs text-on-surface-variant mb-4">Add multiple external links (e.g., Google Drive, Mega) to be sent to the buyer's email.</p>
+                
+                <div id="links-container" class="flex flex-col gap-sm">
+                    <!-- Dynamic links will be appended here -->
+                </div>
             </div>
 
             <div>
@@ -95,4 +107,26 @@
         </form>
     </div>
 </div>
+
+<script>
+    function addLink() {
+        const container = document.getElementById('links-container');
+        const index = container.children.length;
+        
+        const row = document.createElement('div');
+        row.className = 'flex gap-2 items-start';
+        row.innerHTML = `
+            <div class="flex-1">
+                <input type="text" name="download_links[${index}][name]" placeholder="Link Name (e.g., Source Code)" required class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-sm mb-1">
+            </div>
+            <div class="flex-[2]">
+                <input type="url" name="download_links[${index}][url]" placeholder="https://..." required class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-sm">
+            </div>
+            <button type="button" onclick="this.parentElement.remove()" class="p-2 text-error hover:bg-error/10 rounded-lg transition" title="Remove Link">
+                <span class="material-symbols-outlined text-sm">delete</span>
+            </button>
+        `;
+        container.appendChild(row);
+    }
+</script>
 @endsection

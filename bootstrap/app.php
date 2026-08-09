@@ -12,6 +12,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->alias([
+            'is_tenant' => \App\Http\Middleware\IsTenant::class,
+        ]);
+
         $middleware->validateCsrfTokens([
             'api/webhooks/midtrans/callback',
             

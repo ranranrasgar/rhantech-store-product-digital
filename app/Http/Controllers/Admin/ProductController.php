@@ -36,7 +36,10 @@ class ProductController extends Controller
             'demo_url' => 'nullable|url|max:255',
             'price' => 'required|numeric|min:0',
             'discount_price' => 'nullable|numeric|min:0',
-            'file' => 'required|file|max:102400', // 100MB max
+            'file' => 'nullable|file|max:102400', // 100MB max
+            'download_links' => 'nullable|array',
+            'download_links.*.name' => 'required_with:download_links|string|max:255',
+            'download_links.*.url' => 'required_with:download_links|url|max:255',
             'images.*' => 'image|max:2048',
             'images' => 'required|array|min:1|max:5',
             'is_active' => 'boolean'
@@ -51,6 +54,7 @@ class ProductController extends Controller
             'demo_url' => $validated['demo_url'] ?? null,
             'price' => $validated['price'],
             'discount_price' => $validated['discount_price'] ?? null,
+            'download_links' => $validated['download_links'] ?? null,
             'is_active' => $request->has('is_active'),
         ]);
 
@@ -91,6 +95,9 @@ class ProductController extends Controller
             'price' => 'required|numeric|min:0',
             'discount_price' => 'nullable|numeric|min:0',
             'file' => 'nullable|file|max:102400', 
+            'download_links' => 'nullable|array',
+            'download_links.*.name' => 'required_with:download_links|string|max:255',
+            'download_links.*.url' => 'required_with:download_links|url|max:255',
             'images.*' => 'image|max:2048',
             'images' => 'nullable|array|max:5',
             'is_active' => 'boolean'
@@ -105,6 +112,7 @@ class ProductController extends Controller
             'demo_url' => $validated['demo_url'] ?? null,
             'price' => $validated['price'],
             'discount_price' => $validated['discount_price'] ?? null,
+            'download_links' => $validated['download_links'] ?? null,
             'is_active' => $request->has('is_active'),
         ]);
 
