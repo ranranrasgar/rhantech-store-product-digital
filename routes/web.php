@@ -102,6 +102,10 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::resource('gateway_apps', \App\Http\Controllers\Admin\GatewayAppController::class);
     Route::resource('popup_ads', \App\Http\Controllers\Admin\PopupAdController::class);
     
+    // Banners
+    Route::get('banners', [\App\Http\Controllers\Admin\BannerController::class, 'index'])->name('banners.index');
+    Route::post('banners/update', [\App\Http\Controllers\Admin\BannerController::class, 'update'])->name('banners.update');
+    
     // Multi-tenant features
     Route::get('stores', [\App\Http\Controllers\Admin\StoreController::class, 'index'])->name('stores.index');
     Route::get('payouts', [\App\Http\Controllers\Admin\PayoutController::class, 'index'])->name('payouts.index');

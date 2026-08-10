@@ -12,6 +12,7 @@ class ProductController extends Controller
         $categories = \App\Models\ProductCategory::all();
         $types = \App\Models\ProductType::all();
         $stores = \App\Models\Store::all();
+        $banners = \App\Models\Banner::where('is_active', true)->get()->keyBy('position');
 
         $query = Product::with('store')->where('is_active', true);
 
@@ -53,7 +54,7 @@ class ProductController extends Controller
 
         $products = $query->paginate(12)->withQueryString();
 
-        return view('products.index', compact('products', 'categories', 'types', 'stores'));
+        return view('products.index', compact('products', 'categories', 'types', 'stores', 'banners'));
     }
 
     public function show($slug)
