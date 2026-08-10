@@ -27,10 +27,9 @@
             
             <!-- Tabs -->
             <div class="border-b border-outline-variant dark:border-[#30363d] flex overflow-x-auto hide-scrollbar">
-                <a href="#" class="px-6 py-4 text-sm font-bold text-primary border-b-2 border-primary whitespace-nowrap">Semua</a>
-                <a href="#" class="px-6 py-4 text-sm font-bold text-on-surface-variant dark:text-gray-400 hover:text-on-surface transition-colors whitespace-nowrap">Aktif ({{ $products->where('is_active', true)->count() }})</a>
-                <a href="#" class="px-6 py-4 text-sm font-bold text-on-surface-variant dark:text-gray-400 hover:text-on-surface transition-colors whitespace-nowrap">Perlu Tindakan (0)</a>
-                <a href="#" class="px-6 py-4 text-sm font-bold text-on-surface-variant dark:text-gray-400 hover:text-on-surface transition-colors whitespace-nowrap">Non-Aktif ({{ $products->where('is_active', false)->count() }})</a>
+                <a href="{{ route('tenant.products.index', array_merge(request()->query(), ['tab' => 'all'])) }}" class="px-6 py-4 text-sm font-bold whitespace-nowrap {{ $tab === 'all' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant dark:text-gray-400 hover:text-on-surface transition-colors' }}">Semua ({{ $allCount }})</a>
+                <a href="{{ route('tenant.products.index', array_merge(request()->query(), ['tab' => 'active'])) }}" class="px-6 py-4 text-sm font-bold whitespace-nowrap {{ $tab === 'active' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant dark:text-gray-400 hover:text-on-surface transition-colors' }}">Aktif ({{ $activeCount }})</a>
+                <a href="{{ route('tenant.products.index', array_merge(request()->query(), ['tab' => 'inactive'])) }}" class="px-6 py-4 text-sm font-bold whitespace-nowrap {{ $tab === 'inactive' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant dark:text-gray-400 hover:text-on-surface transition-colors' }}">Non-Aktif ({{ $inactiveCount }})</a>
             </div>
 
             <div class="p-4 md:p-6 space-y-6">
@@ -64,29 +63,30 @@
 
                 <!-- Search & Filters -->
                 <div class="space-y-4">
-                    <!-- Secondary Tabs -->
-                    <div class="flex gap-4 border-b border-outline-variant dark:border-[#30363d] overflow-x-auto hide-scrollbar pb-1">
-                        <a href="#" class="text-sm font-bold text-primary border-b-2 border-primary pb-2 whitespace-nowrap">Semua</a>
-                        <a href="#" class="text-sm font-bold text-on-surface-variant dark:text-gray-400 hover:text-on-surface pb-2 whitespace-nowrap">Perbaiki Produk Baru (0) <span class="w-2 h-2 rounded-full bg-primary inline-block"></span></a>
-                        <a href="#" class="text-sm font-bold text-on-surface-variant dark:text-gray-400 hover:text-on-surface pb-2 whitespace-nowrap">Tinjau Rincian Produk (0) <span class="w-2 h-2 rounded-full bg-primary inline-block"></span></a>
-                    </div>
-                    
-                    <!-- Filter Row -->
-                    <div class="flex flex-wrap items-center gap-3">
-                        <div class="flex-1 min-w-[250px] relative">
-                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">search</span>
-                            <input type="text" placeholder="Cari Nama Produk, ID Produk" class="w-full pl-10 pr-4 py-2 text-sm bg-surface-container-lowest dark:bg-[#0d1117] border border-outline-variant dark:border-[#30363d] rounded focus:outline-none focus:border-primary">
+                    <form method="GET" action="{{ route('tenant.products.index') }}">
+                        <input type="hidden" name="tab" value="{{ $tab }}">
+                        <!-- Filter Row -->
+                        <div class="flex flex-wrap items-center gap-3">
+                            <div class="flex-1 min-w-[250px] relative">
+                                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">search</span>
+                                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari Nama Produk, ID Produk" class="w-full pl-10 pr-4 py-2 text-sm bg-surface-container-lowest dark:bg-[#0d1117] border border-outline-variant dark:border-[#30363d] rounded focus:outline-none focus:border-primary text-on-surface dark:text-white">
+                            </div>
+                            <select name="category" class="px-4 py-2 text-sm bg-surface-container-lowest dark:bg-[#0d1117] border border-outline-variant dark:border-[#30363d] text-on-surface dark:text-white rounded focus:outline-none focus:border-primary">
+                                <option value="">Semua Kategori</option>
+                                @foreach($categories as $category)
+                                    <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                                @endforeach
+                            </select>
+                            <select name="sort" class="px-4 py-2 text-sm bg-surface-container-lowest dark:bg-[#0d1117] border border-outline-variant dark:border-[#30363d] text-on-surface dark:text-white rounded focus:outline-none focus:border-primary">
+                                <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Terbaru</option>
+                                <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Terlama</option>
+                                <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>Harga Terendah</option>
+                                <option value="price_desc" {{ request('sort') == 'price_desc' ? 'selected' : '' }}>Harga Tertinggi</option>
+                            </select>
+                            <button type="submit" class="px-4 py-2 text-sm font-semibold border border-primary text-primary rounded hover:bg-primary/5 transition-colors">Terapkan</button>
+                            <a href="{{ route('tenant.products.index', ['tab' => $tab]) }}" class="px-4 py-2 text-sm font-semibold border border-outline-variant dark:border-[#30363d] text-on-surface dark:text-white rounded hover:bg-surface-container-lowest transition-colors">Atur ulang</a>
                         </div>
-                        <select class="px-4 py-2 text-sm bg-surface-container-lowest dark:bg-[#0d1117] border border-outline-variant dark:border-[#30363d] text-on-surface-variant rounded focus:outline-none focus:border-primary">
-                            <option>Kategori</option>
-                        </select>
-                        <select class="px-4 py-2 text-sm bg-surface-container-lowest dark:bg-[#0d1117] border border-outline-variant dark:border-[#30363d] text-on-surface-variant rounded focus:outline-none focus:border-primary">
-                            <option>Performa Produk</option>
-                        </select>
-                        <button class="px-4 py-2 text-sm font-semibold border border-primary text-primary rounded hover:bg-primary/5 transition-colors">Terapkan</button>
-                        <button class="px-4 py-2 text-sm font-semibold border border-outline-variant dark:border-[#30363d] text-on-surface rounded hover:bg-surface-container-lowest transition-colors">Atur ulang</button>
-                        <button class="px-4 py-2 text-sm font-semibold text-on-surface-variant hover:text-on-surface flex items-center gap-1 transition-colors">Selengkapnya <span class="material-symbols-outlined text-[16px]">expand_more</span></button>
-                    </div>
+                    </form>
 
                     <!-- Action Bar -->
                     <div class="flex flex-wrap items-center justify-between gap-4 mt-2">
@@ -218,17 +218,13 @@
 
                 <!-- Footer Pagination Space -->
                 <div class="flex justify-between items-center py-2 text-sm text-on-surface-variant">
-                    <div>Menampilkan 1-{{ $products->count() }} dari {{ $products->count() }} Produk</div>
-                    <div class="flex gap-1">
-                        <button class="w-8 h-8 flex items-center justify-center border border-outline-variant rounded hover:bg-surface-container text-on-surface-variant opacity-50 cursor-not-allowed"><span class="material-symbols-outlined text-lg">chevron_left</span></button>
-                        <button class="w-8 h-8 flex items-center justify-center border border-primary bg-primary text-white rounded font-bold">1</button>
-                        <button class="w-8 h-8 flex items-center justify-center border border-outline-variant rounded hover:bg-surface-container text-on-surface-variant opacity-50 cursor-not-allowed"><span class="material-symbols-outlined text-lg">chevron_right</span></button>
-                    </div>
+                @if($products->hasPages())
+                <div class="mt-4">
+                    {{ $products->links() }}
                 </div>
-
+                @endif
             </div>
         </div>
-        
     </div>
 </div>
 @endsection

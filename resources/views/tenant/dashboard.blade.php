@@ -3,7 +3,7 @@
 @section('title', 'Tenant Dashboard')
 
 @section('content')
-<div class="flex-1 overflow-y-auto p-4 md:p-6 bg-surface-container-lowest dark:bg-transparent">
+<div class="flex-1 overflow-y-auto p-4 md:p-6 bg-surface-container-lowest dark:bg-[#0d1117]">
     <div class="max-w-7xl mx-auto space-y-6">
         
         <!-- Banner Info (Pengembalian Pajak dll) -->
@@ -21,8 +21,8 @@
             <div class="lg:col-span-2 space-y-6">
                 
                 <!-- Pesanan (To-Do List) -->
-                <div class="bg-surface dark:bg-white/5 border border-outline-variant dark:border-white/10 rounded-md overflow-hidden">
-                    <div class="border-b border-outline-variant dark:border-white/10 px-5 py-3 flex justify-between items-center">
+                <div class="bg-surface dark:bg-[#161b22] border border-outline-variant dark:border-[#30363d] rounded-md overflow-hidden">
+                    <div class="border-b border-outline-variant dark:border-[#30363d] px-5 py-3 flex justify-between items-center">
                         <h3 class="font-bold text-on-surface dark:text-white">Pesanan</h3>
                     </div>
                     <div class="p-5 grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
@@ -46,8 +46,8 @@
                 </div>
 
                 <!-- Performa Toko -->
-                <div class="bg-surface dark:bg-white/5 border border-outline-variant dark:border-white/10 rounded-md overflow-hidden">
-                    <div class="border-b border-outline-variant dark:border-white/10 px-5 py-3 flex justify-between items-center">
+                <div class="bg-surface dark:bg-[#161b22] border border-outline-variant dark:border-[#30363d] rounded-md overflow-hidden">
+                    <div class="border-b border-outline-variant dark:border-[#30363d] px-5 py-3 flex justify-between items-center">
                         <div class="flex items-center gap-3">
                             <h3 class="font-bold text-on-surface dark:text-white">Performa Toko</h3>
                             <span class="text-xs text-on-surface-variant dark:text-gray-500">Waktu update terakhir: Hari Ini</span>
@@ -84,14 +84,14 @@
                 </div>
 
                 <!-- Iklan & Promosi -->
-                <div class="bg-surface dark:bg-white/5 border border-outline-variant dark:border-white/10 rounded-md overflow-hidden">
-                    <div class="border-b border-outline-variant dark:border-white/10 px-5 py-3 flex justify-between items-center">
+                <div class="bg-surface dark:bg-[#161b22] border border-outline-variant dark:border-[#30363d] rounded-md overflow-hidden">
+                    <div class="border-b border-outline-variant dark:border-[#30363d] px-5 py-3 flex justify-between items-center">
                         <h3 class="font-bold text-on-surface dark:text-white">Promosi Toko</h3>
                         <a href="#" class="text-sm text-primary dark:text-[#38BDF8] hover:underline flex items-center">Lainnya <span class="material-symbols-outlined text-sm ml-1">chevron_right</span></a>
                     </div>
                     <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-4">
                         <!-- Promo 1 -->
-                        <div class="border border-outline-variant dark:border-white/10 rounded bg-[#F8FAFC] dark:bg-white/5 p-4 flex flex-col justify-between">
+                        <div class="border border-outline-variant dark:border-[#30363d] rounded bg-[#F8FAFC] dark:bg-[#161b22] p-4 flex flex-col justify-between">
                             <div>
                                 <div class="flex items-start gap-3">
                                     <div class="p-2 bg-error/10 text-error rounded-full flex-shrink-0">
@@ -109,7 +109,7 @@
                         </div>
                         
                         <!-- Promo 2 -->
-                        <div class="border border-outline-variant dark:border-white/10 rounded bg-[#F8FAFC] dark:bg-white/5 p-4 flex flex-col justify-between">
+                        <div class="border border-outline-variant dark:border-[#30363d] rounded bg-[#F8FAFC] dark:bg-[#161b22] p-4 flex flex-col justify-between">
                             <div>
                                 <div class="flex items-start gap-3">
                                     <div class="p-2 bg-primary/10 text-primary rounded-full flex-shrink-0">
@@ -131,8 +131,8 @@
                 <!-- Bottom row: Affiliate & Livestream -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <!-- Affiliate -->
-                    <div class="bg-surface dark:bg-white/5 border border-outline-variant dark:border-white/10 rounded-md overflow-hidden flex flex-col">
-                        <div class="border-b border-outline-variant dark:border-white/10 px-5 py-3 flex justify-between items-center">
+                    <div class="bg-surface dark:bg-[#161b22] border border-outline-variant dark:border-[#30363d] rounded-md overflow-hidden flex flex-col">
+                        <div class="border-b border-outline-variant dark:border-[#30363d] px-5 py-3 flex justify-between items-center">
                             <h3 class="font-bold text-on-surface dark:text-white">Affiliate Marketing</h3>
                             <a href="#" class="text-sm text-primary dark:text-[#38BDF8] hover:underline flex items-center">Lainnya <span class="material-symbols-outlined text-sm ml-1">chevron_right</span></a>
                         </div>
@@ -159,8 +159,8 @@
                     </div>
                     
                     <!-- Livestream -->
-                    <div class="bg-surface dark:bg-white/5 border border-outline-variant dark:border-white/10 rounded-md overflow-hidden flex flex-col relative">
-                        <div class="border-b border-outline-variant dark:border-white/10 px-5 py-3 flex justify-between items-center z-10 relative">
+                    <div class="bg-surface dark:bg-[#161b22] border border-outline-variant dark:border-[#30363d] rounded-md overflow-hidden flex flex-col relative">
+                        <div class="border-b border-outline-variant dark:border-[#30363d] px-5 py-3 flex justify-between items-center z-10 relative">
                             <h3 class="font-bold text-on-surface dark:text-white">Livestream</h3>
                             <a href="#" class="text-sm text-primary dark:text-[#38BDF8] hover:underline flex items-center">Lainnya <span class="material-symbols-outlined text-sm ml-1">chevron_right</span></a>
                         </div>
@@ -183,15 +183,15 @@
             <div class="space-y-6">
                 
                 <!-- Rekomendasi Bisnis -->
-                <div class="bg-surface dark:bg-white/5 border border-outline-variant dark:border-white/10 rounded-md overflow-hidden">
-                    <div class="border-b border-outline-variant dark:border-white/10 px-5 py-3 flex justify-between items-center">
+                <div class="bg-surface dark:bg-[#161b22] border border-outline-variant dark:border-[#30363d] rounded-md overflow-hidden">
+                    <div class="border-b border-outline-variant dark:border-[#30363d] px-5 py-3 flex justify-between items-center">
                         <h3 class="font-bold text-on-surface dark:text-white">Rekomendasi Bisnis</h3>
                         <span class="text-xs text-on-surface-variant">3 rekomendasi</span>
                     </div>
-                    <div class="p-0 divide-y divide-outline-variant/50 dark:divide-white/10">
+                    <div class="p-0 divide-y divide-outline-variant/50 dark:divide-[#30363d]">
                         
                         <!-- Item 1 -->
-                        <div class="p-4 hover:bg-surface-container-lowest dark:hover:bg-white/10 transition-colors">
+                        <div class="p-4 hover:bg-surface-container-lowest dark:hover:bg-[#21262d] transition-colors">
                             <div class="flex gap-3">
                                 <span class="material-symbols-outlined text-primary">upload_file</span>
                                 <div>
@@ -203,7 +203,7 @@
                         </div>
 
                         <!-- Item 2 -->
-                        <div class="p-4 hover:bg-surface-container-lowest dark:hover:bg-white/10 transition-colors">
+                        <div class="p-4 hover:bg-surface-container-lowest dark:hover:bg-[#21262d] transition-colors">
                             <div class="flex gap-3">
                                 <span class="material-symbols-outlined text-primary">account_balance_wallet</span>
                                 <div>
@@ -215,7 +215,7 @@
                         </div>
 
                         <!-- Item 3 -->
-                        <div class="p-4 hover:bg-surface-container-lowest dark:hover:bg-white/10 transition-colors">
+                        <div class="p-4 hover:bg-surface-container-lowest dark:hover:bg-[#21262d] transition-colors">
                             <div class="flex gap-3">
                                 <span class="material-symbols-outlined text-primary">local_offer</span>
                                 <div>
@@ -230,8 +230,8 @@
                 </div>
 
                 <!-- Berita / Informasi -->
-                <div class="bg-surface dark:bg-white/5 border border-outline-variant dark:border-white/10 rounded-md overflow-hidden">
-                    <div class="border-b border-outline-variant dark:border-white/10 px-5 py-3 flex justify-between items-center">
+                <div class="bg-surface dark:bg-[#161b22] border border-outline-variant dark:border-[#30363d] rounded-md overflow-hidden">
+                    <div class="border-b border-outline-variant dark:border-[#30363d] px-5 py-3 flex justify-between items-center">
                         <h3 class="font-bold text-on-surface dark:text-white">Berita</h3>
                         <a href="#" class="text-sm text-primary dark:text-[#38BDF8] hover:underline flex items-center">Lainnya <span class="material-symbols-outlined text-sm ml-1">chevron_right</span></a>
                     </div>

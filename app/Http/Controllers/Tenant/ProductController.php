@@ -13,12 +13,58 @@ use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $store = auth()->user()->store;
         if (!$store) return redirect()->route('tenant.store.index')->with('warning', 'Please setup your store first.');
-        $products = $store->products()->latest()->get();
-        return view('tenant.products.index', compact('products'));
+
+        // Get total counts for the tabs
+        $allCount = $store->products()->count();
+        $activeCount = $store->products()->where('is_active', true)->count();
+        $inactiveCount = $store->products()->where('is_active', false)->count();
+
+        // Query builder for products
+        $query = $store->products();
+
+        // 1. Tab filter
+        $tab = $request->input('tab', 'all');
+        if ($tab === 'active') {
+            $query->where('is_active', true);
+        } elseif ($tab === 'inactive') {
+            $query->where('is_active', false);
+        }
+
+        // 2. Search filter
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                  ->orWhere('id', $search)
+                  ->orWhere('slug', 'like', '%' . $search . '%');
+            });
+        }
+
+        // 3. Category filter
+        if ($request->filled('category')) {
+            $query->where('product_category_id', $request->input('category'));
+        }
+
+        // 4. Sort
+        $sort = $request->input('sort', 'latest');
+        if ($sort === 'price_asc') {
+            $query->orderBy('price', 'asc');
+        } elseif ($sort === 'price_desc') {
+            $query->orderBy('price', 'desc');
+        } elseif ($sort === 'oldest') {
+            $query->orderBy('created_at', 'asc');
+        } else {
+            $query->orderBy('created_at', 'desc'); // latest
+        }
+
+        $products = $query->paginate(20)->withQueryString();
+        $categories = ProductCategory::orderBy('name', 'asc')->get();
+
+        return view('tenant.products.index', compact('products', 'allCount', 'activeCount', 'inactiveCount', 'categories', 'tab'));
     }
 
     public function create()
