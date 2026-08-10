@@ -269,7 +269,7 @@
     </div>
 
     {{-- Main header row --}}
-    <div class="max-w-[1280px] mx-auto px-4 md:px-6 py-3 flex items-center gap-3 md:gap-6">
+    <div class="max-w-[1280px] mx-auto px-4 md:px-6 py-3 flex flex-wrap md:flex-nowrap items-center justify-between md:justify-start gap-3 md:gap-6">
         {{-- Logo --}}
         <a href="{{ url('/') }}" class="header-logo shrink-0" wire:navigate>
             <span class="logo-dot"></span>

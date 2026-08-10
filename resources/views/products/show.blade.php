@@ -12,7 +12,33 @@
     .bg-primary-light { background-color: #fceceb; }
 </style>
 
-<main class="pt-[60px] md:pt-[100px] pb-12 min-h-screen font-sans">
+@php
+    $imageUrls = $product->images->map(function($img) {
+        return asset('storage/' . $img->image_path);
+    })->values()->toJson();
+@endphp
+<main x-data="{ 
+        showLightbox: false, 
+        images: {{ $imageUrls }}, 
+        currentIndex: 0,
+        openLightbox(src) {
+            let idx = this.images.indexOf(src);
+            if(idx === -1) idx = 0;
+            this.currentIndex = idx;
+            this.showLightbox = true;
+        },
+        next() {
+            if(this.images.length > 0) {
+                this.currentIndex = (this.currentIndex + 1) % this.images.length;
+            }
+        },
+        prev() {
+            if(this.images.length > 0) {
+                this.currentIndex = (this.currentIndex - 1 + this.images.length) % this.images.length;
+            }
+        }
+    }" 
+    class="pt-[60px] md:pt-[100px] pb-12 min-h-screen font-sans">
     
     <div class="max-w-[1200px] mx-auto px-4">
         
@@ -36,10 +62,10 @@
             
             <!-- Left: Images -->
             <div class="w-full md:w-[450px] shrink-0 md:mr-8 mb-4 md:mb-0">
-                <div class="aspect-square w-full relative overflow-hidden mb-2">
+                <div @click="openLightbox(document.getElementById('mainImage').src)" class="aspect-square w-full relative overflow-hidden mb-2 group cursor-zoom-in" id="image-container" onmousemove="zoomImage(event)" onmouseleave="resetZoomImage()">
                     @if($product->images->count() > 0)
                         @php $mainImg = $product->images->where('is_main', true)->first() ?? $product->images->first(); @endphp
-                        <img id="mainImage" src="{{ asset('storage/' . $mainImg->image_path) }}" alt="{{ $product->name }}" class="w-full h-full object-cover">
+                        <img id="mainImage" src="{{ asset('storage/' . $mainImg->image_path) }}" alt="{{ $product->name }}" class="w-full h-full object-cover origin-center transition-transform duration-75 ease-out group-hover:scale-[2]">
                     @else
                         <div class="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400 border border-gray-200">
                             <span class="material-symbols-outlined text-6xl">inventory_2</span>
@@ -209,6 +235,33 @@
         </div>
         
     </div>
+    <!-- Lightbox Modal -->
+    <div x-show="showLightbox" x-transition.opacity.duration.300ms style="display: none;"
+         class="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-4 md:p-8 backdrop-blur-sm"
+         @click.self="showLightbox = false"
+         @keydown.window.escape="showLightbox = false"
+         @keydown.window.arrow-right="if(showLightbox) next()"
+         @keydown.window.arrow-left="if(showLightbox) prev()">
+        
+        <button @click="showLightbox = false" class="absolute top-4 right-4 md:top-6 md:right-6 text-white/70 hover:text-white transition-colors bg-white/10 hover:bg-white/20 rounded-full w-10 h-10 flex items-center justify-center z-10 backdrop-blur">
+            <span class="material-symbols-outlined text-2xl">close</span>
+        </button>
+
+        <button x-show="images.length > 1" @click.stop="prev()" class="absolute left-2 md:left-6 top-1/2 -translate-y-1/2 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 rounded-full w-10 h-10 md:w-14 md:h-14 flex items-center justify-center z-10 backdrop-blur transition-colors">
+            <span class="material-symbols-outlined text-2xl md:text-4xl">chevron_left</span>
+        </button>
+        
+        <button x-show="images.length > 1" @click.stop="next()" class="absolute right-2 md:right-6 top-1/2 -translate-y-1/2 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 rounded-full w-10 h-10 md:w-14 md:h-14 flex items-center justify-center z-10 backdrop-blur transition-colors">
+            <span class="material-symbols-outlined text-2xl md:text-4xl">chevron_right</span>
+        </button>
+
+        <img :src="images[currentIndex]" class="max-w-full max-h-full object-contain shadow-2xl transition-all duration-300 select-none" alt="Fullscreen" @click.self="showLightbox = false" x-transition>
+
+        <div x-show="images.length > 1" class="absolute bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 text-white bg-white/10 backdrop-blur px-5 py-2 rounded-full text-sm font-bold tracking-wider z-10">
+            <span x-text="currentIndex + 1"></span> / <span x-text="images.length"></span>
+        </div>
+    </div>
+
 </main>
 
 <!-- Toast Notification -->
@@ -289,6 +342,23 @@ function showCartToast(msg, isError = false) {
     toast.style.display = 'flex';
     clearTimeout(window._toastTimer);
     window._toastTimer = setTimeout(() => { toast.style.display = 'none'; }, 3500);
+}
+</script>
+
+<script>
+function zoomImage(e) {
+    const img = document.getElementById('mainImage');
+    if (!img) return;
+    const container = document.getElementById('image-container');
+    const rect = container.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    img.style.transformOrigin = `${x}% ${y}%`;
+}
+function resetZoomImage() {
+    const img = document.getElementById('mainImage');
+    if (!img) return;
+    img.style.transformOrigin = 'center center';
 }
 </script>
 
