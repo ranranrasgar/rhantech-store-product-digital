@@ -3,13 +3,13 @@
 @section('content')
 <div class="p-lg md:p-xl flex-1 max-w-4xl mx-auto w-full">
     <div class="flex items-center gap-md mb-lg">
-        <a href="{{ route('tenant.products.index') }}" class="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition">
+        <a href="{{ route('tenant.products.index') }}" class="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition" wire:navigate>
             <span class="material-symbols-outlined">arrow_back</span>
         </a>
         <h2 class="font-headline-md font-bold text-on-surface">Add Digital Product</h2>
     </div>
 
-    <div class="bg-surface rounded-xl border border-outline-variant shadow-sm p-lg">
+    <div class="bg-surface rounded-md border border-outline-variant  p-lg">
         <form action="{{ route('tenant.products.store') }}" method="POST" enctype="multipart/form-data" class="flex flex-col gap-lg">
             @csrf
 
@@ -77,7 +77,7 @@
             <div class="p-md bg-surface-container-low border border-outline-variant rounded-lg">
                 <div class="flex justify-between items-center mb-xs">
                     <label class="block font-label-md text-on-surface">External Download Links (Optional)</label>
-                    <button type="button" onclick="addLink()" class="text-xs bg-[#06B6D4] text-white px-3 py-1 rounded font-bold hover:bg-[#0891B2] transition">+ Add Link</button>
+                    <button type="button" onclick="addLink()" class="text-xs bg-primary text-white px-3 py-1 rounded font-bold hover:brightness-110 transition">+ Add Link</button>
                 </div>
                 <p class="text-xs text-on-surface-variant mb-4">Add multiple external links (e.g., Google Drive, Mega) to be sent to the buyer's email.</p>
                 
@@ -96,13 +96,13 @@
 
             <div>
                 <label class="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" name="is_active" value="1" checked class="rounded border-outline-variant text-[#06B6D4] focus:ring-[#06B6D4]">
+                    <input type="checkbox" name="is_active" value="1" checked class="rounded border-outline-variant text-primary focus:ring-primary">
                     <span class="font-label-md text-on-surface">Active (Visible in Store)</span>
                 </label>
             </div>
 
             <div class="flex justify-end pt-md border-t border-outline-variant">
-                <button type="submit" class="px-md py-2 bg-[#06B6D4] text-white rounded-lg font-label-md font-bold hover:bg-[#0891B2] transition shadow">Save Product</button>
+                <button type="submit" class="px-md py-2 bg-primary text-white rounded-lg font-label-md font-bold hover:brightness-110 transition shadow">Save Product</button>
             </div>
         </form>
     </div>

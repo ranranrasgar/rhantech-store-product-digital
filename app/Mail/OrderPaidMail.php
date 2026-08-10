@@ -24,7 +24,7 @@ class OrderPaidMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Your Download Link: ' . $this->order->product->name,
+            subject: 'Your Digital Downloads for Order ' . $this->order->invoice_number,
         );
     }
 

@@ -20,11 +20,22 @@ Route::get('/projects/{slug}', [PublicController::class, 'projectDetail'])->name
 Route::get('/clients', [PublicController::class, 'clients'])->name('clients.index');
 Route::get('/products', [\App\Http\Controllers\ProductController::class, 'index'])->name('products.index');
 Route::get('/products/{slug}', [\App\Http\Controllers\ProductController::class, 'show'])->name('products.show');
-Route::get('/checkout/{slug}', [\App\Http\Controllers\CheckoutController::class, 'index'])->name('checkout.index');
-Route::post('/checkout/{slug}', [\App\Http\Controllers\CheckoutController::class, 'process'])->name('checkout.process');
+
+// Cart Routes
+Route::get('/cart', [\App\Http\Controllers\CartController::class, 'index'])->name('cart.index');
+Route::post('/cart/add', [\App\Http\Controllers\CartController::class, 'add'])->name('cart.add');
+Route::patch('/cart/update', [\App\Http\Controllers\CartController::class, 'update'])->name('cart.update');
+Route::post('/cart/remove', [\App\Http\Controllers\CartController::class, 'remove'])->name('cart.remove');
+
+// Checkout Routes
+Route::get('/checkout', [\App\Http\Controllers\CheckoutController::class, 'index'])->name('checkout.index');
+Route::post('/checkout', [\App\Http\Controllers\CheckoutController::class, 'process'])->name('checkout.process');
+Route::post('/checkout/select', [\App\Http\Controllers\CheckoutController::class, 'selectItems'])->name('checkout.select');
 Route::get('/payment/{invoice_number}', [\App\Http\Controllers\CheckoutController::class, 'payment'])->name('checkout.payment');
+Route::get('/toko/{slug}', [\App\Http\Controllers\PublicStoreController::class, 'show'])->name('store.show');
 
 Route::get('/download/{token}', [\App\Http\Controllers\DownloadController::class, 'download'])->name('products.download');
+Route::get('/download/{token}/file/{item}', [\App\Http\Controllers\DownloadController::class, 'downloadFile'])->name('products.download.file');
 Route::post('/api/webhooks/midtrans/callback', [\App\Http\Controllers\WebhookController::class, 'midtrans']);
 
 Route::get('/contact', [PublicController::class, 'contact'])->name('contact');
@@ -32,9 +43,26 @@ Route::post('/contact', [PublicController::class, 'storeContact'])->name('contac
 
 Route::get('/login', [\App\Http\Controllers\Auth\AuthController::class, 'create'])->name('login')->middleware('guest');
 Route::post('/login', [\App\Http\Controllers\Auth\AuthController::class, 'store'])->middleware('guest');
+Route::get('/register', [\App\Http\Controllers\Auth\AuthController::class, 'showRegisterForm'])->name('register')->middleware('guest');
+Route::post('/register', [\App\Http\Controllers\Auth\AuthController::class, 'register'])->middleware('guest');
 Route::post('/logout', [\App\Http\Controllers\Auth\AuthController::class, 'destroy'])->name('logout')->middleware('auth');
 
-Route::middleware(['auth', 'is_tenant'])->prefix('tenant')->name('tenant.')->group(function () {
+// Email Verification Routes
+Route::get('/email/verify', function () {
+    return view('auth.verify-email');
+})->middleware('auth')->name('verification.notice');
+
+Route::get('/email/verify/{id}/{hash}', function (\Illuminate\Foundation\Auth\EmailVerificationRequest $request) {
+    $request->fulfill();
+    return redirect()->route('tenant.store.index');
+})->middleware(['auth', 'signed'])->name('verification.verify');
+
+Route::post('/email/verification-notification', function (\Illuminate\Http\Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+    return back()->with('message', 'Email verifikasi telah dikirim ulang!');
+})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+
+Route::middleware(['auth', 'verified', 'is_tenant'])->prefix('tenant')->name('tenant.')->group(function () {
     Route::get('/', [\App\Http\Controllers\Tenant\DashboardController::class, 'index'])->name('dashboard');
     Route::get('/store', [\App\Http\Controllers\Tenant\StoreController::class, 'index'])->name('store.index');
     Route::post('/store', [\App\Http\Controllers\Tenant\StoreController::class, 'store'])->name('store.store');
@@ -46,8 +74,12 @@ Route::middleware(['auth', 'is_tenant'])->prefix('tenant')->name('tenant.')->gro
     
     Route::get('orders', [\App\Http\Controllers\Tenant\OrderController::class, 'index'])->name('orders.index');
     
-    // Future routes for tenant
     Route::resource('payouts', \App\Http\Controllers\Tenant\PayoutController::class);
+    Route::get('balance', [\App\Http\Controllers\Tenant\BalanceController::class, 'index'])->name('balance.index');
+    Route::get('bank', [\App\Http\Controllers\Tenant\BankController::class, 'index'])->name('bank.index');
+    Route::get('performance', [\App\Http\Controllers\Tenant\PerformanceController::class, 'index'])->name('performance.index');
+    Route::get('appearance', [\App\Http\Controllers\Tenant\AppearanceController::class, 'index'])->name('appearance.index');
+    Route::get('affiliates', [\App\Http\Controllers\Tenant\AffiliateController::class, 'index'])->name('affiliates.index');
 });
 
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
@@ -68,6 +100,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::resource('testimonials', TestimonialController::class);
     Route::resource('messages', ContactMessageController::class);
     Route::resource('gateway_apps', \App\Http\Controllers\Admin\GatewayAppController::class);
+    Route::resource('popup_ads', \App\Http\Controllers\Admin\PopupAdController::class);
     
     // Multi-tenant features
     Route::get('stores', [\App\Http\Controllers\Admin\StoreController::class, 'index'])->name('stores.index');

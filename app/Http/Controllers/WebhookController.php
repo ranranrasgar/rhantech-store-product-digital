@@ -74,13 +74,16 @@ class WebhookController extends Controller
 
         if ($hashed == $request->signature_key) {
             if ($request->transaction_status == 'capture' || $request->transaction_status == 'settlement') {
-                $order = Order::where('invoice_number', $request->order_id)->first();
+                $order = Order::with('orderItems.product.store')->where('invoice_number', $request->order_id)->first();
                 if ($order && $order->status === 'pending') {
                     $order->update(['status' => 'paid']);
 
                     // Add balance to store if product belongs to a store
-                    if ($order->product && $order->product->store_id) {
-                        $order->product->store->increment('balance', $order->total_price);
+                    foreach ($order->orderItems as $item) {
+                        if ($item->product && $item->product->store_id) {
+                            $itemTotal = $item->price * $item->quantity;
+                            $item->product->store->increment('balance', $itemTotal);
+                        }
                     }
 
                     // Send Email

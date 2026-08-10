@@ -1,56 +1,281 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @include('components.theme-init')
-    <title>Admin Login - rhantech</title>
+    <title>Masuk — {{ $company->company_name ?? 'rhantech' }}</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script>tailwind.config = { darkMode: 'class' };</script>
-    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet"/>
-    <style>body { font-family: 'Geist', sans-serif; }</style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', sans-serif; box-sizing: border-box; }
+
+        body {
+            margin: 0; padding: 0;
+            min-height: 100vh;
+            background: #060d1a;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* ── Animated background ── */
+        .bg-grid {
+            position: fixed; inset: 0; z-index: 0;
+            background-image:
+                linear-gradient(rgba(0,212,255,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,212,255,0.04) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+        .orb {
+            position: fixed; border-radius: 50%;
+            filter: blur(90px); opacity: 0.25; pointer-events: none;
+        }
+        .orb-1 { width: 500px; height: 500px; background: #00b3cc; top: -100px; left: -100px; animation: float1 8s ease-in-out infinite; }
+        .orb-2 { width: 400px; height: 400px; background: #0056a0; bottom: -100px; right: -50px; animation: float2 10s ease-in-out infinite; }
+        .orb-3 { width: 250px; height: 250px; background: #00d4ff; top: 40%; left: 60%; animation: float3 6s ease-in-out infinite; opacity: 0.1; }
+
+        @keyframes float1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(40px,30px)} }
+        @keyframes float2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-30px,-40px)} }
+        @keyframes float3 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(20px,-20px)} }
+
+        /* ── Left panel ── */
+        .left-panel {
+            flex: 1; display: flex; flex-direction: column;
+            justify-content: center; align-items: flex-start;
+            padding: 60px; position: relative; z-index: 1;
+        }
+        .brand-logo {
+            display: flex; align-items: center; gap: 10px;
+            margin-bottom: 60px; text-decoration: none;
+        }
+        .brand-dot {
+            width: 10px; height: 10px; border-radius: 50%;
+            background: #00d4ff;
+            box-shadow: 0 0 14px #00d4ff;
+            animation: pulse-d 2s ease-in-out infinite;
+        }
+        @keyframes pulse-d {
+            0%,100%{box-shadow:0 0 10px #00d4ff}
+            50%{box-shadow:0 0 24px #00d4ff,0 0 40px rgba(0,212,255,0.4)}
+        }
+        .brand-name {
+            font-size: 24px; font-weight: 900; letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #fff, #a8e6f0);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .left-headline {
+            font-size: clamp(32px, 3.5vw, 52px);
+            font-weight: 900; line-height: 1.1;
+            letter-spacing: -1px;
+            color: #fff; margin-bottom: 20px;
+        }
+        .left-headline span {
+            background: linear-gradient(135deg, #00d4ff, #00b3cc);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .left-sub {
+            color: rgba(255,255,255,0.5);
+            font-size: 16px; line-height: 1.6;
+            max-width: 380px; margin-bottom: 48px;
+        }
+        .feature-item {
+            display: flex; align-items: center; gap: 12px;
+            margin-bottom: 16px; color: rgba(255,255,255,0.65); font-size: 14px;
+        }
+        .feature-icon {
+            width: 32px; height: 32px; border-radius: 8px;
+            background: rgba(0,212,255,0.12); border: 1px solid rgba(0,212,255,0.2);
+            display: flex; align-items: center; justify-content: center;
+            color: #00d4ff; font-size: 16px; flex-shrink: 0;
+        }
+        .material-symbols-outlined { font-family: 'Material Symbols Outlined'; font-size: inherit; font-weight: normal; font-style: normal; line-height: 1; display: inline-block; }
+
+        /* ── Right panel / card ── */
+        .right-panel {
+            width: 100%; max-width: 460px;
+            background: rgba(255,255,255,0.04);
+            backdrop-filter: blur(24px);
+            border-left: 1px solid rgba(255,255,255,0.07);
+            display: flex; flex-direction: column;
+            justify-content: center; padding: 60px 50px;
+            position: relative; z-index: 1;
+        }
+        .card-title {
+            font-size: 26px; font-weight: 800; color: #fff;
+            margin-bottom: 6px; letter-spacing: -0.5px;
+        }
+        .card-sub {
+            color: rgba(255,255,255,0.45); font-size: 14px;
+            margin-bottom: 36px;
+        }
+        .form-label {
+            display: block; font-size: 12px; font-weight: 600;
+            color: rgba(255,255,255,0.55); letter-spacing: 0.5px;
+            text-transform: uppercase; margin-bottom: 8px;
+        }
+        .form-input {
+            width: 100%;
+            background: rgba(255,255,255,0.06);
+            border: 1.5px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            color: #fff; font-size: 15px;
+            padding: 13px 16px;
+            outline: none;
+            transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+        }
+        .form-input::placeholder { color: rgba(255,255,255,0.25); }
+        .form-input:focus {
+            border-color: #00d4ff;
+            background: rgba(0,212,255,0.05);
+            box-shadow: 0 0 0 3px rgba(0,212,255,0.12);
+        }
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #00b3cc, #0077a8);
+            color: #fff; font-size: 15px; font-weight: 700;
+            border: none; border-radius: 10px;
+            padding: 14px; cursor: pointer;
+            transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+            box-shadow: 0 4px 20px rgba(0,179,204,0.35);
+            letter-spacing: 0.3px;
+        }
+        .submit-btn:hover {
+            opacity: 0.92;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 28px rgba(0,179,204,0.45);
+        }
+        .submit-btn:active { transform: translateY(0); }
+        .divider {
+            display: flex; align-items: center; gap: 12px;
+            color: rgba(255,255,255,0.2); font-size: 12px;
+            margin: 24px 0;
+        }
+        .divider::before, .divider::after {
+            content: ''; flex: 1; height: 1px;
+            background: rgba(255,255,255,0.1);
+        }
+        .register-link {
+            text-align: center; color: rgba(255,255,255,0.4);
+            font-size: 13px;
+        }
+        .register-link a {
+            color: #00d4ff; font-weight: 600;
+            text-decoration: none; transition: opacity 0.15s;
+        }
+        .register-link a:hover { opacity: 0.8; }
+        .error-box {
+            background: rgba(239,68,68,0.12);
+            border: 1px solid rgba(239,68,68,0.3);
+            color: #fca5a5; border-radius: 10px;
+            padding: 12px 16px; font-size: 13px;
+            margin-bottom: 24px;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            body { flex-direction: column; overflow: auto; }
+            .left-panel { display: none; }
+            .right-panel {
+                max-width: 100%; border-left: none;
+                border-top: 1px solid rgba(255,255,255,0.07);
+                padding: 40px 28px;
+                min-height: 100vh;
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
-<body class="bg-gray-50 text-gray-900 dark:bg-slate-950 dark:text-slate-100 antialiased min-h-screen flex items-center justify-center p-6 transition-colors">
-    <div class="absolute right-6 top-6">
-        <x-theme-toggle class="border-gray-200 bg-white text-gray-600 hover:bg-gray-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 focus:ring-[#06B6D4] focus:ring-offset-gray-50 dark:focus:ring-offset-slate-950" />
+<body>
+    <div class="bg-grid"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    {{-- LEFT — Branding panel --}}
+    <div class="left-panel">
+        <a href="{{ url('/') }}" class="brand-logo">
+            <span class="brand-dot"></span>
+            <span class="brand-name">{{ $company->company_name ?? 'rhantech' }}</span>
+        </a>
+
+        <h1 class="left-headline">
+            Platform<br>Produk <span>Digital</span><br>Terpercaya
+        </h1>
+        <p class="left-sub">
+            Masuk untuk mengakses dashboard, mengelola produk, dan memantau transaksi Anda secara real-time.
+        </p>
+
+        <div>
+            <div class="feature-item">
+                <div class="feature-icon"><span class="material-symbols-outlined" style="font-size:16px">verified</span></div>
+                Produk digital berkualitas tinggi & terverifikasi
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon"><span class="material-symbols-outlined" style="font-size:16px">bolt</span></div>
+                Transaksi instan, aman & terpercaya
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon"><span class="material-symbols-outlined" style="font-size:16px">headset_mic</span></div>
+                Dukungan pelanggan 24 jam non-stop
+            </div>
+        </div>
     </div>
 
-    <div class="max-w-md w-full bg-white dark:bg-slate-900 rounded-2xl shadow-lg border border-gray-100 dark:border-slate-800 p-8 transition-colors">
-        <div class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Admin Login</h1>
-            <p class="text-gray-500 dark:text-slate-400">Sign in to manage your company profile.</p>
-        </div>
+    {{-- RIGHT — Login form --}}
+    <div class="right-panel">
+        <div class="card-title">Selamat Datang 👋</div>
+        <div class="card-sub">Masuk ke akun Anda untuk melanjutkan</div>
 
         @if($errors->any())
-            <div class="mb-6 p-4 bg-red-50 dark:bg-red-950/50 text-red-700 dark:text-red-300 rounded-lg text-sm">
+            <div class="error-box">
+                <span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle;margin-right:6px">error</span>
                 {{ $errors->first() }}
             </div>
         @endif
 
-        <form method="POST" action="{{ route('login') }}" class="space-y-5">
+        <form method="POST" action="{{ route('login') }}">
             @csrf
-            <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Email</label>
-                <input type="email" name="email" value="{{ old('email') }}" required class="w-full px-4 py-2 bg-white dark:bg-slate-950 text-gray-900 dark:text-slate-100 border border-gray-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-[#06B6D4] focus:border-transparent outline-none transition-all">
-            </div>
-            
-            <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Password</label>
-                <input type="password" name="password" required class="w-full px-4 py-2 bg-white dark:bg-slate-950 text-gray-900 dark:text-slate-100 border border-gray-300 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-[#06B6D4] focus:border-transparent outline-none transition-all">
+
+            <div style="margin-bottom: 20px;">
+                <label class="form-label">Email</label>
+                <input type="email" name="email" value="{{ old('email') }}"
+                    class="form-input" placeholder="nama@email.com" required autofocus>
             </div>
 
-            <div class="flex items-center justify-between">
-                <label class="flex items-center">
-                    <input type="checkbox" name="remember" class="w-4 h-4 text-[#06B6D4] bg-white dark:bg-slate-950 border-gray-300 dark:border-slate-700 rounded focus:ring-[#06B6D4]">
-                    <span class="ml-2 text-sm text-gray-600 dark:text-slate-400">Remember me</span>
+            <div style="margin-bottom: 28px;">
+                <label class="form-label">Password</label>
+                <input type="password" name="password"
+                    class="form-input" placeholder="••••••••" required>
+            </div>
+
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:28px;">
+                <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                    <input type="checkbox" name="remember" style="width:16px;height:16px;accent-color:#00d4ff;">
+                    <span style="font-size:13px; color:rgba(255,255,255,0.5);">Ingat saya</span>
                 </label>
             </div>
 
-            <button type="submit" class="w-full py-3 px-4 bg-[#06B6D4] hover:bg-[#0891B2] text-white font-medium rounded-lg transition-colors shadow-md hover:shadow-lg focus:ring-2 focus:ring-offset-2 focus:ring-[#06B6D4]">
-                Sign In
+            <button type="submit" class="submit-btn">
+                Masuk ke Dashboard
             </button>
         </form>
+
+        <div class="divider">atau</div>
+
+        <div class="register-link">
+            Belum punya akun?
+            <a href="{{ route('register') }}">Daftar sekarang</a>
+        </div>
+
+        <div style="margin-top:40px; padding-top:24px; border-top:1px solid rgba(255,255,255,0.07); text-align:center;">
+            <a href="{{ url('/products') }}" style="color:rgba(255,255,255,0.3); font-size:12px; text-decoration:none; transition:color 0.15s;"
+               onmouseover="this.style.color='rgba(255,255,255,0.6)'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">
+                ← Kembali ke Katalog Produk
+            </a>
+        </div>
     </div>
+
     @include('components.theme-manager')
 </body>
 </html>

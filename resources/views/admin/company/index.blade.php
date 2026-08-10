@@ -2,7 +2,7 @@
 @section('title', 'Company Profile')
 @section('content')
 <div class="p-lg md:p-xl flex-1 max-w-4xl mx-auto w-full">
-    <div class="bg-surface rounded-xl border border-outline-variant shadow-sm p-lg">
+    <div class="bg-surface rounded-md border border-outline-variant  p-lg">
         <form action="{{ route('admin.company.store') }}" method="POST" enctype="multipart/form-data" class="flex flex-col gap-lg">
             @csrf
             
@@ -92,7 +92,7 @@
             </div>
 
             <div class="flex justify-end mt-lg pt-md border-t border-outline-variant">
-                <button type="submit" class="px-md py-2 bg-[#06B6D4] text-white rounded-lg font-label-md font-bold hover:bg-[#0891B2] transition shadow">Save Configuration</button>
+                <button type="submit" class="px-md py-2 bg-primary text-white rounded-lg font-label-md font-bold hover:brightness-110 transition shadow">Save Configuration</button>
             </div>
         </form>
     </div>

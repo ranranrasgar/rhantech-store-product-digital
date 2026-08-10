@@ -7,13 +7,13 @@
             <h2 class="font-headline-md font-bold text-on-surface">Digital Products</h2>
             <p class="font-body-md text-on-surface-variant">Manage your digital source codes and assets.</p>
         </div>
-        <a href="{{ route('admin.products.create') }}" class="inline-flex items-center gap-xs px-md py-2 bg-[#06B6D4] text-white rounded-lg font-label-md font-bold hover:bg-[#0891B2] transition shadow">
+        <a href="{{ route('admin.products.create') }}" class="inline-flex items-center gap-xs px-md py-2 bg-primary text-white rounded-lg font-label-md font-bold hover:brightness-110 transition shadow" wire:navigate>
             <span class="material-symbols-outlined text-[1.25rem]">add</span>
             Add Product
         </a>
     </div>
 
-    <div class="bg-surface rounded-xl border border-outline-variant shadow-sm overflow-hidden">
+    <div class="bg-surface rounded-md border border-outline-variant  overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-left font-body-md">
                 <thead class="bg-surface-container-lowest border-b border-outline-variant text-on-surface-variant font-label-md">
@@ -47,7 +47,7 @@
                         </td>
                         <td class="p-4">
                             @if($product->discount_price)
-                                <div class="font-bold text-[#06B6D4]">Rp {{ number_format($product->discount_price, 0, ',', '.') }}</div>
+                                <div class="font-bold text-primary">Rp {{ number_format($product->discount_price, 0, ',', '.') }}</div>
                                 <div class="text-xs text-on-surface-variant line-through">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
                             @else
                                 <div class="font-bold text-on-surface">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
@@ -68,7 +68,7 @@
                                         <span class="material-symbols-outlined text-[1.25rem]">{{ $product->is_active ? 'toggle_on' : 'toggle_off' }}</span>
                                     </button>
                                 </form>
-                                <a href="{{ route('admin.products.edit', $product) }}" class="p-2 text-on-surface-variant hover:text-[#06B6D4] hover:bg-surface-container-high rounded-lg transition" title="Edit">
+                                <a href="{{ route('admin.products.edit', $product) }}" class="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-container-high rounded-lg transition" title="Edit" wire:navigate>
                                     <span class="material-symbols-outlined text-[1.25rem]">edit</span>
                                 </a>
                                 <form action="{{ route('admin.products.destroy', $product) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this product?');">

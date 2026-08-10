@@ -5,19 +5,66 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Order;
+use App\Models\OrderItem;
 use Illuminate\Support\Str;
 
 class CheckoutController extends Controller
 {
-    public function index($slug)
+    /**
+     * POST /checkout/select — simpan item yang dipilih ke session, redirect ke GET /checkout
+     */
+    public function selectItems(Request $request)
     {
-        $product = Product::where('slug', $slug)->where('is_active', true)->firstOrFail();
-        return view('checkout.index', compact('product'));
+        $cart = session()->get('cart', []);
+
+        if (empty($cart)) {
+            return redirect()->route('products.index')->with('error', 'Keranjang Anda kosong.');
+        }
+
+        $selectedIds = $request->input('selected_ids', []);
+        if (!empty($selectedIds)) {
+            session()->put('checkout_selected_ids', $selectedIds);
+        } else {
+            // Jika tidak ada, pilih semua
+            session()->put('checkout_selected_ids', array_keys($cart));
+        }
+
+        return redirect()->route('checkout.index');
     }
 
-    public function process(Request $request, $slug)
+    /**
+     * GET /checkout — tampilkan form checkout dengan item yang dipilih
+     */
+    public function index(Request $request)
     {
-        $product = Product::where('slug', $slug)->where('is_active', true)->firstOrFail();
+        $cart = session()->get('cart', []);
+
+        if (empty($cart)) {
+            return redirect()->route('products.index')->with('error', 'Keranjang Anda kosong.');
+        }
+
+        // Ambil item yang dipilih dari session
+        $selectedIds = session()->get('checkout_selected_ids', array_keys($cart));
+        $cart = array_intersect_key($cart, array_flip($selectedIds));
+
+        if (empty($cart)) {
+            return redirect()->route('cart.index')->with('error', 'Tidak ada produk yang dipilih.');
+        }
+
+        return view('checkout.index', compact('cart'));
+    }
+
+    public function process(Request $request)
+    {
+        $cart = session()->get('cart', []);
+        
+        // Ambil hanya item yang dipilih
+        $selectedIds = session()->get('checkout_selected_ids', array_keys($cart));
+        $cart = array_intersect_key($cart, array_flip($selectedIds));
+
+        if (empty($cart)) {
+            return redirect()->route('products.index')->with('error', 'Keranjang Anda kosong.');
+        }
 
         $validated = $request->validate([
             'customer_name' => 'required|string|max:255',
@@ -25,18 +72,38 @@ class CheckoutController extends Controller
             'customer_phone' => 'required|string|max:50',
         ]);
 
-        $amount = $product->discount_price ?? $product->price;
+        $totalAmount = 0;
+        foreach ($cart as $item) {
+            $totalAmount += $item['price'] * $item['quantity'];
+        }
 
         $order = Order::create([
             'invoice_number' => 'RHN-' . date('ym') . '-' . Str::random(5),
-            'product_id' => $product->id,
             'customer_name' => $validated['customer_name'],
             'customer_email' => $validated['customer_email'],
             'customer_phone' => $validated['customer_phone'],
-            'amount' => $amount,
+            'amount' => $totalAmount,
             'status' => 'pending',
             'download_token' => Str::random(60),
         ]);
+
+        $midtransItemDetails = [];
+
+        foreach ($cart as $id => $item) {
+            OrderItem::create([
+                'order_id' => $order->id,
+                'product_id' => $id,
+                'quantity' => $item['quantity'],
+                'price' => $item['price'],
+            ]);
+
+            $midtransItemDetails[] = [
+                'id' => $id,
+                'price' => $item['price'],
+                'quantity' => $item['quantity'],
+                'name' => mb_substr($item['name'], 0, 50)
+            ];
+        }
 
         // Configure Midtrans
         \Midtrans\Config::$serverKey = config('midtrans.server_key');
@@ -47,26 +114,23 @@ class CheckoutController extends Controller
         $params = array(
             'transaction_details' => array(
                 'order_id' => $order->invoice_number,
-                'gross_amount' => $amount,
+                'gross_amount' => $totalAmount,
             ),
             'customer_details' => array(
                 'first_name' => $order->customer_name,
                 'email' => $order->customer_email,
                 'phone' => $order->customer_phone,
             ),
-            'item_details' => array(
-                array(
-                    'id' => $product->id,
-                    'price' => $amount,
-                    'quantity' => 1,
-                    'name' => mb_substr($product->name, 0, 50)
-                )
-            )
+            'item_details' => $midtransItemDetails
         );
 
         try {
             $snapToken = \Midtrans\Snap::getSnapToken($params);
             $order->update(['snap_token' => $snapToken]);
+            
+            // Clear cart
+            session()->forget('cart');
+            
             return redirect()->route('checkout.payment', $order->invoice_number);
         } catch (\Exception $e) {
             return back()->with('error', 'Payment gateway error: ' . $e->getMessage());
@@ -75,7 +139,7 @@ class CheckoutController extends Controller
 
     public function payment($invoice_number)
     {
-        $order = Order::with('product')->where('invoice_number', $invoice_number)->firstOrFail();
+        $order = Order::with('orderItems.product')->where('invoice_number', $invoice_number)->firstOrFail();
         
         if ($order->status !== 'pending') {
             return redirect()->route('products.index')->with('success', 'Order already processed.');

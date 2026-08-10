@@ -11,7 +11,7 @@
         </div>
     </div>
 
-    <div class="bg-surface-container-lowest rounded-2xl border border-outline-variant shadow-sm overflow-hidden">
+    <div class="bg-surface-container-lowest rounded-lg border border-outline-variant  overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead>
@@ -31,7 +31,7 @@
                                 <div class="text-on-surface">{{ $store->user->name ?? 'Unknown' }}</div>
                                 <div class="text-sm text-on-surface-variant">{{ $store->user->email ?? '' }}</div>
                             </td>
-                            <td class="p-4 font-body-md text-on-surface font-bold text-[#06B6D4]">Rp {{ number_format($store->balance, 0, ',', '.') }}</td>
+                            <td class="p-4 font-body-md text-on-surface font-bold text-primary">Rp {{ number_format($store->balance, 0, ',', '.') }}</td>
                             <td class="p-4 font-body-md text-sm text-on-surface-variant whitespace-pre-wrap">{{ $store->bank_account_info ?? '-' }}</td>
                             <td class="p-4 font-body-md text-on-surface">{{ $store->created_at->format('d M Y') }}</td>
                         </tr>

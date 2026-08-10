@@ -4,13 +4,13 @@
 @section('content')
 <div class="p-lg max-w-3xl mx-auto">
     <div class="flex items-center gap-4 mb-lg">
-        <a href="{{ route('admin.users.index') }}" class="p-2 bg-surface-container-low text-on-surface-variant hover:bg-surface-variant rounded-full transition-colors flex items-center justify-center">
+        <a href="{{ route('admin.users.index') }}" class="p-2 bg-surface-container-low text-on-surface-variant hover:bg-surface-variant rounded-full transition-colors flex items-center justify-center" wire:navigate>
             <span class="material-symbols-outlined">arrow_back</span>
         </a>
         <h2 class="font-headline-sm font-bold text-on-surface">Edit User: {{ $user->name }}</h2>
     </div>
 
-    <form action="{{ route('admin.users.update', $user->id) }}" method="POST" class="bg-surface-container-lowest p-lg rounded-2xl border border-outline-variant shadow-sm flex flex-col gap-lg">
+    <form action="{{ route('admin.users.update', $user->id) }}" method="POST" class="bg-surface-container-lowest p-lg rounded-lg border border-outline-variant  flex flex-col gap-lg">
         @csrf
         @method('PUT')
 

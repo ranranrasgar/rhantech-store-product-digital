@@ -11,7 +11,7 @@
                 <h2 class="font-headline-lg text-headline-lg text-on-surface">Testimonials</h2>
                 <p class="font-body-md text-body-md text-on-surface-variant mt-1">Manage client reviews and testimonials.</p>
             </div>
-            <a href="{{ route('admin.testimonials.create') }}" class="bg-[#06B6D4] hover:bg-[#06B6D4]/90 text-white font-label-md text-label-md py-2 px-4 rounded-lg flex items-center gap-2 transition-colors shadow-[0px_4px_6px_-1px_rgba(15,23,42,0.03),0px_2px_4px_-2px_rgba(15,23,42,0.03)]">
+            <a href="{{ route('admin.testimonials.create') }}" class="bg-primary hover:bg-primary/90 text-white font-label-md text-label-md py-2 px-4 rounded-lg flex items-center gap-2 transition-colors shadow-[0px_4px_6px_-1px_rgba(15,23,42,0.03),0px_2px_4px_-2px_rgba(15,23,42,0.03)]" wire:navigate>
                 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0; font-size: 20px;">add</span>
                 Add New Testimonial
             </a>
@@ -19,7 +19,7 @@
 
         <!-- Stats Overview -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
-            <div class="bg-surface rounded-xl border border-outline-variant p-lg shadow-[0px_4px_6px_-1px_rgba(15,23,42,0.03),0px_2px_4px_-2px_rgba(15,23,42,0.03)] flex items-center justify-between">
+            <div class="bg-surface rounded-md border border-outline-variant p-lg shadow-[0px_4px_6px_-1px_rgba(15,23,42,0.03),0px_2px_4px_-2px_rgba(15,23,42,0.03)] flex items-center justify-between">
                 <div>
                     <p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Total Testimonials</p>
                     <p class="font-headline-lg text-headline-lg text-on-surface mt-1">{{ number_format($totalTestimonials ?? 0) }}</p>
@@ -28,7 +28,7 @@
                     <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">reviews</span>
                 </div>
             </div>
-            <div class="bg-surface rounded-xl border border-outline-variant p-lg shadow-[0px_4px_6px_-1px_rgba(15,23,42,0.03),0px_2px_4px_-2px_rgba(15,23,42,0.03)] flex items-center justify-between">
+            <div class="bg-surface rounded-md border border-outline-variant p-lg shadow-[0px_4px_6px_-1px_rgba(15,23,42,0.03),0px_2px_4px_-2px_rgba(15,23,42,0.03)] flex items-center justify-between">
                 <div>
                     <p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Active</p>
                     <p class="font-headline-lg text-headline-lg text-on-surface mt-1">{{ number_format($activeTestimonials ?? 0) }}</p>
@@ -37,7 +37,7 @@
                     <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">verified</span>
                 </div>
             </div>
-            <div class="bg-surface rounded-xl border border-outline-variant p-lg shadow-[0px_4px_6px_-1px_rgba(15,23,42,0.03),0px_2px_4px_-2px_rgba(15,23,42,0.03)] flex items-center justify-between">
+            <div class="bg-surface rounded-md border border-outline-variant p-lg shadow-[0px_4px_6px_-1px_rgba(15,23,42,0.03),0px_2px_4px_-2px_rgba(15,23,42,0.03)] flex items-center justify-between">
                 <div>
                     <p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Avg Rating</p>
                     <div class="flex items-center gap-1 mt-1">
@@ -52,7 +52,7 @@
         </div>
 
         <!-- Data Table Card -->
-        <div class="bg-surface rounded-xl border border-outline-variant shadow-[0px_4px_6px_-1px_rgba(15,23,42,0.03),0px_2px_4px_-2px_rgba(15,23,42,0.03)] overflow-hidden">
+        <div class="bg-surface rounded-md border border-outline-variant shadow-[0px_4px_6px_-1px_rgba(15,23,42,0.03),0px_2px_4px_-2px_rgba(15,23,42,0.03)] overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
@@ -76,7 +76,7 @@
                                         @endif
                                     </div>
                                     <div>
-                                        <p class="font-label-md text-label-md font-bold text-on-surface group-hover:text-[#06B6D4] transition-colors">{{ $testimonial->client->name ?? 'Unknown Client' }}</p>
+                                        <p class="font-label-md text-label-md font-bold text-on-surface group-hover:text-primary transition-colors">{{ $testimonial->client->name ?? 'Unknown Client' }}</p>
                                     </div>
                                 </div>
                             </td>
@@ -107,7 +107,7 @@
                             </td>
                             <td class="p-md text-right relative">
                                 <div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <a href="{{ route('admin.testimonials.edit', $testimonial) }}" class="text-on-surface-variant hover:text-[#06B6D4] p-1 transition-colors" title="Edit">
+                                    <a href="{{ route('admin.testimonials.edit', $testimonial) }}" class="text-on-surface-variant hover:text-primary p-1 transition-colors" title="Edit" wire:navigate>
                                         <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0; font-size: 20px;">edit</span>
                                     </a>
                                     <form action="{{ route('admin.testimonials.destroy', $testimonial) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this testimonial?');" class="inline-block">

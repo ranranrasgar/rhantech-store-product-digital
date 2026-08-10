@@ -17,8 +17,9 @@ class PublicController extends Controller
         $projects = Project::query()->where('status', 'published')->latest()->take(3)->get();
         $clients = Client::query()->where('is_active', true)->get();
         $testimonials = Testimonial::query()->with('client')->where('is_active', true)->latest()->get();
+        $popupAd = \App\Models\PopupAd::query()->where('is_active', true)->latest()->first();
 
-        return view('welcome', compact('services', 'projects', 'clients', 'testimonials'));
+        return view('welcome', compact('services', 'projects', 'clients', 'testimonials', 'popupAd'));
     }
 
     public function projects()

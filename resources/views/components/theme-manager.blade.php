@@ -57,6 +57,14 @@
 
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', initialise, { once: true });
+        }
+        document.addEventListener('livewire:navigated', () => {
+            const savedTheme = localStorage.getItem(storageKey);
+            const theme = ['light', 'dark'].includes(savedTheme) ? savedTheme : (mediaQuery.matches ? 'dark' : 'light');
+            applyTheme(theme);
+            initialise();
+        });
+        if(false){
         } else {
             initialise();
         }

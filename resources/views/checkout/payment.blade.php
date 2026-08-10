@@ -4,15 +4,21 @@
 <main class="pt-24 pb-2xl min-h-screen bg-surface dark:bg-surface-container-lowest flex items-center justify-center">
     <div class="max-w-md w-full px-lg text-center">
         
-        <div class="bg-surface-container-lowest border border-outline-variant rounded-2xl p-lg shadow-sm">
-            <span class="material-symbols-outlined text-5xl text-[#06B6D4] mb-4">payments</span>
+        <div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-lg ">
+            <span class="material-symbols-outlined text-5xl text-primary mb-4">payments</span>
             <h1 class="font-headline-md font-black text-on-surface mb-2">Complete Your Payment</h1>
             <p class="text-on-surface-variant font-body-sm mb-6">Order <strong>{{ $order->invoice_number }}</strong></p>
             
             <div class="text-left bg-surface-container-high rounded-lg p-4 mb-6">
                 <div class="flex justify-between text-sm mb-2">
                     <span class="text-on-surface-variant">Product</span>
-                    <span class="font-bold text-on-surface line-clamp-1 max-w-[150px]">{{ $order->product->name }}</span>
+                    <span class="font-bold text-on-surface line-clamp-1 max-w-[150px]">
+                        @if($order->orderItems->count() > 1)
+                            {{ $order->orderItems->first()->product->name ?? 'Product' }} (+{{ $order->orderItems->count() - 1 }} lainnya)
+                        @else
+                            {{ $order->orderItems->first()->product->name ?? 'Product' }}
+                        @endif
+                    </span>
                 </div>
                 <div class="flex justify-between text-sm mb-2">
                     <span class="text-on-surface-variant">Email</span>
@@ -20,11 +26,11 @@
                 </div>
                 <div class="flex justify-between text-sm pt-2 border-t border-outline-variant">
                     <span class="text-on-surface-variant">Total Amount</span>
-                    <span class="font-black text-[#06B6D4]">Rp {{ number_format($order->amount, 0, ',', '.') }}</span>
+                    <span class="font-black text-primary">Rp {{ number_format($order->amount, 0, ',', '.') }}</span>
                 </div>
             </div>
 
-            <button id="pay-button" class="w-full bg-[#06B6D4] text-white font-bold font-label-lg py-4 rounded-xl hover:bg-[#0891B2] transition shadow-md">
+            <button id="pay-button" class="w-full bg-primary text-white font-bold font-label-lg py-4 rounded-md hover:brightness-110 transition shadow-md">
                 Pay Now
             </button>
             <p class="text-xs text-on-surface-variant mt-4">Secured by Midtrans</p>

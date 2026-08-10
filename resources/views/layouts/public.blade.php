@@ -14,6 +14,8 @@
     <meta name="twitter:card" content="summary_large_image"/>
     <link rel="icon" href="{{ isset($company) && $company->favicon ? asset('storage/'.$company->favicon) : asset('favicon.ico') }}" />
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Alpine.js for interactive components like dropdowns -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com" rel="preconnect"/>
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -90,23 +92,23 @@
                         "gutter": "24px"
                     },
                     "fontFamily": {
-                        "headline-xl": ["Geist"],
-                        "body-md": ["Geist"],
-                        "headline-lg": ["Geist"],
-                        "display-lg-mobile": ["Geist"],
-                        "body-lg": ["Geist"],
-                        "code-sm": ["Geist"],
-                        "label-md": ["Geist"],
-                        "display-lg": ["Geist"]
+                        "headline-xl": ["-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"],
+                        "body-md": ["-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"],
+                        "headline-lg": ["-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"],
+                        "display-lg-mobile": ["-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"],
+                        "body-lg": ["-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"],
+                        "code-sm": ["ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace"],
+                        "label-md": ["-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"],
+                        "display-lg": ["-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"]
                     },
                     "fontSize": {
                         "headline-xl": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
-                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "body-md": ["14px", { "lineHeight": "21px", "fontWeight": "400" }],
                         "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
                         "display-lg-mobile": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
-                        "body-lg": ["18px", { "lineHeight": "32px", "fontWeight": "400" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
                         "code-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
-                        "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
                         "display-lg": ["72px", { "lineHeight": "80px", "letterSpacing": "-0.04em", "fontWeight": "700" }]
                     }
                 }
@@ -131,12 +133,13 @@
             -webkit-font-smoothing: antialiased;
         }
     </style>
+@livewireStyles
 </head>
 <body class="bg-background text-on-background font-body-md text-body-md antialiased overflow-x-hidden selection:bg-secondary-container selection:text-on-secondary-container flex flex-col min-h-screen">
     <!-- TopNavBar -->
-    <nav aria-label="Main Navigation" class="bg-surface/80 dark:bg-surface-container-lowest/80 backdrop-blur-md text-primary dark:text-on-surface font-headline-lg text-headline-lg font-body-md text-body-md font-label-md text-label-md fixed top-0 w-full z-50 border-b border-outline-variant/30 shadow-sm">
+    <nav x-data="{ mobileMenuOpen: false }" aria-label="Main Navigation" class="bg-surface/80 dark:bg-surface-container-lowest/80 backdrop-blur-md text-primary dark:text-on-surface font-headline-lg text-headline-lg font-body-md text-body-md font-label-md text-label-md fixed top-0 w-full z-50 border-b border-outline-variant/30 ">
         <div class="flex justify-between items-center px-lg py-md max-w-container-max mx-auto">
-            <a aria-label="{{ $company->company_name ?? 'rhantech' }} Home" class="flex items-center gap-2 text-body-lg font-headline-xl font-bold text-primary dark:text-on-primary-container" href="{{ url('/') }}">
+            <a aria-label="{{ $company->company_name ?? 'rhantech' }} Home" class="flex items-center gap-2 text-body-lg font-headline-xl font-bold text-on-background dark:text-white" href="{{ url('/') }}" wire:navigate>
                 <img src="{{ isset($company) && $company->logo ? asset('storage/' . $company->logo) : asset('logo.png') }}" alt="{{ $company->company_name ?? 'rhantech' }}" class="h-8 w-auto">
                 {{ $company->company_name ?? 'rhantech' }}
             </a>
@@ -144,20 +147,81 @@
                 <a class="nav-link {{ request()->is('/') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-secondary transition-colors duration-200" href="{{ url('/#home') }}">Home</a>
                 <a class="nav-link text-on-surface-variant dark:text-on-surface-variant/80 hover:text-secondary transition-colors duration-200" href="{{ url('/#about') }}">About</a>
                 <a class="nav-link text-on-surface-variant dark:text-on-surface-variant/80 hover:text-secondary transition-colors duration-200" href="{{ url('/#services') }}">Services</a>
-                <a class="nav-link {{ request()->routeIs('projects.*') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-secondary transition-colors duration-200" href="{{ route('projects.index') }}">Projects</a>
-                <a class="nav-link {{ request()->routeIs('products.*') || request()->routeIs('checkout.*') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-secondary transition-colors duration-200" href="{{ route('products.index') }}">Store</a>
-                <a class="nav-link {{ request()->routeIs('clients.*') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-secondary transition-colors duration-200" href="{{ route('clients.index') }}">Clients</a>
-                <a class="nav-link {{ request()->routeIs('contact') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-secondary transition-colors duration-200" href="{{ url('/contact') }}">Contact</a>
+                <a class="nav-link {{ request()->routeIs('projects.*') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-secondary transition-colors duration-200" href="{{ route('projects.index') }}" wire:navigate>Projects</a>
+                <a class="nav-link {{ request()->routeIs('products.*') || request()->routeIs('checkout.*') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-secondary transition-colors duration-200" href="{{ route('products.index') }}" wire:navigate>Store</a>
+                <a class="nav-link {{ request()->routeIs('clients.*') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-secondary transition-colors duration-200" href="{{ route('clients.index') }}" wire:navigate>Clients</a>
+                <a class="nav-link {{ request()->routeIs('contact') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-secondary transition-colors duration-200" href="{{ url('/contact') }}" wire:navigate>Contact</a>
             </div>
             <div class="flex items-center gap-sm">
                 <x-theme-toggle />
-                <a class="hidden md:inline-flex items-center justify-center px-6 py-2.5 bg-[#06B6D4] text-on-primary rounded-lg font-label-md text-label-md hover:opacity-90 transition-opacity" href="{{ url('/contact') }}">
-                    Let's Talk
-                </a>
+                
+                @guest
+                    <a class="hidden md:inline-flex items-center justify-center px-5 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-lg font-label-md text-label-md font-bold shadow-md hover:shadow-lg transition-all hover:scale-105" href="{{ route('register') }}" wire:navigate>
+                        <span class="material-symbols-outlined text-[1rem] mr-1">storefront</span> Jualan Sekarang!
+                    </a>
+                @else
+                    <div class="flex items-center gap-3 ml-2">
+                        <!-- Notification Bell -->
+                        <button class="relative p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors">
+                            <span class="material-symbols-outlined">notifications</span>
+                            <!-- Example active badge -->
+                            <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-error rounded-full border border-surface"></span>
+                        </button>
+
+                        <!-- User Avatar Dropdown -->
+                        <div class="relative" x-data="{ open: false }">
+                            <button @click="open = !open" @click.outside="open = false" class="flex items-center gap-2 focus:outline-none rounded-full ring-2 ring-transparent hover:ring-primary/20 transition-all">
+                                <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=random" alt="Avatar" class="w-9 h-9 rounded-full object-cover ">
+                            </button>
+                            
+                            <!-- Dropdown Menu -->
+                            <div x-show="open" style="display: none;" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95" class="absolute right-0 mt-2 w-56 bg-surface-container-lowest border border-outline-variant rounded-md shadow-xl py-2 z-50">
+                                <div class="px-4 py-3 border-b border-outline-variant/50 mb-1">
+                                    <p class="text-sm font-bold text-on-surface truncate">{{ auth()->user()->name }}</p>
+                                    <p class="text-xs text-on-surface-variant truncate">{{ auth()->user()->email }}</p>
+                                </div>
+                                
+                                @if(auth()->user()->role === 'admin')
+                                <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-on-surface hover:bg-surface-container-low transition-colors" wire:navigate>
+                                    <span class="material-symbols-outlined text-[1.1rem]">admin_panel_settings</span> Dashboard Admin
+                                </a>
+                                @endif
+                                
+                                <a href="{{ route('tenant.dashboard') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-on-surface hover:bg-surface-container-low transition-colors" wire:navigate>
+                                    <span class="material-symbols-outlined text-[1.1rem]">storefront</span> Dashboard Toko
+                                </a>
+                                
+                                <form method="POST" action="{{ route('logout') }}" class="mt-1 border-t border-outline-variant/50 pt-1">
+                                    @csrf
+                                    <button type="submit" class="w-full text-left flex items-center gap-2 px-4 py-2 text-sm text-error hover:bg-error/10 transition-colors">
+                                        <span class="material-symbols-outlined text-[1.1rem]">logout</span> Keluar
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                @endguest
             </div>
-            <button aria-label="Open menu" class="md:hidden p-2 text-on-surface">
-                <span class="material-symbols-outlined" data-icon="menu">menu</span>
+            <button @click="mobileMenuOpen = !mobileMenuOpen" aria-label="Open menu" class="md:hidden p-2 text-on-surface ml-2">
+                <span class="material-symbols-outlined" data-icon="menu" x-text="mobileMenuOpen ? 'close' : 'menu'">menu</span>
             </button>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div x-show="mobileMenuOpen" style="display: none;" class="md:hidden bg-surface dark:bg-surface-container-lowest border-t border-outline-variant/30 py-4 px-4 flex flex-col gap-4 shadow-lg absolute w-full left-0">
+            <a class="nav-link {{ request()->is('/') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }}" href="{{ url('/#home') }}">Home</a>
+            <a class="nav-link text-on-surface-variant dark:text-on-surface-variant/80" href="{{ url('/#about') }}">About</a>
+            <a class="nav-link text-on-surface-variant dark:text-on-surface-variant/80" href="{{ url('/#services') }}">Services</a>
+            <a class="nav-link {{ request()->routeIs('projects.*') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }}" href="{{ route('projects.index') }}" wire:navigate>Projects</a>
+            <a class="nav-link {{ request()->routeIs('products.*') || request()->routeIs('checkout.*') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }}" href="{{ route('products.index') }}" wire:navigate>Store</a>
+            <a class="nav-link {{ request()->routeIs('clients.*') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }}" href="{{ route('clients.index') }}" wire:navigate>Clients</a>
+            <a class="nav-link {{ request()->routeIs('contact') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }}" href="{{ url('/contact') }}" wire:navigate>Contact</a>
+            
+            @guest
+                <a class="inline-flex items-center justify-center px-5 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-lg font-label-md text-label-md font-bold mt-2" href="{{ route('register') }}" wire:navigate>
+                    <span class="material-symbols-outlined text-[1rem] mr-1">storefront</span> Jualan Sekarang!
+                </a>
+            @endguest
         </div>
     </nav>
     
@@ -169,7 +233,7 @@
     <footer aria-label="Footer" class="bg-surface-container dark:bg-surface-container-lowest text-on-surface dark:text-on-surface-variant font-body-md text-body-md font-label-md text-label-md w-full border-t border-outline-variant mt-auto">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-lg px-lg py-2xl max-w-container-max mx-auto">
             <div class="col-span-1 md:col-span-2">
-                <a class="font-headline-lg text-headline-lg font-black text-primary dark:text-on-primary-container flex items-center gap-2 mb-4" href="{{ url('/') }}">
+                <a class="font-headline-lg text-headline-lg font-black text-primary dark:text-on-primary-container flex items-center gap-2 mb-4" href="{{ url('/') }}" wire:navigate>
                     <img src="{{ isset($company) && $company->logo ? asset('storage/' . $company->logo) : asset('logo.png') }}" alt="{{ $company->company_name ?? 'rhantech' }}" class="h-8 w-auto">
                     {{ $company->company_name ?? 'rhantech' }}
                 </a>
@@ -179,18 +243,18 @@
                 </div>
             </div>
             <div>
-                <h4 class="font-label-md text-label-md text-primary font-bold mb-4 uppercase tracking-wider">Company</h4>
+                <h4 class="font-label-md text-label-md text-on-background dark:text-white font-bold mb-4 uppercase tracking-wider">Company</h4>
                 <ul class="flex flex-col gap-3">
                     <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/#about') }}">About Us</a></li>
                     <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/#services') }}">Services</a></li>
-                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/projects') }}">Projects</a></li>
+                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/projects') }}" wire:navigate>Projects</a></li>
                 </ul>
             </div>
             <div>
-                <h4 class="font-label-md text-label-md text-primary font-bold mb-4 uppercase tracking-wider">Support</h4>
+                <h4 class="font-label-md text-label-md text-on-background dark:text-white font-bold mb-4 uppercase tracking-wider">Support</h4>
                 <ul class="flex flex-col gap-3">
-                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/contact') }}">Contact Us</a></li>
-                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ route('login') }}">Admin Login</a></li>
+                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/contact') }}" wire:navigate>Contact Us</a></li>
+                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ route('login') }}" wire:navigate>Admin Login</a></li>
                 </ul>
             </div>
         </div>
@@ -213,7 +277,7 @@
             });
     @endphp
     @if($toastTestimonials->count() > 0)
-    <div id="testimonial-toast" class="fixed bottom-4 right-4 max-w-sm w-full bg-surface-container-high rounded-xl shadow-[0px_20px_25px_-5px_rgba(15,23,42,0.1)] border border-outline-variant p-md transform translate-y-12 opacity-0 pointer-events-none transition-all duration-500 z-50 flex gap-md items-start">
+    <div id="testimonial-toast" class="fixed bottom-4 right-4 max-w-sm w-full bg-surface-container-high rounded-md shadow-[0px_20px_25px_-5px_rgba(15,23,42,0.1)] border border-outline-variant p-md transform translate-y-12 opacity-0 pointer-events-none transition-all duration-500 z-50 hidden md:flex gap-md items-start">
         <div id="toast-avatar" class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center bg-surface text-on-surface-variant flex-shrink-0 overflow-hidden">
             <span class="material-symbols-outlined">person</span>
         </div>
@@ -322,5 +386,6 @@
         });
     </script>
     @include('components.theme-manager')
+    @livewireScripts
 </body>
 </html>

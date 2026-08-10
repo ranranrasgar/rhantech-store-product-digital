@@ -11,8 +11,9 @@ class ProductController extends Controller
     {
         $categories = \App\Models\ProductCategory::all();
         $types = \App\Models\ProductType::all();
+        $stores = \App\Models\Store::all();
 
-        $query = Product::where('is_active', true);
+        $query = Product::with('store')->where('is_active', true);
 
         if ($request->filled('category')) {
             $query->where('product_category_id', $request->category);
@@ -20,6 +21,10 @@ class ProductController extends Controller
 
         if ($request->filled('type')) {
             $query->where('product_type_id', $request->type);
+        }
+
+        if ($request->filled('store')) {
+            $query->where('store_id', $request->store);
         }
 
         if ($request->filled('search')) {
@@ -48,7 +53,7 @@ class ProductController extends Controller
 
         $products = $query->paginate(12)->withQueryString();
 
-        return view('products.index', compact('products', 'categories', 'types'));
+        return view('products.index', compact('products', 'categories', 'types', 'stores'));
     }
 
     public function show($slug)

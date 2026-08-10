@@ -17,7 +17,7 @@
         </div>
     @endif
 
-    <div class="bg-surface-container-lowest rounded-2xl border border-outline-variant shadow-sm overflow-hidden">
+    <div class="bg-surface-container-lowest rounded-lg border border-outline-variant  overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead>
@@ -37,7 +37,7 @@
                                 <span class="font-bold">{{ $payout->store->name ?? 'Unknown' }}</span><br>
                                 <span class="text-sm text-on-surface-variant whitespace-pre-wrap">{{ $payout->store->bank_account_info ?? '-' }}</span>
                             </td>
-                            <td class="p-4 font-body-md font-bold text-[#06B6D4]">Rp {{ number_format($payout->amount, 0, ',', '.') }}</td>
+                            <td class="p-4 font-body-md font-bold text-primary">Rp {{ number_format($payout->amount, 0, ',', '.') }}</td>
                             <td class="p-4 font-body-md">
                                 @if($payout->status === 'pending')
                                     <span class="px-2 py-1 bg-[#fff8e1] text-[#f57f17] rounded-full text-xs font-bold uppercase tracking-wider">Pending</span>
@@ -59,7 +59,7 @@
 
                                     <!-- Reject Modal -->
                                     <div id="reject-modal-{{ $payout->id }}" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50">
-                                        <div class="bg-surface p-xl rounded-2xl w-full max-w-md">
+                                        <div class="bg-surface p-xl rounded-lg w-full max-w-md">
                                             <h3 class="font-title-lg font-bold text-on-surface mb-md">Reject Payout</h3>
                                             <form action="{{ route('admin.payouts.update', $payout->id) }}" method="POST">
                                                 @csrf
@@ -71,7 +71,7 @@
                                                 </div>
                                                 <div class="flex justify-end gap-3">
                                                     <button type="button" onclick="document.getElementById('reject-modal-{{ $payout->id }}').classList.add('hidden')" class="text-on-surface-variant hover:bg-surface-variant/20 px-4 py-2 rounded-lg font-label-lg transition-colors">Cancel</button>
-                                                    <button type="submit" class="bg-error hover:bg-error-dark text-on-error px-4 py-2 rounded-lg font-label-lg shadow-sm transition-colors">Confirm Reject</button>
+                                                    <button type="submit" class="bg-error hover:bg-error-dark text-on-error px-4 py-2 rounded-lg font-label-lg  transition-colors">Confirm Reject</button>
                                                 </div>
                                             </form>
                                         </div>

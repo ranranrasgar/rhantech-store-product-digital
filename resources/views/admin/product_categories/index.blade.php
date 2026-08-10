@@ -7,11 +7,11 @@
         <form action="{{ route('admin.product_categories.store') }}" method="POST" class="flex gap-2">
             @csrf
             <input type="text" name="name" required placeholder="New Category Name" class="pl-4 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-secondary focus:ring-1 focus:ring-secondary/20">
-            <button type="submit" class="bg-[#06B6D4] text-white px-4 py-2 rounded-lg font-bold hover:bg-[#0891B2] transition">Add</button>
+            <button type="submit" class="bg-primary text-white px-4 py-2 rounded-lg font-bold hover:brightness-110 transition">Add</button>
         </form>
     </div>
 
-    <div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden">
+    <div class="bg-surface-container-lowest border border-outline-variant rounded-md overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead>

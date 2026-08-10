@@ -17,7 +17,7 @@
         <!-- Metric Cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-md">
             <!-- Total Projects -->
-            <div class="bg-surface rounded-xl border border-outline-variant p-lg shadow-sm flex flex-col justify-between">
+            <div class="bg-surface rounded-md border border-outline-variant p-lg  flex flex-col justify-between">
                 <div class="w-10 h-10 rounded-lg bg-[#E0F2FE] text-[#0284C7] flex items-center justify-center mb-4">
                     <span class="material-symbols-outlined" style="font-size: 20px;">rocket_launch</span>
                 </div>
@@ -26,7 +26,7 @@
             </div>
             
             <!-- Active Services -->
-            <div class="bg-surface rounded-xl border border-outline-variant p-lg shadow-sm flex flex-col justify-between">
+            <div class="bg-surface rounded-md border border-outline-variant p-lg  flex flex-col justify-between">
                 <div class="w-10 h-10 rounded-lg bg-surface-container-high text-on-surface-variant flex items-center justify-center mb-4">
                     <span class="material-symbols-outlined" style="font-size: 20px;">layers</span>
                 </div>
@@ -35,7 +35,7 @@
             </div>
 
             <!-- New Messages -->
-            <div class="bg-surface rounded-xl border border-outline-variant p-lg shadow-sm flex flex-col justify-between relative overflow-hidden">
+            <div class="bg-surface rounded-md border border-outline-variant p-lg  flex flex-col justify-between relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-20 h-20 bg-[#E0F2FE] rounded-bl-full opacity-50"></div>
                 <div class="w-10 h-10 rounded-lg bg-surface-container-high text-on-surface-variant flex items-center justify-center mb-4 relative z-10">
                     <span class="material-symbols-outlined" style="font-size: 20px;">mail</span>
@@ -50,7 +50,7 @@
             </div>
 
             <!-- Total Clients -->
-            <div class="bg-surface rounded-xl border border-outline-variant p-lg shadow-sm flex flex-col justify-between">
+            <div class="bg-surface rounded-md border border-outline-variant p-lg  flex flex-col justify-between">
                 <div class="w-10 h-10 rounded-lg bg-surface-container-high text-on-surface-variant flex items-center justify-center mb-4">
                     <span class="material-symbols-outlined" style="font-size: 20px;">groups</span>
                 </div>
@@ -62,7 +62,7 @@
         <!-- Charts Section -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-md">
             <!-- Revenue Growth -->
-            <div class="lg:col-span-2 bg-surface rounded-xl border border-outline-variant p-lg shadow-sm">
+            <div class="lg:col-span-2 bg-surface rounded-md border border-outline-variant p-lg ">
                 <div class="flex justify-between items-center mb-lg">
                     <h3 class="font-headline-sm text-headline-sm font-bold text-on-surface">Revenue Growth</h3>
                     <div class="flex gap-2 border border-outline-variant rounded p-0.5 bg-surface-container-lowest">
@@ -77,7 +77,7 @@
             </div>
 
             <!-- Project Status -->
-            <div class="bg-surface rounded-xl border border-outline-variant p-lg shadow-sm">
+            <div class="bg-surface rounded-md border border-outline-variant p-lg ">
                 <h3 class="font-headline-sm text-headline-sm font-bold text-on-surface mb-lg">Project Status</h3>
                 <div class="relative h-48 w-full flex justify-center items-center">
                     <canvas id="statusChart"></canvas>
@@ -89,7 +89,7 @@
                 <div class="mt-8 space-y-3 px-2">
                     <div class="flex justify-between items-center">
                         <div class="flex items-center gap-3">
-                            <span class="w-3 h-3 rounded-full bg-[#06B6D4]"></span>
+                            <span class="w-3 h-3 rounded-full bg-primary"></span>
                             <span class="font-body-md text-on-surface">In Progress</span>
                         </div>
                         <span class="font-body-md text-on-surface font-medium">55%</span>
@@ -115,7 +115,7 @@
         <!-- Bottom Section -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-md">
             <!-- Top Services -->
-            <div class="lg:col-span-2 bg-surface rounded-xl border border-outline-variant p-lg shadow-sm">
+            <div class="lg:col-span-2 bg-surface rounded-md border border-outline-variant p-lg ">
                 <h3 class="font-headline-sm text-headline-sm font-bold text-on-surface mb-md">Top Performing Services</h3>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
@@ -152,14 +152,14 @@
             </div>
 
             <!-- Activity Feed -->
-            <div class="bg-surface rounded-xl border border-outline-variant p-lg shadow-sm">
+            <div class="bg-surface rounded-md border border-outline-variant p-lg ">
                 <div class="flex justify-between items-center mb-md">
                     <h3 class="font-headline-sm text-headline-sm font-bold text-on-surface">Activity Feed</h3>
-                    <a href="#" class="font-label-sm text-[#06B6D4] hover:underline">View All</a>
+                    <a href="#" class="font-label-sm text-primary hover:underline">View All</a>
                 </div>
                 <div class="space-y-5 mt-4">
                     <div class="flex gap-4 items-start relative pb-5 border-b border-outline-variant/30">
-                        <div class="w-8 h-8 rounded-full border border-[#06B6D4] flex items-center justify-center text-[#06B6D4] flex-shrink-0 mt-0.5 bg-surface">
+                        <div class="w-8 h-8 rounded-full border border-primary flex items-center justify-center text-primary flex-shrink-0 mt-0.5 bg-surface">
                             <span class="material-symbols-outlined" style="font-size: 16px;">edit</span>
                         </div>
                         <div>
@@ -177,7 +177,7 @@
                         </div>
                     </div>
                     <div class="flex gap-4 items-start relative">
-                        <div class="w-8 h-8 rounded-full border border-[#06B6D4] flex items-center justify-center text-[#06B6D4] flex-shrink-0 mt-0.5 bg-surface">
+                        <div class="w-8 h-8 rounded-full border border-primary flex items-center justify-center text-primary flex-shrink-0 mt-0.5 bg-surface">
                             <span class="material-symbols-outlined" style="font-size: 16px;">mail</span>
                         </div>
                         <div>

@@ -2,7 +2,7 @@
 @section('title', 'Inbox Messages')
 @section('content')
 <div class="p-lg md:p-xl flex-1 flex flex-col gap-lg max-w-container-max mx-auto w-full">
-    <div class="bg-surface rounded-xl border border-outline-variant shadow-sm overflow-hidden flex-1">
+    <div class="bg-surface rounded-md border border-outline-variant  overflow-hidden flex-1">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead class="bg-surface-container-low sticky top-0 border-b border-outline-variant">
@@ -32,7 +32,7 @@
                         </td>
                         <td class="py-3 px-4 text-right pr-6">
                             <div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <a href="{{ route('admin.messages.show', $msg) }}" class="p-1.5 text-on-surface-variant hover:text-secondary bg-surface-container hover:bg-secondary-container/30 rounded transition" title="Read">
+                                <a href="{{ route('admin.messages.show', $msg) }}" class="p-1.5 text-on-surface-variant hover:text-secondary bg-surface-container hover:bg-secondary-container/30 rounded transition" title="Read" wire:navigate>
                                     <span class="material-symbols-outlined" style="font-size: 20px;">visibility</span>
                                 </a>
                                 <form action="{{ route('admin.messages.destroy', $msg) }}" method="POST" onsubmit="return confirm('Delete this message?');" class="inline-block">

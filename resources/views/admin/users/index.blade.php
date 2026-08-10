@@ -5,7 +5,7 @@
 <div class="p-lg">
     <div class="flex justify-between items-center mb-lg">
         <h2 class="font-headline-sm font-bold text-on-surface">All Users</h2>
-        <a href="{{ route('admin.users.create') }}" class="bg-primary text-on-primary px-4 py-2 rounded-lg font-bold hover:bg-primary/90 transition-colors flex items-center gap-2">
+        <a href="{{ route('admin.users.create') }}" class="bg-primary text-on-primary px-4 py-2 rounded-lg font-bold hover:bg-primary/90 transition-colors flex items-center gap-2" wire:navigate>
             <span class="material-symbols-outlined text-[1.25rem]">add</span> Add New User
         </a>
     </div>
@@ -21,7 +21,7 @@
         </div>
     @endif
 
-    <div class="bg-surface-container-lowest border border-outline-variant rounded-2xl overflow-hidden shadow-sm">
+    <div class="bg-surface-container-lowest border border-outline-variant rounded-lg overflow-hidden ">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead>
@@ -44,7 +44,7 @@
                             <td class="py-3 px-4 text-on-surface font-body-md">{{ $user->created_at->format('M d, Y') }}</td>
                             <td class="py-3 px-4 text-right">
                                 <div class="flex justify-end gap-2">
-                                    <a href="{{ route('admin.users.edit', $user->id) }}" class="p-1.5 bg-surface-variant text-on-surface-variant rounded hover:bg-secondary-container hover:text-on-secondary-container transition-colors" title="Edit">
+                                    <a href="{{ route('admin.users.edit', $user->id) }}" class="p-1.5 bg-surface-variant text-on-surface-variant rounded hover:bg-secondary-container hover:text-on-secondary-container transition-colors" title="Edit" wire:navigate>
                                         <span class="material-symbols-outlined text-[1.25rem]">edit</span>
                                     </a>
                                     <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this user?');">

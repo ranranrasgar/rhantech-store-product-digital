@@ -3,8 +3,8 @@
 
 @section('content')
 <section class="max-w-container-max mx-auto px-lg py-2xl text-center">
-    <h1 class="font-display-lg text-display-lg text-primary mb-md hidden md:block">Our Clients</h1>
-    <h1 class="font-display-lg-mobile text-display-lg-mobile text-primary mb-md md:hidden">Our Clients</h1>
+    <h1 class="font-display-lg text-display-lg text-on-background dark:text-white mb-md hidden md:block">Our Clients</h1>
+    <h1 class="font-display-lg-mobile text-display-lg-mobile text-on-background dark:text-white mb-md md:hidden">Our Clients</h1>
     <p class="font-body-lg text-body-lg text-on-surface-variant max-w-3xl mx-auto">
         We are proud to have partnered with these amazing organizations.
     </p>
@@ -41,7 +41,7 @@
             @if(count($clients) > 0)
                 <!-- First Set -->
                 @foreach($clients as $client)
-                <div class="w-[280px] bg-surface rounded-xl border border-outline-variant p-lg flex items-center justify-center h-40 hover:shadow-md transition-shadow shrink-0">
+                <div class="w-[280px] bg-surface rounded-md border border-outline-variant p-lg flex items-center justify-center h-40 hover:shadow-md transition-shadow shrink-0">
                     @if($client->url)
                     <a href="{{ $client->url }}" target="_blank" title="{{ $client->name }}" class="flex flex-col items-center justify-center h-full gap-2 w-full">
                     @else
@@ -62,7 +62,7 @@
                 @endforeach
                 <!-- Duplicate Set for Seamless Loop -->
                 @foreach($clients as $client)
-                <div class="w-[280px] bg-surface rounded-xl border border-outline-variant p-lg flex items-center justify-center h-40 hover:shadow-md transition-shadow shrink-0">
+                <div class="w-[280px] bg-surface rounded-md border border-outline-variant p-lg flex items-center justify-center h-40 hover:shadow-md transition-shadow shrink-0">
                     @if($client->url)
                     <a href="{{ $client->url }}" target="_blank" title="{{ $client->name }}" class="flex flex-col items-center justify-center h-full gap-2 w-full">
                     @else
@@ -95,13 +95,13 @@
 <section class="bg-surface-container py-2xl">
     <div class="max-w-container-max mx-auto px-lg">
         <div class="text-center mb-xl">
-            <h2 class="font-headline-xl text-primary mb-md">What They Say</h2>
+            <h2 class="font-headline-xl text-on-background dark:text-white mb-md">What They Say</h2>
             <p class="font-body-lg text-on-surface-variant max-w-2xl mx-auto">Don't just take our word for it.</p>
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-lg">
             @foreach($testimonials as $testimonial)
-            <div class="bg-surface rounded-xl border border-outline-variant p-lg shadow-sm">
+            <div class="bg-surface rounded-md border border-outline-variant p-lg ">
                 <div class="flex text-[#F59E0B] mb-md text-xl">
                     @for($i=0; $i<$testimonial->rating; $i++)
                     ★

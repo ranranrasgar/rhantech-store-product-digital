@@ -13,17 +13,17 @@
             <span class="inline-block py-1 px-3 rounded-full bg-surface-container text-on-surface font-label-md text-label-md mb-6 border border-outline-variant/30">
                 Innovative Digital Solutions
             </span>
-            <h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-primary mb-6 text-balance">
-                We Build <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-[#06B6D4]">Digital</span> Experiences
+            <h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-background dark:text-white mb-6 text-balance">
+                We Build <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#06B6D4] to-blue-500">Digital</span> Experiences
             </h1>
             <p class="font-body-lg text-body-lg text-on-surface-variant mb-xl max-w-2xl text-balance">
                 Helping businesses build scalable, modern, and impactful digital solutions. We combine engineering excellence with compelling design to propel your brand forward.
             </p>
             <div class="flex flex-wrap items-center gap-4 w-full sm:w-auto">
-                <a class="w-full sm:w-auto text-center px-8 py-4 bg-[#06B6D4] text-white rounded-lg font-label-md text-label-md hover:bg-opacity-90 transition-all shadow-[0px_4px_6px_-1px_rgba(15,23,42,0.03),0px_2px_4px_-2px_rgba(15,23,42,0.03)] hover:-translate-y-1" href="{{ url('/projects') }}">
+                <a class="w-full sm:w-auto text-center px-8 py-4 bg-gradient-to-r from-[#06B6D4] to-blue-500 text-white rounded-lg font-label-md text-label-md hover:opacity-90 transition-all shadow-lg hover:-translate-y-1 border-0" href="{{ url('/projects') }}" wire:navigate>
                     View Our Work
                 </a>
-                <a class="w-full sm:w-auto text-center px-8 py-4 bg-transparent text-[#0F172A] border border-[#0F172A] rounded-lg font-label-md text-label-md hover:bg-surface-container-low transition-all" href="{{ url('/contact') }}">
+                <a class="w-full sm:w-auto text-center px-8 py-4 bg-transparent text-on-background dark:text-white border border-outline-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low transition-all" href="{{ url('/contact') }}" wire:navigate>
                     Let's Talk
                 </a>
             </div>
@@ -56,7 +56,7 @@
     <div class="max-w-container-max mx-auto px-lg">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-xl items-center">
             <div>
-                <h2 class="font-headline-xl text-primary mb-md">About Us</h2>
+                <h2 class="font-headline-xl text-on-background dark:text-white mb-md">About Us</h2>
                 <div class="font-body-lg text-on-surface-variant whitespace-pre-wrap">{{ $company->about_text ?? 'We are a dedicated team of professionals focused on delivering the best results for our clients.' }}</div>
             </div>
             <div class="grid grid-cols-2 gap-md">
@@ -78,7 +78,7 @@
 <section id="services" class="py-2xl bg-surface-container">
     <div class="max-w-container-max mx-auto px-lg">
         <div class="text-center mb-xl">
-            <h2 class="font-headline-xl text-primary mb-md">Our Services</h2>
+            <h2 class="font-headline-xl text-on-background dark:text-white mb-md">Our Services</h2>
             <p class="font-body-lg text-on-surface-variant max-w-2xl mx-auto">Comprehensive digital solutions tailored to your business needs.</p>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-lg">
@@ -87,7 +87,7 @@
                 <div class="w-14 h-14 rounded-lg bg-secondary-container/20 text-secondary flex items-center justify-center mb-md group-hover:scale-110 transition-transform">
                     <span class="material-symbols-outlined text-3xl">{{ $service->icon ?? 'layers' }}</span>
                 </div>
-                <h3 class="font-headline-sm font-bold text-primary mb-sm">{{ $service->name }}</h3>
+                <h3 class="font-headline-sm font-bold text-on-background dark:text-white mb-sm">{{ $service->name }}</h3>
                 <p class="font-body-md text-on-surface-variant">{{ $service->short_description ?: Str::limit($service->description, 120) }}</p>
             </div>
             @endforeach
@@ -102,10 +102,10 @@
     <div class="max-w-container-max mx-auto px-lg">
         <div class="flex flex-col md:flex-row justify-between items-end mb-xl gap-md">
             <div>
-                <h2 class="font-headline-xl text-primary mb-md">Featured Work</h2>
+                <h2 class="font-headline-xl text-on-background dark:text-white mb-md">Featured Work</h2>
                 <p class="font-body-lg text-on-surface-variant max-w-2xl">A glimpse into some of our recent successful partnerships.</p>
             </div>
-            <a href="{{ route('projects.index') }}" class="px-lg py-3 rounded-lg border border-outline-variant font-label-md text-primary hover:bg-surface-container transition-colors inline-flex items-center gap-xs">
+            <a href="{{ route('projects.index') }}" class="px-lg py-3 rounded-lg border border-outline-variant font-label-md text-primary hover:bg-surface-container transition-colors inline-flex items-center gap-xs" wire:navigate>
                 View All Projects <span class="material-symbols-outlined text-sm">arrow_forward</span>
             </a>
         </div>
@@ -125,8 +125,8 @@
                     </div>
                 </div>
                 <div class="p-md">
-                    <h3 class="font-headline-sm font-bold text-primary mb-xs">{{ $project->title }}</h3>
-                    <a class="inline-flex items-center gap-xs font-label-md text-secondary hover:text-secondary-fixed-dim transition-colors" href="{{ route('projects.show', $project->slug) }}">
+                    <h3 class="font-headline-sm font-bold text-on-background dark:text-white mb-xs">{{ $project->title }}</h3>
+                    <a class="inline-flex items-center gap-xs font-label-md text-secondary hover:text-secondary-fixed-dim transition-colors" href="{{ route('projects.show', $project->slug) }}" wire:navigate>
                         View Detail <span class="material-symbols-outlined text-sm">arrow_forward</span>
                     </a>
                 </div>

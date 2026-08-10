@@ -81,28 +81,28 @@
               },
               "fontFamily": {
                       "display-lg-mobile": [
-                              "Geist"
+                              "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
                       ],
                       "label-md": [
-                              "Geist"
+                              "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
                       ],
                       "body-lg": [
-                              "Geist"
+                              "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
                       ],
                       "headline-xl": [
-                              "Geist"
+                              "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
                       ],
                       "headline-lg": [
-                              "Geist"
+                              "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
                       ],
                       "body-md": [
-                              "Geist"
+                              "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
                       ],
                       "code-sm": [
-                              "Geist"
+                              "ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace"
                       ],
                       "display-lg": [
-                              "Geist"
+                              "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif"
                       ]
               }
             }
@@ -110,13 +110,14 @@
         }
 </script>
 @include('components.theme-styles')
+@livewireStyles
 </head>
 <body class="bg-background text-on-background font-body-md min-h-screen flex">
 <!-- SideNavBar -->
-<aside class="fixed left-0 top-0 h-screen w-64 bg-surface-container-low dark:bg-surface-container-lowest border-r border-outline-variant z-50 flex flex-col justify-between">
-<div class="flex flex-col gap-sm p-md">
+<aside class="fixed left-0 top-0 h-screen w-64 bg-background z-50 flex flex-col justify-between overflow-y-auto">
+<div class="flex flex-col gap-1 p-4">
 <div class="mb-lg px-sm">
-<h1 class="font-headline-lg text-headline-lg font-black text-primary dark:text-on-primary-container flex items-center gap-2">
+<h1 class="font-headline-lg text-headline-lg font-black text-on-background dark:text-white dark:text-on-primary-container flex items-center gap-2">
     @if(isset($company) && $company->logo)
         <img src="{{ asset('storage/' . $company->logo) }}" alt="{{ $company->company_name }}" class="h-8 w-auto">
     @endif
@@ -124,73 +125,77 @@
 </h1>
 <p class="font-label-md text-label-md text-on-surface-variant">Management System</p>
 </div>
-<nav class="flex flex-col gap-xs">
-<a class="font-label-md text-label-md {{ request()->routeIs('admin.dashboard') ? 'bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary shadow-sm font-bold translate-x-1' : 'text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant/50 hover:bg-surface-variant dark:hover:bg-surface-variant/20' }} px-md py-sm flex items-center gap-sm transition-all rounded-lg" href="{{ route('admin.dashboard') }}">
-<span class="material-symbols-outlined">dashboard</span>
+<nav class="flex flex-col gap-1">
+<a class="font-label-md text-label-md {{ request()->routeIs('admin.dashboard') ? 'bg-surface-variant font-semibold before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[3px] before:bg-[#58a6ff] before:rounded-r-md relative' : 'text-on-surface hover:bg-surface-variant/50 hover:underline' }} px-3 py-1.5 flex items-center gap-2 transition-all rounded-md" href="{{ route('admin.dashboard') }}" wire:navigate>
+<span class="material-symbols-outlined text-[1rem]">dashboard</span>
                     Dashboard
                 </a>
-<a class="font-label-md text-label-md {{ request()->routeIs('admin.company.*') ? 'bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary shadow-sm font-bold translate-x-1' : 'text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant/50 hover:bg-surface-variant dark:hover:bg-surface-variant/20' }} px-md py-sm flex items-center gap-sm transition-all rounded-lg" href="{{ route('admin.company.index') }}">
-<span class="material-symbols-outlined">business</span>
+<a class="font-label-md text-label-md {{ request()->routeIs('admin.company.*') ? 'bg-surface-variant font-semibold before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[3px] before:bg-[#58a6ff] before:rounded-r-md relative' : 'text-on-surface hover:bg-surface-variant/50 hover:underline' }} px-3 py-1.5 flex items-center gap-2 transition-all rounded-md" href="{{ route('admin.company.index') }}" wire:navigate>
+<span class="material-symbols-outlined text-[1rem]">business</span>
                     Company Profile
                 </a>
-<a class="font-label-md text-label-md {{ request()->routeIs('admin.services.*') ? 'bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary shadow-sm font-bold translate-x-1' : 'text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant/50 hover:bg-surface-variant dark:hover:bg-surface-variant/20' }} px-md py-sm flex items-center gap-sm transition-all rounded-lg" href="{{ route('admin.services.index') }}">
-<span class="material-symbols-outlined">layers</span>
+<a class="font-label-md text-label-md {{ request()->routeIs('admin.services.*') ? 'bg-surface-variant font-semibold before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[3px] before:bg-[#58a6ff] before:rounded-r-md relative' : 'text-on-surface hover:bg-surface-variant/50 hover:underline' }} px-3 py-1.5 flex items-center gap-2 transition-all rounded-md" href="{{ route('admin.services.index') }}" wire:navigate>
+<span class="material-symbols-outlined text-[1rem]">layers</span>
                     Services
                 </a>
-<a class="font-label-md text-label-md {{ request()->routeIs('admin.projects.*') ? 'bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary shadow-sm font-bold translate-x-1' : 'text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant/50 hover:bg-surface-variant dark:hover:bg-surface-variant/20' }} px-md py-sm flex items-center gap-sm transition-all rounded-lg" href="{{ route('admin.projects.index') }}">
-<span class="material-symbols-outlined">folder</span>
+<a class="font-label-md text-label-md {{ request()->routeIs('admin.projects.*') ? 'bg-surface-variant font-semibold before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[3px] before:bg-[#58a6ff] before:rounded-r-md relative' : 'text-on-surface hover:bg-surface-variant/50 hover:underline' }} px-3 py-1.5 flex items-center gap-2 transition-all rounded-md" href="{{ route('admin.projects.index') }}" wire:navigate>
+<span class="material-symbols-outlined text-[1rem]">folder</span>
                     Projects
                 </a>
-<a class="font-label-md text-label-md {{ request()->routeIs('admin.project_categories.*') ? 'bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary shadow-sm font-bold translate-x-1' : 'text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant/50 hover:bg-surface-variant dark:hover:bg-surface-variant/20' }} pl-12 pr-md py-sm flex items-center gap-sm transition-all rounded-lg text-sm" href="{{ route('admin.project_categories.index') }}">
+<a class="font-label-md text-label-md {{ request()->routeIs('admin.project_categories.*') ? 'bg-surface-variant font-semibold before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[3px] before:bg-[#58a6ff] before:rounded-r-md relative' : 'text-on-surface hover:bg-surface-variant/50 hover:underline' }} pl-9 pr-3 py-1.5 flex items-center gap-2 transition-all rounded-md text-sm" href="{{ route('admin.project_categories.index') }}" wire:navigate>
 <span class="material-symbols-outlined text-[1rem]">category</span>
                     Categories
                 </a>
-<a class="font-label-md text-label-md {{ request()->routeIs('admin.clients.*') ? 'bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary shadow-sm font-bold translate-x-1' : 'text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant/50 hover:bg-surface-variant dark:hover:bg-surface-variant/20' }} px-md py-sm flex items-center gap-sm transition-all rounded-lg" href="{{ route('admin.clients.index') }}">
-<span class="material-symbols-outlined">groups</span>
+<a class="font-label-md text-label-md {{ request()->routeIs('admin.clients.*') ? 'bg-surface-variant font-semibold before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[3px] before:bg-[#58a6ff] before:rounded-r-md relative' : 'text-on-surface hover:bg-surface-variant/50 hover:underline' }} px-3 py-1.5 flex items-center gap-2 transition-all rounded-md" href="{{ route('admin.clients.index') }}" wire:navigate>
+<span class="material-symbols-outlined text-[1rem]">groups</span>
                     Clients
                 </a>
-<a class="font-label-md text-label-md {{ request()->routeIs('admin.products.*') ? 'bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary shadow-sm font-bold translate-x-1' : 'text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant/50 hover:bg-surface-variant dark:hover:bg-surface-variant/20' }} px-md py-sm flex items-center gap-sm transition-all rounded-lg" href="{{ route('admin.products.index') }}">
-<span class="material-symbols-outlined">inventory_2</span>
+<a class="font-label-md text-label-md {{ request()->routeIs('admin.products.*') ? 'bg-surface-variant font-semibold before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[3px] before:bg-[#58a6ff] before:rounded-r-md relative' : 'text-on-surface hover:bg-surface-variant/50 hover:underline' }} px-3 py-1.5 flex items-center gap-2 transition-all rounded-md" href="{{ route('admin.products.index') }}" wire:navigate>
+<span class="material-symbols-outlined text-[1rem]">inventory_2</span>
                     Digital Products
                 </a>
-<a class="font-label-md text-label-md {{ request()->routeIs('admin.product_categories.*') ? 'bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary shadow-sm font-bold translate-x-1' : 'text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant/50 hover:bg-surface-variant dark:hover:bg-surface-variant/20' }} pl-12 pr-md py-sm flex items-center gap-sm transition-all rounded-lg text-sm" href="{{ route('admin.product_categories.index') }}">
+<a class="font-label-md text-label-md {{ request()->routeIs('admin.product_categories.*') ? 'bg-surface-variant font-semibold before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[3px] before:bg-[#58a6ff] before:rounded-r-md relative' : 'text-on-surface hover:bg-surface-variant/50 hover:underline' }} pl-9 pr-3 py-1.5 flex items-center gap-2 transition-all rounded-md text-sm" href="{{ route('admin.product_categories.index') }}" wire:navigate>
 <span class="material-symbols-outlined text-[1rem]">category</span>
                     Categories
                 </a>
-<a class="font-label-md text-label-md {{ request()->routeIs('admin.product_types.*') ? 'bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary shadow-sm font-bold translate-x-1' : 'text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant/50 hover:bg-surface-variant dark:hover:bg-surface-variant/20' }} pl-12 pr-md py-sm flex items-center gap-sm transition-all rounded-lg text-sm" href="{{ route('admin.product_types.index') }}">
+<a class="font-label-md text-label-md {{ request()->routeIs('admin.product_types.*') ? 'bg-surface-variant font-semibold before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[3px] before:bg-[#58a6ff] before:rounded-r-md relative' : 'text-on-surface hover:bg-surface-variant/50 hover:underline' }} pl-9 pr-3 py-1.5 flex items-center gap-2 transition-all rounded-md text-sm" href="{{ route('admin.product_types.index') }}" wire:navigate>
 <span class="material-symbols-outlined text-[1rem]">style</span>
                     Types
                 </a>
-<a class="font-label-md text-label-md {{ request()->routeIs('admin.orders.*') ? 'bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary shadow-sm font-bold translate-x-1' : 'text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant/50 hover:bg-surface-variant dark:hover:bg-surface-variant/20' }} px-md py-sm flex items-center gap-sm transition-all rounded-lg" href="{{ route('admin.orders.index') }}">
-<span class="material-symbols-outlined">receipt_long</span>
+<a class="font-label-md text-label-md {{ request()->routeIs('admin.orders.*') ? 'bg-surface-variant font-semibold before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[3px] before:bg-[#58a6ff] before:rounded-r-md relative' : 'text-on-surface hover:bg-surface-variant/50 hover:underline' }} px-3 py-1.5 flex items-center gap-2 transition-all rounded-md" href="{{ route('admin.orders.index') }}" wire:navigate>
+<span class="material-symbols-outlined text-[1rem]">receipt_long</span>
                     Sales Orders
                 </a>
-<a class="font-label-md text-label-md {{ request()->routeIs('admin.testimonials.*') ? 'bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary shadow-sm font-bold translate-x-1' : 'text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant/50 hover:bg-surface-variant dark:hover:bg-surface-variant/20' }} px-md py-sm flex items-center gap-sm transition-all rounded-lg" href="{{ route('admin.testimonials.index') }}">
-<span class="material-symbols-outlined">format_quote</span>
+<a class="font-label-md text-label-md {{ request()->routeIs('admin.testimonials.*') ? 'bg-surface-variant font-semibold before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[3px] before:bg-[#58a6ff] before:rounded-r-md relative' : 'text-on-surface hover:bg-surface-variant/50 hover:underline' }} px-3 py-1.5 flex items-center gap-2 transition-all rounded-md" href="{{ route('admin.testimonials.index') }}" wire:navigate>
+<span class="material-symbols-outlined text-[1rem]">format_quote</span>
                     Testimonials
                 </a>
-<a class="font-label-md text-label-md {{ request()->routeIs('admin.messages.*') ? 'bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary shadow-sm font-bold translate-x-1' : 'text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant/50 hover:bg-surface-variant dark:hover:bg-surface-variant/20' }} px-md py-sm flex items-center gap-sm transition-all rounded-lg" href="{{ route('admin.messages.index') }}">
-<span class="material-symbols-outlined">mail</span>
+<a class="font-label-md text-label-md {{ request()->routeIs('admin.messages.*') ? 'bg-surface-variant font-semibold before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[3px] before:bg-[#58a6ff] before:rounded-r-md relative' : 'text-on-surface hover:bg-surface-variant/50 hover:underline' }} px-3 py-1.5 flex items-center gap-2 transition-all rounded-md" href="{{ route('admin.messages.index') }}" wire:navigate>
+<span class="material-symbols-outlined text-[1rem]">mail</span>
                     Messages
+                </a>
+<a class="font-label-md text-label-md {{ request()->routeIs('admin.popup_ads.*') ? 'bg-surface-variant font-semibold before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[3px] before:bg-[#58a6ff] before:rounded-r-md relative' : 'text-on-surface hover:bg-surface-variant/50 hover:underline' }} px-3 py-1.5 flex items-center gap-2 transition-all rounded-md" href="{{ route('admin.popup_ads.index') }}" wire:navigate>
+<span class="material-symbols-outlined text-[1rem]">ad_units</span>
+                    Popup Ads
                 </a>
 
 <!-- Multi-Tenant -->
-<div class="pt-sm mt-sm mb-xs border-t border-outline-variant/30 text-xs font-bold text-on-surface-variant tracking-wider uppercase px-md">Tenant</div>
-<a class="font-label-md text-label-md {{ request()->routeIs('admin.stores.*') ? 'bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary shadow-sm font-bold translate-x-1' : 'text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant/50 hover:bg-surface-variant dark:hover:bg-surface-variant/20' }} px-md py-sm flex items-center gap-sm transition-all rounded-lg" href="{{ route('admin.stores.index') }}">
-<span class="material-symbols-outlined">storefront</span>
+<div class="pt-3 mt-3 mb-1 border-t border-outline-variant/30 text-xs font-bold text-on-surface-variant tracking-wider px-3">Tenant</div>
+<a class="font-label-md text-label-md {{ request()->routeIs('admin.stores.*') ? 'bg-surface-variant font-semibold before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[3px] before:bg-[#58a6ff] before:rounded-r-md relative' : 'text-on-surface hover:bg-surface-variant/50 hover:underline' }} px-3 py-1.5 flex items-center gap-2 transition-all rounded-md" href="{{ route('admin.stores.index') }}" wire:navigate>
+<span class="material-symbols-outlined text-[1rem]">storefront</span>
                     Stores
                 </a>
-<a class="font-label-md text-label-md {{ request()->routeIs('admin.payouts.*') ? 'bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary shadow-sm font-bold translate-x-1' : 'text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant/50 hover:bg-surface-variant dark:hover:bg-surface-variant/20' }} px-md py-sm flex items-center gap-sm transition-all rounded-lg" href="{{ route('admin.payouts.index') }}">
-<span class="material-symbols-outlined">payments</span>
+<a class="font-label-md text-label-md {{ request()->routeIs('admin.payouts.*') ? 'bg-surface-variant font-semibold before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[3px] before:bg-[#58a6ff] before:rounded-r-md relative' : 'text-on-surface hover:bg-surface-variant/50 hover:underline' }} px-3 py-1.5 flex items-center gap-2 transition-all rounded-md" href="{{ route('admin.payouts.index') }}" wire:navigate>
+<span class="material-symbols-outlined text-[1rem]">payments</span>
                     Payouts
                 </a>
-<a class="font-label-md text-label-md {{ request()->routeIs('admin.gateway_apps.*') ? 'bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary shadow-sm font-bold translate-x-1' : 'text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant/50 hover:bg-surface-variant dark:hover:bg-surface-variant/20' }} px-md py-sm flex items-center gap-sm transition-all rounded-lg" href="{{ route('admin.gateway_apps.index') }}">
-<span class="material-symbols-outlined">api</span>
+<a class="font-label-md text-label-md {{ request()->routeIs('admin.gateway_apps.*') ? 'bg-surface-variant font-semibold before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[3px] before:bg-[#58a6ff] before:rounded-r-md relative' : 'text-on-surface hover:bg-surface-variant/50 hover:underline' }} px-3 py-1.5 flex items-center gap-2 transition-all rounded-md" href="{{ route('admin.gateway_apps.index') }}" wire:navigate>
+<span class="material-symbols-outlined text-[1rem]">api</span>
                     Gateway Apps
                 </a>
 
-                <a class="font-label-md text-label-md {{ request()->routeIs('admin.users.*') ? 'bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary shadow-sm font-bold translate-x-1' : 'text-on-surface-variant dark:text-on-surface-variant hover:bg-surface-variant/50 hover:bg-surface-variant dark:hover:bg-surface-variant/20' }} px-md py-sm flex items-center gap-sm transition-all rounded-lg" href="{{ route('admin.users.index') }}">
-<span class="material-symbols-outlined">manage_accounts</span>
+                <a class="font-label-md text-label-md {{ request()->routeIs('admin.users.*') ? 'bg-surface-variant font-semibold before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[3px] before:bg-[#58a6ff] before:rounded-r-md relative' : 'text-on-surface hover:bg-surface-variant/50 hover:underline' }} px-3 py-1.5 flex items-center gap-2 transition-all rounded-md" href="{{ route('admin.users.index') }}" wire:navigate>
+<span class="material-symbols-outlined text-[1rem]">manage_accounts</span>
                     Users
                 </a>
 </nav>
@@ -212,29 +217,29 @@
 <!-- Main Content Area -->
 <main class="flex-1 ml-64 flex flex-col min-h-screen">
 <!-- TopNavBar -->
-<header class="sticky top-0 z-40 bg-surface dark:bg-surface-container border-b border-outline-variant shadow-sm flex justify-between items-center h-16 px-lg w-full">
+<header class="sticky top-0 z-40 bg-surface dark:bg-[#010409] border-b border-outline-variant/30 flex justify-between items-center h-[56px] px-lg w-full text-on-surface dark:text-white">
 <div class="flex items-center">
-<h2 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg font-bold text-primary">@yield('title')</h2>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg font-bold text-on-surface dark:text-white">@yield('title')</h2>
 </div>
 <div class="flex items-center gap-md">
 <x-theme-toggle />
 <div class="relative hidden md:block">
-<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
-<input class="pl-10 pr-4 py-2 bg-surface-container-low border border-outline-variant rounded-lg font-body-md text-body-md focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary/20 transition-all w-64 text-on-surface placeholder:text-on-surface-variant" placeholder="Search..." type="text"/>
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant dark:text-gray-400">search</span>
+<input class="pl-10 pr-4 py-1.5 bg-background dark:bg-white/10 border border-outline-variant dark:border-gray-600 rounded-md font-body-md text-body-md focus:outline-none focus:border-primary dark:focus:border-blue-500 transition-all w-64 text-on-surface dark:text-white placeholder:text-on-surface-variant dark:placeholder:text-gray-400" placeholder="Type / to search" type="text"/>
 </div>
-<button class="text-on-surface-variant hover:bg-surface-container-high p-2 rounded-full transition-colors relative">
-<span class="material-symbols-outlined">notifications</span>
+<button class="text-on-surface-variant dark:text-gray-300 hover:text-on-surface dark:hover:text-white hover:bg-surface-variant/50 dark:hover:bg-white/10 p-2 rounded-md transition-colors relative">
+<span class="material-symbols-outlined text-[1.25rem]">notifications</span>
 </button>
 <div class="relative" x-data="{ open: false }">
-<button @click="open = !open" @click.outside="open = false" class="text-on-surface-variant hover:bg-surface-container-high p-2 rounded-full transition-colors focus:outline-none">
-<span class="material-symbols-outlined">account_circle</span>
+<button @click="open = !open" @click.outside="open = false" class="text-on-surface-variant dark:text-gray-300 hover:text-on-surface dark:hover:text-white hover:bg-surface-variant/50 dark:hover:bg-white/10 p-2 rounded-md transition-colors focus:outline-none">
+<span class="material-symbols-outlined text-[1.25rem]">account_circle</span>
 </button>
-<div x-show="open" style="display: none;" x-transition class="absolute right-0 mt-2 w-48 bg-surface-container-lowest border border-outline-variant rounded-xl shadow-lg py-1 z-50">
+<div x-show="open" style="display: none;" x-transition class="absolute right-0 mt-2 w-48 bg-surface border border-outline-variant rounded-md shadow-lg py-1 z-50 text-on-surface">
     <div class="px-4 py-2 border-b border-outline-variant/50 mb-1">
         <div class="text-sm font-bold text-on-surface truncate">{{ auth()->user()->name ?? 'Admin' }}</div>
         <div class="text-xs text-on-surface-variant truncate">{{ auth()->user()->email ?? '' }}</div>
     </div>
-    <a href="{{ route('home') }}" target="_blank" class="block px-4 py-2 text-sm text-on-surface hover:bg-surface-container-low transition-colors">
+    <a href="{{ route('home') }}" target="_blank" class="block px-4 py-2 text-sm text-on-surface hover:bg-surface-container-low transition-colors" wire:navigate>
         <span class="flex items-center gap-2"><span class="material-symbols-outlined text-[1rem]">open_in_new</span> View Site</span>
     </a>
     <form action="{{ route('logout') }}" method="POST">
@@ -251,4 +256,5 @@
 @yield('content')
 </main>
 @include('components.theme-manager')
+@livewireScripts
 </body></html>

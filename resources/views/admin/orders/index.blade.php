@@ -9,7 +9,7 @@
         </div>
     </div>
 
-    <div class="bg-surface rounded-xl border border-outline-variant shadow-sm overflow-hidden">
+    <div class="bg-surface rounded-md border border-outline-variant  overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-left font-body-md">
                 <thead class="bg-surface-container-lowest border-b border-outline-variant text-on-surface-variant font-label-md">

@@ -15,7 +15,8 @@ class IsTenant
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth()->check() && auth()->user()->role === 'tenant') {
+        if (auth()->check()) {
+            // Allow anyone to act as a tenant (including admins)
             return $next($request);
         }
 
