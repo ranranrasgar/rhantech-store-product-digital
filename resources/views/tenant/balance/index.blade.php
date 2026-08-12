@@ -51,7 +51,7 @@
                 <div class="border border-outline-variant dark:border-[#30363d] rounded p-4 flex flex-col gap-2 min-w-[250px]">
                     <div class="flex justify-between items-center">
                         <span class="text-sm text-on-surface-variant dark:text-gray-400">Rekening Bank Saya</span>
-                        <a href="{{ route('tenant.store.index') }}" class="text-xs font-semibold text-[#0055aa] dark:text-[#38bdf8] flex items-center hover:underline" wire:navigate>Lainnya <span class="material-symbols-outlined text-[14px]">chevron_right</span></a>
+                        <a href="{{ route('tenant.store.index') }}" class="text-xs font-semibold text-[#0055aa] dark:text-[#38bdf8] flex items-center hover:underline">Lainnya <span class="material-symbols-outlined text-[14px]">chevron_right</span></a>
                     </div>
                     @if(!empty($store->bank_account_info))
                         <div class="flex items-center gap-3 mt-1">

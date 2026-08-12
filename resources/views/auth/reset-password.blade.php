@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @include('components.theme-init')
-    <title>Masuk — {{ $company->company_name ?? 'rhantech' }}</title>
+    <title>Reset Password — {{ $company->company_name ?? 'rhantech' }}</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
@@ -96,7 +96,7 @@
         }
         .material-symbols-outlined { font-family: 'Material Symbols Outlined'; font-size: inherit; font-weight: normal; font-style: normal; line-height: 1; display: inline-block; }
 
-        /* ── Login panel (now on left) ── */
+        /* ── Form panel (now on left) ── */
         .login-panel {
             width: 100%; max-width: 460px;
             background: rgba(255,255,255,0.04);
@@ -105,14 +105,18 @@
             display: flex; flex-direction: column;
             justify-content: center; padding: 60px 50px;
             position: relative; z-index: 1;
+            overflow-y: auto;
         }
+        .login-panel::-webkit-scrollbar { width: 6px; }
+        .login-panel::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+        
         .card-title {
             font-size: 26px; font-weight: 800; color: #fff;
             margin-bottom: 6px; letter-spacing: -0.5px;
         }
         .card-sub {
             color: rgba(255,255,255,0.45); font-size: 14px;
-            margin-bottom: 36px;
+            margin-bottom: 36px; line-height: 1.5;
         }
         .form-label {
             display: block; font-size: 12px; font-weight: 600;
@@ -159,24 +163,6 @@
             box-shadow: 0 8px 28px rgba(0,179,204,0.45);
         }
         .submit-btn:active { transform: translateY(0); }
-        .divider {
-            display: flex; align-items: center; gap: 12px;
-            color: rgba(255,255,255,0.2); font-size: 12px;
-            margin: 24px 0;
-        }
-        .divider::before, .divider::after {
-            content: ''; flex: 1; height: 1px;
-            background: rgba(255,255,255,0.1);
-        }
-        .register-link {
-            text-align: center; color: rgba(255,255,255,0.4);
-            font-size: 13px;
-        }
-        .register-link a {
-            color: #00d4ff; font-weight: 600;
-            text-decoration: none; transition: opacity 0.15s;
-        }
-        .register-link a:hover { opacity: 0.8; }
         .error-box {
             background: rgba(239,68,68,0.12);
             border: 1px solid rgba(239,68,68,0.3);
@@ -205,62 +191,52 @@
     <div class="orb orb-2"></div>
     <div class="orb orb-3"></div>
 
-    {{-- LEFT — Login form (formerly on RIGHT) --}}
+    {{-- LEFT — Reset Password form --}}
     <div class="login-panel">
-        <div class="card-title">Selamat Datang 👋</div>
-        <div class="card-sub">Masuk ke akun Anda untuk melanjutkan</div>
+        <div class="card-title">Password Baru 🗝️</div>
+        <div class="card-sub">Silakan buat password baru yang kuat untuk akun Anda.</div>
 
         @if($errors->any())
             <div class="error-box">
-                <span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle;margin-right:6px">error</span>
-                {{ $errors->first() }}
+                <ul style="list-style-type: disc; padding-left: 20px; margin: 0;">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
             </div>
         @endif
 
-        <form method="POST" action="{{ route('login') }}">
+        <form method="POST" action="{{ route('password.update') }}">
             @csrf
 
-            <div style="margin-bottom: 20px;">
+            <!-- Password Reset Token -->
+            <input type="hidden" name="token" value="{{ $request->route('token') }}">
+
+            <div style="margin-bottom: 16px;">
                 <label class="form-label">Email</label>
-                <input type="email" name="email" value="{{ old('email') }}"
+                <input type="email" name="email" value="{{ old('email', $request->email) }}"
                     class="form-input" placeholder="nama@email.com" required autofocus>
             </div>
 
-            <div style="margin-bottom: 28px;">
-                <label class="form-label">Password</label>
+            <div style="margin-bottom: 16px;">
+                <label class="form-label">Password Baru</label>
                 <input type="password" name="password"
                     class="form-input" placeholder="••••••••" required>
             </div>
 
-            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:28px;">
-                <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
-                    <input type="checkbox" name="remember" style="width:16px;height:16px;accent-color:#00d4ff;">
-                    <span style="font-size:13px; color:rgba(255,255,255,0.5);">Ingat saya</span>
-                </label>
-                <a href="{{ route('password.request') }}" style="font-size:13px; color:#00d4ff; text-decoration:none; font-weight:600; transition: opacity 0.15s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">Lupa password?</a>
+            <div style="margin-bottom: 28px;">
+                <label class="form-label">Konfirmasi Password</label>
+                <input type="password" name="password_confirmation"
+                    class="form-input" placeholder="••••••••" required>
             </div>
 
             <button type="submit" class="submit-btn">
-                Masuk ke Dashboard
+                Simpan Password Baru
             </button>
         </form>
-
-        <div class="divider">atau</div>
-
-        <div class="register-link">
-            Belum punya akun?
-            <a href="{{ route('register') }}">Daftar sekarang</a>
-        </div>
-
-        <div style="margin-top:40px; padding-top:24px; border-top:1px solid rgba(255,255,255,0.07); text-align:center;">
-            <a href="{{ url('/products') }}" style="color:rgba(255,255,255,0.3); font-size:12px; text-decoration:none; transition:color 0.15s;"
-               onmouseover="this.style.color='rgba(255,255,255,0.6)'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">
-                ← Kembali ke Katalog Produk
-            </a>
-        </div>
     </div>
 
-    {{-- RIGHT — Branding panel (formerly on LEFT) --}}
+    {{-- RIGHT — Branding panel --}}
     <div class="branding-panel">
         <div class="branding-content">
             <a href="{{ url('/') }}" class="brand-logo">
@@ -272,7 +248,7 @@
                 Platform<br>Produk <span>Digital</span><br>Terpercaya
             </h1>
             <p class="branding-sub">
-                Masuk untuk mengakses dashboard, mengelola produk, dan memantau transaksi Anda secara real-time.
+                Amankan kembali akses ke akun Anda untuk terus mengelola produk digital dan memantau transaksi.
             </p>
 
             <div>

@@ -96,7 +96,7 @@ class ProjectFactory extends Factory
             'slug' => Str::slug($title) . '-' . uniqid(),
             'short_description' => $app['desc'],
             'description' => $fullDescription,
-            'category' => $app['category'],
+            'project_category_id' => \App\Models\ProjectCategory::query()->inRandomOrder()->value('id') ?? \App\Models\ProjectCategory::create(['name' => 'Default Category', 'slug' => 'default-category'])->id,
             'thumbnail' => $fakerId->randomElement($images),
             'project_url' => $fakerId->url(),
             'technologies' => json_encode($fakerId->randomElements(['Laravel', 'React', 'Vue', 'Tailwind CSS', 'Node.js', 'Python', 'Flutter', 'CodeIgniter', 'MySQL'], rand(2, 5))),

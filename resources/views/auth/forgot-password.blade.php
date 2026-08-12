@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @include('components.theme-init')
-    <title>Masuk — {{ $company->company_name ?? 'rhantech' }}</title>
+    <title>Lupa Password — {{ $company->company_name ?? 'rhantech' }}</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
@@ -96,7 +96,7 @@
         }
         .material-symbols-outlined { font-family: 'Material Symbols Outlined'; font-size: inherit; font-weight: normal; font-style: normal; line-height: 1; display: inline-block; }
 
-        /* ── Login panel (now on left) ── */
+        /* ── Form panel (now on left) ── */
         .login-panel {
             width: 100%; max-width: 460px;
             background: rgba(255,255,255,0.04);
@@ -105,14 +105,18 @@
             display: flex; flex-direction: column;
             justify-content: center; padding: 60px 50px;
             position: relative; z-index: 1;
+            overflow-y: auto;
         }
+        .login-panel::-webkit-scrollbar { width: 6px; }
+        .login-panel::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+        
         .card-title {
             font-size: 26px; font-weight: 800; color: #fff;
             margin-bottom: 6px; letter-spacing: -0.5px;
         }
         .card-sub {
             color: rgba(255,255,255,0.45); font-size: 14px;
-            margin-bottom: 36px;
+            margin-bottom: 36px; line-height: 1.5;
         }
         .form-label {
             display: block; font-size: 12px; font-weight: 600;
@@ -184,6 +188,13 @@
             padding: 12px 16px; font-size: 13px;
             margin-bottom: 24px;
         }
+        .success-box {
+            background: rgba(16,185,129,0.12);
+            border: 1px solid rgba(16,185,129,0.3);
+            color: #a7f3d0; border-radius: 10px;
+            padding: 12px 16px; font-size: 13px;
+            margin-bottom: 24px;
+        }
 
         /* Mobile */
         @media (max-width: 768px) {
@@ -205,62 +216,51 @@
     <div class="orb orb-2"></div>
     <div class="orb orb-3"></div>
 
-    {{-- LEFT — Login form (formerly on RIGHT) --}}
+    {{-- LEFT — Forgot Password form --}}
     <div class="login-panel">
-        <div class="card-title">Selamat Datang 👋</div>
-        <div class="card-sub">Masuk ke akun Anda untuk melanjutkan</div>
+        <div class="card-title">Lupa Password? 🔐</div>
+        <div class="card-sub">Masukkan alamat email Anda dan kami akan mengirimkan tautan untuk mereset password Anda.</div>
 
-        @if($errors->any())
-            <div class="error-box">
-                <span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle;margin-right:6px">error</span>
-                {{ $errors->first() }}
+        @if(session('status'))
+            <div class="success-box">
+                <span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle;margin-right:6px">check_circle</span>
+                {{ session('status') }}
             </div>
         @endif
 
-        <form method="POST" action="{{ route('login') }}">
+        @if($errors->any())
+            <div class="error-box">
+                <ul style="list-style-type: disc; padding-left: 20px; margin: 0;">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <form method="POST" action="{{ route('password.email') }}">
             @csrf
 
-            <div style="margin-bottom: 20px;">
+            <div style="margin-bottom: 24px;">
                 <label class="form-label">Email</label>
                 <input type="email" name="email" value="{{ old('email') }}"
                     class="form-input" placeholder="nama@email.com" required autofocus>
             </div>
 
-            <div style="margin-bottom: 28px;">
-                <label class="form-label">Password</label>
-                <input type="password" name="password"
-                    class="form-input" placeholder="••••••••" required>
-            </div>
-
-            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:28px;">
-                <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
-                    <input type="checkbox" name="remember" style="width:16px;height:16px;accent-color:#00d4ff;">
-                    <span style="font-size:13px; color:rgba(255,255,255,0.5);">Ingat saya</span>
-                </label>
-                <a href="{{ route('password.request') }}" style="font-size:13px; color:#00d4ff; text-decoration:none; font-weight:600; transition: opacity 0.15s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">Lupa password?</a>
-            </div>
-
             <button type="submit" class="submit-btn">
-                Masuk ke Dashboard
+                Kirim Tautan Reset Password
             </button>
         </form>
 
         <div class="divider">atau</div>
 
         <div class="register-link">
-            Belum punya akun?
-            <a href="{{ route('register') }}">Daftar sekarang</a>
-        </div>
-
-        <div style="margin-top:40px; padding-top:24px; border-top:1px solid rgba(255,255,255,0.07); text-align:center;">
-            <a href="{{ url('/products') }}" style="color:rgba(255,255,255,0.3); font-size:12px; text-decoration:none; transition:color 0.15s;"
-               onmouseover="this.style.color='rgba(255,255,255,0.6)'" onmouseout="this.style.color='rgba(255,255,255,0.3)'">
-                ← Kembali ke Katalog Produk
-            </a>
+            Ingat password Anda?
+            <a href="{{ route('login') }}">Masuk di sini</a>
         </div>
     </div>
 
-    {{-- RIGHT — Branding panel (formerly on LEFT) --}}
+    {{-- RIGHT — Branding panel --}}
     <div class="branding-panel">
         <div class="branding-content">
             <a href="{{ url('/') }}" class="brand-logo">
@@ -272,7 +272,7 @@
                 Platform<br>Produk <span>Digital</span><br>Terpercaya
             </h1>
             <p class="branding-sub">
-                Masuk untuk mengakses dashboard, mengelola produk, dan memantau transaksi Anda secara real-time.
+                Dapatkan kembali akses ke akun Anda untuk terus mengelola produk digital dan memantau transaksi.
             </p>
 
             <div>

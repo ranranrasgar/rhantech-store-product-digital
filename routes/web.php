@@ -45,6 +45,10 @@ Route::get('/login', [\App\Http\Controllers\Auth\AuthController::class, 'create'
 Route::post('/login', [\App\Http\Controllers\Auth\AuthController::class, 'store'])->middleware('guest');
 Route::get('/register', [\App\Http\Controllers\Auth\AuthController::class, 'showRegisterForm'])->name('register')->middleware('guest');
 Route::post('/register', [\App\Http\Controllers\Auth\AuthController::class, 'register'])->middleware('guest');
+Route::get('/forgot-password', [\App\Http\Controllers\Auth\PasswordResetController::class, 'create'])->name('password.request')->middleware('guest');
+Route::post('/forgot-password', [\App\Http\Controllers\Auth\PasswordResetController::class, 'store'])->name('password.email')->middleware('guest');
+Route::get('/reset-password/{token}', [\App\Http\Controllers\Auth\PasswordResetController::class, 'edit'])->name('password.reset')->middleware('guest');
+Route::post('/reset-password', [\App\Http\Controllers\Auth\PasswordResetController::class, 'update'])->name('password.update')->middleware('guest');
 Route::post('/logout', [\App\Http\Controllers\Auth\AuthController::class, 'destroy'])->name('logout')->middleware('auth');
 
 // Email Verification Routes
@@ -54,7 +58,7 @@ Route::get('/email/verify', function () {
 
 Route::get('/email/verify/{id}/{hash}', function (\Illuminate\Foundation\Auth\EmailVerificationRequest $request) {
     $request->fulfill();
-    return redirect()->route('tenant.store.index');
+    return redirect()->route('tenant.dashboard');
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
 Route::post('/email/verification-notification', function (\Illuminate\Http\Request $request) {

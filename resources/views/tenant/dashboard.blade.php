@@ -15,6 +15,53 @@
             </button>
         </div>
 
+        @if(($totalProducts ?? 0) == 0 && ($totalSales ?? 0) == 0)
+        <!-- Onboarding Widget -->
+        <div class="bg-gradient-to-br from-primary/10 via-surface to-[#0369A1]/10 dark:from-[#0369A1]/20 dark:via-[#161b22] dark:to-primary/10 border border-primary/20 dark:border-primary/30 rounded-xl p-6 md:p-8 relative overflow-hidden shadow-sm">
+            <div class="absolute -top-10 -right-10 opacity-5 dark:opacity-10 pointer-events-none transform rotate-12">
+                <span class="material-symbols-outlined text-[200px] text-primary">rocket_launch</span>
+            </div>
+            
+            <div class="relative z-10 max-w-4xl">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="p-2 bg-primary/20 text-primary rounded-lg">
+                        <span class="material-symbols-outlined text-xl">storefront</span>
+                    </div>
+                    <h2 class="text-2xl md:text-3xl font-bold text-on-surface dark:text-white">Selamat Datang di Seller Center! 🚀</h2>
+                </div>
+                <p class="text-on-surface-variant dark:text-gray-300 text-sm md:text-base mb-8 max-w-2xl leading-relaxed">
+                    Mulai jual produk digital Anda dengan mudah. Tanpa perlu repot mengurus pengiriman fisik, transaksi terjamin aman, dan nikmati pencairan saldo otomatis. Selesaikan 3 langkah di bawah ini untuk mulai menghasilkan!
+                </p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                    <!-- Step 1 -->
+                    <a href="{{ route('tenant.store.index') }}" class="group bg-white dark:bg-[#0d1117]/80 border border-outline-variant dark:border-[#30363d] rounded-xl p-5 hover:border-primary dark:hover:border-primary hover:shadow-lg transition-all relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-16 h-16 bg-primary/5 rounded-bl-full -z-10 group-hover:scale-150 transition-transform duration-500"></div>
+                        <div class="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 text-primary font-bold mb-4 group-hover:bg-primary group-hover:text-white transition-colors">1</div>
+                        <h3 class="font-bold text-on-surface dark:text-white mb-2 group-hover:text-primary transition-colors flex items-center gap-1">Dekorasi Toko <span class="material-symbols-outlined text-[16px] opacity-0 group-hover:opacity-100 transition-opacity transform -translate-x-2 group-hover:translate-x-0">arrow_forward</span></h3>
+                        <p class="text-xs text-on-surface-variant dark:text-gray-400">Atur nama, logo, dan deskripsi toko agar lebih profesional dan menarik bagi pembeli.</p>
+                    </a>
+                    
+                    <!-- Step 2 -->
+                    <a href="{{ route('tenant.products.index') }}" class="group bg-white dark:bg-[#0d1117]/80 border border-outline-variant dark:border-[#30363d] rounded-xl p-5 hover:border-primary dark:hover:border-primary hover:shadow-lg transition-all relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-16 h-16 bg-primary/5 rounded-bl-full -z-10 group-hover:scale-150 transition-transform duration-500"></div>
+                        <div class="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 text-primary font-bold mb-4 group-hover:bg-primary group-hover:text-white transition-colors">2</div>
+                        <h3 class="font-bold text-on-surface dark:text-white mb-2 group-hover:text-primary transition-colors flex items-center gap-1">Input Produk <span class="material-symbols-outlined text-[16px] opacity-0 group-hover:opacity-100 transition-opacity transform -translate-x-2 group-hover:translate-x-0">arrow_forward</span></h3>
+                        <p class="text-xs text-on-surface-variant dark:text-gray-400">Unggah produk digital pertama Anda seperti Ebook, Template, atau Kode Program.</p>
+                    </a>
+                    
+                    <!-- Step 3 -->
+                    <a href="{{ route('tenant.orders.index') }}" class="group bg-white dark:bg-[#0d1117]/80 border border-outline-variant dark:border-[#30363d] rounded-xl p-5 hover:border-primary dark:hover:border-primary hover:shadow-lg transition-all relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-16 h-16 bg-primary/5 rounded-bl-full -z-10 group-hover:scale-150 transition-transform duration-500"></div>
+                        <div class="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 text-primary font-bold mb-4 group-hover:bg-primary group-hover:text-white transition-colors">3</div>
+                        <h3 class="font-bold text-on-surface dark:text-white mb-2 group-hover:text-primary transition-colors flex items-center gap-1">Pantau Penjualan <span class="material-symbols-outlined text-[16px] opacity-0 group-hover:opacity-100 transition-opacity transform -translate-x-2 group-hover:translate-x-0">arrow_forward</span></h3>
+                        <p class="text-xs text-on-surface-variant dark:text-gray-400">Kelola pesanan masuk, pantau transaksi pelanggan, dan tarik saldo pendapatan Anda.</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+        @endif
+
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             
             <!-- KOLOM KIRI & TENGAH (2/3 width on LG) -->

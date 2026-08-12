@@ -203,20 +203,20 @@
 
     {{-- ── CATEGORY CHIPS ── --}}
     @if($categories->count() > 0)
-    <div class="mb-6">
+    <div class="mb-6" id="categories-section">
         <div class="section-title text-base">
             <span class="accent"></span>
             Kategori
         </div>
         <div class="flex gap-2 overflow-x-auto hide-scrollbar pb-1">
             <a href="{{ route('products.index') }}"
-               class="cat-chip {{ !request('category') ? 'active' : '' }}">
+               class="cat-chip {{ !request('category') ? 'active' : '' }} cat-link">
                 <span class="material-symbols-outlined text-[16px]">apps</span>
                 Semua
             </a>
             @foreach($categories as $cat)
             <a href="{{ route('products.index', ['category' => $cat->id]) }}"
-               class="cat-chip {{ request('category') == $cat->id ? 'active' : '' }}">
+               class="cat-chip {{ request('category') == $cat->id ? 'active' : '' }} cat-link">
                 <span class="material-symbols-outlined text-[16px]">folder</span>
                 {{ $cat->name }}
             </a>
@@ -226,7 +226,7 @@
     @endif
 
     {{-- ── PRODUCTS GRID ── --}}
-    <div>
+    <div id="products-section">
         <div class="section-title">
             <span class="accent"></span>
             {{ request('category') ? ($categories->find(request('category'))->name ?? 'Produk') : 'Semua Produk' }}
@@ -239,7 +239,7 @@
                 $mainImg = $product->images->where('is_main', true)->first() ?? $product->images->first();
                 $price = $product->discount_price ?? $product->price;
             @endphp
-            <a href="{{ route('products.show', $product->slug) }}" class="prod-card" wire:navigate>
+            <a href="{{ route('products.show', $product->slug) }}" class="prod-card">
 
                 {{-- Image --}}
                 <div class="img-wrap">
@@ -305,5 +305,46 @@
 
 </div>
 </main>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    document.body.addEventListener('click', async (e) => {
+        const catLink = e.target.closest('.cat-link');
+        const pageLink = e.target.closest('.pagination a');
+        
+        const link = catLink || pageLink;
+        if (link) {
+            e.preventDefault();
+            const url = link.href;
+            
+            try {
+                // Tambahkan sedikit efek visual loading
+                document.getElementById('products-section').style.opacity = '0.5';
+                
+                const res = await fetch(url);
+                const text = await res.text();
+                
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(text, 'text/html');
+                
+                const newProducts = doc.getElementById('products-section');
+                const newCategories = doc.getElementById('categories-section');
+                
+                if (newProducts) {
+                    document.getElementById('products-section').innerHTML = newProducts.innerHTML;
+                    document.getElementById('products-section').style.opacity = '1';
+                }
+                if (newCategories) {
+                    document.getElementById('categories-section').innerHTML = newCategories.innerHTML;
+                }
+                
+                window.history.pushState({}, '', url);
+            } catch (err) {
+                window.location.href = url; // Fallback jika gagal
+            }
+        }
+    });
+});
+</script>
 
 @endsection

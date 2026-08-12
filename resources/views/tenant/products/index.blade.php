@@ -10,13 +10,28 @@
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <h2 class="text-xl font-bold text-on-surface dark:text-white">Produk Saya</h2>
             <div class="flex flex-wrap items-center gap-3">
-                <button class="px-4 py-2 text-sm font-semibold border border-outline-variant dark:border-[#30363d] rounded bg-surface dark:bg-[#161b22] text-on-surface dark:text-white hover:bg-surface-container-lowest transition-colors flex items-center gap-1">
-                    Pengaturan Produk <span class="material-symbols-outlined text-[16px]">expand_more</span>
-                </button>
-                <button class="px-4 py-2 text-sm font-semibold border border-outline-variant dark:border-[#30363d] rounded bg-surface dark:bg-[#161b22] text-on-surface dark:text-white hover:bg-surface-container-lowest transition-colors flex items-center gap-1">
-                    Pengaturan Massal <span class="material-symbols-outlined text-[16px]">expand_more</span>
-                </button>
-                <a href="{{ route('tenant.products.create') }}" class="px-4 py-2 text-sm font-bold bg-primary text-white rounded hover:bg-primary/90 transition-colors flex items-center gap-1" wire:navigate>
+                <div class="relative group/dropdown-produk">
+                    <button class="px-4 py-2 text-sm font-semibold border border-outline-variant dark:border-[#30363d] rounded bg-surface dark:bg-[#161b22] text-on-surface dark:text-white hover:bg-surface-container-lowest transition-colors flex items-center gap-1">
+                        Pengaturan Produk <span class="material-symbols-outlined text-[16px]">expand_more</span>
+                    </button>
+                    <div class="absolute right-0 top-full mt-1 bg-white dark:bg-[#161b22] border border-gray-200 dark:border-[#30363d] rounded shadow-lg opacity-0 invisible group-hover/dropdown-produk:opacity-100 group-hover/dropdown-produk:visible transition-all z-50 w-48 py-1 text-left">
+                        <button type="button" onclick="alert('Fitur ini akan segera hadir.')" class="w-full text-left block px-4 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#0d1117] transition-colors">Kategori Produk</button>
+                        <button type="button" onclick="alert('Fitur ini akan segera hadir.')" class="w-full text-left block px-4 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#0d1117] transition-colors">Label Produk</button>
+                    </div>
+                </div>
+                
+                <div class="relative group/dropdown-massal">
+                    <button class="px-4 py-2 text-sm font-semibold border border-outline-variant dark:border-[#30363d] rounded bg-surface dark:bg-[#161b22] text-on-surface dark:text-white hover:bg-surface-container-lowest transition-colors flex items-center gap-1">
+                        Pengaturan Massal <span class="material-symbols-outlined text-[16px]">expand_more</span>
+                    </button>
+                    <div class="absolute right-0 top-full mt-1 bg-white dark:bg-[#161b22] border border-gray-200 dark:border-[#30363d] rounded shadow-lg opacity-0 invisible group-hover/dropdown-massal:opacity-100 group-hover/dropdown-massal:visible transition-all z-50 w-56 py-1 text-left">
+                        <button type="button" onclick="massAction('aktifkan')" class="w-full text-left block px-4 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#0d1117] transition-colors">Aktifkan Terpilih</button>
+                        <button type="button" onclick="massAction('nonaktifkan')" class="w-full text-left block px-4 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#0d1117] transition-colors">Nonaktifkan Terpilih</button>
+                        <div class="border-t border-gray-100 dark:border-gray-800 my-1"></div>
+                        <button type="button" onclick="massAction('hapus')" class="w-full text-left block px-4 py-2 text-xs text-error hover:bg-error/5 transition-colors">Hapus Terpilih</button>
+                    </div>
+                </div>
+                <a href="{{ route('tenant.products.create') }}" class="px-4 py-2 text-sm font-bold bg-primary text-white rounded hover:bg-primary/90 transition-colors flex items-center gap-1">
                     <span class="material-symbols-outlined text-[16px]">add</span> Tambah Produk Baru
                 </a>
             </div>
@@ -27,19 +42,19 @@
             
             <!-- Tabs -->
             <div class="border-b border-outline-variant dark:border-[#30363d] flex overflow-x-auto hide-scrollbar">
-                <a href="{{ route('tenant.products.index', array_merge(request()->query(), ['tab' => 'all'])) }}" class="px-6 py-4 text-sm font-bold whitespace-nowrap {{ $tab === 'all' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant dark:text-gray-400 hover:text-on-surface transition-colors' }}">Semua ({{ $allCount }})</a>
-                <a href="{{ route('tenant.products.index', array_merge(request()->query(), ['tab' => 'active'])) }}" class="px-6 py-4 text-sm font-bold whitespace-nowrap {{ $tab === 'active' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant dark:text-gray-400 hover:text-on-surface transition-colors' }}">Aktif ({{ $activeCount }})</a>
-                <a href="{{ route('tenant.products.index', array_merge(request()->query(), ['tab' => 'inactive'])) }}" class="px-6 py-4 text-sm font-bold whitespace-nowrap {{ $tab === 'inactive' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant dark:text-gray-400 hover:text-on-surface transition-colors' }}">Non-Aktif ({{ $inactiveCount }})</a>
+                <a href="{{ route('tenant.products.index', array_merge(request()->query(), ['tab' => 'all', 'page' => null])) }}" class="px-6 py-4 text-sm font-bold whitespace-nowrap {{ $tab === 'all' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant dark:text-gray-400 hover:text-on-surface transition-colors' }}">Semua ({{ $allCount }})</a>
+                <a href="{{ route('tenant.products.index', array_merge(request()->query(), ['tab' => 'active', 'page' => null])) }}" class="px-6 py-4 text-sm font-bold whitespace-nowrap {{ $tab === 'active' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant dark:text-gray-400 hover:text-on-surface transition-colors' }}">Aktif ({{ $activeCount }})</a>
+                <a href="{{ route('tenant.products.index', array_merge(request()->query(), ['tab' => 'inactive', 'page' => null])) }}" class="px-6 py-4 text-sm font-bold whitespace-nowrap {{ $tab === 'inactive' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant dark:text-gray-400 hover:text-on-surface transition-colors' }}">Non-Aktif ({{ $inactiveCount }})</a>
             </div>
 
             <div class="p-4 md:p-6 space-y-6">
                 <!-- Info Banner -->
-                <div class="bg-[#E0F2FE] dark:bg-[#0369A1]/20 border border-[#BAE6FD] dark:border-[#0369A1] rounded-md p-3 flex items-start gap-3">
+                <div id="infoBanner" style="display: none;" class="bg-[#E0F2FE] dark:bg-[#0369A1]/20 border border-[#BAE6FD] dark:border-[#0369A1] rounded-md p-3 flex items-start gap-3">
                     <span class="material-symbols-outlined text-[#0284C7] dark:text-[#38BDF8] text-lg mt-0.5">info</span>
                     <div>
                         <p class="text-sm text-[#0369A1] dark:text-[#E0F2FE]">Tips untuk penjual produk digital: Selalu pastikan tautan unduhan Anda valid. <a href="#" class="font-bold hover:underline">Pelajari lebih lanjut tentang pedoman produk digital</a>.</p>
                     </div>
-                    <button class="ml-auto text-[#0284C7] dark:text-[#38BDF8] hover:bg-[#BAE6FD] dark:hover:bg-[#0369A1]/50 p-1 rounded transition-colors flex-shrink-0">
+                    <button type="button" onclick="closeInfoBanner()" class="ml-auto text-[#0284C7] dark:text-[#38BDF8] hover:bg-[#BAE6FD] dark:hover:bg-[#0369A1]/50 p-1 rounded transition-colors flex-shrink-0">
                         <span class="material-symbols-outlined text-lg">close</span>
                     </button>
                 </div>
@@ -58,32 +73,31 @@
                             </div>
                         </div>
                     </div>
-                    <button class="px-5 py-2 text-sm font-bold bg-primary text-white rounded hover:bg-primary/90 transition-colors whitespace-nowrap">Buat Iklan</button>
+                    <button type="button" onclick="alert('Fitur iklan akan segera hadir! Nantikan pembaruannya.')" class="px-5 py-2 text-sm font-bold bg-primary text-white rounded hover:bg-primary/90 transition-colors whitespace-nowrap">Buat Iklan</button>
                 </div>
 
                 <!-- Search & Filters -->
                 <div class="space-y-4">
-                    <form method="GET" action="{{ route('tenant.products.index') }}">
+                    <form method="GET" action="{{ route('tenant.products.index') }}" id="filterForm">
                         <input type="hidden" name="tab" value="{{ $tab }}">
                         <!-- Filter Row -->
                         <div class="flex flex-wrap items-center gap-3">
                             <div class="flex-1 min-w-[250px] relative">
                                 <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">search</span>
-                                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari Nama Produk, ID Produk" class="w-full pl-10 pr-4 py-2 text-sm bg-surface-container-lowest dark:bg-[#0d1117] border border-outline-variant dark:border-[#30363d] rounded focus:outline-none focus:border-primary text-on-surface dark:text-white">
+                                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari Nama Produk, ID Produk" class="w-full pl-10 pr-4 py-2 text-sm bg-surface-container-lowest dark:bg-[#0d1117] border border-outline-variant dark:border-[#30363d] rounded focus:outline-none focus:border-primary text-on-surface dark:text-white" onkeydown="if(event.key === 'Enter'){this.form.submit();}">
                             </div>
-                            <select name="category" class="px-4 py-2 text-sm bg-surface-container-lowest dark:bg-[#0d1117] border border-outline-variant dark:border-[#30363d] text-on-surface dark:text-white rounded focus:outline-none focus:border-primary">
+                            <select name="category" onchange="this.form.submit()" class="px-4 py-2 text-sm bg-surface-container-lowest dark:bg-[#0d1117] border border-outline-variant dark:border-[#30363d] text-on-surface dark:text-white rounded focus:outline-none focus:border-primary">
                                 <option value="">Semua Kategori</option>
                                 @foreach($categories as $category)
                                     <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
                                 @endforeach
                             </select>
-                            <select name="sort" class="px-4 py-2 text-sm bg-surface-container-lowest dark:bg-[#0d1117] border border-outline-variant dark:border-[#30363d] text-on-surface dark:text-white rounded focus:outline-none focus:border-primary">
+                            <select name="sort" onchange="this.form.submit()" class="px-4 py-2 text-sm bg-surface-container-lowest dark:bg-[#0d1117] border border-outline-variant dark:border-[#30363d] text-on-surface dark:text-white rounded focus:outline-none focus:border-primary">
                                 <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Terbaru</option>
                                 <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Terlama</option>
                                 <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>Harga Terendah</option>
                                 <option value="price_desc" {{ request('sort') == 'price_desc' ? 'selected' : '' }}>Harga Tertinggi</option>
                             </select>
-                            <button type="submit" class="px-4 py-2 text-sm font-semibold border border-primary text-primary rounded hover:bg-primary/5 transition-colors">Terapkan</button>
                             <a href="{{ route('tenant.products.index', ['tab' => $tab]) }}" class="px-4 py-2 text-sm font-semibold border border-outline-variant dark:border-[#30363d] text-on-surface dark:text-white rounded hover:bg-surface-container-lowest transition-colors">Atur ulang</a>
                         </div>
                     </form>
@@ -91,10 +105,10 @@
                     <!-- Action Bar -->
                     <div class="flex flex-wrap items-center justify-between gap-4 mt-2">
                         <div class="flex flex-wrap items-center gap-2">
-                            <span class="text-sm font-bold mr-2 text-on-surface dark:text-white">{{ $products->count() }} Products</span>
-                            <span class="px-3 py-1 text-xs border border-outline-variant dark:border-[#30363d] rounded-full text-on-surface-variant cursor-pointer hover:bg-surface-container-lowest">Perlu Diiklankan</span>
-                            <span class="px-3 py-1 text-xs border border-outline-variant dark:border-[#30363d] rounded-full text-on-surface-variant cursor-pointer hover:bg-surface-container-lowest">Berpotensi Memiliki Standar Produk Baru</span>
-                            <span class="px-3 py-1 text-xs border border-outline-variant dark:border-[#30363d] rounded-full text-on-surface-variant cursor-pointer hover:bg-surface-container-lowest">Stok Menipis</span>
+                            <span class="text-sm font-bold mr-2 text-on-surface dark:text-white">{{ $products->total() }} Products</span>
+                            <a href="{{ route('tenant.products.index', array_merge(request()->query(), ['sort' => 'latest'])) }}" class="px-3 py-1 text-xs border border-outline-variant dark:border-[#30363d] rounded-full text-on-surface-variant cursor-pointer hover:bg-surface-container-lowest">Perlu Diiklankan</a>
+                            <a href="{{ route('tenant.products.index', array_merge(request()->query(), ['sort' => 'oldest'])) }}" class="px-3 py-1 text-xs border border-outline-variant dark:border-[#30363d] rounded-full text-on-surface-variant cursor-pointer hover:bg-surface-container-lowest">Berpotensi Memiliki Standar Produk Baru</a>
+                            <a href="#" class="px-3 py-1 text-xs border border-outline-variant dark:border-[#30363d] rounded-full text-on-surface-variant cursor-pointer hover:bg-surface-container-lowest">Stok Menipis</a>
                         </div>
                         <div class="flex items-center gap-2">
                             <button class="px-3 py-1.5 text-xs border border-outline-variant dark:border-[#30363d] rounded text-on-surface-variant hover:bg-surface-container-lowest flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">swap_vert</span> Urutkan berdasarkan Rekomendasi</button>
@@ -108,16 +122,25 @@
                     <table class="w-full text-left text-sm whitespace-nowrap">
                         <thead class="bg-surface-container-lowest dark:bg-[#0d1117] border-b border-outline-variant dark:border-[#30363d] text-on-surface-variant dark:text-gray-400">
                             <tr>
-                                <th class="p-4 w-10 font-normal"><input type="checkbox" class="rounded border-outline-variant accent-primary"></th>
+                                <th class="p-4 w-10 font-normal">
+                                    <input type="checkbox" id="selectAllCheckbox" onchange="toggleAllCheckboxes(this)" class="rounded border-outline-variant accent-primary cursor-pointer">
+                                </th>
                                 <th class="p-4 font-normal min-w-[300px]">Produk</th>
-                                <th class="p-4 font-normal">
-                                    <div class="flex items-center gap-1 cursor-pointer">Harga <span class="material-symbols-outlined text-[14px]">unfold_more</span></div>
+                                <th class="p-4 font-normal hover:text-on-surface dark:hover:text-white transition-colors">
+                                    @php $priceSort = request('sort') == 'price_asc' ? 'price_desc' : 'price_asc'; @endphp
+                                    <a href="{{ route('tenant.products.index', array_merge(request()->query(), ['sort' => $priceSort])) }}" class="flex items-center gap-1 cursor-pointer">
+                                        Harga 
+                                        @if(request('sort') == 'price_asc') <span class="material-symbols-outlined text-[14px]">arrow_upward</span>
+                                        @elseif(request('sort') == 'price_desc') <span class="material-symbols-outlined text-[14px]">arrow_downward</span>
+                                        @else <span class="material-symbols-outlined text-[14px]">unfold_more</span>
+                                        @endif
+                                    </a>
                                 </th>
-                                <th class="p-4 font-normal">
-                                    <div class="flex items-center gap-1 cursor-pointer">Stok <span class="material-symbols-outlined text-[14px]">help</span> <span class="material-symbols-outlined text-[14px]">unfold_more</span></div>
+                                <th class="p-4 font-normal hover:text-on-surface dark:hover:text-white transition-colors">
+                                    <a href="#" class="flex items-center gap-1 cursor-pointer">Stok <span class="material-symbols-outlined text-[14px]">help</span> <span class="material-symbols-outlined text-[14px]">unfold_more</span></a>
                                 </th>
-                                <th class="p-4 font-normal">
-                                    <div class="flex items-center gap-1 cursor-pointer">Performa <span class="material-symbols-outlined text-[14px]">unfold_more</span></div>
+                                <th class="p-4 font-normal hover:text-on-surface dark:hover:text-white transition-colors">
+                                    <a href="#" class="flex items-center gap-1 cursor-pointer">Performa <span class="material-symbols-outlined text-[14px]">unfold_more</span></a>
                                 </th>
                                 <th class="p-4 font-normal">
                                     <div class="flex items-center gap-1">Analisis Produk <span class="material-symbols-outlined text-[14px]">help</span></div>
@@ -128,7 +151,7 @@
                         <tbody class="divide-y divide-outline-variant dark:divide-[#30363d]">
                             @forelse($products as $product)
                             <tr class="hover:bg-surface-container-lowest/50 dark:hover:bg-[#0d1117]/50 group transition-colors">
-                                <td class="p-4"><input type="checkbox" class="rounded border-outline-variant accent-primary"></td>
+                                <td class="p-4"><input type="checkbox" name="product_ids[]" value="{{ $product->id }}" class="product-checkbox rounded border-outline-variant accent-primary cursor-pointer"></td>
                                 <td class="p-4 whitespace-normal min-w-[300px]">
                                     <div class="flex gap-3">
                                         <!-- Image -->
@@ -144,7 +167,7 @@
                                         </div>
                                         <!-- Info -->
                                         <div>
-                                            <a href="#" class="font-bold text-on-surface dark:text-white hover:text-primary dark:hover:text-primary transition-colors line-clamp-2 leading-tight">{{ $product->name }}</a>
+                                            <a href="{{ route('tenant.products.edit', $product) }}" class="font-bold text-on-surface dark:text-white hover:text-primary dark:hover:text-primary transition-colors line-clamp-2 leading-tight">{{ $product->name }}</a>
                                             <div class="text-[11px] text-on-surface-variant dark:text-gray-400 mt-1">ID Produk: {{ $product->id }}</div>
                                             @if($product->slug)
                                             <div class="text-[11px] text-on-surface-variant dark:text-gray-400">SKU: {{ $product->slug }}</div>
@@ -160,11 +183,11 @@
                                     @if($product->discount_price)
                                         <div class="text-xs text-on-surface-variant dark:text-gray-500 line-through">Rp{{ number_format($product->price, 0, ',', '.') }}</div>
                                     @endif
-                                    <span class="material-symbols-outlined text-[14px] text-on-surface-variant mt-1 cursor-pointer hover:text-primary">edit</span>
+                                    <a href="{{ route('tenant.products.edit', $product) }}" class="material-symbols-outlined text-[14px] text-on-surface-variant mt-1 cursor-pointer hover:text-primary transition-colors">edit</a>
                                 </td>
                                 <td class="p-4 align-top pt-5">
                                     <div class="font-bold text-on-surface dark:text-white">99+</div>
-                                    <span class="material-symbols-outlined text-[14px] text-on-surface-variant mt-1 cursor-pointer hover:text-primary">edit</span>
+                                    <span class="material-symbols-outlined text-[14px] text-on-surface-variant mt-1 cursor-pointer hover:text-primary transition-colors" onclick="alert('Fitur manajemen stok manual akan segera hadir!')">edit</span>
                                 </td>
                                 <td class="p-4 align-top pt-5">
                                     <div class="text-xs text-on-surface dark:text-white font-semibold">Penjualan 0</div>
@@ -174,18 +197,21 @@
                                 <td class="p-4 align-top pt-5 text-center text-on-surface-variant">-</td>
                                 <td class="p-4 align-top pt-5 text-right pr-6">
                                     <div class="flex flex-col items-end gap-1.5 text-sm font-semibold">
-                                        <a href="{{ route('tenant.products.edit', $product) }}" class="text-[#0055aa] dark:text-[#58a6ff] font-normal hover:underline" wire:navigate>Ubah</a>
-                                        <a href="#" class="text-[#0055aa] dark:text-[#58a6ff] font-normal hover:underline">Iklankan</a>
+                                        <a href="{{ route('tenant.products.edit', $product) }}" class="text-[#0055aa] dark:text-[#58a6ff] font-normal hover:underline">Ubah</a>
+                                        <button type="button" onclick="alert('Fitur iklan akan segera hadir! Nantikan pembaruannya.')" class="text-[#0055aa] dark:text-[#58a6ff] font-normal hover:underline cursor-pointer bg-transparent border-none p-0">Iklankan</button>
                                         
                                         <div class="relative group/dropdown">
-                                            <button class="text-[#0055aa] dark:text-[#58a6ff] font-normal hover:underline flex items-center">Lainnya <span class="material-symbols-outlined text-[14px]">expand_more</span></button>
+                                            <button class="text-[#0055aa] dark:text-[#58a6ff] font-normal hover:underline flex items-center bg-transparent border-none p-0">Lainnya <span class="material-symbols-outlined text-[14px]">expand_more</span></button>
                                             <div class="absolute right-0 top-full mt-1 bg-white dark:bg-[#161b22] border border-gray-200 dark:border-[#30363d] rounded shadow-lg opacity-0 invisible group-hover/dropdown:opacity-100 group-hover/dropdown:visible transition-all z-50 w-56 py-1 text-left">
-                                                <a href="#" class="block px-4 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#0d1117] transition-colors">Rincian Iklan Produk Otomatis</a>
-                                                <a href="#" class="block px-4 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#0d1117] transition-colors">Salin</a>
-                                                <a href="#" class="block px-4 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#0d1117] transition-colors">Tampilan Produk</a>
-                                                <a href="#" class="block px-4 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#0d1117] transition-colors">Arsipkan</a>
-                                                <a href="#" class="block px-4 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#0d1117] transition-colors">Naikkan Produk</a>
-                                                <a href="#" class="block px-4 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#0d1117] transition-colors">Atur Komisi Affiliate</a>
+                                                <button type="button" onclick="alert('Fitur ini akan segera hadir.')" class="w-full text-left block px-4 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#0d1117] transition-colors">Rincian Iklan Produk Otomatis</button>
+                                                <button type="button" onclick="alert('Fitur ini akan segera hadir.')" class="w-full text-left block px-4 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#0d1117] transition-colors">Salin</button>
+                                                
+                                                <a href="{{ route('products.show', $product->slug) }}" target="_blank" class="block px-4 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#0d1117] transition-colors">Tampilan Produk</a>
+                                                
+                                                <button type="button" onclick="alert('Fitur ini akan segera hadir.')" class="w-full text-left block px-4 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#0d1117] transition-colors">Arsipkan</button>
+                                                <button type="button" onclick="alert('Fitur ini akan segera hadir.')" class="w-full text-left block px-4 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#0d1117] transition-colors">Naikkan Produk</button>
+                                                <button type="button" onclick="alert('Fitur ini akan segera hadir.')" class="w-full text-left block px-4 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#0d1117] transition-colors">Atur Komisi Affiliate</button>
+                                                
                                                 <div class="border-t border-gray-100 dark:border-gray-800 my-1"></div>
                                                 <form action="{{ route('tenant.products.toggle_active', $product) }}" method="POST" class="w-full text-left">
                                                     @csrf @method('PATCH')
@@ -207,7 +233,7 @@
                                         <span class="material-symbols-outlined text-6xl mb-2 opacity-50">inventory_2</span>
                                         <p class="font-semibold text-lg text-on-surface">Tidak ada produk ditemukan</p>
                                         <p class="text-sm mt-1">Anda belum mengunggah produk apa pun.</p>
-                                        <a href="{{ route('tenant.products.create') }}" class="mt-4 px-6 py-2 bg-primary text-white font-bold rounded hover:bg-primary/90 transition-colors" wire:navigate>Tambah Produk Baru</a>
+                                        <a href="{{ route('tenant.products.create') }}" class="mt-4 px-6 py-2 bg-primary text-white font-bold rounded hover:bg-primary/90 transition-colors">Tambah Produk Baru</a>
                                     </div>
                                 </td>
                             </tr>
@@ -219,7 +245,7 @@
                 <!-- Footer Pagination Space -->
                 <div class="flex justify-between items-center py-2 text-sm text-on-surface-variant">
                 @if($products->hasPages())
-                <div class="mt-4">
+                <div class="mt-4 w-full">
                     {{ $products->links() }}
                 </div>
                 @endif
@@ -227,4 +253,45 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Fitur Close Tips
+    document.addEventListener('DOMContentLoaded', function() {
+        const infoBanner = document.getElementById('infoBanner');
+        if (infoBanner && !localStorage.getItem('hideTenantProductsInfoBanner')) {
+            infoBanner.style.display = 'flex';
+        }
+    });
+
+    function closeInfoBanner() {
+        const infoBanner = document.getElementById('infoBanner');
+        if (infoBanner) {
+            infoBanner.style.display = 'none';
+            localStorage.setItem('hideTenantProductsInfoBanner', 'true');
+        }
+    }
+
+    // Fitur Select All Checkbox
+    function toggleAllCheckboxes(source) {
+        const checkboxes = document.querySelectorAll('.product-checkbox');
+        checkboxes.forEach(function(checkbox) {
+            checkbox.checked = source.checked;
+        });
+    }
+    function massAction(action) {
+        const checkboxes = document.querySelectorAll('.product-checkbox:checked');
+        if (checkboxes.length === 0) {
+            alert('Pilih setidaknya satu produk untuk melakukan tindakan ini.');
+            return;
+        }
+        
+        let ids = [];
+        checkboxes.forEach(function(checkbox) {
+            ids.push(checkbox.value);
+        });
+        
+        // Placeholder since the backend mass action endpoints are not built yet
+        alert('Fitur "' + action + '" untuk produk ID: ' + ids.join(', ') + ' akan segera hadir!');
+    }
+</script>
 @endsection

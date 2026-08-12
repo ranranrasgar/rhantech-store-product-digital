@@ -30,7 +30,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     
                     <!-- Tambah Rekening Bank Card -->
-                    <a href="{{ route('tenant.store.index') }}" wire:navigate class="border-2 border-dashed border-outline-variant dark:border-[#30363d] rounded-lg p-6 flex flex-col items-center justify-center min-h-[160px] text-on-surface-variant dark:text-gray-400 hover:bg-surface-container-lowest dark:hover:bg-[#0d1117] transition-colors group cursor-pointer">
+                    <a href="{{ route('tenant.store.index') }}" class="border-2 border-dashed border-outline-variant dark:border-[#30363d] rounded-lg p-6 flex flex-col items-center justify-center min-h-[160px] text-on-surface-variant dark:text-gray-400 hover:bg-surface-container-lowest dark:hover:bg-[#0d1117] transition-colors group cursor-pointer">
                         <span class="material-symbols-outlined text-4xl mb-2 group-hover:text-primary transition-colors">add</span>
                         <span class="text-sm font-semibold group-hover:text-primary transition-colors">Tambah Rekening Bank</span>
                     </a>
@@ -72,7 +72,7 @@
                             </div>
 
                             <!-- Edit Overlay -->
-                            <a href="{{ route('tenant.store.index') }}" wire:navigate class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity z-20 flex items-center justify-center text-white font-bold backdrop-blur-sm">
+                            <a href="{{ route('tenant.store.index') }}" class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity z-20 flex items-center justify-center text-white font-bold backdrop-blur-sm">
                                 <span class="flex items-center gap-2"><span class="material-symbols-outlined">edit</span> Ubah Rekening</span>
                             </a>
                         </div>

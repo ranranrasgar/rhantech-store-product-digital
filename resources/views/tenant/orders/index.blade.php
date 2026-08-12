@@ -10,10 +10,10 @@
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <h2 class="text-xl font-bold text-on-surface dark:text-white">Pesanan Saya</h2>
             <div class="flex flex-wrap items-center gap-3">
-                <button class="px-4 py-2 text-sm font-semibold border border-outline-variant dark:border-[#30363d] rounded bg-surface dark:bg-[#161b22] text-on-surface dark:text-white hover:bg-surface-container-lowest transition-colors flex items-center gap-1">
+                <button onclick="alert('Fitur eksport data (CSV/Excel) sedang dalam pengembangan.')" class="px-4 py-2 text-sm font-semibold border border-outline-variant dark:border-[#30363d] rounded bg-surface dark:bg-[#161b22] text-on-surface dark:text-white hover:bg-surface-container-lowest transition-colors flex items-center gap-1">
                     Export
                 </button>
-                <button class="px-4 py-2 text-sm font-semibold border border-outline-variant dark:border-[#30363d] rounded bg-surface dark:bg-[#161b22] text-on-surface dark:text-white hover:bg-surface-container-lowest transition-colors flex items-center gap-1">
+                <button onclick="alert('Riwayat aktivitas pelanggan akan segera hadir.')" class="px-4 py-2 text-sm font-semibold border border-outline-variant dark:border-[#30363d] rounded bg-surface dark:bg-[#161b22] text-on-surface dark:text-white hover:bg-surface-container-lowest transition-colors flex items-center gap-1">
                     Riwayat Download
                 </button>
             </div>
@@ -24,37 +24,38 @@
             
             <!-- Tabs -->
             <div class="border-b border-outline-variant dark:border-[#30363d] flex overflow-x-auto hide-scrollbar">
-                <a href="#" class="px-6 py-4 text-sm font-bold text-primary border-b-2 border-primary whitespace-nowrap">Semua</a>
-                <a href="#" class="px-6 py-4 text-sm font-bold text-on-surface-variant dark:text-gray-400 hover:text-on-surface transition-colors whitespace-nowrap">Belum Bayar (Pending)</a>
-                <a href="#" class="px-6 py-4 text-sm font-bold text-on-surface-variant dark:text-gray-400 hover:text-on-surface transition-colors whitespace-nowrap">Selesai (Paid/Downloaded)</a>
-                <a href="#" class="px-6 py-4 text-sm font-bold text-on-surface-variant dark:text-gray-400 hover:text-on-surface transition-colors whitespace-nowrap">Pengembalian/Pembatalan</a>
+                <a href="{{ route('tenant.orders.index', array_merge(request()->query(), ['tab' => 'all', 'page' => null])) }}" class="px-6 py-4 text-sm font-bold whitespace-nowrap {{ $tab === 'all' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant dark:text-gray-400 hover:text-on-surface transition-colors' }}">Semua</a>
+                <a href="{{ route('tenant.orders.index', array_merge(request()->query(), ['tab' => 'pending', 'page' => null])) }}" class="px-6 py-4 text-sm font-bold whitespace-nowrap {{ $tab === 'pending' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant dark:text-gray-400 hover:text-on-surface transition-colors' }}">Belum Bayar (Pending)</a>
+                <a href="{{ route('tenant.orders.index', array_merge(request()->query(), ['tab' => 'completed', 'page' => null])) }}" class="px-6 py-4 text-sm font-bold whitespace-nowrap {{ $tab === 'completed' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant dark:text-gray-400 hover:text-on-surface transition-colors' }}">Selesai (Paid/Downloaded)</a>
+                <a href="{{ route('tenant.orders.index', array_merge(request()->query(), ['tab' => 'cancelled', 'page' => null])) }}" class="px-6 py-4 text-sm font-bold whitespace-nowrap {{ $tab === 'cancelled' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant dark:text-gray-400 hover:text-on-surface transition-colors' }}">Pengembalian/Pembatalan</a>
             </div>
 
             <div class="p-4 md:p-6 space-y-6">
                 <!-- Search & Filters -->
-                <div class="flex flex-wrap items-center gap-4">
+                <form method="GET" action="{{ route('tenant.orders.index') }}" class="flex flex-wrap items-center gap-4">
+                    <input type="hidden" name="tab" value="{{ $tab }}">
                     <div class="flex items-center w-full md:w-auto">
-                        <select class="px-3 py-2 text-sm bg-surface-container-lowest dark:bg-[#0d1117] border border-outline-variant dark:border-[#30363d] border-r-0 text-on-surface-variant rounded-l focus:outline-none focus:border-primary">
-                            <option>No. Pesanan</option>
-                            <option>Nama Pembeli</option>
+                        <select name="search_type" class="px-3 py-2 text-sm bg-surface-container-lowest dark:bg-[#0d1117] border border-outline-variant dark:border-[#30363d] border-r-0 text-on-surface-variant rounded-l focus:outline-none focus:border-primary">
+                            <option value="invoice" {{ request('search_type') === 'invoice' ? 'selected' : '' }}>No. Pesanan</option>
+                            <option value="customer" {{ request('search_type') === 'customer' ? 'selected' : '' }}>Nama Pembeli</option>
                         </select>
-                        <input type="text" placeholder="Masukkan no. pesanan" class="flex-1 md:w-64 px-4 py-2 text-sm bg-surface-container-lowest dark:bg-[#0d1117] border border-outline-variant dark:border-[#30363d] rounded-r focus:outline-none focus:border-primary">
+                        <input type="text" name="search_query" value="{{ request('search_query') }}" placeholder="Cari..." class="flex-1 md:w-64 px-4 py-2 text-sm bg-surface-container-lowest dark:bg-[#0d1117] border border-outline-variant dark:border-[#30363d] rounded-r focus:outline-none focus:border-primary">
                     </div>
                     <div class="flex items-center w-full md:w-auto">
-                        <select class="px-3 py-2 text-sm bg-surface-container-lowest dark:bg-[#0d1117] border border-outline-variant dark:border-[#30363d] border-r-0 text-on-surface-variant rounded-l focus:outline-none focus:border-primary">
-                            <option>Produk</option>
-                        </select>
-                        <select class="flex-1 md:w-48 px-4 py-2 text-sm bg-surface-container-lowest dark:bg-[#0d1117] border border-outline-variant dark:border-[#30363d] text-on-surface-variant rounded-r focus:outline-none focus:border-primary">
-                            <option>Semua Produk</option>
+                        <select name="product_id" onchange="this.form.submit()" class="flex-1 md:w-48 px-4 py-2 text-sm bg-surface-container-lowest dark:bg-[#0d1117] border border-outline-variant dark:border-[#30363d] text-on-surface-variant rounded focus:outline-none focus:border-primary">
+                            <option value="">Semua Produk</option>
+                            @foreach($products as $product)
+                                <option value="{{ $product->id }}" {{ request('product_id') == $product->id ? 'selected' : '' }}>{{ $product->name }}</option>
+                            @endforeach
                         </select>
                     </div>
-                    <button class="px-4 py-2 text-sm font-semibold border border-primary text-primary rounded hover:bg-primary/5 transition-colors">Terapkan</button>
-                    <button class="px-4 py-2 text-sm font-semibold border border-outline-variant dark:border-[#30363d] text-on-surface rounded hover:bg-surface-container-lowest transition-colors">Atur Ulang</button>
-                </div>
+                    <button type="submit" class="px-4 py-2 text-sm font-semibold border border-primary text-primary rounded hover:bg-primary/5 transition-colors">Terapkan</button>
+                    <a href="{{ route('tenant.orders.index', ['tab' => $tab]) }}" class="px-4 py-2 text-sm font-semibold border border-outline-variant dark:border-[#30363d] text-on-surface dark:text-white rounded hover:bg-surface-container-lowest transition-colors">Atur Ulang</a>
+                </form>
 
                 <!-- Order Count -->
                 <div class="text-sm font-bold text-on-surface dark:text-white">
-                    {{ $orders->count() }} Pesanan
+                    {{ $orders->total() }} Pesanan
                 </div>
 
                 <!-- Orders Table -->
@@ -115,7 +116,7 @@
                                     {{ $order->invoice_number }}
                                 </td>
                                 <td class="p-4 align-middle text-center">
-                                    <a href="#" class="text-sm font-semibold text-primary hover:underline">Lihat Detail</a>
+                                    <button type="button" onclick="alert('Fitur detail pesanan akan segera hadir.')" class="text-sm font-semibold text-primary hover:underline bg-transparent border-none p-0 cursor-pointer">Lihat Detail</button>
                                 </td>
                             </tr>
                             @empty
@@ -128,7 +129,7 @@
                                             <div class="w-8 border-b-2 border-outline-variant/30 mt-2"></div>
                                             <div class="w-6 border-b-2 border-outline-variant/30 absolute bottom-6 left-4"></div>
                                         </div>
-                                        <p class="text-sm">Belum ada pesanan. Silakan export pesanan jika ingin melihat pesanan yang sudah lama.</p>
+                                        <p class="text-sm">Belum ada pesanan yang sesuai dengan filter Anda.</p>
                                     </div>
                                 </td>
                             </tr>
@@ -139,7 +140,7 @@
 
                 <!-- Pagination -->
                 @if($orders->hasPages())
-                <div class="pt-2">
+                <div class="pt-2 w-full">
                     {{ $orders->links() }}
                 </div>
                 @endif

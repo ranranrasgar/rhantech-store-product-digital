@@ -3,7 +3,7 @@
 @section('content')
 <div class="p-lg md:p-xl flex-1 max-w-4xl mx-auto w-full">
     <div class="flex items-center gap-md mb-lg">
-        <a href="{{ route('tenant.products.index') }}" class="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition" wire:navigate>
+        <a href="{{ route('tenant.products.index') }}" class="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition">
             <span class="material-symbols-outlined">arrow_back</span>
         </a>
         <h2 class="font-headline-md font-bold text-on-surface">Add Digital Product</h2>

@@ -108,7 +108,7 @@
                             <p class="text-error text-xs mt-1 text-right">{{ $message }}</p>
                         @enderror
                         @if(empty($store->bank_account_info))
-                            <p class="text-warning-dark text-xs mt-2 text-right">Anda harus mengatur Info Rekening Bank di <a href="{{ route('tenant.store.index') }}" class="underline font-bold" wire:navigate>Profil Toko</a> terlebih dahulu.</p>
+                            <p class="text-warning-dark text-xs mt-2 text-right">Anda harus mengatur Info Rekening Bank di <a href="{{ route('tenant.store.index') }}" class="underline font-bold">Profil Toko</a> terlebih dahulu.</p>
                         @endif
                     </div>
                 </div>
