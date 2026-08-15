@@ -13,13 +13,12 @@
     <meta property="og:type" content="website"/>
     <meta name="twitter:card" content="summary_large_image"/>
     <link rel="icon" href="{{ isset($company) && $company->favicon ? asset('storage/'.$company->favicon) : asset('favicon.ico') }}" />
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <!-- Alpine.js for interactive components like dropdowns -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com" rel="preconnect"/>
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -182,12 +181,12 @@
                                 </div>
                                 
                                 @if(auth()->user()->role === 'admin')
-                                <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-on-surface hover:bg-surface-container-low transition-colors" wire:navigate>
+                                <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-on-surface hover:bg-surface-container-low transition-colors">
                                     <span class="material-symbols-outlined text-[1.1rem]">admin_panel_settings</span> Dashboard Admin
                                 </a>
                                 @endif
                                 
-                                <a href="{{ route('tenant.dashboard') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-on-surface hover:bg-surface-container-low transition-colors" wire:navigate>
+                                <a href="{{ route('tenant.dashboard') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-on-surface hover:bg-surface-container-low transition-colors">
                                     <span class="material-symbols-outlined text-[1.1rem]">storefront</span> Dashboard Toko
                                 </a>
                                 

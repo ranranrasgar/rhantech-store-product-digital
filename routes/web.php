@@ -33,11 +33,9 @@ Route::post('/checkout', [\App\Http\Controllers\CheckoutController::class, 'proc
 Route::post('/checkout/select', [\App\Http\Controllers\CheckoutController::class, 'selectItems'])->name('checkout.select');
 Route::get('/payment/{invoice_number}', [\App\Http\Controllers\CheckoutController::class, 'payment'])->name('checkout.payment');
 Route::get('/toko/{slug}', [\App\Http\Controllers\PublicStoreController::class, 'show'])->name('store.show');
-
 Route::get('/download/{token}', [\App\Http\Controllers\DownloadController::class, 'download'])->name('products.download');
 Route::get('/download/{token}/file/{item}', [\App\Http\Controllers\DownloadController::class, 'downloadFile'])->name('products.download.file');
 Route::post('/api/webhooks/midtrans/callback', [\App\Http\Controllers\WebhookController::class, 'midtrans']);
-
 Route::get('/contact', [PublicController::class, 'contact'])->name('contact');
 Route::post('/contact', [PublicController::class, 'storeContact'])->name('contact.store');
 
@@ -83,7 +81,13 @@ Route::middleware(['auth', 'verified', 'is_tenant'])->prefix('tenant')->name('te
     Route::get('bank', [\App\Http\Controllers\Tenant\BankController::class, 'index'])->name('bank.index');
     Route::get('performance', [\App\Http\Controllers\Tenant\PerformanceController::class, 'index'])->name('performance.index');
     Route::get('appearance', [\App\Http\Controllers\Tenant\AppearanceController::class, 'index'])->name('appearance.index');
-    Route::get('affiliates', [\App\Http\Controllers\Tenant\AffiliateController::class, 'index'])->name('affiliates.index');
+    Route::post('appearance', [\App\Http\Controllers\Tenant\AppearanceController::class, 'update'])->name('appearance.update');
+
+    // kerja sama
+    Route::resource('affiliates', \App\Http\Controllers\Tenant\AffiliateController::class);
+    
+    // iklan
+    Route::resource('campaigns', \App\Http\Controllers\Tenant\CampaignController::class);
 });
 
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {

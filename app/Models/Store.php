@@ -8,6 +8,10 @@ class Store extends Model
 {
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'appearance_data' => 'array',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);

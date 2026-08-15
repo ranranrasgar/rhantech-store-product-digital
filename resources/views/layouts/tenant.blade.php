@@ -4,10 +4,10 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 @include('components.theme-init')
 <title>@yield('title', 'Admin Panel') - {{ $company->company_name ?? 'Admin' }}</title>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script id="tailwind-config">
         tailwind.config = {
           darkMode: "class",
@@ -132,9 +132,7 @@ html.dark .brand-dot-s { background: #2f81f7; box-shadow: 0 0 10px rgba(47,129,2
     0%,100%{box-shadow:0 0 8px rgba(0,179,204,0.5)} 50%{box-shadow:0 0 18px rgba(0,179,204,0.8)}
 }
 html.dark .brand-dot-s { background: #2f81f7; box-shadow: 0 0 10px rgba(47,129,247,0.4); }
-@keyframes pd-dark { 0%,100%{box-shadow:0 0 8px rgba(47,129,247,0.5)} 50%{box-shadow:0 0 18px rgba(47,129,247,0.8)} } 50%{box-shadow:0 0 18px #00d4ff,0 0 30px rgba(0,212,255,0.4)}
-}
-
+@keyframes pd-dark { 0%,100%{box-shadow:0 0 8px rgba(47,129,247,0.5)} 50%{box-shadow:0 0 18px rgba(47,129,247,0.8)} }
 .brand-name-s {
     font-size: 16px; font-weight: 900; letter-spacing: -0.3px;
     color: #1a202c; line-height: 1.1;
@@ -310,7 +308,7 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
         <a href="{{ route('tenant.affiliates.index') }}" class="nav-link {{ request()->routeIs('tenant.affiliates.*') ? 'active' : '' }}">
             <span class="material-symbols-outlined">handshake</span> Affiliates
         </a>
-        <a href="#" class="nav-link">
+        <a href="{{ route('tenant.campaigns.index') }}" class="nav-link {{ request()->routeIs('tenant.campaigns.*') ? 'active' : '' }}">
             <span class="material-symbols-outlined">campaign</span> Campaign & Promo
         </a>
 

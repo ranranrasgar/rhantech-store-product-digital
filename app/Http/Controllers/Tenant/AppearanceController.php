@@ -21,4 +21,24 @@ class AppearanceController extends Controller
 
         return view('tenant.appearance.index', compact('store'));
     }
+    public function update(Request $request)
+    {
+        $store = Auth::user()->store;
+        
+        if (!$store) {
+            return response()->json(['success' => false, 'message' => 'Toko tidak ditemukan.'], 404);
+        }
+
+        $request->validate([
+            'components' => 'required|array',
+        ]);
+
+        $store->appearance_data = $request->input('components');
+        $store->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Dekorasi toko berhasil disimpan.'
+        ]);
+    }
 }

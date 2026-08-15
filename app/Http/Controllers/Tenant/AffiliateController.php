@@ -41,4 +41,65 @@ class AffiliateController extends Controller
 
         return view('tenant.affiliates.index', compact('store', 'affiliates', 'categories'));
     }
+    public function create()
+    {
+        $categories = \App\Models\ProductCategory::pluck('name');
+        return view('tenant.affiliates.create', compact('categories'));
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'handle' => 'required|string|max:255',
+            'avatar_url' => 'nullable|string',
+            'followers_count' => 'required|string|max:255',
+            'clicks_count' => 'required|string|max:255',
+            'orders_count' => 'required|string|max:255',
+            'sales_range' => 'required|string|max:255',
+            'audience_demographic' => 'nullable|string|max:255',
+            'platform' => 'required|string|in:Instagram,Tiktok,Facebook,Youtube,Twitter',
+            'categories' => 'nullable|array',
+            'is_golden_tick' => 'boolean',
+        ]);
+
+        \App\Models\Affiliate::create($validated);
+
+        return redirect()->route('tenant.affiliates.index')->with('success', 'Affiliate berhasil ditambahkan.');
+    }
+
+    public function edit(\App\Models\Affiliate $affiliate)
+    {
+        $categories = \App\Models\ProductCategory::pluck('name');
+        return view('tenant.affiliates.edit', compact('affiliate', 'categories'));
+    }
+
+    public function update(Request $request, \App\Models\Affiliate $affiliate)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'handle' => 'required|string|max:255',
+            'avatar_url' => 'nullable|string',
+            'followers_count' => 'required|string|max:255',
+            'clicks_count' => 'required|string|max:255',
+            'orders_count' => 'required|string|max:255',
+            'sales_range' => 'required|string|max:255',
+            'audience_demographic' => 'nullable|string|max:255',
+            'platform' => 'required|string|in:Instagram,Tiktok,Facebook,Youtube,Twitter',
+            'categories' => 'nullable|array',
+            'is_golden_tick' => 'boolean',
+        ]);
+        
+        $validated['is_golden_tick'] = $request->has('is_golden_tick');
+
+        $affiliate->update($validated);
+
+        return redirect()->route('tenant.affiliates.index')->with('success', 'Affiliate berhasil diperbarui.');
+    }
+
+    public function destroy(\App\Models\Affiliate $affiliate)
+    {
+        $affiliate->delete();
+        return redirect()->route('tenant.affiliates.index')->with('success', 'Affiliate berhasil dihapus.');
+    }
 }

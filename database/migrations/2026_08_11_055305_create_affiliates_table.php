@@ -16,12 +16,12 @@ return new class extends Migration
             $table->string('name');
             $table->string('handle');
             $table->string('avatar_url')->nullable();
-            $table->string('followers_count');
-            $table->string('clicks_count');
-            $table->string('orders_count');
-            $table->string('sales_range');
+            $table->string('followers_count')->nullable();
+            $table->string('clicks_count')->nullable();
+            $table->string('orders_count')->nullable();
+            $table->string('sales_range')->nullable();
             $table->string('audience_demographic')->nullable();
-            $table->string('platform');
+            $table->string('platform')->nullable();
             $table->json('categories')->nullable();
             $table->boolean('is_golden_tick')->default(false);
             $table->boolean('is_good_sample_completion')->default(false);

@@ -13,13 +13,12 @@
     <meta property="og:type" content="website"/>
     <meta name="twitter:card" content="summary_large_image"/>
     <link rel="icon" href="{{ isset($company) && $company->favicon ? asset('storage/'.$company->favicon) : asset('favicon.ico') }}" />
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <!-- Alpine.js for interactive components like dropdowns -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com" rel="preconnect"/>
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -234,7 +233,7 @@
     {{-- Top micro bar --}}
     <div class="hidden md:flex max-w-[1280px] mx-auto px-6 items-center justify-between py-1.5 text-[12px]">
         <div class="flex items-center gap-5 text-white/60">
-            <a href="{{ route('tenant.dashboard') }}" class="hover:text-white/90 transition-colors" wire:navigate>
+            <a href="{{ route('tenant.dashboard') }}" class="hover:text-white/90 transition-colors">
                 <span class="material-symbols-outlined text-[13px] align-middle">storefront</span> Seller Portal
             </a>
             <span class="h-3 w-px bg-white/15"></span>
