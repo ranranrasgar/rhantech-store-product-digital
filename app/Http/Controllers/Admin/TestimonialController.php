@@ -34,7 +34,7 @@ class TestimonialController extends Controller
             'position' => 'nullable|string|max:255',
             'content' => 'required|string',
             'rating' => 'required|integer|min:1|max:5',
-            'avatar' => 'nullable|image|max:2048',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg,ico|max:2048',
             'is_active' => 'boolean'
         ]);
 
@@ -60,7 +60,7 @@ class TestimonialController extends Controller
             'position' => 'nullable|string|max:255',
             'content' => 'required|string',
             'rating' => 'required|integer|min:1|max:5',
-            'avatar' => 'nullable|image|max:2048',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg,ico|max:2048',
             'is_active' => 'boolean'
         ]);
 

@@ -18,7 +18,7 @@ class BannerController extends Controller
     public function update(Request $request)
     {
         $request->validate([
-            'banners.*.image' => 'nullable|image|max:2048',
+            'banners.*.image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg,ico|max:2048',
             'banners.*.link' => 'nullable|url',
         ]);
 

@@ -51,7 +51,7 @@ class ProjectController extends Controller
             'completed_at' => 'nullable|date',
             'status' => 'required|string|in:draft,published,archived',
             'is_featured' => 'boolean',
-            'thumbnail' => 'nullable|image|max:2048'
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg,ico|max:2048'
         ]);
 
         if (empty($validated['slug'])) {
@@ -93,7 +93,7 @@ class ProjectController extends Controller
             'completed_at' => 'nullable|date',
             'status' => 'required|string|in:draft,published,archived',
             'is_featured' => 'boolean',
-            'thumbnail' => 'nullable|image|max:2048'
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg,ico|max:2048'
         ]);
 
         if (empty($validated['slug'])) {

@@ -84,8 +84,8 @@ class CompanyProfileController extends Controller
             'linkedin' => 'nullable|url',
             'website' => 'nullable|url',
             'youtube' => 'nullable|url',
-            'logo' => 'nullable|image|max:2048',
-            'favicon' => 'nullable|image|max:1024',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg,ico|max:2048',
+            'favicon' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg,ico|max:1024',
         ]);
 
         $profile = CompanyProfile::query()->first();

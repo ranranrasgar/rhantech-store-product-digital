@@ -95,11 +95,11 @@ class ProductController extends Controller
             'demo_url' => 'nullable|url|max:255',
             'price' => 'required|numeric|min:0',
             'discount_price' => 'nullable|numeric|min:0',
-            'file' => 'nullable|file|max:102400', // 100MB max
+            'file' => 'nullable|file|mimes:zip,rar,pdf,doc,docx,xls,xlsx|max:102400', // 100MB max
             'download_links' => 'nullable|array',
             'download_links.*.name' => 'required_with:download_links|string|max:255',
             'download_links.*.url' => 'required_with:download_links|url|max:255',
-            'images.*' => 'image|max:2048',
+            'images.*' => 'image|mimes:jpeg,png,jpg,webp,gif|max:2048',
             'copied_from' => 'nullable|exists:products,id',
             'is_active' => 'boolean'
         ];
@@ -191,11 +191,11 @@ class ProductController extends Controller
             'demo_url' => 'nullable|url|max:255',
             'price' => 'required|numeric|min:0',
             'discount_price' => 'nullable|numeric|min:0',
-            'file' => 'nullable|file|max:102400',
+            'file' => 'nullable|file|mimes:zip,rar,pdf,doc,docx,xls,xlsx|max:102400',
             'download_links' => 'nullable|array',
             'download_links.*.name' => 'required_with:download_links|string|max:255',
             'download_links.*.url' => 'required_with:download_links|url|max:255',
-            'images.*' => 'image|max:2048',
+            'images.*' => 'image|mimes:jpeg,png,jpg,webp,gif|max:2048',
             'images' => 'nullable|array|max:5',
             'is_active' => 'boolean'
         ]);
