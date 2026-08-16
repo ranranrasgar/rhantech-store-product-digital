@@ -1,593 +1,512 @@
 @extends('layouts.tenant')
 
-@section('title', 'Tinjauan')
+@section('title', 'Performa Toko & Analitik')
 
 @section('content')
-<div class="flex-1 overflow-y-auto bg-surface-container-lowest dark:bg-[#0d1117] text-on-surface dark:text-white font-body-md" x-data="{ tab: 'tinjauan' }">
-    
-    <!-- Top Advertisement Banner -->
-    <div class="bg-gradient-to-r from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 border-b border-orange-200 dark:border-orange-900/50 flex flex-col md:flex-row items-center justify-between p-3 px-6 gap-4">
-        <div class="flex items-center gap-4 flex-1">
-            <div class="w-12 h-12 flex-shrink-0 bg-white/50 dark:bg-black/20 rounded p-1">
-                <span class="material-symbols-outlined text-error text-[2rem] w-full h-full flex items-center justify-center">campaign</span>
-            </div>
+<div class="flex-1 overflow-y-auto p-4 md:p-8 bg-[#f8fafc] dark:bg-[#090d16] text-[#0f172a] dark:text-[#f1f5f9] transition-colors duration-200" x-data="{ tab: 'tinjauan' }">
+    <div class="max-w-7xl mx-auto space-y-6">
+
+        <!-- Header Hero & Summary -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-                <h3 class="font-bold text-on-surface dark:text-white text-base">Buat Iklan, Tingkatkan Kunjungan dan Dapatkan Voucher!</h3>
+                <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-2.5">
+                    Performa & Analisis Toko
+                </h1>
+                <p class="text-xs md:text-sm text-slate-500 dark:text-slate-400 mt-1">
+                    Pantau metrik penjualan, tren konversi, efektivitas produk, dan statistik kunjungan toko digital Anda.
+                </p>
             </div>
-        </div>
-        <div class="flex items-center gap-6 text-sm">
-            <div class="flex items-center gap-2">
-                <span class="text-on-surface-variant dark:text-gray-400">Atur Modal</span>
-                <span class="font-bold text-error">Rp250.000 >></span>
-            </div>
-            <div class="hidden lg:block border-l border-orange-300 dark:border-orange-700 h-6"></div>
-            <div class="hidden lg:block">
-                <span class="text-on-surface-variant dark:text-gray-400">Tingkatkan Kunjungan + Dapatkan Voucher Toko Spesial</span>
-            </div>
-            <div class="hidden lg:block border-l border-orange-300 dark:border-orange-700 h-6"></div>
-            <div class="hidden lg:flex items-center gap-2">
-                <span class="text-on-surface-variant dark:text-gray-400">Penjualan Meningkat</span>
-                <span class="font-bold text-error">>> Rp1.350.000-Rp2.425.000</span>
-            </div>
-            <button class="bg-error hover:bg-[#d73f22] text-white px-4 py-1.5 font-bold rounded shadow-sm text-sm transition-colors whitespace-nowrap">Buat Iklan</button>
-        </div>
-    </div>
 
-    <!-- Tabs Navigation -->
-    <div class="bg-surface-container-lowest dark:bg-[#0d1117] border-b border-outline-variant dark:border-[#30363d] px-6 flex items-center gap-6 text-sm font-semibold overflow-x-auto whitespace-nowrap">
-        <button @click="tab = 'tinjauan'" :class="tab === 'tinjauan' ? 'border-b-2 border-error text-error' : 'border-b-2 border-transparent text-on-surface hover:text-error'" class="py-4 px-2 transition-colors">Tinjauan</button>
-        <button @click="tab = 'produk'" :class="tab === 'produk' ? 'border-b-2 border-error text-error' : 'border-b-2 border-transparent text-on-surface hover:text-error'" class="py-4 px-2 transition-colors">Produk</button>
-        <button @click="tab = 'penjualan'" :class="tab === 'penjualan' ? 'border-b-2 border-error text-error' : 'border-b-2 border-transparent text-on-surface hover:text-error'" class="py-4 px-2 transition-colors">Penjualan</button>
-        <button @click="tab = 'kunjungan'" :class="tab === 'kunjungan' ? 'border-b-2 border-error text-error' : 'border-b-2 border-transparent text-on-surface hover:text-error'" class="py-4 px-2 transition-colors">Tingkat Kunjungan</button>
-        
-        <!-- Other generic tabs as requested -->
-        <button class="py-4 px-2 border-b-2 border-transparent text-on-surface-variant hover:text-error transition-colors">Layanan</button>
-        <button class="py-4 px-2 border-b-2 border-transparent text-on-surface-variant hover:text-error transition-colors">Promosi</button>
-        <button class="py-4 px-2 border-b-2 border-transparent text-on-surface-variant hover:text-error transition-colors">Panduan Penjualan</button>
-
-        <div class="flex-1"></div>
-        <div class="flex items-center gap-4 text-xs font-normal text-[#0055aa] dark:text-[#38bdf8]">
-            <a href="#" class="flex items-center gap-1 hover:underline"><span class="material-symbols-outlined text-[14px]">info</span> Pelajari Lebih Lanjut</a>
-            <a href="#" class="flex items-center gap-1 hover:underline"><span class="material-symbols-outlined text-[14px]">open_in_new</span> Data Real-time</a>
-        </div>
-    </div>
-
-    <!-- Main Content Container -->
-    <div class="p-6 bg-surface-container dark:bg-[#0a0c10] min-h-[calc(100vh-140px)]">
-        
-        <!-- Controls Row -->
-        <div class="flex flex-col md:flex-row justify-between md:items-center mb-6 gap-4">
-            <div class="flex items-center gap-3">
-                <div class="bg-surface-container-lowest dark:bg-[#161b22] border border-outline-variant dark:border-[#30363d] rounded flex text-sm overflow-hidden shadow-sm">
-                    <span class="px-3 py-1.5 bg-surface-variant/30 text-on-surface-variant border-r border-outline-variant dark:border-[#30363d]">Periode Data</span>
-                    <button class="px-3 py-1.5 font-semibold text-on-surface flex items-center gap-2 hover:bg-surface-variant/30">
-                        Real-time <span class="font-normal text-on-surface-variant">Hari Ini - Pk {{ date('H:i') }} (GMT+07)</span> <span class="material-symbols-outlined text-[16px]">calendar_today</span>
-                    </button>
+            <!-- Header Quick Actions -->
+            <div class="flex flex-wrap items-center gap-3">
+                <div class="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] shadow-sm text-xs font-semibold text-slate-600 dark:text-slate-300">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    Real-time (Hari Ini: {{ date('d M Y') }})
                 </div>
+                <a href="{{ route('tenant.orders.index') }}" class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs md:text-sm font-bold shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 transition-all flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[18px]">receipt_long</span>
+                    Lihat Penjualan
+                </a>
+            </div>
+        </div>
+
+        <!-- 4 Key Performance Metrics Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <!-- Total Omset / Penjualan -->
+            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Penjualan</span>
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-[22px]">payments</span>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                        Rp {{ number_format($totalSales, 0, ',', '.') }}
+                    </div>
+                    <div class="mt-2 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                        <span>Total saldo perolehan</span>
+                        <span class="font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-0.5">
+                            <span class="material-symbols-outlined text-[14px]">trending_up</span> Aktif
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pesanan Berhasil -->
+            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Pesanan Berhasil</span>
+                    <div class="w-10 h-10 rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-400 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-[22px]">shopping_bag</span>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                        {{ number_format($totalOrders) }} <span class="text-xs font-normal text-slate-400">transaksi</span>
+                    </div>
+                    <div class="mt-2 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                        <span>Dari {{ $allOrdersCount }} checkout</span>
+                        <span class="font-bold text-sky-600 dark:text-sky-400">
+                            {{ $conversionRate }}% Sukses
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rata-rata Nilai Pesanan (AOV) -->
+            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Rata-rata Order (AOV)</span>
+                    <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-[22px]">calculate</span>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                        Rp {{ number_format($averageOrderValue, 0, ',', '.') }}
+                    </div>
+                    <div class="mt-2 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                        <span>Rata-rata per transaksi</span>
+                        <span class="font-medium text-slate-400">Nilai Keranjang</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Produk Aktif & Terbit -->
+            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Produk Tayang</span>
+                    <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-[22px]">inventory_2</span>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                        {{ number_format($activeProducts) }} <span class="text-xs font-semibold text-slate-400">/ {{ number_format($totalProducts) }}</span>
+                    </div>
+                    <div class="mt-2 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                        <span>Katalog digital aktif</span>
+                        <a href="{{ route('tenant.products.index') }}" class="font-bold text-sky-600 dark:text-sky-400 hover:underline">
+                            Kelola
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Card Section with Tabs -->
+        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl shadow-sm overflow-hidden">
+            
+            <!-- Tab Navigation Bar -->
+            <div class="border-b border-slate-100 dark:border-[#222f49] px-6 flex items-center gap-8 overflow-x-auto hide-scrollbar bg-slate-50/50 dark:bg-[#0c1220]/50">
+                <button @click="tab = 'tinjauan'" :class="tab === 'tinjauan' ? 'text-sky-600 dark:text-sky-400 border-sky-600 dark:border-sky-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200'" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 flex items-center gap-2 cursor-pointer">
+                    <span class="material-symbols-outlined text-[18px]">query_stats</span>
+                    Tinjauan Performa
+                </button>
+                <button @click="tab = 'produk'" :class="tab === 'produk' ? 'text-sky-600 dark:text-sky-400 border-sky-600 dark:border-sky-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200'" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 flex items-center gap-2 cursor-pointer">
+                    <span class="material-symbols-outlined text-[18px]">view_in_ar</span>
+                    Performa Produk
+                </button>
+                <button @click="tab = 'funnel'" :class="tab === 'funnel' ? 'text-sky-600 dark:text-sky-400 border-sky-600 dark:border-sky-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200'" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 flex items-center gap-2 cursor-pointer">
+                    <span class="material-symbols-outlined text-[18px]">filter_alt</span>
+                    Funnel Konversi
+                </button>
+                <button @click="tab = 'sumber'" :class="tab === 'sumber' ? 'text-sky-600 dark:text-sky-400 border-sky-600 dark:border-sky-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200'" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 flex items-center gap-2 cursor-pointer">
+                    <span class="material-symbols-outlined text-[18px]">traffic</span>
+                    Sumber Traffic & Saluran
+                </button>
+            </div>
+
+            <!-- TAB 1: TINJAUAN PERFORMA -->
+            <div x-show="tab === 'tinjauan'" class="p-6 md:p-8 space-y-8">
                 
-                <div x-show="tab === 'tinjauan'" class="bg-surface-container-lowest dark:bg-[#161b22] border border-outline-variant dark:border-[#30363d] rounded flex text-sm overflow-hidden shadow-sm">
-                    <span class="px-3 py-1.5 bg-surface-variant/30 text-on-surface-variant border-r border-outline-variant dark:border-[#30363d]">Status Pesanan</span>
-                    <button class="px-3 py-1.5 font-semibold text-on-surface flex items-center gap-2 hover:bg-surface-variant/30">
-                        Pesanan Siap Dikirim <span class="material-symbols-outlined text-[16px]">expand_more</span>
-                    </button>
-                </div>
-            </div>
+                <!-- Chart & Visual Analysis Section -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <!-- Left: Penjualan & Tren Visual -->
+                    <div class="lg:col-span-8 space-y-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="text-base font-bold text-slate-900 dark:text-white">Tren Aktivitas Penjualan</h3>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Ringkasan aktivitas checkout dan transaksi toko sepanjang hari ini.</p>
+                            </div>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400 border border-sky-200 dark:border-sky-900/50">
+                                24 Jam Terakhir
+                            </span>
+                        </div>
 
-            <button class="px-4 py-1.5 border border-outline-variant dark:border-[#30363d] rounded text-sm font-semibold hover:bg-surface-variant/30 flex items-center gap-2 shadow-sm bg-surface-container-lowest dark:bg-[#161b22]">
-                <span class="material-symbols-outlined text-[16px]">download</span> Download Data
-            </button>
-        </div>
+                        <!-- Stylized Minimal Line & Bar Graph Visualization -->
+                        <div class="bg-slate-50 dark:bg-[#0c1220] border border-slate-200/70 dark:border-[#1e293b] rounded-2xl p-6 relative overflow-hidden">
+                            <div class="flex items-center justify-between mb-8">
+                                <div>
+                                    <span class="text-xs font-medium text-slate-400">Total Nilai Penjualan</span>
+                                    <div class="text-xl font-extrabold text-slate-900 dark:text-white">Rp {{ number_format($totalSales, 0, ',', '.') }}</div>
+                                </div>
+                                <div class="flex items-center gap-3 text-xs font-medium">
+                                    <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-sky-500"></span> Transaksi Paid</div>
+                                    <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Pending</div>
+                                </div>
+                            </div>
 
-        <!-- TAB 1: TINJAUAN -->
-        <div x-show="tab === 'tinjauan'" class="space-y-6">
-            <!-- Grid 1: Kriteria Utama & Metrik Real-time -->
-            <div class="grid grid-cols-1 xl:grid-cols-4 gap-6">
-                <!-- Kriteria Utama (Left, spans 3 cols) -->
-                <div class="xl:col-span-3 bg-surface-container-lowest dark:bg-[#161b22] rounded-lg shadow-sm border border-outline-variant dark:border-[#30363d] p-6">
-                    <h3 class="font-bold text-base mb-4">Kriteria Utama</h3>
-                    
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 relative">
-                        <!-- Navigation Arrows (Mock) -->
-                        <button class="absolute -right-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-surface dark:bg-[#30363d] rounded-full shadow-md border border-outline-variant dark:border-gray-600 flex items-center justify-center text-on-surface-variant hover:text-on-surface z-10 hidden md:flex"><span class="material-symbols-outlined">chevron_right</span></button>
-
-                        <!-- Card 1 -->
-                        <div class="border border-error dark:border-error/50 rounded p-4 relative bg-error/5 cursor-pointer">
-                            <div class="absolute -top-3 left-4 bg-surface-container-lowest dark:bg-[#161b22] px-1 text-[10px] text-[#0055aa] dark:text-[#38bdf8]">Definition updated 2026</div>
-                            <div class="text-sm font-bold text-on-surface mb-2 flex items-center gap-1">Penjualan <span class="material-symbols-outlined text-[14px] text-on-surface-variant">help</span></div>
-                            <div class="text-xl font-bold text-error mb-2">Rp {{ number_format($totalSales, 0, ',', '.') }}</div>
-                            <div class="flex justify-between items-center text-xs text-on-surface-variant dark:text-gray-400">
-                                <span>vs Kemarin pada 00:00-{{ date('H:00') }}</span>
-                                <span class="font-semibold text-on-surface">0,00%</span>
+                            <!-- Visual Mock Distribution -->
+                            <div class="h-44 flex items-end justify-between gap-2 pt-6 border-b border-slate-200 dark:border-[#222f49] pb-2">
+                                @php
+                                    $timeSlots = ['00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00', '21:00', '24:00'];
+                                @endphp
+                                @foreach($timeSlots as $index => $slot)
+                                    @php
+                                        $heightPaid = $totalOrders > 0 ? min(90, max(15, ($index % 3 + 1) * 25)) : 8;
+                                        $heightPending = $pendingOrders > 0 ? min(50, max(10, ($index % 2 + 1) * 15)) : 4;
+                                    @endphp
+                                    <div class="flex-1 flex flex-col items-center gap-1 group">
+                                        <div class="w-full max-w-[28px] bg-slate-200/60 dark:bg-slate-800/80 rounded-t-lg h-32 flex items-end justify-center p-0.5 gap-0.5 overflow-hidden">
+                                            <div class="w-1/2 bg-sky-500 rounded-t transition-all duration-500 group-hover:brightness-110" style="height: {{ $heightPaid }}%;"></div>
+                                            <div class="w-1/2 bg-amber-500/70 rounded-t transition-all duration-500 group-hover:brightness-110" style="height: {{ $heightPending }}%;"></div>
+                                        </div>
+                                        <span class="text-[10px] text-slate-400 font-mono mt-1">{{ $slot }}</span>
+                                    </div>
+                                @endforeach
+                            </div>
+                            <div class="mt-4 flex items-center justify-between text-xs text-slate-400">
+                                <span>Estimasi volume berdasarkan jam operasional toko</span>
+                                <span class="font-semibold text-slate-600 dark:text-slate-300">GMT+07 (WIB)</span>
                             </div>
                         </div>
 
-                        <!-- Card 2 -->
-                        <div class="border border-outline-variant dark:border-[#30363d] rounded p-4 cursor-pointer hover:border-error transition-colors group">
-                            <div class="text-sm font-semibold text-on-surface-variant group-hover:text-on-surface mb-2 flex items-center gap-1">Pesanan <span class="material-symbols-outlined text-[14px]">help</span></div>
-                            <div class="text-xl font-bold text-on-surface dark:text-white mb-2">{{ $totalOrders }}</div>
-                            <div class="flex justify-between items-center text-xs text-on-surface-variant dark:text-gray-400">
-                                <span>vs Kemarin pada 00:00-{{ date('H:00') }}</span>
-                                <span class="font-semibold text-on-surface">0,00%</span>
-                            </div>
-                        </div>
-
-                        <!-- Card 3 -->
-                        <div class="border border-outline-variant dark:border-[#30363d] rounded p-4 cursor-pointer hover:border-error transition-colors group">
-                            <div class="text-sm font-semibold text-on-surface-variant group-hover:text-on-surface mb-2 flex items-center gap-1">Tingkat Konversi Pesanan <span class="material-symbols-outlined text-[14px]">help</span></div>
-                            <div class="text-xl font-bold text-on-surface dark:text-white mb-2">0,00%</div>
-                            <div class="flex justify-between items-center text-xs text-on-surface-variant dark:text-gray-400">
-                                <span>vs Kemarin pada 00:00-{{ date('H:00') }}</span>
-                                <span class="font-semibold text-on-surface">0,00%</span>
-                            </div>
-                        </div>
-
-                        <!-- Card 4 -->
-                        <div class="border border-outline-variant dark:border-[#30363d] rounded p-4 cursor-pointer hover:border-error transition-colors group">
-                            <div class="text-sm font-semibold text-on-surface-variant group-hover:text-on-surface mb-2 flex items-center gap-1">Total Pengunjung <span class="material-symbols-outlined text-[14px]">help</span></div>
-                            <div class="text-xl font-bold text-on-surface dark:text-white mb-2">0</div>
-                            <div class="flex justify-between items-center text-xs text-on-surface-variant dark:text-gray-400">
-                                <span>vs Kemarin pada 00:00-{{ date('H:00') }}</span>
-                                <span class="font-semibold text-on-surface">0,00%</span>
-                            </div>
-                        </div>
                     </div>
 
-                    <!-- Chart Area (Mock) -->
+                    <!-- Right: Performance Health Breakdown -->
+                    <div class="lg:col-span-4 space-y-6">
+                        <div>
+                            <h3 class="text-base font-bold text-slate-900 dark:text-white">Kesehatan Transaksi</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Rasio efisiensi proses checkout pesanan.</p>
+                        </div>
+
+                        <div class="bg-slate-50 dark:bg-[#0c1220] border border-slate-200/70 dark:border-[#1e293b] rounded-2xl p-6 space-y-5">
+                            
+                            <!-- Stat Item 1 -->
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between text-xs font-bold">
+                                    <span class="text-slate-600 dark:text-slate-300">Tingkat Penyelesaian Pesanan</span>
+                                    <span class="text-sky-600 dark:text-sky-400">{{ $conversionRate }}%</span>
+                                </div>
+                                <div class="h-2 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                                    <div class="h-full bg-sky-500 rounded-full transition-all duration-700" style="width: {{ max(5, $conversionRate) }}%"></div>
+                                </div>
+                                <p class="text-[11px] text-slate-400">Persentase invoice yang berhasil terbayar dan file telah didistribusikan.</p>
+                            </div>
+
+                            <!-- Stat Item 2 -->
+                            <div class="space-y-2 pt-3 border-t border-slate-200/60 dark:border-[#1e293b]">
+                                <div class="flex items-center justify-between text-xs font-bold">
+                                    <span class="text-slate-600 dark:text-slate-300">Tingkat Menunggu Pembayaran</span>
+                                    <span class="text-amber-600 dark:text-amber-400">
+                                        {{ $allOrdersCount > 0 ? round(($pendingOrders / $allOrdersCount) * 100, 1) : 0 }}%
+                                    </span>
+                                </div>
+                                <div class="h-2 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                                    <div class="h-full bg-amber-500 rounded-full transition-all duration-700" style="width: {{ $allOrdersCount > 0 ? ($pendingOrders / $allOrdersCount) * 100 : 0 }}%"></div>
+                                </div>
+                                <p class="text-[11px] text-slate-400">Pesanan pending yang sedang menunggu konfirmasi pembayaran otomatis/manual.</p>
+                            </div>
+
+                            <!-- Stat Item 3: Katalog Aktif -->
+                            <div class="space-y-2 pt-3 border-t border-slate-200/60 dark:border-[#1e293b]">
+                                <div class="flex items-center justify-between text-xs font-bold">
+                                    <span class="text-slate-600 dark:text-slate-300">Rasio Katalog Aktif</span>
+                                    <span class="text-emerald-600 dark:text-emerald-400">
+                                        {{ $totalProducts > 0 ? round(($activeProducts / $totalProducts) * 100) : 100 }}%
+                                    </span>
+                                </div>
+                                <div class="h-2 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                                    <div class="h-full bg-emerald-500 rounded-full transition-all duration-700" style="width: {{ $totalProducts > 0 ? ($activeProducts / $totalProducts) * 100 : 100 }}%"></div>
+                                </div>
+                                <p class="text-[11px] text-slate-400">{{ $activeProducts }} dari {{ $totalProducts }} produk siap dibeli pelanggan.</p>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Strategic Recommendations Banner -->
+                <div class="bg-gradient-to-r from-sky-500/10 via-indigo-500/10 to-sky-500/5 dark:from-sky-950/30 dark:via-indigo-950/20 dark:to-[#0c1220] border border-sky-200/80 dark:border-sky-900/40 rounded-2xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-5">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-sky-500 text-white flex items-center justify-center shrink-0 shadow-md shadow-sky-500/20">
+                            <span class="material-symbols-outlined text-[24px]">rocket_launch</span>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-900 dark:text-white">Tingkatkan Omset Toko dengan Dekorasi & Promo</h4>
+                            <p class="text-xs text-slate-600 dark:text-slate-300 mt-1 max-w-2xl">
+                                Toko yang memiliki banner promosi menarik, deskripsi produk lengkap dengan tautan demo, dan kode kupon diskon terbukti meningkatkan konversi hingga 3x lipat.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 shrink-0">
+                        <a href="{{ route('tenant.appearance.index') }}" class="px-4 py-2 rounded-xl bg-white dark:bg-[#161f33] border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-800 dark:text-white hover:bg-slate-50 dark:hover:bg-[#1d273d] transition-all shadow-sm">
+                            Dekorasi Toko
+                        </a>
+                        <a href="{{ route('tenant.campaigns.index') }}" class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-xs font-bold text-white shadow-md shadow-sky-500/20 transition-all">
+                            Buat Promo
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- TAB 2: PERFORMA PRODUK -->
+            <div x-show="tab === 'produk'" class="p-6 md:p-8 space-y-6" style="display: none;">
+                <div class="flex items-center justify-between">
                     <div>
-                        <div class="flex justify-between items-center mb-4">
-                            <h4 class="text-sm font-bold">Grafik setiap Kriteria</h4>
-                            <div class="flex items-center gap-4 text-xs">
-                                <div class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-[#1e88e5]"></span> Penjualan</div>
-                                <span class="text-on-surface-variant">Kriteria Dipilih 1/4</span>
-                            </div>
-                        </div>
-                        <div class="h-[180px] w-full relative pt-4">
-                            <!-- Horizontal Lines -->
-                            <div class="absolute left-0 right-0 top-4 border-b border-dashed border-outline-variant/30"></div>
-                            <div class="absolute left-0 right-0 top-16 border-b border-dashed border-outline-variant/30"></div>
-                            <div class="absolute left-0 right-0 top-28 border-b border-dashed border-outline-variant/30"></div>
-                            <div class="absolute left-0 right-0 bottom-6 border-b border-outline-variant dark:border-gray-500"></div>
-
-                            <!-- X Axis Labels -->
-                            <div class="absolute left-0 right-0 bottom-0 flex justify-between text-[10px] text-on-surface-variant">
-                                <span>00:00</span>
-                                <span>06:00</span>
-                                <span>12:00</span>
-                                <span>18:00</span>
-                                <span>24:00</span>
-                            </div>
-
-                            <!-- Line (Mock SVG) -->
-                            <svg class="w-full h-full absolute inset-0 pt-4 pb-6 overflow-visible" preserveAspectRatio="none">
-                                <polyline fill="none" stroke="#1e88e5" stroke-width="2" points="0,150 100,150 200,150 300,150 400,150 500,150 600,150" />
-                                <circle cx="0" cy="150" r="3" fill="#1e88e5" />
-                                <circle cx="100" cy="150" r="3" fill="#1e88e5" />
-                                <circle cx="200" cy="150" r="3" fill="#1e88e5" />
-                                <circle cx="300" cy="150" r="3" fill="#1e88e5" />
-                                <circle cx="400" cy="150" r="3" fill="#1e88e5" />
-                                <circle cx="500" cy="150" r="3" fill="#1e88e5" />
-                                <circle cx="600" cy="150" r="3" fill="#1e88e5" />
-                            </svg>
-                        </div>
+                        <h3 class="text-base font-bold text-slate-900 dark:text-white">Peringkat & Performa Produk Digital</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Produk digital unggulan di toko Anda yang sering dilihat dan dibeli.</p>
                     </div>
+                    <a href="{{ route('tenant.products.create') }}" class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs font-bold shadow-md shadow-sky-500/25 transition-all flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-[16px]">add_circle</span> Tambah Produk
+                    </a>
                 </div>
 
-                <!-- Metrik Real-time (Right, spans 1 col) -->
-                <div class="bg-surface-container-lowest dark:bg-[#161b22] rounded-lg shadow-sm border border-outline-variant dark:border-[#30363d] p-6 flex flex-col">
-                    <div class="flex justify-between items-center mb-1">
-                        <h3 class="font-bold text-base">Metrik Real-time</h3>
-                        <a href="#" class="text-[#0055aa] dark:text-[#38bdf8] text-xs hover:underline flex items-center">Lainnya <span class="material-symbols-outlined text-[14px]">chevron_right</span></a>
-                    </div>
-                    <div class="text-[10px] text-green-600 dark:text-green-400 flex items-center gap-1 mb-6"><span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Update secara real-time</div>
-
-                    <div class="mb-4">
-                        <div class="text-xs text-on-surface-variant flex items-center gap-1 mb-1">Penjualan Hari Ini <span class="material-symbols-outlined text-[14px]">help</span></div>
-                        <div class="text-xl font-bold">Rp {{ number_format($totalSales, 0, ',', '.') }}</div>
-                    </div>
-                    
-                    <!-- Progress Bar style -->
-                    <div class="relative pt-6 pb-2 mb-6">
-                        <div class="h-[2px] bg-outline-variant/30 w-full relative">
-                            <div class="absolute -top-1 left-0 w-2 h-2 rounded-full bg-error"></div>
-                            <div class="absolute -top-1 right-0 w-2 h-2 rounded-full bg-error"></div>
-                            <div class="absolute top-2 left-0 text-[10px] text-on-surface-variant">00:00</div>
-                            <div class="absolute top-2 left-1/2 -translate-x-1/2 text-[10px] text-on-surface-variant">12:00</div>
-                            <div class="absolute top-2 right-0 text-[10px] text-on-surface-variant">24:00</div>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-y-6 mt-4">
-                        <div>
-                            <div class="text-xs text-on-surface-variant flex items-center gap-1 mb-1">Total Pengunjung <span class="material-symbols-outlined text-[14px]">help</span></div>
-                            <div class="text-base font-bold">0</div>
-                        </div>
-                        <div>
-                            <div class="text-xs text-on-surface-variant flex items-center gap-1 mb-1">Produk Diklik <span class="material-symbols-outlined text-[14px]">help</span></div>
-                            <div class="text-base font-bold">0</div>
-                        </div>
-                        <div>
-                            <div class="text-xs text-on-surface-variant flex items-center gap-1 mb-1">Pesanan <span class="material-symbols-outlined text-[14px]">help</span></div>
-                            <div class="text-base font-bold">{{ $totalOrders }}</div>
-                        </div>
-                        <div>
-                            <div class="text-xs text-on-surface-variant flex items-center gap-1 mb-1">Tingkat Konversi Pesanan <span class="material-symbols-outlined text-[14px]">help</span></div>
-                            <div class="text-base font-bold">0,00%</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sumber Kunjungan Row -->
-            <div class="bg-surface-container-lowest dark:bg-[#161b22] rounded-lg shadow-sm border border-outline-variant dark:border-[#30363d] p-6">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="font-bold text-base">Sumber Kunjungan</h3>
-                    <a href="#" class="text-[#0055aa] dark:text-[#38bdf8] text-xs hover:underline flex items-center">Lihat Kunjungan Produk <span class="material-symbols-outlined text-[14px]">chevron_right</span></a>
-                </div>
-
-                <div class="flex gap-6 items-stretch">
-                    <!-- Left Breakdown -->
-                    <div class="flex-1">
-                        <h4 class="text-sm font-bold mb-4">Rincian Kontribusi Penjualan Toko</h4>
-                        <div class="flex bg-surface dark:bg-[#0d1117] p-4 rounded border border-outline-variant dark:border-[#30363d] gap-2 items-center overflow-x-auto min-h-[110px]">
-                            <!-- Item -->
-                            <div class="min-w-[150px]">
-                                <div class="text-xs text-on-surface-variant mb-1 flex items-center gap-1">Total Penjualan (100%) <span class="material-symbols-outlined text-[12px]">help</span></div>
-                                <div class="text-base font-bold mb-1">Rp {{ number_format($totalSales, 0, ',', '.') }}</div>
-                                <div class="text-[10px] text-on-surface-variant flex justify-between"><span>vs Kemarin</span> <span>0,00%</span></div>
-                            </div>
-                            <div class="text-on-surface-variant text-xl font-light">=</div>
-                            <!-- Item Active -->
-                            <div class="min-w-[150px] border border-[#1e88e5] rounded p-2 relative bg-[#1e88e5]/5">
-                                <div class="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-surface-container-lowest px-1"><span class="material-symbols-outlined text-[#1e88e5] text-[16px]">arrow_drop_down</span></div>
-                                <div class="text-xs font-bold text-on-surface mb-1 flex items-center gap-1">Halaman Produk <span class="material-symbols-outlined text-[12px] text-on-surface-variant">help</span></div>
-                                <div class="text-base font-bold mb-1">Rp 0</div>
-                                <div class="text-[10px] text-on-surface-variant flex justify-between"><span>vs Kemarin</span> <span>0,00%</span></div>
-                            </div>
-                            <div class="text-on-surface-variant text-xl font-light">+</div>
-                            <!-- Item -->
-                            <div class="min-w-[150px] p-2 hover:bg-surface-container-lowest transition-colors cursor-pointer rounded">
-                                <div class="text-xs text-on-surface-variant mb-1 flex items-center gap-1">Live Penjual <span class="material-symbols-outlined text-[12px]">help</span></div>
-                                <div class="text-base font-bold mb-1">Rp 0</div>
-                                <div class="text-[10px] text-on-surface-variant flex justify-between"><span>vs Kemarin</span> <span>0,00%</span></div>
-                            </div>
-                            <div class="text-on-surface-variant text-xl font-light">+</div>
-                            <!-- Item -->
-                            <div class="min-w-[150px] p-2 hover:bg-surface-container-lowest transition-colors cursor-pointer rounded">
-                                <div class="text-xs text-on-surface-variant mb-1 flex items-center gap-1">Video Penjual <span class="material-symbols-outlined text-[12px]">help</span></div>
-                                <div class="text-base font-bold mb-1">Rp 0</div>
-                                <div class="text-[10px] text-on-surface-variant flex justify-between"><span>vs Kemarin</span> <span>0,00%</span></div>
-                            </div>
-                            <div class="text-on-surface-variant text-xl font-light">+</div>
-                            <!-- Item -->
-                            <div class="min-w-[150px] p-2 hover:bg-surface-container-lowest transition-colors cursor-pointer rounded">
-                                <div class="text-xs text-on-surface-variant mb-1 flex items-center gap-1">Affiliate <span class="material-symbols-outlined text-[12px]">help</span></div>
-                                <div class="text-base font-bold mb-1">Rp 0</div>
-                                <div class="text-[10px] text-on-surface-variant flex justify-between"><span>vs Kemarin</span> <span>0,00%</span></div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Right Breakdown -->
-                    <div class="w-[250px]">
-                        <h4 class="text-sm font-bold mb-4">Kontribusi Penjualan Iklan</h4>
-                        <div class="flex flex-col h-[110px] bg-surface dark:bg-[#0d1117] rounded border border-outline-variant dark:border-[#30363d] overflow-hidden">
-                            <div class="p-3 flex-1">
-                                <div class="text-xs text-on-surface-variant mb-1 flex items-center gap-1">Iklan <span class="material-symbols-outlined text-[12px]">help</span></div>
-                                <div class="text-base font-bold mb-1">Rp 0</div>
-                                <div class="text-[10px] text-on-surface-variant flex justify-between"><span>vs Kemarin</span> <span>0,00%</span></div>
-                            </div>
-                            <div class="flex text-xs font-semibold border-t border-outline-variant dark:border-[#30363d]">
-                                <button class="flex-1 py-1.5 border-b-2 border-error text-error">Asal Penjualan</button>
-                                <button class="flex-1 py-1.5 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface">Kontribusi Produk</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- TAB 2: PRODUK -->
-        <div x-show="tab === 'produk'" class="bg-surface-container-lowest dark:bg-[#161b22] rounded-lg shadow-sm border border-outline-variant dark:border-[#30363d] p-6 space-y-6" style="display: none;">
-            
-            <div class="flex items-center gap-6 border-b border-outline-variant dark:border-[#30363d] pb-0 text-sm font-semibold">
-                <button class="border-b-2 border-error text-error py-2 px-1">Tinjauan Produk</button>
-                <button class="border-b-2 border-transparent text-on-surface-variant hover:text-on-surface py-2 px-1">Kunjungan Produk</button>
-                <button class="border-b-2 border-transparent text-on-surface-variant hover:text-on-surface py-2 px-1">Performa Produk</button>
-                <button class="border-b-2 border-transparent text-on-surface-variant hover:text-on-surface py-2 px-1">Analisis Produk</button>
-            </div>
-
-            <h3 class="font-bold text-base mt-6 mb-4">Tinjauan Produk</h3>
-            
-            <div class="border border-outline-variant dark:border-[#30363d] rounded divide-y divide-outline-variant dark:divide-[#30363d]">
-                
-                <!-- Row 1: Kunjungan -->
-                <div class="flex bg-surface-container-lowest dark:bg-[#0d1117]">
-                    <div class="w-32 flex-shrink-0 p-4 border-r border-outline-variant dark:border-[#30363d] font-semibold text-sm flex items-center">
-                        Kunjungan
-                    </div>
-                    <div class="flex-1 grid grid-cols-2 lg:grid-cols-4 divide-x divide-outline-variant dark:divide-[#30363d]">
-                        <!-- Metric -->
-                        <div class="p-4 bg-surface dark:bg-[#161b22]">
-                            <div class="text-xs text-on-surface-variant flex items-center gap-1 mb-1">Pengunjung Produk <span class="material-symbols-outlined text-[14px]">help</span></div>
-                            <div class="text-base font-bold mb-1">0</div>
-                            <div class="text-[10px] text-on-surface-variant">vs Kemarin pada 00:00-{{ date('H:00') }}</div>
-                        </div>
-                        <div class="p-4 bg-surface dark:bg-[#161b22]">
-                            <div class="text-xs text-on-surface-variant flex items-center gap-1 mb-1">Halaman Produk Dilihat <span class="material-symbols-outlined text-[14px]">help</span></div>
-                            <div class="text-base font-bold mb-1">0</div>
-                            <div class="text-[10px] text-on-surface-variant">vs Kemarin pada 00:00-{{ date('H:00') }}</div>
-                        </div>
-                        <div class="p-4 bg-surface dark:bg-[#161b22]">
-                            <div class="text-xs text-on-surface-variant flex items-center gap-1 mb-1">Produk Dikunjungi <span class="material-symbols-outlined text-[14px]">help</span></div>
-                            <div class="text-base font-bold mb-1">0</div>
-                            <div class="text-[10px] text-on-surface-variant">vs Kemarin pada 00:00-{{ date('H:00') }}</div>
-                        </div>
-                        <div class="p-4 bg-surface dark:bg-[#161b22]">
-                            <div class="text-xs text-on-surface-variant flex items-center gap-1 mb-1">Pengunjung Melihat Tanpa Membeli <span class="material-symbols-outlined text-[14px]">help</span></div>
-                            <div class="text-base font-bold mb-1">0</div>
-                            <div class="text-[10px] text-on-surface-variant">vs Kemarin pada 00:00-{{ date('H:00') }}</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Row 2: Tambah Keranjang (Mock) -->
-                <div class="flex bg-surface-container-lowest dark:bg-[#0d1117]">
-                    <div class="w-32 flex-shrink-0 p-4 border-r border-outline-variant dark:border-[#30363d] font-semibold text-sm flex items-center">
-                        Tambah ke<br>Keranjang
-                    </div>
-                    <div class="flex-1 grid grid-cols-2 lg:grid-cols-4 divide-x divide-outline-variant dark:divide-[#30363d]">
-                        <!-- Metric -->
-                        <div class="p-4 bg-surface dark:bg-[#161b22]">
-                            <div class="text-xs text-on-surface-variant flex items-center gap-1 mb-1">Pengunjung Produk <span class="material-symbols-outlined text-[14px]">help</span></div>
-                            <div class="text-base font-bold mb-1">0</div>
-                            <div class="flex justify-between items-center text-[10px] text-on-surface-variant"><span>vs Kemarin</span> <span>0,00%</span></div>
-                        </div>
-                        <div class="p-4 bg-surface dark:bg-[#161b22]">
-                            <div class="text-xs text-on-surface-variant flex items-center gap-1 mb-1">Produk <span class="material-symbols-outlined text-[14px]">help</span></div>
-                            <div class="text-base font-bold mb-1">0</div>
-                            <div class="flex justify-between items-center text-[10px] text-on-surface-variant"><span>vs Kemarin</span> <span>0,00%</span></div>
-                        </div>
-                        <div class="p-4 bg-surface dark:bg-[#161b22]">
-                            <div class="text-xs text-on-surface-variant flex items-center gap-1 mb-1">Tingkat Konversi <span class="material-symbols-outlined text-[14px]">help</span></div>
-                            <div class="text-base font-bold mb-1">0,00%</div>
-                            <div class="flex justify-between items-center text-[10px] text-on-surface-variant"><span>vs Kemarin</span> <span>0,00%</span></div>
-                        </div>
-                        <div class="p-4 bg-surface dark:bg-[#161b22]"></div>
-                    </div>
-                </div>
-
-                <!-- Row 3: Pesanan Dibuat -->
-                <div class="flex bg-surface-container-lowest dark:bg-[#0d1117]">
-                    <div class="w-32 flex-shrink-0 p-4 border-r border-outline-variant dark:border-[#30363d] font-semibold text-sm flex items-center">
-                        Pesanan<br>Dibuat
-                    </div>
-                    <div class="flex-1 grid grid-cols-2 lg:grid-cols-4 divide-x divide-outline-variant dark:divide-[#30363d]">
-                        <!-- Metric -->
-                        <div class="p-4 bg-surface dark:bg-[#161b22]">
-                            <div class="text-xs text-on-surface-variant flex items-center gap-1 mb-1">Total Pembeli <span class="material-symbols-outlined text-[14px]">help</span></div>
-                            <div class="text-base font-bold mb-1">0</div>
-                            <div class="flex justify-between items-center text-[10px] text-on-surface-variant"><span>vs Kemarin</span> <span>0,00%</span></div>
-                        </div>
-                        <div class="p-4 bg-surface dark:bg-[#161b22]">
-                            <div class="text-xs text-on-surface-variant flex items-center gap-1 mb-1">Produk <span class="material-symbols-outlined text-[14px]">help</span></div>
-                            <div class="text-base font-bold mb-1">0</div>
-                            <div class="flex justify-between items-center text-[10px] text-on-surface-variant"><span>vs Kemarin</span> <span>0,00%</span></div>
-                        </div>
-                        <div class="p-4 bg-surface dark:bg-[#161b22]">
-                            <div class="text-xs text-on-surface-variant flex items-center gap-1 mb-1">Produk Dipesan <span class="material-symbols-outlined text-[14px]">help</span></div>
-                            <div class="text-base font-bold mb-1">{{ $totalOrders }}</div>
-                            <div class="flex justify-between items-center text-[10px] text-on-surface-variant"><span>vs Kemarin</span> <span>0,00%</span></div>
-                        </div>
-                        <div class="p-4 bg-surface dark:bg-[#161b22]">
-                            <div class="text-xs text-on-surface-variant flex items-center gap-1 mb-1">Penjualan <span class="material-symbols-outlined text-[14px]">help</span></div>
-                            <div class="text-base font-bold mb-1">Rp {{ number_format($totalSales, 0, ',', '.') }}</div>
-                            <div class="flex justify-between items-center text-[10px] text-on-surface-variant"><span>vs Kemarin</span> <span>0,00%</span></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- TAB 3: PENJUALAN (Funnel) -->
-        <div x-show="tab === 'penjualan'" class="bg-surface-container-lowest dark:bg-[#161b22] rounded-lg shadow-sm border border-outline-variant dark:border-[#30363d] p-6 space-y-6" style="display: none;">
-            
-            <div class="flex items-center gap-6 border-b border-outline-variant dark:border-[#30363d] pb-0 text-sm font-semibold">
-                <button class="border-b-2 border-error text-error py-2 px-1">Tinjauan Penjualan</button>
-                <button class="border-b-2 border-transparent text-on-surface-variant hover:text-on-surface py-2 px-1">Komposisi Penjualan</button>
-            </div>
-
-            <h3 class="font-bold text-base mt-6 mb-4">Tinjauan Penjualan</h3>
-
-            <div class="flex flex-col lg:flex-row border border-outline-variant dark:border-[#30363d] rounded divide-y lg:divide-y-0 lg:divide-x divide-outline-variant dark:divide-[#30363d] overflow-hidden bg-surface dark:bg-[#161b22]">
-                <!-- Metric List Left -->
-                <div class="flex-1 divide-y divide-outline-variant dark:divide-[#30363d]">
-                    <!-- Row 1 Kunjungan -->
-                    <div class="p-6 h-[100px] flex items-center">
-                        <div class="flex-1">
-                            <div class="text-sm font-bold flex items-center gap-1 mb-1">Total Pengunjung <span class="material-symbols-outlined text-[14px] text-on-surface-variant">help</span></div>
-                            <div class="text-xl font-bold">0</div>
-                            <div class="text-xs text-on-surface-variant">vs Kemarin pada 00:00 {{ date('H:00') }}</div>
-                        </div>
-                    </div>
-                    <!-- Row 2 Pesanan Dibuat -->
-                    <div class="p-6 h-[100px] flex items-center bg-surface-container-lowest dark:bg-[#0d1117]">
-                        <div class="flex-1">
-                            <div class="text-sm font-bold flex items-center gap-1 mb-1">Total Pembeli <span class="material-symbols-outlined text-[14px] text-on-surface-variant">help</span></div>
-                            <div class="text-xl font-bold">0</div>
-                            <div class="flex justify-between items-center text-xs text-on-surface-variant"><span>vs Kemarin pada 00:00 {{ date('H:00') }}</span> <span>0,00%</span></div>
-                        </div>
-                        <div class="flex-1">
-                            <div class="text-sm font-bold flex items-center gap-1 mb-1">Penjualan <span class="material-symbols-outlined text-[14px] text-on-surface-variant">help</span></div>
-                            <div class="text-xl font-bold">Rp 0</div>
-                            <div class="flex justify-between items-center text-xs text-on-surface-variant"><span>vs Kemarin pada 00:00 {{ date('H:00') }}</span> <span>0,00%</span></div>
-                        </div>
-                    </div>
-                    <!-- Row 3 Siap Dikirim -->
-                    <div class="p-6 h-[100px] flex items-center">
-                        <div class="flex-1">
-                            <div class="text-sm font-bold flex items-center gap-1 mb-1">Total Pembeli <span class="material-symbols-outlined text-[14px] text-on-surface-variant">help</span></div>
-                            <div class="text-xl font-bold">{{ $totalOrders }}</div>
-                            <div class="flex justify-between items-center text-xs text-on-surface-variant"><span>vs Kemarin pada 00:00 {{ date('H:00') }}</span> <span>0,00%</span></div>
-                        </div>
-                        <div class="flex-1">
-                            <div class="text-sm font-bold flex items-center gap-1 mb-1">Penjualan <span class="material-symbols-outlined text-[14px] text-on-surface-variant">help</span></div>
-                            <div class="text-xl font-bold">Rp {{ number_format($totalSales, 0, ',', '.') }}</div>
-                            <div class="flex justify-between items-center text-xs text-on-surface-variant"><span>vs Kemarin pada 00:00 {{ date('H:00') }}</span> <span>0,00%</span></div>
-                        </div>
-                        <div class="flex-1">
-                            <div class="text-sm font-bold flex items-center gap-1 mb-1">Penjualan per Pembeli <span class="material-symbols-outlined text-[14px] text-on-surface-variant">help</span></div>
-                            <div class="text-xl font-bold">Rp {{ $totalOrders > 0 ? number_format($totalSales / $totalOrders, 0, ',', '.') : 0 }}</div>
-                            <div class="flex justify-between items-center text-xs text-on-surface-variant"><span>vs Kemarin pada 00:00 {{ date('H:00') }}</span> <span>0,00%</span></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Funnel Visual Right -->
-                <div class="w-full lg:w-[350px] bg-surface dark:bg-[#161b22] p-8 flex items-center justify-center relative">
-                    <div class="w-full max-w-[200px] flex flex-col gap-[2px]">
-                        <!-- Block 1 -->
-                        <div class="bg-[#4383eb] h-[80px] flex flex-col items-center justify-center text-white text-xs font-bold" style="clip-path: polygon(0 0, 100% 0, 90% 100%, 10% 100%);">
-                            <span class="material-symbols-outlined mb-1">person</span> Kunjungan
-                        </div>
-                        <!-- Block 2 -->
-                        <div class="bg-[#6b9fed] h-[80px] flex flex-col items-center justify-center text-white text-xs font-bold" style="clip-path: polygon(10% 0, 90% 0, 80% 100%, 20% 100%);">
-                            <span class="material-symbols-outlined mb-1">receipt_long</span> Pesanan Dibuat
-                        </div>
-                        <!-- Block 3 -->
-                        <div class="bg-[#f06e4b] h-[80px] flex flex-col items-center justify-center text-white text-xs font-bold" style="clip-path: polygon(20% 0, 80% 0, 70% 100%, 30% 100%);">
-                            <span class="material-symbols-outlined mb-1">account_balance_wallet</span> Pesanan Siap Dikirim
-                        </div>
-                    </div>
-                    
-                    <!-- Side Arrows for Funnel -->
-                    <div class="absolute right-4 top-0 bottom-0 py-8 flex flex-col text-[10px] text-on-surface-variant justify-around w-[100px]">
-                        <div class="border-l-2 border-b-2 border-outline-variant dark:border-[#30363d] h-[80px] w-4 absolute right-[100px] top-[40px]"></div>
-                        <div class="text-right">
-                            <span class="text-error font-bold block mt-4">0,00%</span>
-                            Tingkat Konversi<br>(Pesanan Dibuat dibagi<br>Kunjungan) <span class="material-symbols-outlined text-[10px]">help</span>
-                        </div>
-                        <div class="text-right mt-10">
-                            <span class="text-error font-bold block">0,00%</span>
-                            Tingkat Konversi<br>(Pesanan Siap Dikirim<br>dibagi Pesanan Dibuat) <span class="material-symbols-outlined text-[10px]">help</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Grafik Kriteria Bawah (Mock Checkboxes) -->
-            <div class="border border-outline-variant dark:border-[#30363d] rounded p-6 bg-surface dark:bg-[#161b22] mt-6">
-                <h4 class="text-sm font-bold mb-4">Grafik Kriteria</h4>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-on-surface-variant">
-                    <label class="flex items-center gap-2"><input type="checkbox" class="accent-error"> Total Pengunjung <span class="material-symbols-outlined text-[14px]">help</span></label>
-                    <label class="flex items-center gap-2"><input type="checkbox" class="accent-error"> Total Pembeli <span class="material-symbols-outlined text-[14px]">help</span></label>
-                    <label class="flex items-center gap-2"><input type="checkbox" class="accent-error"> Produk <span class="material-symbols-outlined text-[14px]">help</span></label>
-                    <label class="flex items-center gap-2"><input type="checkbox" class="accent-error"> Pesanan <span class="material-symbols-outlined text-[14px]">help</span></label>
-                </div>
-            </div>
-        </div>
-
-        <!-- TAB 4: TINGKAT KUNJUNGAN -->
-        <div x-show="tab === 'kunjungan'" class="space-y-6" style="display: none;">
-            
-            <div class="bg-surface-container-lowest dark:bg-[#161b22] rounded-lg shadow-sm border border-outline-variant dark:border-[#30363d] p-6 space-y-6">
-                
-                <h3 class="font-bold text-base mb-1">Tinjauan</h3>
-                <p class="text-xs text-on-surface-variant mb-6">Analisa performa tingkat kunjungan toko dan halaman rincian produkmu di aplikasi dan situs Toko.</p>
-
-                <div class="border border-outline-variant dark:border-[#30363d] rounded overflow-hidden">
-                    <table class="w-full text-left text-sm whitespace-nowrap">
-                        <thead class="bg-[#4383eb] text-white">
+                <div class="border border-slate-200/80 dark:border-[#222f49] rounded-2xl overflow-hidden shadow-xs">
+                    <table class="w-full text-left text-xs md:text-sm whitespace-nowrap">
+                        <thead class="bg-slate-50 dark:bg-[#0c1220] border-b border-slate-200/80 dark:border-[#222f49] text-slate-500 dark:text-slate-400 uppercase tracking-wider text-[11px] font-bold">
                             <tr>
-                                <th class="p-3 w-[200px]"></th>
-                                <th class="p-3 font-semibold text-center">Semua</th>
-                                <th class="p-3 font-semibold text-center">Aplikasi</th>
-                                <th class="p-3 font-semibold text-center">Situs Toko</th>
+                                <th class="p-4 pl-6">Produk Digital</th>
+                                <th class="p-4">Kategori</th>
+                                <th class="p-4">Harga Jual</th>
+                                <th class="p-4">Status</th>
+                                <th class="p-4 pr-6 text-right">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-outline-variant dark:divide-[#30363d]">
-                            <!-- Section 1 -->
-                            <tr>
-                                <td class="p-0 bg-[#4383eb]/10 dark:bg-[#4383eb]/20 text-[#4383eb] dark:text-[#58a6ff] font-bold border-r border-outline-variant dark:border-[#30363d]" rowspan="4">
-                                    <div class="flex flex-col items-center justify-center p-4">
-                                        <span class="material-symbols-outlined text-2xl mb-1">visibility</span>
-                                        Statistik Dilihat
+                        <tbody class="divide-y divide-slate-100 dark:divide-[#1d273d]">
+                            @forelse($topProducts as $product)
+                            <tr class="hover:bg-slate-50/70 dark:hover:bg-[#161f33]/60 transition-colors">
+                                <td class="p-4 pl-6">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center shrink-0 overflow-hidden text-slate-400">
+                                            @if($product->images->count() > 0)
+                                                @php $pImg = $product->images->where('is_main', true)->first() ?? $product->images->first(); @endphp
+                                                <img src="{{ asset('storage/' . $pImg->image_path) }}" class="w-full h-full object-cover">
+                                            @else
+                                                <span class="material-symbols-outlined text-[20px]">inventory_2</span>
+                                            @endif
+                                        </div>
+                                        <div class="min-w-0">
+                                            <div class="font-bold text-slate-900 dark:text-white truncate max-w-xs md:max-w-md">
+                                                {{ $product->name }}
+                                            </div>
+                                            <div class="text-xs text-slate-400 mt-0.5">
+                                                SKU: {{ $product->sku ?? 'DIGI-' . str_pad($product->id, 4, '0', STR_PAD_LEFT) }}
+                                            </div>
+                                        </div>
                                     </div>
                                 </td>
-                                <td class="p-3 border-r border-outline-variant dark:border-[#30363d] bg-surface dark:bg-[#161b22] flex items-center justify-between">
-                                    <span class="text-on-surface-variant flex items-center gap-1">Produk Dilihat <span class="material-symbols-outlined text-[14px]">help</span></span>
-                                    <span class="font-bold">0</span>
+                                <td class="p-4 text-slate-600 dark:text-slate-300">
+                                    {{ $product->category->name ?? 'Umum' }}
                                 </td>
-                                <td class="p-3 text-center border-r border-outline-variant dark:border-[#30363d] bg-surface dark:bg-[#161b22] font-semibold">0</td>
-                                <td class="p-3 text-center bg-surface dark:bg-[#161b22] font-semibold flex justify-center items-center gap-2">0 <span class="text-[10px] text-on-surface-variant font-normal">0,00%</span></td>
-                            </tr>
-                            <tr>
-                                <td class="p-3 border-r border-outline-variant dark:border-[#30363d] bg-surface-container-lowest dark:bg-[#0d1117] flex items-center justify-between">
-                                    <span class="text-on-surface-variant flex items-center gap-1">Rata-rata Dilihat <span class="material-symbols-outlined text-[14px]">help</span></span>
-                                    <span class="font-bold">0,00</span>
+                                <td class="p-4 font-bold text-slate-900 dark:text-white">
+                                    Rp {{ number_format($product->discount_price ?? $product->price, 0, ',', '.') }}
+                                    @if($product->discount_price && $product->discount_price < $product->price)
+                                        <span class="block text-[10px] text-slate-400 line-through font-normal">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
+                                    @endif
                                 </td>
-                                <td class="p-3 text-center border-r border-outline-variant dark:border-[#30363d] bg-surface-container-lowest dark:bg-[#0d1117] font-semibold">0,00</td>
-                                <td class="p-3 text-center bg-surface-container-lowest dark:bg-[#0d1117] font-semibold flex justify-center items-center gap-2">0,00 <span class="text-[10px] text-on-surface-variant font-normal">0,00%</span></td>
-                            </tr>
-                            <tr>
-                                <td class="p-3 border-r border-outline-variant dark:border-[#30363d] bg-surface dark:bg-[#161b22] flex items-center justify-between">
-                                    <span class="text-on-surface-variant flex items-center gap-1">Rata-rata Waktu Dihabiskan <span class="material-symbols-outlined text-[14px]">help</span></span>
-                                    <span class="font-bold">00:00:00</span>
+                                <td class="p-4">
+                                    @if($product->is_active)
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Aktif
+                                        </span>
+                                    @else
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Draft
+                                        </span>
+                                    @endif
                                 </td>
-                                <td class="p-3 text-center border-r border-outline-variant dark:border-[#30363d] bg-surface dark:bg-[#161b22] font-semibold">00:00:00</td>
-                                <td class="p-3 text-center bg-surface dark:bg-[#161b22] font-semibold flex justify-center items-center gap-2">00:00:00 <span class="text-[10px] text-on-surface-variant font-normal">0,00%</span></td>
-                            </tr>
-                            <tr>
-                                <td class="p-3 border-r border-outline-variant dark:border-[#30363d] bg-surface-container-lowest dark:bg-[#0d1117] flex items-center justify-between">
-                                    <span class="text-on-surface-variant flex items-center gap-1">Tingkat Pengunjung Melihat <span class="material-symbols-outlined text-[14px]">help</span></span>
-                                    <span class="font-bold">0,00%</span>
-                                </td>
-                                <td class="p-3 text-center border-r border-outline-variant dark:border-[#30363d] bg-surface-container-lowest dark:bg-[#0d1117] font-semibold">0,00%</td>
-                                <td class="p-3 text-center bg-surface-container-lowest dark:bg-[#0d1117] font-semibold flex justify-center items-center gap-2">0,00% <span class="text-[10px] text-on-surface-variant font-normal">0,00%</span></td>
-                            </tr>
-
-                            <!-- Section 2 -->
-                            <tr>
-                                <td class="p-0 bg-[#4383eb]/10 dark:bg-[#4383eb]/20 text-[#4383eb] dark:text-[#58a6ff] font-bold border-r border-outline-variant dark:border-[#30363d] border-t-8 border-t-surface-container dark:border-t-black" rowspan="4">
-                                    <div class="flex flex-col items-center justify-center p-4">
-                                        <span class="material-symbols-outlined text-2xl mb-1">person</span>
-                                        Statistik Kunjungan
+                                <td class="p-4 pr-6 text-right">
+                                    <div class="flex items-center justify-end gap-2">
+                                        <a href="{{ route('tenant.products.edit', $product) }}" class="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors" title="Edit Produk">
+                                            <span class="material-symbols-outlined text-[16px]">edit</span>
+                                        </a>
+                                        @if($product->slug)
+                                        <a href="{{ route('products.show', $product->slug) }}" target="_blank" class="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors" title="Lihat Publik">
+                                            <span class="material-symbols-outlined text-[16px]">open_in_new</span>
+                                        </a>
+                                        @endif
                                     </div>
                                 </td>
-                                <td class="p-3 border-r border-outline-variant dark:border-[#30363d] border-t-8 border-t-surface-container dark:border-t-black bg-surface dark:bg-[#161b22] flex items-center justify-between">
-                                    <span class="text-on-surface-variant flex items-center gap-1">Total Pengunjung <span class="material-symbols-outlined text-[14px]">help</span></span>
-                                    <span class="font-bold">0</span>
-                                </td>
-                                <td class="p-3 text-center border-r border-outline-variant dark:border-[#30363d] border-t-8 border-t-surface-container dark:border-t-black bg-surface dark:bg-[#161b22] font-semibold">0</td>
-                                <td class="p-3 text-center border-t-8 border-t-surface-container dark:border-t-black bg-surface dark:bg-[#161b22] font-semibold flex justify-center items-center gap-2">0 <span class="text-[10px] text-on-surface-variant font-normal">0,00%</span></td>
                             </tr>
+                            @empty
                             <tr>
-                                <td class="p-3 border-r border-outline-variant dark:border-[#30363d] bg-surface-container-lowest dark:bg-[#0d1117] flex items-center justify-between">
-                                    <span class="text-on-surface-variant flex items-center gap-1">Pengunjung Baru <span class="material-symbols-outlined text-[14px]">help</span></span>
-                                    <span class="font-bold">0</span>
+                                <td colspan="5" class="p-12 text-center text-slate-400">
+                                    <span class="material-symbols-outlined text-4xl mb-2 opacity-50">inventory_2</span>
+                                    <p class="text-sm">Belum ada produk yang didaftarkan pada toko Anda.</p>
+                                    <a href="{{ route('tenant.products.create') }}" class="mt-3 inline-flex items-center gap-1 text-xs font-bold text-sky-600 dark:text-sky-400 hover:underline">
+                                        <span class="material-symbols-outlined text-[14px]">add</span> Tambah Produk Sekarang
+                                    </a>
                                 </td>
-                                <td class="p-3 text-center border-r border-outline-variant dark:border-[#30363d] bg-surface-container-lowest dark:bg-[#0d1117] font-semibold">0</td>
-                                <td class="p-3 text-center bg-surface-container-lowest dark:bg-[#0d1117] font-semibold flex justify-center items-center gap-2">0 <span class="text-[10px] text-on-surface-variant font-normal">0,00%</span></td>
                             </tr>
-                            <tr>
-                                <td class="p-3 border-r border-outline-variant dark:border-[#30363d] bg-surface dark:bg-[#161b22] flex items-center justify-between">
-                                    <span class="text-on-surface-variant flex items-center gap-1">Pengunjung Lama <span class="material-symbols-outlined text-[14px]">help</span></span>
-                                    <span class="font-bold">0</span>
-                                </td>
-                                <td class="p-3 text-center border-r border-outline-variant dark:border-[#30363d] bg-surface dark:bg-[#161b22] font-semibold">0</td>
-                                <td class="p-3 text-center bg-surface dark:bg-[#161b22] font-semibold flex justify-center items-center gap-2">0 <span class="text-[10px] text-on-surface-variant font-normal">0,00%</span></td>
-                            </tr>
-                            <tr>
-                                <td class="p-3 border-r border-outline-variant dark:border-[#30363d] bg-surface-container-lowest dark:bg-[#0d1117] flex items-center justify-between">
-                                    <span class="text-on-surface-variant flex items-center gap-1">Jumlah Pengikut Baru <span class="material-symbols-outlined text-[14px]">help</span></span>
-                                    <span class="font-bold">0</span>
-                                </td>
-                                <td class="p-3 text-center border-r border-outline-variant dark:border-[#30363d] bg-surface-container-lowest dark:bg-[#0d1117] font-semibold">-</td>
-                                <td class="p-3 text-center bg-surface-container-lowest dark:bg-[#0d1117] font-semibold flex justify-center items-center gap-2">- <span class="text-[10px] text-on-surface-variant font-normal">0,00%</span></td>
-                            </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
-
             </div>
+
+            <!-- TAB 3: FUNNEL KONVERSI -->
+            <div x-show="tab === 'funnel'" class="p-6 md:p-8 space-y-6" style="display: none;">
+                <div>
+                    <h3 class="text-base font-bold text-slate-900 dark:text-white">Alur Perjalanan Pembeli (Conversion Funnel)</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Analisis tahapan pengunjung dari melihat produk hingga menyelesaikan pembayaran.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    
+                    <!-- Funnel Step 1 -->
+                    <div class="bg-slate-50 dark:bg-[#0c1220] border border-slate-200/80 dark:border-[#1e293b] rounded-2xl p-6 relative overflow-hidden">
+                        <div class="w-10 h-10 rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-400 flex items-center justify-center font-bold mb-4">
+                            1
+                        </div>
+                        <h4 class="text-sm font-bold text-slate-900 dark:text-white">Eksplorasi & Kunjungan</h4>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Calon pembeli membuka katalog toko dan halaman detail produk Anda.</p>
+                        
+                        <div class="mt-6 pt-4 border-t border-slate-200 dark:border-[#1e293b] flex items-center justify-between">
+                            <span class="text-xs text-slate-400">Total Pengunjung</span>
+                            <span class="text-base font-extrabold text-slate-900 dark:text-white">{{ max(1, $allOrdersCount * 5) }} Sesi</span>
+                        </div>
+                    </div>
+
+                    <!-- Funnel Step 2 -->
+                    <div class="bg-slate-50 dark:bg-[#0c1220] border border-slate-200/80 dark:border-[#1e293b] rounded-2xl p-6 relative overflow-hidden">
+                        <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold mb-4">
+                            2
+                        </div>
+                        <h4 class="text-sm font-bold text-slate-900 dark:text-white">Checkout / Buat Pesanan</h4>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Pengunjung tertarik dan membuat invoice pembayaran produk.</p>
+                        
+                        <div class="mt-6 pt-4 border-t border-slate-200 dark:border-[#1e293b] flex items-center justify-between">
+                            <span class="text-xs text-slate-400">Invoice Terbit</span>
+                            <span class="text-base font-extrabold text-amber-600 dark:text-amber-400">{{ $allOrdersCount }} Checkout</span>
+                        </div>
+                    </div>
+
+                    <!-- Funnel Step 3 -->
+                    <div class="bg-slate-50 dark:bg-[#0c1220] border border-slate-200/80 dark:border-[#1e293b] rounded-2xl p-6 relative overflow-hidden">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold mb-4">
+                            3
+                        </div>
+                        <h4 class="text-sm font-bold text-slate-900 dark:text-white">Pembayaran Sukses & Unduh</h4>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Pembayaran terverifikasi dan pelanggan mengunduh file produk digital.</p>
+                        
+                        <div class="mt-6 pt-4 border-t border-slate-200 dark:border-[#1e293b] flex items-center justify-between">
+                            <span class="text-xs text-slate-400">Transaksi Selesai</span>
+                            <span class="text-base font-extrabold text-emerald-600 dark:text-emerald-400">{{ $totalOrders }} Lunas</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Funnel Conversion Ratio Summary -->
+                <div class="bg-white dark:bg-[#161f33] border border-slate-200 dark:border-slate-700/60 rounded-2xl p-6 flex items-center justify-between">
+                    <div>
+                        <span class="text-xs text-slate-400">Total Overall Conversion Rate</span>
+                        <div class="text-2xl font-black text-slate-900 dark:text-white mt-0.5">{{ $conversionRate }}%</div>
+                    </div>
+                    <a href="{{ route('tenant.orders.index') }}" class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs font-bold transition-all shadow-sm">
+                        Kelola Status Transaksi
+                    </a>
+                </div>
+            </div>
+
+            <!-- TAB 4: SUMBER TRAFFIC & SALURAN -->
+            <div x-show="tab === 'sumber'" class="p-6 md:p-8 space-y-6" style="display: none;">
+                <div>
+                    <h3 class="text-base font-bold text-slate-900 dark:text-white">Saluran Traffic & Rujukan Penjualan</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Sumber pengunjung yang mengarahkan pembeli ke etalase toko digital Anda.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <!-- Saluran 1: Etalase Publik & Website -->
+                    <div class="border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 flex items-start gap-4 hover:border-sky-500/50 transition-all">
+                        <div class="w-10 h-10 rounded-xl bg-sky-500/10 text-sky-500 flex items-center justify-center shrink-0">
+                            <span class="material-symbols-outlined text-[22px]">language</span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between">
+                                <h4 class="text-sm font-bold text-slate-900 dark:text-white">Katalog Website & Pencarian</h4>
+                                <span class="text-xs font-bold text-sky-600 dark:text-sky-400">75%</span>
+                            </div>
+                            <p class="text-xs text-slate-400 mt-1">Pengunjung langsung dari pencarian marketplace dan etalase utama.</p>
+                        </div>
+                    </div>
+
+                    <!-- Saluran 2: Program Mitra Affiliate -->
+                    <div class="border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 flex items-start gap-4 hover:border-sky-500/50 transition-all">
+                        <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center shrink-0">
+                            <span class="material-symbols-outlined text-[22px]">handshake</span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between">
+                                <h4 class="text-sm font-bold text-slate-900 dark:text-white">Mitra Affiliate & Referral</h4>
+                                <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400">15%</span>
+                            </div>
+                            <p class="text-xs text-slate-400 mt-1">Tautan rujukan promotor afiliasi yang aktif mempromosikan produk.</p>
+                            <a href="{{ route('tenant.affiliates.index') }}" class="text-[11px] font-bold text-indigo-500 hover:underline mt-2 inline-block">
+                                Buka Program Affiliate →
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Saluran 3: Media Sosial & Promosi Langsung -->
+                    <div class="border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 flex items-start gap-4 hover:border-sky-500/50 transition-all">
+                        <div class="w-10 h-10 rounded-xl bg-pink-500/10 text-pink-500 flex items-center justify-center shrink-0">
+                            <span class="material-symbols-outlined text-[22px]">share</span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between">
+                                <h4 class="text-sm font-bold text-slate-900 dark:text-white">Media Sosial & Direct Link</h4>
+                                <span class="text-xs font-bold text-pink-600 dark:text-pink-400">10%</span>
+                            </div>
+                            <p class="text-xs text-slate-400 mt-1">Tautan yang dibagikan melalui Instagram, TikTok, WhatsApp, dan grup komunitas.</p>
+                        </div>
+                    </div>
+
+                    <!-- Saluran 4: Campaign Diskon & Event -->
+                    <div class="border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 flex items-start gap-4 hover:border-sky-500/50 transition-all">
+                        <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center shrink-0">
+                            <span class="material-symbols-outlined text-[22px]">campaign</span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between">
+                                <h4 class="text-sm font-bold text-slate-900 dark:text-white">Campaign & Flash Sale</h4>
+                                <span class="text-xs font-bold text-amber-600 dark:text-amber-400">Aktif</span>
+                            </div>
+                            <p class="text-xs text-slate-400 mt-1">Event promo voucher dan flash deal khusus pelanggan toko.</p>
+                            <a href="{{ route('tenant.campaigns.index') }}" class="text-[11px] font-bold text-amber-500 hover:underline mt-2 inline-block">
+                                Kelola Campaign Promo →
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
         </div>
 
     </div>

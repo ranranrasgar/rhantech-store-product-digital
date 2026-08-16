@@ -25,11 +25,7 @@ class WebhookController extends Controller
             // Cocokkan awalan order_id dengan prefix di database
             $fallbackApp = null;
             foreach ($apps as $app) {
-                // Jika prefix diset menjadi *, jadikan sebagai fallback
-                if (trim($app->prefix) === '*') {
-                    $fallbackApp = $app;
-                    continue;
-                }
+
 
                 // Mendukung multi-prefix dengan pemisah koma (contoh: "PLT-, INV-, NOC-")
                 $prefixes = array_map('trim', explode(',', $app->prefix));
@@ -38,6 +34,12 @@ class WebhookController extends Controller
                         $targetApp = $app;
                         break 2; // keluar dari 2 lapis foreach
                     }
+                }
+
+                // Jika prefix diset menjadi *, jadikan sebagai fallback
+                if (trim($app->prefix) === '*') {
+                    $fallbackApp = $app;
+                    continue;
                 }
             }
 

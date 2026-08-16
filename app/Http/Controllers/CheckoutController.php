@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\Events\Registered;
+use App\Models\User;
 use App\Models\Product;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -71,6 +75,28 @@ class CheckoutController extends Controller
             'customer_email' => 'required|email|max:255',
             'customer_phone' => 'required|string|max:50',
         ]);
+
+        // Auto Create / Check User for Guest Checkout
+        if (!Auth::check()) {
+            $existingUser = User::query()->where('email', $validated['customer_email'])->first();
+            if (!$existingUser) {
+                // Generate secure random password
+                $randomPassword = Str::random(12);
+                
+                $newUser = User::query()->create([
+                    'name' => $validated['customer_name'],
+                    'email' => $validated['customer_email'],
+                    'password' => Hash::make($randomPassword),
+                    'role' => 'User',
+                ]);
+
+                // Trigger Laravel standard email verification event
+                event(new Registered($newUser));
+
+                // Auto log in the user so their session is active
+                Auth::login($newUser);
+            }
+        }
 
         $totalAmount = 0;
         foreach ($cart as $item) {

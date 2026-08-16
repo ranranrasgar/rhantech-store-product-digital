@@ -1,294 +1,313 @@
 @extends('layouts.tenant')
 
-@section('title', 'Tenant Dashboard')
+@section('title', 'Dashboard Toko')
 
 @section('content')
-<div class="flex-1 overflow-y-auto p-4 md:p-6 bg-surface-container-lowest dark:bg-[#0d1117]">
-    <div class="max-w-7xl mx-auto space-y-6">
-        
-        <!-- Banner Info (Pengembalian Pajak dll) -->
-        <div class="bg-[#E0F2FE] dark:bg-[#0369A1]/20 border border-[#BAE6FD] dark:border-[#0369A1] rounded-md p-3 flex items-center gap-3">
-            <span class="material-symbols-outlined text-[#0284C7] dark:text-[#38BDF8] text-xl">campaign</span>
-            <p class="text-sm text-[#0369A1] dark:text-[#E0F2FE]">Selamat datang di Seller Center versi baru. Pantau dan tingkatkan performa toko Anda dari satu tempat!</p>
-            <button class="ml-auto text-[#0284C7] dark:text-[#38BDF8] hover:bg-[#BAE6FD] dark:hover:bg-[#0369A1]/50 p-1 rounded transition-colors">
-                <span class="material-symbols-outlined text-lg">close</span>
-            </button>
-        </div>
+<div class="flex-1 overflow-y-auto p-4 md:p-8 bg-[#f8fafc] dark:bg-[#090d16] text-[#0f172a] dark:text-[#f1f5f9] transition-colors duration-200">
+    <div class="max-w-7xl mx-auto space-y-8">
 
-        @if(($totalProducts ?? 0) == 0 && ($totalSales ?? 0) == 0)
-        <!-- Onboarding Widget -->
-        <div class="bg-gradient-to-br from-primary/10 via-surface to-[#0369A1]/10 dark:from-[#0369A1]/20 dark:via-[#161b22] dark:to-primary/10 border border-primary/20 dark:border-primary/30 rounded-xl p-6 md:p-8 relative overflow-hidden shadow-sm">
-            <div class="absolute -top-10 -right-10 opacity-5 dark:opacity-10 pointer-events-none transform rotate-12">
-                <span class="material-symbols-outlined text-[200px] text-primary">rocket_launch</span>
-            </div>
-            
-            <div class="relative z-10 max-w-4xl">
-                <div class="flex items-center gap-3 mb-3">
-                    <div class="p-2 bg-primary/20 text-primary rounded-lg">
-                        <span class="material-symbols-outlined text-xl">storefront</span>
+        <!-- Header Hero & Quick Info -->
+        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#0f172a] via-[#1e293b] to-[#0284c7] dark:from-[#0b1329] dark:via-[#111c38] dark:to-[#0369a1] text-white p-6 md:p-8 shadow-xl border border-white/10">
+            <!-- Background Glow Effects -->
+            <div class="absolute -top-24 -right-24 w-72 h-72 bg-sky-500/20 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-24 -left-24 w-72 h-72 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                <div class="flex items-center gap-4">
+                    <div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl p-1 bg-white/10 backdrop-blur-md border border-white/20 shadow-inner overflow-hidden shrink-0">
+                        @if($store && $store->logo)
+                            <img src="{{ asset('storage/' . $store->logo) }}" alt="{{ $store->name }}" class="w-full h-full object-cover rounded-xl">
+                        @else
+                            <div class="w-full h-full bg-gradient-to-tr from-sky-500 to-indigo-600 rounded-xl flex items-center justify-center font-black text-2xl text-white">
+                                {{ strtoupper(substr($store->name ?? 'T', 0, 2)) }}
+                            </div>
+                        @endif
                     </div>
-                    <h2 class="text-2xl md:text-3xl font-bold text-on-surface dark:text-white">Selamat Datang di Seller Center! 🚀</h2>
+                    <div>
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-xs font-semibold text-sky-200 mb-2">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                            Merchant Partner
+                        </div>
+                        <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight text-white flex items-center gap-2">
+                            {{ $store->name ?? 'Toko Saya' }}
+                        </h1>
+                        <p class="text-xs md:text-sm text-slate-300 mt-1 max-w-xl line-clamp-1">
+                            {{ $store->description ?: 'Kelola produk digital, pantau penjualan, dan tingkatkan penghasilan Anda.' }}
+                        </p>
+                    </div>
                 </div>
-                <p class="text-on-surface-variant dark:text-gray-300 text-sm md:text-base mb-8 max-w-2xl leading-relaxed">
-                    Mulai jual produk digital Anda dengan mudah. Tanpa perlu repot mengurus pengiriman fisik, transaksi terjamin aman, dan nikmati pencairan saldo otomatis. Selesaikan 3 langkah di bawah ini untuk mulai menghasilkan!
-                </p>
-                
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-                    <!-- Step 1 -->
-                    <a href="{{ route('tenant.store.index') }}" class="group bg-white dark:bg-[#0d1117]/80 border border-outline-variant dark:border-[#30363d] rounded-xl p-5 hover:border-primary dark:hover:border-primary hover:shadow-lg transition-all relative overflow-hidden">
-                        <div class="absolute top-0 right-0 w-16 h-16 bg-primary/5 rounded-bl-full -z-10 group-hover:scale-150 transition-transform duration-500"></div>
-                        <div class="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 text-primary font-bold mb-4 group-hover:bg-primary group-hover:text-white transition-colors">1</div>
-                        <h3 class="font-bold text-on-surface dark:text-white mb-2 group-hover:text-primary transition-colors flex items-center gap-1">Dekorasi Toko <span class="material-symbols-outlined text-[16px] opacity-0 group-hover:opacity-100 transition-opacity transform -translate-x-2 group-hover:translate-x-0">arrow_forward</span></h3>
-                        <p class="text-xs text-on-surface-variant dark:text-gray-400">Atur nama, logo, dan deskripsi toko agar lebih profesional dan menarik bagi pembeli.</p>
+
+                <!-- Action Hub Buttons -->
+                <div class="flex flex-wrap items-center gap-3">
+                    @if($store && $store->slug)
+                    <a href="{{ route('store.show', $store->slug) }}" target="_blank" class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white text-xs md:text-sm font-semibold transition-all duration-200 flex items-center gap-2 shadow-sm">
+                        <span class="material-symbols-outlined text-[18px]">storefront</span>
+                        Lihat Toko Publik
                     </a>
-                    
-                    <!-- Step 2 -->
-                    <a href="{{ route('tenant.products.index') }}" class="group bg-white dark:bg-[#0d1117]/80 border border-outline-variant dark:border-[#30363d] rounded-xl p-5 hover:border-primary dark:hover:border-primary hover:shadow-lg transition-all relative overflow-hidden">
-                        <div class="absolute top-0 right-0 w-16 h-16 bg-primary/5 rounded-bl-full -z-10 group-hover:scale-150 transition-transform duration-500"></div>
-                        <div class="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 text-primary font-bold mb-4 group-hover:bg-primary group-hover:text-white transition-colors">2</div>
-                        <h3 class="font-bold text-on-surface dark:text-white mb-2 group-hover:text-primary transition-colors flex items-center gap-1">Input Produk <span class="material-symbols-outlined text-[16px] opacity-0 group-hover:opacity-100 transition-opacity transform -translate-x-2 group-hover:translate-x-0">arrow_forward</span></h3>
-                        <p class="text-xs text-on-surface-variant dark:text-gray-400">Unggah produk digital pertama Anda seperti Ebook, Template, atau Kode Program.</p>
-                    </a>
-                    
-                    <!-- Step 3 -->
-                    <a href="{{ route('tenant.orders.index') }}" class="group bg-white dark:bg-[#0d1117]/80 border border-outline-variant dark:border-[#30363d] rounded-xl p-5 hover:border-primary dark:hover:border-primary hover:shadow-lg transition-all relative overflow-hidden">
-                        <div class="absolute top-0 right-0 w-16 h-16 bg-primary/5 rounded-bl-full -z-10 group-hover:scale-150 transition-transform duration-500"></div>
-                        <div class="flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 text-primary font-bold mb-4 group-hover:bg-primary group-hover:text-white transition-colors">3</div>
-                        <h3 class="font-bold text-on-surface dark:text-white mb-2 group-hover:text-primary transition-colors flex items-center gap-1">Pantau Penjualan <span class="material-symbols-outlined text-[16px] opacity-0 group-hover:opacity-100 transition-opacity transform -translate-x-2 group-hover:translate-x-0">arrow_forward</span></h3>
-                        <p class="text-xs text-on-surface-variant dark:text-gray-400">Kelola pesanan masuk, pantau transaksi pelanggan, dan tarik saldo pendapatan Anda.</p>
+                    @endif
+                    <a href="{{ route('tenant.products.create') }}" class="px-5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs md:text-sm font-bold shadow-lg shadow-sky-500/30 hover:shadow-sky-500/50 transition-all duration-200 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[18px]">add_circle</span>
+                        Tambah Produk
                     </a>
                 </div>
             </div>
         </div>
-        @endif
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- 4 Essential Metrics Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <!-- Metric 1: Total Revenue -->
+            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Saldo Penjual</span>
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-[22px]">account_balance_wallet</span>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                        Rp {{ number_format($totalSales ?? 0, 0, ',', '.') }}
+                    </div>
+                    <div class="mt-2 flex items-center justify-between text-xs">
+                        <span class="text-slate-400">Siap ditarik</span>
+                        <a href="{{ route('tenant.payouts.index') }}" class="font-bold text-sky-600 dark:text-sky-400 hover:underline flex items-center gap-0.5">
+                            Tarik Saldo <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Metric 2: Completed Orders -->
+            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Pesanan Berhasil</span>
+                    <div class="w-10 h-10 rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-400 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-[22px]">verified</span>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                        {{ number_format($completedOrdersCount ?? 0) }}
+                    </div>
+                    <div class="mt-2 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                        <span>Dari {{ number_format($totalOrdersCount ?? 0) }} total order</span>
+                        <span class="font-semibold text-emerald-600 dark:text-emerald-400">
+                            {{ $totalOrdersCount > 0 ? round(($completedOrdersCount / $totalOrdersCount) * 100) : 100 }}% Sukses
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Metric 3: Pending Orders -->
+            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Menunggu Pembayaran</span>
+                    <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-[22px]">schedule</span>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                        {{ number_format($pendingOrdersCount ?? 0) }}
+                    </div>
+                    <div class="mt-2 flex items-center justify-between text-xs">
+                        <span class="text-slate-400">Invoice tertunda</span>
+                        <a href="{{ route('tenant.orders.index', ['tab' => 'pending']) }}" class="font-bold text-amber-600 dark:text-amber-400 hover:underline">
+                            Lihat Detail
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Metric 4: Active Products -->
+            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Katalog Produk</span>
+                    <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-[22px]">inventory_2</span>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                        {{ number_format($activeProducts ?? 0) }} <span class="text-xs font-semibold text-slate-400">/ {{ number_format($totalProducts ?? 0) }}</span>
+                    </div>
+                    <div class="mt-2 flex items-center justify-between text-xs">
+                        <span class="text-slate-400">Produk berstatus aktif</span>
+                        <a href="{{ route('tenant.products.index') }}" class="font-bold text-indigo-600 dark:text-indigo-400 hover:underline">
+                            Kelola Produk
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Area: 2 Columns (7:5) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             
-            <!-- KOLOM KIRI & TENGAH (2/3 width on LG) -->
-            <div class="lg:col-span-2 space-y-6">
-                
-                <!-- Pesanan (To-Do List) -->
-                <div class="bg-surface dark:bg-[#161b22] border border-outline-variant dark:border-[#30363d] rounded-md overflow-hidden">
-                    <div class="border-b border-outline-variant dark:border-[#30363d] px-5 py-3 flex justify-between items-center">
-                        <h3 class="font-bold text-on-surface dark:text-white">Pesanan</h3>
+            <!-- Left Area: Recent Orders (7 cols) -->
+            <div class="lg:col-span-7 space-y-6">
+                <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl shadow-sm overflow-hidden">
+                    <div class="p-5 md:p-6 border-b border-slate-100 dark:border-[#222f49] flex items-center justify-between">
+                        <div>
+                            <h2 class="text-base font-bold text-slate-900 dark:text-white">Transaksi Penjualan Terbaru</h2>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Pesanan produk digital terkini dari pelanggan Anda.</p>
+                        </div>
+                        <a href="{{ route('tenant.orders.index') }}" class="text-xs font-bold text-sky-600 dark:text-sky-400 hover:underline flex items-center gap-1">
+                            Semua Pesanan <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                        </a>
                     </div>
-                    <div class="p-5 grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                        <a href="#" class="block group">
-                            <h4 class="text-3xl font-bold text-primary dark:text-[#38BDF8] group-hover:text-primary/80 transition-colors">0</h4>
-                            <p class="text-xs mt-2 text-on-surface-variant dark:text-gray-400 group-hover:text-primary transition-colors">Pengiriman Perlu Diproses</p>
-                        </a>
-                        <a href="#" class="block group">
-                            <h4 class="text-3xl font-bold text-primary dark:text-[#38BDF8] group-hover:text-primary/80 transition-colors">0</h4>
-                            <p class="text-xs mt-2 text-on-surface-variant dark:text-gray-400 group-hover:text-primary transition-colors">Pengiriman Telah Diproses</p>
-                        </a>
-                        <a href="#" class="block group">
-                            <h4 class="text-3xl font-bold text-primary dark:text-[#38BDF8] group-hover:text-primary/80 transition-colors">0</h4>
-                            <p class="text-xs mt-2 text-on-surface-variant dark:text-gray-400 group-hover:text-primary transition-colors">Pengembalian/Pembatalan</p>
-                        </a>
-                        <a href="#" class="block group">
-                            <h4 class="text-3xl font-bold text-primary dark:text-[#38BDF8] group-hover:text-primary/80 transition-colors">{{ $totalProducts ?? 0 }}</h4>
-                            <p class="text-xs mt-2 text-on-surface-variant dark:text-gray-400 group-hover:text-primary transition-colors">Jumlah Produk Aktif</p>
-                        </a>
+
+                    <div class="divide-y divide-slate-100 dark:divide-[#1d273d]">
+                        @forelse($recentOrders as $order)
+                        @php
+                            $tenantItems = $order->orderItems->filter(function($item) use ($store) {
+                                return $item->product && $item->product->store_id == $store->id;
+                            });
+                            $firstItem = $tenantItems->first() ?? $order->orderItems->first();
+                            $firstProduct = $firstItem ? $firstItem->product : $order->product;
+                            $amountForTenant = $tenantItems->isNotEmpty() ? $tenantItems->sum(function($item){ return $item->price * $item->quantity; }) : $order->amount;
+                        @endphp
+                        <div class="p-4 md:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-slate-50/70 dark:hover:bg-[#161f33]/60 transition-colors">
+                            <div class="flex items-center gap-3.5 min-w-0">
+                                <div class="w-11 h-11 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center shrink-0 overflow-hidden text-slate-500">
+                                    @if($firstProduct && $firstProduct->images->count() > 0)
+                                        @php $img = $firstProduct->images->where('is_main', true)->first() ?? $firstProduct->images->first(); @endphp
+                                        <img src="{{ asset('storage/' . $img->image_path) }}" class="w-full h-full object-cover">
+                                    @else
+                                        <span class="material-symbols-outlined text-[20px]">code</span>
+                                    @endif
+                                </div>
+                                <div class="min-w-0">
+                                    <h3 class="text-sm font-bold text-slate-900 dark:text-white truncate">
+                                        {{ $firstProduct->name ?? 'Produk Digital' }}
+                                    </h3>
+                                    <div class="flex items-center gap-2 text-xs text-slate-400 mt-0.5 font-mono">
+                                        <span>{{ $order->invoice_number }}</span>
+                                        <span>•</span>
+                                        <span>{{ $order->created_at->diffForHumans() }}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex sm:flex-col items-center sm:items-end justify-between gap-1 shrink-0">
+                                <div class="text-sm font-extrabold text-slate-900 dark:text-white">
+                                    Rp {{ number_format($amountForTenant, 0, ',', '.') }}
+                                </div>
+                                <div>
+                                    @if($order->status === 'paid' || $order->status === 'downloaded')
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Sukses
+                                        </span>
+                                    @elseif($order->status === 'failed')
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-100 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Gagal
+                                        </span>
+                                    @else
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span> Pending
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        @empty
+                        <div class="p-12 text-center text-slate-400">
+                            <span class="material-symbols-outlined text-4xl mb-2 opacity-50">shopping_bag</span>
+                            <p class="text-sm">Belum ada transaksi penjualan baru.</p>
+                        </div>
+                        @endforelse
                     </div>
                 </div>
 
-                <!-- Performa Toko -->
-                <div class="bg-surface dark:bg-[#161b22] border border-outline-variant dark:border-[#30363d] rounded-md overflow-hidden">
-                    <div class="border-b border-outline-variant dark:border-[#30363d] px-5 py-3 flex justify-between items-center">
-                        <div class="flex items-center gap-3">
-                            <h3 class="font-bold text-on-surface dark:text-white">Performa Toko</h3>
-                            <span class="text-xs text-on-surface-variant dark:text-gray-500">Waktu update terakhir: Hari Ini</span>
+                <!-- Feature Shortcuts Banner -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <a href="{{ route('tenant.appearance.index') }}" class="group bg-gradient-to-br from-indigo-50 to-white dark:from-[#131b2e] dark:to-[#111726] border border-indigo-100 dark:border-[#263553] rounded-2xl p-5 hover:border-indigo-400 dark:hover:border-indigo-500 transition-all shadow-sm">
+                        <div class="w-10 h-10 rounded-xl bg-indigo-500 text-white flex items-center justify-center shadow-md shadow-indigo-500/20 mb-3 group-hover:scale-105 transition-transform">
+                            <span class="material-symbols-outlined text-[20px]">palette</span>
                         </div>
-                        <a href="#" class="text-sm text-primary dark:text-[#38BDF8] hover:underline flex items-center">Lainnya <span class="material-symbols-outlined text-sm ml-1">chevron_right</span></a>
+                        <h3 class="text-sm font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors flex items-center gap-1">
+                            Dekorasi Toko <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+                        </h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Kustomisasi banner, tampilan beranda, dan tema etalase toko Anda.</p>
+                    </a>
+
+                    <a href="{{ route('tenant.bank.index') }}" class="group bg-gradient-to-br from-sky-50 to-white dark:from-[#101e33] dark:to-[#111726] border border-sky-100 dark:border-[#1d3559] rounded-2xl p-5 hover:border-sky-400 dark:hover:border-sky-500 transition-all shadow-sm">
+                        <div class="w-10 h-10 rounded-xl bg-sky-500 text-white flex items-center justify-center shadow-md shadow-sky-500/20 mb-3 group-hover:scale-105 transition-transform">
+                            <span class="material-symbols-outlined text-[20px]">credit_card</span>
+                        </div>
+                        <h3 class="text-sm font-bold text-slate-900 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors flex items-center gap-1">
+                            Rekening Bank <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+                        </h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Atur data rekening bank tujuan untuk pencairan dana otomatis.</p>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right Area: Store Products & Performance Quick Guide (5 cols) -->
+            <div class="lg:col-span-5 space-y-6">
+                
+                <!-- Store Quick Glance -->
+                <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl shadow-sm p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-base font-bold text-slate-900 dark:text-white">Koleksi Produk Anda</h2>
+                        <a href="{{ route('tenant.products.index') }}" class="text-xs font-bold text-sky-600 dark:text-sky-400 hover:underline">
+                            Lihat Semua
+                        </a>
                     </div>
-                    <div class="p-5 grid grid-cols-2 md:grid-cols-5 gap-4">
-                        <div class="col-span-2 md:col-span-1">
-                            <p class="text-xs text-on-surface-variant dark:text-gray-400 mb-1 flex items-center gap-1">Penjualan <span class="material-symbols-outlined text-[14px]">help</span></p>
-                            <h4 class="text-xl font-bold text-on-surface dark:text-white">Rp {{ number_format($totalSales ?? 0, 0, ',', '.') }}</h4>
-                            <p class="text-xs text-gray-400 mt-1">- 0,00%</p>
+
+                    <div class="space-y-3">
+                        @forelse($topProducts as $prod)
+                        <div class="flex items-center gap-3 p-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-[#161f33] transition-colors border border-transparent hover:border-slate-200/60 dark:hover:border-[#222f49]">
+                            <div class="w-12 h-12 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden shrink-0 flex items-center justify-center">
+                                @if($prod->images->count() > 0)
+                                    @php $prodImg = $prod->images->where('is_main', true)->first() ?? $prod->images->first(); @endphp
+                                    <img src="{{ asset('storage/' . $prodImg->image_path) }}" class="w-full h-full object-cover">
+                                @else
+                                    <span class="material-symbols-outlined text-slate-400">inventory_2</span>
+                                @endif
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h4 class="text-xs font-bold text-slate-900 dark:text-white truncate">{{ $prod->name }}</h4>
+                                <div class="text-xs font-bold text-sky-600 dark:text-sky-400 mt-0.5">
+                                    Rp {{ number_format($prod->discount_price ?? $prod->price, 0, ',', '.') }}
+                                </div>
+                            </div>
+                            <a href="{{ route('tenant.products.edit', $prod) }}" class="p-1.5 text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 transition-colors" title="Edit Produk">
+                                <span class="material-symbols-outlined text-[18px]">edit</span>
+                            </a>
                         </div>
-                        <div>
-                            <p class="text-xs text-on-surface-variant dark:text-gray-400 mb-1 flex items-center gap-1">Total Pengunjung <span class="material-symbols-outlined text-[14px]">help</span></p>
-                            <h4 class="text-xl font-bold text-on-surface dark:text-white">0</h4>
-                            <p class="text-xs text-gray-400 mt-1">- 0,00%</p>
+                        @empty
+                        <div class="py-8 text-center text-slate-400">
+                            <p class="text-xs">Belum ada produk yang diunggah.</p>
+                            <a href="{{ route('tenant.products.create') }}" class="mt-2 inline-block text-xs font-bold text-sky-600 dark:text-sky-400 underline">
+                                Tambah Sekarang
+                            </a>
                         </div>
-                        <div>
-                            <p class="text-xs text-on-surface-variant dark:text-gray-400 mb-1 flex items-center gap-1">Produk Diklik <span class="material-symbols-outlined text-[14px]">help</span></p>
-                            <h4 class="text-xl font-bold text-on-surface dark:text-white">0</h4>
-                            <p class="text-xs text-gray-400 mt-1">- 0,00%</p>
-                        </div>
-                        <div>
-                            <p class="text-xs text-on-surface-variant dark:text-gray-400 mb-1 flex items-center gap-1">Pesanan <span class="material-symbols-outlined text-[14px]">help</span></p>
-                            <h4 class="text-xl font-bold text-on-surface dark:text-white">0</h4>
-                            <p class="text-xs text-gray-400 mt-1">- 0,00%</p>
-                        </div>
-                        <div>
-                            <p class="text-xs text-on-surface-variant dark:text-gray-400 mb-1 flex items-center gap-1">Konversi <span class="material-symbols-outlined text-[14px]">help</span></p>
-                            <h4 class="text-xl font-bold text-on-surface dark:text-white">0,00%</h4>
-                            <p class="text-xs text-gray-400 mt-1">- 0,00%</p>
-                        </div>
+                        @endforelse
                     </div>
                 </div>
 
-                <!-- Iklan & Promosi -->
-                <div class="bg-surface dark:bg-[#161b22] border border-outline-variant dark:border-[#30363d] rounded-md overflow-hidden">
-                    <div class="border-b border-outline-variant dark:border-[#30363d] px-5 py-3 flex justify-between items-center">
-                        <h3 class="font-bold text-on-surface dark:text-white">Promosi Toko</h3>
-                        <a href="#" class="text-sm text-primary dark:text-[#38BDF8] hover:underline flex items-center">Lainnya <span class="material-symbols-outlined text-sm ml-1">chevron_right</span></a>
+                <!-- Tips & Growth Guide -->
+                <div class="bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-2xl p-6 shadow-md border border-slate-700 relative overflow-hidden">
+                    <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-sky-500/20 rounded-full blur-2xl pointer-events-none"></div>
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-8 h-8 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[18px]">lightbulb</span>
+                        </div>
+                        <h3 class="font-bold text-sm text-white">Tips Penjualan Optimal</h3>
                     </div>
-                    <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <!-- Promo 1 -->
-                        <div class="border border-outline-variant dark:border-[#30363d] rounded bg-[#F8FAFC] dark:bg-[#161b22] p-4 flex flex-col justify-between">
-                            <div>
-                                <div class="flex items-start gap-3">
-                                    <div class="p-2 bg-error/10 text-error rounded-full flex-shrink-0">
-                                        <span class="material-symbols-outlined text-lg">campaign</span>
-                                    </div>
-                                    <div>
-                                        <h4 class="font-bold text-sm text-on-surface dark:text-white">Tingkatkan Penjualan Anda</h4>
-                                        <p class="text-xs text-on-surface-variant dark:text-gray-400 mt-1">Kirim pesan promo massal ke pengikut toko Anda dengan fitur Broadcast.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="mt-4 text-right">
-                                <a href="#" class="inline-block px-4 py-1.5 border border-primary text-primary text-sm font-semibold rounded hover:bg-primary/5 transition-colors">Coba Sekarang</a>
-                            </div>
-                        </div>
-                        
-                        <!-- Promo 2 -->
-                        <div class="border border-outline-variant dark:border-[#30363d] rounded bg-[#F8FAFC] dark:bg-[#161b22] p-4 flex flex-col justify-between">
-                            <div>
-                                <div class="flex items-start gap-3">
-                                    <div class="p-2 bg-primary/10 text-primary rounded-full flex-shrink-0">
-                                        <span class="material-symbols-outlined text-lg">trending_up</span>
-                                    </div>
-                                    <div>
-                                        <h4 class="font-bold text-sm text-on-surface dark:text-white">Maksimalkan dengan Iklan</h4>
-                                        <p class="text-xs text-on-surface-variant dark:text-gray-400 mt-1">Pelajari lebih lanjut cara terbaik mengiklankan produk toko Anda agar lebih laris.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="mt-4 text-right">
-                                <a href="#" class="inline-block px-4 py-1.5 bg-primary text-white text-sm font-semibold rounded hover:bg-primary/90 transition-colors">Pelajari Lebih Lanjut</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Bottom row: Affiliate & Livestream -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Affiliate -->
-                    <div class="bg-surface dark:bg-[#161b22] border border-outline-variant dark:border-[#30363d] rounded-md overflow-hidden flex flex-col">
-                        <div class="border-b border-outline-variant dark:border-[#30363d] px-5 py-3 flex justify-between items-center">
-                            <h3 class="font-bold text-on-surface dark:text-white">Affiliate Marketing</h3>
-                            <a href="#" class="text-sm text-primary dark:text-[#38BDF8] hover:underline flex items-center">Lainnya <span class="material-symbols-outlined text-sm ml-1">chevron_right</span></a>
-                        </div>
-                        <div class="p-5 flex-1 flex flex-col justify-center">
-                            <div class="flex justify-between items-center mb-4">
-                                <div>
-                                    <p class="text-xs text-on-surface-variant dark:text-gray-400 mb-1">Penjualan</p>
-                                    <h4 class="text-lg font-bold text-on-surface dark:text-white">Rp 0</h4>
-                                </div>
-                                <div>
-                                    <p class="text-xs text-on-surface-variant dark:text-gray-400 mb-1">Pembeli Baru</p>
-                                    <h4 class="text-lg font-bold text-on-surface dark:text-white">0</h4>
-                                </div>
-                                <div>
-                                    <p class="text-xs text-on-surface-variant dark:text-gray-400 mb-1">ROI</p>
-                                    <h4 class="text-lg font-bold text-on-surface dark:text-white">-</h4>
-                                </div>
-                            </div>
-                            <div class="bg-[#FFFBEB] dark:bg-[#78350F]/20 border border-[#FDE68A] dark:border-[#78350F] rounded p-3">
-                                <h5 class="text-xs font-bold text-[#92400E] dark:text-[#FDE68A] flex items-center gap-1 mb-1"><span class="material-symbols-outlined text-[14px]">lightbulb</span> Saran Optimasi</h5>
-                                <p class="text-[10px] text-[#92400E] dark:text-[#FDE68A]/80">Daftarkan produk Anda ke program affiliate untuk menjangkau lebih banyak pembeli tanpa biaya di muka.</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Livestream -->
-                    <div class="bg-surface dark:bg-[#161b22] border border-outline-variant dark:border-[#30363d] rounded-md overflow-hidden flex flex-col relative">
-                        <div class="border-b border-outline-variant dark:border-[#30363d] px-5 py-3 flex justify-between items-center z-10 relative">
-                            <h3 class="font-bold text-on-surface dark:text-white">Livestream</h3>
-                            <a href="#" class="text-sm text-primary dark:text-[#38BDF8] hover:underline flex items-center">Lainnya <span class="material-symbols-outlined text-sm ml-1">chevron_right</span></a>
-                        </div>
-                        <div class="p-5 flex-1 z-10 relative flex flex-col justify-center">
-                            <h4 class="text-lg font-bold text-on-surface dark:text-white leading-tight mb-2">Buat Livestream<br>Sekarang dan<br>Tingkatkan Konversi!</h4>
-                            <div class="mt-auto">
-                                <a href="#" class="inline-block px-5 py-2 bg-error text-white text-sm font-bold rounded-full hover:bg-error/90 transition-colors">Buat Livestream</a>
-                            </div>
-                        </div>
-                        <!-- Background Pattern/Illustration -->
-                        <div class="absolute bottom-0 right-0 w-32 h-32 opacity-20 pointer-events-none">
-                            <span class="material-symbols-outlined text-[120px] text-error">live_tv</span>
-                        </div>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        Lengkapi deskripsi produk digital Anda dengan informasi spesifikasi source code/aplikasi, panduan instalasi, dan link demo langsung untuk meningkatkan kepercayaan calon pembeli.
+                    </p>
+                    <div class="mt-4 pt-4 border-t border-slate-700/60 flex items-center justify-between">
+                        <span class="text-[11px] text-slate-400">Pusat Bantuan Mitra</span>
+                        <a href="{{ route('contact') }}" class="text-xs font-bold text-sky-400 hover:text-sky-300 transition-colors flex items-center gap-0.5">
+                            Hubungi Tim Support <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+                        </a>
                     </div>
                 </div>
 
             </div>
 
-            <!-- KOLOM KANAN (1/3 width on LG) -->
-            <div class="space-y-6">
-                
-                <!-- Rekomendasi Bisnis -->
-                <div class="bg-surface dark:bg-[#161b22] border border-outline-variant dark:border-[#30363d] rounded-md overflow-hidden">
-                    <div class="border-b border-outline-variant dark:border-[#30363d] px-5 py-3 flex justify-between items-center">
-                        <h3 class="font-bold text-on-surface dark:text-white">Rekomendasi Bisnis</h3>
-                        <span class="text-xs text-on-surface-variant">3 rekomendasi</span>
-                    </div>
-                    <div class="p-0 divide-y divide-outline-variant/50 dark:divide-[#30363d]">
-                        
-                        <!-- Item 1 -->
-                        <div class="p-4 hover:bg-surface-container-lowest dark:hover:bg-[#21262d] transition-colors">
-                            <div class="flex gap-3">
-                                <span class="material-symbols-outlined text-primary">upload_file</span>
-                                <div>
-                                    <h4 class="text-sm font-bold text-on-surface dark:text-white mb-1">Upload massal 10 produk</h4>
-                                    <p class="text-xs text-on-surface-variant dark:text-gray-400 mb-3">Dapatkan eksposur tambahan untuk produk-produk terbaru Anda.</p>
-                                    <a href="#" class="text-xs font-semibold text-primary border border-primary rounded px-3 py-1 hover:bg-primary/5">Mulai</a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Item 2 -->
-                        <div class="p-4 hover:bg-surface-container-lowest dark:hover:bg-[#21262d] transition-colors">
-                            <div class="flex gap-3">
-                                <span class="material-symbols-outlined text-primary">account_balance_wallet</span>
-                                <div>
-                                    <h4 class="text-sm font-bold text-on-surface dark:text-white mb-1">Aktifkan Saldo Toko</h4>
-                                    <p class="text-xs text-on-surface-variant dark:text-gray-400 mb-3">Kelola penghasilan Anda dengan lebih mudah dan cairkan kapan saja.</p>
-                                    <a href="#" class="text-xs font-semibold text-primary border border-primary rounded px-3 py-1 hover:bg-primary/5">Aktifkan Sekarang</a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Item 3 -->
-                        <div class="p-4 hover:bg-surface-container-lowest dark:hover:bg-[#21262d] transition-colors">
-                            <div class="flex gap-3">
-                                <span class="material-symbols-outlined text-primary">local_offer</span>
-                                <div>
-                                    <h4 class="text-sm font-bold text-on-surface dark:text-white mb-1">Buat Voucher Toko</h4>
-                                    <p class="text-xs text-on-surface-variant dark:text-gray-400 mb-3">Tarik minat pembeli untuk melakukan checkout dengan potongan harga spesial.</p>
-                                    <a href="#" class="text-xs font-semibold text-primary border border-primary rounded px-3 py-1 hover:bg-primary/5">Buat Voucher</a>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- Berita / Informasi -->
-                <div class="bg-surface dark:bg-[#161b22] border border-outline-variant dark:border-[#30363d] rounded-md overflow-hidden">
-                    <div class="border-b border-outline-variant dark:border-[#30363d] px-5 py-3 flex justify-between items-center">
-                        <h3 class="font-bold text-on-surface dark:text-white">Berita</h3>
-                        <a href="#" class="text-sm text-primary dark:text-[#38BDF8] hover:underline flex items-center">Lainnya <span class="material-symbols-outlined text-sm ml-1">chevron_right</span></a>
-                    </div>
-                    <div class="p-8 flex flex-col items-center justify-center text-center">
-                        <span class="material-symbols-outlined text-5xl text-on-surface-variant/30 mb-3">article</span>
-                        <p class="text-sm text-on-surface-variant dark:text-gray-400">Belum ada Informasi baru</p>
-                    </div>
-                </div>
-
-            </div>
         </div>
 
     </div>

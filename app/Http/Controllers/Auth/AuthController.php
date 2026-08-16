@@ -67,7 +67,7 @@ class AuthController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
-            'role' => 'client', // Default role for new registrations
+            'role' => 'User', // Default role for new registrations
         ]);
 
         event(new Registered($user));

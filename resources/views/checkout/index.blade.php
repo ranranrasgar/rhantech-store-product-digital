@@ -1,53 +1,90 @@
 @extends('layouts.shopee')
-@section('title', 'Checkout | PPOB')
+@section('title', 'Checkout Pesanan - ' . ($company->company_name ?? 'Rhantech'))
 
 @section('content')
-<main class="bg-gray-100 min-h-screen pt-[130px] pb-24">
-    <div class="max-w-[1200px] mx-auto px-4">
+<main class="bg-background text-on-background min-h-screen pt-6 md:pt-10 pb-24 font-sans transition-colors duration-200">
+    <div class="max-w-[1240px] mx-auto px-4 sm:px-6">
         
+        <!-- Breadcrumb / Header -->
+        <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+                <nav class="flex items-center text-xs md:text-sm text-on-surface-variant mb-2">
+                    <a href="{{ route('home') }}" class="hover:text-primary transition-colors flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[16px]">home</span>
+                        Beranda
+                    </a>
+                    <span class="mx-2 text-outline-variant">/</span>
+                    <a href="{{ route('cart.index') }}" class="hover:text-primary transition-colors">Keranjang</a>
+                    <span class="mx-2 text-outline-variant">/</span>
+                    <span class="text-on-surface font-semibold">Checkout Pesanan</span>
+                </nav>
+                <h1 class="text-xl md:text-2xl font-black text-on-surface tracking-tight">Checkout Produk Digital</h1>
+            </div>
+            <div class="flex items-center gap-2 text-xs text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-sm">
+                <span class="material-symbols-outlined text-[18px]">verified_user</span>
+                <span class="font-bold">Pembayaran Aman & Akses Otomatis</span>
+            </div>
+        </div>
+
         <form action="{{ route('checkout.process') }}" method="POST">
             @csrf
             
             <!-- Address/Customer Section -->
-            <div class="bg-white rounded shadow-sm mb-4 relative overflow-hidden">
-                <!-- Top border decoration -->
-                <div class="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-red-500 via-blue-500 to-red-500" style="background-size: 116px 3px; background-image: repeating-linear-gradient(45deg, #ee4d2d 0, #ee4d2d 33px, transparent 0, transparent 41px, #5c7ee5 0, #5c7ee5 74px, transparent 0, transparent 82px);"></div>
+            <div class="bg-surface rounded-sm border border-outline-variant shadow-xs mb-6 relative overflow-hidden">
+                <!-- Top border accent -->
+                <div class="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-primary via-sky-500 to-emerald-500"></div>
                 
-                <div class="p-6">
-                    <div class="flex items-center text-primary text-lg mb-4 gap-2">
-                        <span class="material-symbols-outlined text-[24px]">location_on</span>
-                        <h2 class="font-medium">Detail Pembeli</h2>
+                <div class="p-4 md:p-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-2">
+                        <div class="flex items-center text-primary text-base font-bold gap-2">
+                            <span class="material-symbols-outlined text-[22px]">person_pin</span>
+                            <h2 class="text-on-surface">Data Penerima / Akun Pembeli</h2>
+                        </div>
+                        @if(auth()->check())
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-sm bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-semibold">
+                                <span class="material-symbols-outlined text-[15px]">account_circle</span>
+                                Terisi otomatis dari akun Anda ({{ auth()->user()->email }})
+                            </span>
+                        @else
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-sm bg-sky-500/10 border border-sky-500/20 text-sky-600 dark:text-sky-400 text-xs font-semibold">
+                                <span class="material-symbols-outlined text-[15px]">info</span>
+                                Akun pembeli & link aktivasi akan otomatis dibuatkan ke email ini
+                            </span>
+                        @endif
                     </div>
                     
-                    <div class="flex flex-col md:flex-row gap-4 mb-4">
-                        <div class="w-full md:w-1/3">
-                            <label class="block text-sm text-gray-700 mb-1">Nama Lengkap</label>
-                            <input type="text" name="customer_name" required value="{{ old('customer_name') }}" class="w-full text-sm border-gray-300 rounded focus:border-primary focus:ring-1 focus:ring-primary/50" placeholder="Masukkan nama">
-                            @error('customer_name')<span class="text-error text-xs">{{ $message }}</span>@enderror
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-1.5">Nama Lengkap <span class="text-rose-500">*</span></label>
+                            <input type="text" name="customer_name" required value="{{ old('customer_name', auth()->check() ? auth()->user()->name : '') }}" class="w-full text-sm bg-surface-container-low border border-outline-variant rounded-sm px-3.5 py-2.5 text-on-surface focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/50 transition-colors" placeholder="Nama lengkap Anda">
+                            @error('customer_name')<span class="text-rose-500 text-xs mt-1 block font-medium">{{ $message }}</span>@enderror
                         </div>
-                        <div class="w-full md:w-1/3">
-                            <label class="block text-sm text-gray-700 mb-1">Email (Untuk pengiriman File)</label>
-                            <input type="email" name="customer_email" required value="{{ old('customer_email') }}" class="w-full text-sm border-gray-300 rounded focus:border-primary focus:ring-1 focus:ring-primary/50" placeholder="Masukkan email">
-                            @error('customer_email')<span class="text-error text-xs">{{ $message }}</span>@enderror
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-1.5">Email Pengiriman File <span class="text-rose-500">*</span></label>
+                            <input type="email" name="customer_email" required value="{{ old('customer_email', auth()->check() ? auth()->user()->email : '') }}" class="w-full text-sm bg-surface-container-low border border-outline-variant rounded-sm px-3.5 py-2.5 text-on-surface focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/50 transition-colors" placeholder="email@domain.com">
+                            <span class="text-[11px] text-on-surface-variant mt-1 block">Link file & aktivasi akun dikirim ke email ini.</span>
+                            @error('customer_email')<span class="text-rose-500 text-xs mt-1 block font-medium">{{ $message }}</span>@enderror
                         </div>
-                        <div class="w-full md:w-1/3">
-                            <label class="block text-sm text-gray-700 mb-1">Nomor WhatsApp</label>
-                            <input type="text" name="customer_phone" required value="{{ old('customer_phone') }}" class="w-full text-sm border-gray-300 rounded focus:border-primary focus:ring-1 focus:ring-primary/50" placeholder="Masukkan no WA">
-                            @error('customer_phone')<span class="text-error text-xs">{{ $message }}</span>@enderror
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-1.5">Nomor WhatsApp <span class="text-rose-500">*</span></label>
+                            <input type="text" name="customer_phone" required value="{{ old('customer_phone') }}" class="w-full text-sm bg-surface-container-low border border-outline-variant rounded-sm px-3.5 py-2.5 text-on-surface focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/50 transition-colors" placeholder="08xxxxxxxxxx">
+                            <span class="text-[11px] text-on-surface-variant mt-1 block">Untuk notifikasi status invoice otomatis.</span>
+                            @error('customer_phone')<span class="text-rose-500 text-xs mt-1 block font-medium">{{ $message }}</span>@enderror
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Product List Section -->
-            <div class="bg-white rounded shadow-sm mb-4">
-                <div class="p-6 pb-2">
-                    <div class="hidden md:flex text-gray-500 text-sm mb-4">
-                        <div class="w-1/2">Produk Dipesan</div>
-                        <div class="w-1/6 text-center">Harga Satuan</div>
-                        <div class="w-1/6 text-center">Jumlah</div>
-                        <div class="w-1/6 text-right">Subtotal Produk</div>
+            <div class="bg-surface rounded-sm border border-outline-variant shadow-xs mb-6 overflow-hidden">
+                <div class="p-4 md:p-6 pb-3 border-b border-outline-variant">
+                    <div class="hidden md:grid grid-cols-12 text-xs font-bold uppercase tracking-wider text-on-surface-variant">
+                        <div class="col-span-6">Produk Digital Dipesan</div>
+                        <div class="col-span-2 text-center">Harga Satuan</div>
+                        <div class="col-span-2 text-center">Jumlah</div>
+                        <div class="col-span-2 text-right">Subtotal</div>
                     </div>
+                    <div class="md:hidden text-sm font-bold text-on-surface">Daftar Item Pesanan</div>
                 </div>
                 
                 @php $totalAmount = 0; @endphp
@@ -56,93 +93,111 @@
                         $itemTotal = $details['price'] * $details['quantity'];
                         $totalAmount += $itemTotal;
                     @endphp
-                    <!-- Store Name -->
-                    <div class="px-6 py-2 border-t border-gray-100 flex items-center gap-2">
-                        <span class="text-xs bg-primary text-white px-1 py-0.5 rounded-sm">Star</span>
-                        <span class="text-sm font-bold text-gray-800">{{ $details['store_name'] }}</span>
-                        <span class="material-symbols-outlined text-green-500 text-[18px]">chat</span>
+                    <!-- Store Header Bar -->
+                    <div class="px-4 md:px-6 py-2.5 bg-surface-container-low border-b border-outline-variant/60 flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[16px] text-primary">storefront</span>
+                            <span class="text-xs font-bold text-on-surface">{{ $details['store_name'] ?? 'Official Store' }}</span>
+                            <span class="material-symbols-outlined text-primary text-[14px]">verified</span>
+                        </div>
+                        <span class="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[13px]">bolt</span> Instant Delivery
+                        </span>
                     </div>
                     
-                    <!-- Item -->
-                    <div class="px-4 md:px-6 py-4 flex flex-col md:flex-row border-b border-gray-100 last:border-b-0 md:items-center bg-gray-50/50 gap-4 md:gap-0">
-                        <div class="w-full md:w-1/2 flex items-center gap-4">
-                            <img src="{{ $details['image'] ? asset('storage/'.$details['image']) : 'https://placehold.co/80x80?text=No+Image' }}" class="w-12 h-12 object-cover border border-gray-200 shrink-0">
-                            <div class="text-sm text-gray-800 line-clamp-2 leading-snug">{{ $details['name'] }}</div>
-                        </div>
-                        <div class="w-full flex justify-between items-center md:hidden border-t border-dashed border-gray-200 pt-2 mt-2">
-                            <div class="text-sm text-gray-600">Rp{{ number_format($details['price'], 0, ',', '.') }} x {{ $details['quantity'] }}</div>
-                            <div class="text-sm font-medium text-primary">Rp{{ number_format($itemTotal, 0, ',', '.') }}</div>
-                        </div>
-                        <div class="hidden md:block w-1/6 text-center text-sm text-gray-600">
-                            Rp{{ number_format($details['price'], 0, ',', '.') }}
-                        </div>
-                        <div class="hidden md:block w-1/6 text-center text-sm text-gray-800">
-                            {{ $details['quantity'] }}
-                        </div>
-                        <div class="hidden md:block w-1/6 text-right text-sm text-gray-800 font-medium">
-                            Rp{{ number_format($itemTotal, 0, ',', '.') }}
-                        </div>
-                    </div>
-                    
-                    <!-- Notes & Shipping -->
-                    <div class="px-4 md:px-6 py-4 flex flex-col md:flex-row border-b border-dashed border-gray-200 md:items-start gap-4">
-                        <div class="w-full md:w-1/2 flex items-center gap-4 md:border-r border-gray-200 md:pr-4">
-                            <span class="text-sm text-gray-800 shrink-0">Pesan:</span>
-                            <input type="text" class="text-sm w-full border-gray-300 rounded focus:border-primary focus:ring-primary/50" placeholder="(Opsional) Pesan">
-                        </div>
-                        <div class="w-full md:w-1/2 md:pl-6 flex justify-between items-center">
-                            <div class="text-sm text-gray-800">Opsi Pengiriman:</div>
-                            <div class="text-right">
-                                <div class="text-sm font-bold text-gray-800">Kirim File Digital</div>
-                                <div class="text-sm font-bold text-gray-500">Rp0</div>
+                    <!-- Item Row -->
+                    <div class="p-4 md:p-6 flex flex-col md:grid md:grid-cols-12 items-start md:items-center gap-4 border-b border-outline-variant/40">
+                        <div class="col-span-6 flex items-center gap-3.5 w-full">
+                            <img src="{{ $details['image'] ? asset('storage/'.$details['image']) : 'https://placehold.co/80x80?text=No+Image' }}" class="w-14 h-14 object-cover rounded-sm border border-outline-variant shrink-0 bg-surface-container">
+                            <div class="min-w-0">
+                                <div class="text-sm font-bold text-on-surface line-clamp-2 leading-snug">{{ $details['name'] }}</div>
+                                <div class="text-[11px] text-on-surface-variant mt-1 flex items-center gap-1.5">
+                                    <span class="px-1.5 py-0.5 rounded-sm bg-surface-container text-on-surface-variant font-medium">Digital Product</span>
+                                    <span>•</span>
+                                    <span>Download Link</span>
+                                </div>
                             </div>
+                        </div>
+                        <div class="col-span-2 text-center w-full md:w-auto flex justify-between md:block text-xs md:text-sm text-on-surface-variant">
+                            <span class="md:hidden">Harga:</span>
+                            <span class="font-medium text-on-surface">Rp{{ number_format($details['price'], 0, ',', '.') }}</span>
+                        </div>
+                        <div class="col-span-2 text-center w-full md:w-auto flex justify-between md:block text-xs md:text-sm text-on-surface">
+                            <span class="md:hidden text-on-surface-variant">Kuantitas:</span>
+                            <span class="font-semibold px-2 py-1 rounded-sm bg-surface-container text-xs">{{ $details['quantity'] }}</span>
+                        </div>
+                        <div class="col-span-2 text-right w-full md:w-auto flex justify-between md:block text-sm font-black text-primary">
+                            <span class="md:hidden text-on-surface-variant font-normal">Subtotal:</span>
+                            <span>Rp{{ number_format($itemTotal, 0, ',', '.') }}</span>
                         </div>
                     </div>
                 @endforeach
                 
-                <!-- Order Total -->
-                <div class="px-4 md:px-6 py-4 bg-gray-50/50 flex justify-between md:justify-end items-center gap-4">
-                    <div class="text-sm text-gray-500">Total Pesanan <span class="hidden md:inline">({{ count($cart) }} Produk)</span>:</div>
-                    <div class="text-lg md:text-xl text-primary font-medium">Rp{{ number_format($totalAmount, 0, ',', '.') }}</div>
+                <!-- Notes & Delivery Options -->
+                <div class="p-4 md:p-6 bg-surface-container-low border-t border-outline-variant flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div class="w-full md:w-1/2 flex items-center gap-3">
+                        <span class="text-xs font-bold uppercase tracking-wider text-on-surface-variant shrink-0">Catatan:</span>
+                        <input type="text" name="notes" class="text-xs w-full bg-surface border border-outline-variant rounded-sm px-3 py-2 text-on-surface focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/50" placeholder="(Opsional) Catatan khusus pesanan Anda">
+                    </div>
+                    <div class="w-full md:w-auto flex items-center justify-between md:justify-end gap-6 text-xs">
+                        <span class="text-on-surface-variant">Pengiriman:</span>
+                        <div class="text-right">
+                            <span class="font-bold text-on-surface block">Kirim Link File Otomatis</span>
+                            <span class="font-black text-emerald-600 dark:text-emerald-400">Gratis (Rp0)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Total Bar -->
+                <div class="p-4 md:p-6 bg-surface flex justify-between items-center border-t border-outline-variant">
+                    <div class="text-xs md:text-sm text-on-surface-variant">Total Dipesan ({{ count($cart) }} Produk):</div>
+                    <div class="text-lg md:text-xl font-black text-primary">Rp{{ number_format($totalAmount, 0, ',', '.') }}</div>
                 </div>
             </div>
 
-            <!-- Payment Method & Footer -->
-            <div class="bg-white rounded shadow-sm mb-4">
-                <div class="p-4 md:p-6 border-b border-gray-100 flex flex-col md:flex-row md:items-center gap-4 md:gap-0">
-                    <div class="w-full md:w-48 text-gray-800 font-medium text-lg">Metode Pembayaran</div>
-                    <div class="flex gap-2">
-                        <div class="border border-primary text-primary bg-surface-variant px-4 py-1.5 text-sm rounded-sm font-medium">Otomatis / QRIS</div>
+            <!-- Payment Method & Summary -->
+            <div class="bg-surface rounded-sm border border-outline-variant shadow-xs mb-6 overflow-hidden">
+                <div class="p-4 md:p-6 border-b border-outline-variant flex flex-col md:flex-row md:items-center justify-between gap-3">
+                    <div>
+                        <h2 class="text-base font-bold text-on-surface">Metode Pembayaran</h2>
+                        <p class="text-xs text-on-surface-variant mt-0.5">Pilih sistem gerbang pembayaran terverifikasi otomatis.</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="border-2 border-primary text-primary bg-primary/5 px-3 py-1.5 text-xs rounded-sm font-bold flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-[16px]">qr_code_scanner</span>
+                            <span>QRIS / Bank Transfer / E-Wallet (Midtrans)</span>
+                        </div>
                     </div>
                 </div>
                 
-                <!-- Calculation breakdown -->
-                <div class="p-4 md:p-6 bg-gray-50/30">
-                    <div class="flex flex-col items-end gap-2 md:gap-3 text-sm text-gray-600 mb-6">
-                        <div class="flex w-full md:w-64 justify-between">
-                            <span>Subtotal untuk Produk</span>
-                            <span>Rp{{ number_format($totalAmount, 0, ',', '.') }}</span>
+                <!-- Calculation Breakdown & Submit -->
+                <div class="p-4 md:p-6 bg-surface-container-low">
+                    <div class="flex flex-col items-end gap-2.5 text-xs md:text-sm text-on-surface-variant mb-6">
+                        <div class="flex w-full md:w-72 justify-between">
+                            <span>Subtotal Produk:</span>
+                            <span class="font-bold text-on-surface">Rp{{ number_format($totalAmount, 0, ',', '.') }}</span>
                         </div>
-                        <div class="flex w-full md:w-64 justify-between">
-                            <span>Total Ongkos Kirim</span>
-                            <span>Rp0</span>
+                        <div class="flex w-full md:w-72 justify-between">
+                            <span>Biaya Pengiriman Digital:</span>
+                            <span class="font-bold text-emerald-600 dark:text-emerald-400">Rp0</span>
                         </div>
-                        <div class="flex w-full md:w-64 justify-between">
-                            <span>Biaya Layanan</span>
-                            <span>Rp0</span>
+                        <div class="flex w-full md:w-72 justify-between">
+                            <span>Biaya Layanan Gerbang:</span>
+                            <span class="font-bold text-on-surface">Rp0</span>
                         </div>
-                        <div class="flex w-full md:w-64 justify-between items-center mt-2 border-t border-dashed border-gray-200 md:border-none pt-2 md:pt-0">
-                            <span class="text-gray-800 font-medium text-base md:text-sm">Total Pembayaran</span>
-                            <span class="text-2xl md:text-3xl text-primary font-medium">Rp{{ number_format($totalAmount, 0, ',', '.') }}</span>
+                        <div class="flex w-full md:w-72 justify-between items-baseline mt-2 pt-3 border-t border-outline-variant">
+                            <span class="text-sm font-extrabold text-on-surface">Total Pembayaran:</span>
+                            <span class="text-2xl md:text-3xl font-black text-primary">Rp{{ number_format($totalAmount, 0, ',', '.') }}</span>
                         </div>
                     </div>
                     
-                    <div class="flex flex-col md:flex-row justify-between items-center border-t border-dashed border-gray-200 pt-6 gap-4 md:gap-0">
-                        <p class="text-xs text-gray-500 w-full md:w-2/3 text-center md:text-left">
-                            Dengan mengklik "Buat Pesanan", Anda menyetujui <a href="#" class="text-blue-500 hover:underline">Syarat & Ketentuan</a> kami. Pesanan digital ini akan diproses otomatis oleh Midtrans.
+                    <div class="flex flex-col md:flex-row justify-between items-center border-t border-outline-variant pt-5 gap-4">
+                        <p class="text-xs text-on-surface-variant w-full md:w-2/3 text-center md:text-left leading-relaxed">
+                            Dengan mengklik tombol <span class="font-bold text-on-surface">"Buat Pesanan"</span>, Anda menyetujui ketentuan transaksi produk digital kami. Invoice dan QR pembayaran otomatis diterbitkan melalui payment gateway Midtrans.
                         </p>
-                        <button type="submit" class="bg-primary text-white px-8 md:px-12 py-3 rounded text-sm font-medium hover:brightness-110 transition shadow-sm w-full md:w-48">
-                            Buat Pesanan
+                        <button type="submit" class="w-full md:w-auto px-8 md:px-12 py-3.5 bg-primary hover:brightness-110 text-white rounded-sm text-sm font-bold transition-all shadow-md shadow-primary/20 flex items-center justify-center gap-2 shrink-0 cursor-pointer">
+                            <span class="material-symbols-outlined text-[18px]">lock</span>
+                            <span>Buat Pesanan</span>
                         </button>
                     </div>
                 </div>
@@ -151,3 +206,4 @@
     </div>
 </main>
 @endsection
+

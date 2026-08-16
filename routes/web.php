@@ -43,6 +43,10 @@ Route::get('/login', [\App\Http\Controllers\Auth\AuthController::class, 'create'
 Route::post('/login', [\App\Http\Controllers\Auth\AuthController::class, 'store'])->middleware('guest');
 Route::get('/register', [\App\Http\Controllers\Auth\AuthController::class, 'showRegisterForm'])->name('register')->middleware('guest');
 Route::post('/register', [\App\Http\Controllers\Auth\AuthController::class, 'register'])->middleware('guest');
+
+// Socialite OAuth Routes (Google)
+Route::get('/auth/{provider}', [\App\Http\Controllers\Auth\SocialiteController::class, 'redirectToProvider'])->name('social.redirect')->middleware('guest');
+Route::get('/auth/{provider}/callback', [\App\Http\Controllers\Auth\SocialiteController::class, 'handleProviderCallback'])->name('social.callback')->middleware('guest');
 Route::get('/forgot-password', [\App\Http\Controllers\Auth\PasswordResetController::class, 'create'])->name('password.request')->middleware('guest');
 Route::post('/forgot-password', [\App\Http\Controllers\Auth\PasswordResetController::class, 'store'])->name('password.email')->middleware('guest');
 Route::get('/reset-password/{token}', [\App\Http\Controllers\Auth\PasswordResetController::class, 'edit'])->name('password.reset')->middleware('guest');
@@ -79,6 +83,7 @@ Route::middleware(['auth', 'verified', 'is_tenant'])->prefix('tenant')->name('te
     Route::resource('payouts', \App\Http\Controllers\Tenant\PayoutController::class);
     Route::get('balance', [\App\Http\Controllers\Tenant\BalanceController::class, 'index'])->name('balance.index');
     Route::get('bank', [\App\Http\Controllers\Tenant\BankController::class, 'index'])->name('bank.index');
+    Route::post('bank', [\App\Http\Controllers\Tenant\BankController::class, 'update'])->name('bank.update');
     Route::get('performance', [\App\Http\Controllers\Tenant\PerformanceController::class, 'index'])->name('performance.index');
     Route::get('appearance', [\App\Http\Controllers\Tenant\AppearanceController::class, 'index'])->name('appearance.index');
     Route::post('appearance', [\App\Http\Controllers\Tenant\AppearanceController::class, 'update'])->name('appearance.update');
@@ -88,11 +93,25 @@ Route::middleware(['auth', 'verified', 'is_tenant'])->prefix('tenant')->name('te
     
     // iklan
     Route::resource('campaigns', \App\Http\Controllers\Tenant\CampaignController::class);
+
+    // Chat Seller Center
+    Route::get('chat', [\App\Http\Controllers\Tenant\ChatController::class, 'index'])->name('chat.index');
+    Route::get('chat/conversations', [\App\Http\Controllers\Tenant\ChatController::class, 'getConversations'])->name('chat.conversations');
+    Route::get('chat/messages/{userId}', [\App\Http\Controllers\Tenant\ChatController::class, 'getMessages'])->name('chat.messages');
+    Route::post('chat/send', [\App\Http\Controllers\Tenant\ChatController::class, 'sendMessage'])->name('chat.send');
 });
 
-Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+// Buyer Floating Chat Routes (Authenticated users)
+Route::middleware(['auth'])->prefix('chat')->name('chat.')->group(function () {
+    Route::get('/conversations', [\App\Http\Controllers\ChatController::class, 'getConversations'])->name('conversations');
+    Route::get('/messages/{storeId}', [\App\Http\Controllers\ChatController::class, 'getMessages'])->name('messages');
+    Route::post('/send', [\App\Http\Controllers\ChatController::class, 'sendMessage'])->name('send');
+});
+
+Route::middleware(['auth', 'is_admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
     Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
+    Route::post('company/optimize-database', [CompanyProfileController::class, 'optimizeDatabase'])->name('company.optimize_database');
     Route::resource('company', CompanyProfileController::class);
     Route::resource('services', ServiceController::class);
     Route::resource('clients', ClientController::class);
@@ -104,6 +123,8 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::patch('products/{product}/toggle-active', [ProductController::class, 'toggleActive'])->name('products.toggle_active');
     Route::patch('products/image/{image}/set-main', [ProductController::class, 'setMainImage'])->name('products.image.set_main');
     Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::patch('orders/{order}/approve', [OrderController::class, 'approve'])->name('orders.approve');
+    Route::delete('orders/{order}', [OrderController::class, 'destroy'])->name('orders.destroy');
     Route::resource('projects', ProjectController::class);
     Route::resource('testimonials', TestimonialController::class);
     Route::resource('messages', ContactMessageController::class);

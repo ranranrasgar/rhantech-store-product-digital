@@ -1,87 +1,193 @@
 @extends('layouts.tenant')
 
-@section('title', 'Payment Services')
+@section('title', 'Rekening & Metode Pembayaran')
 
 @section('content')
-<div class="flex-1 overflow-y-auto p-4 md:p-6 bg-surface-container-lowest dark:bg-[#0d1117] text-on-surface dark:text-white font-body-md min-h-[calc(100vh-56px)]">
+<div class="flex-1 overflow-y-auto p-4 md:p-8 bg-[#f8fafc] dark:bg-[#090d16] text-[#0f172a] dark:text-[#f1f5f9] transition-colors duration-200" x-data="{ showModal: false, bankName: '', accountNumber: '', accountHolder: '' }">
     <div class="max-w-4xl mx-auto space-y-6">
 
-        <!-- Top Alerts (Session Success/Error) -->
-        @if (session('success'))
-            <div class="bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-800 p-4 rounded-lg flex items-center justify-between">
-                <span>{{ session('success') }}</span>
-                <button class="opacity-50 hover:opacity-100" onclick="this.parentElement.style.display='none'"><span class="material-symbols-outlined text-sm">close</span></button>
-            </div>
-        @endif
-        @if (session('error'))
-            <div class="bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800 p-4 rounded-lg flex items-center justify-between">
-                <span>{{ session('error') }}</span>
-                <button class="opacity-50 hover:opacity-100" onclick="this.parentElement.style.display='none'"><span class="material-symbols-outlined text-sm">close</span></button>
-            </div>
-        @endif
-
-        <div class="bg-surface dark:bg-[#161b22] border border-outline-variant dark:border-[#30363d] rounded-md overflow-hidden">
-            
-            <div class="px-6 py-4 flex justify-between items-center bg-surface dark:bg-[#161b22] border-b border-outline-variant dark:border-[#30363d]">
-                <h3 class="font-bold text-lg text-on-surface dark:text-white">Rekening Bank</h3>
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-2.5">
+                    Rekening Bank Pencairan
+                </h1>
+                <p class="text-xs md:text-sm text-slate-500 dark:text-slate-400 mt-1">
+                    Kelola data rekening bank utama untuk menerima pencairan saldo toko Anda.
+                </p>
             </div>
             
-            <div class="p-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    
-                    <!-- Tambah Rekening Bank Card -->
-                    <a href="{{ route('tenant.store.index') }}" class="border-2 border-dashed border-outline-variant dark:border-[#30363d] rounded-lg p-6 flex flex-col items-center justify-center min-h-[160px] text-on-surface-variant dark:text-gray-400 hover:bg-surface-container-lowest dark:hover:bg-[#0d1117] transition-colors group cursor-pointer">
-                        <span class="material-symbols-outlined text-4xl mb-2 group-hover:text-primary transition-colors">add</span>
-                        <span class="text-sm font-semibold group-hover:text-primary transition-colors">Tambah Rekening Bank</span>
-                    </a>
-
-                    <!-- Saved Bank Account Card -->
-                    @if(!empty($store->bank_account_info))
-                        <div class="border border-outline-variant dark:border-[#30363d] rounded-lg p-0 overflow-hidden relative min-h-[160px] shadow-sm flex flex-col justify-between group">
-                            
-                            <!-- Background Logo (Decorative) -->
-                            <div class="absolute right-[-20px] top-4 text-9xl font-black text-outline-variant/10 dark:text-white/5 select-none z-0 pointer-events-none">
-                                BCA
-                            </div>
-
-                            <!-- Card Header -->
-                            <div class="p-4 relative z-10 flex flex-col items-start bg-gradient-to-r from-[#6b7280] to-[#4b5563] text-white">
-                                <div class="flex items-center gap-2 bg-white px-2 py-1 rounded text-[#0055aa] text-xs font-bold w-12 justify-center shadow-sm">
-                                    BCA
-                                </div>
-                            </div>
-                            
-                            <!-- Card Body -->
-                            <div class="p-4 relative z-10 flex-1 flex flex-col justify-center bg-surface dark:bg-[#161b22]">
-                                <div class="flex items-center gap-1 text-green-600 dark:text-green-400 text-xs font-bold mb-4">
-                                    <span class="material-symbols-outlined text-[14px]">check_circle</span> Telah Ditambahkan
-                                </div>
-                                <div class="text-xl tracking-widest font-mono text-on-surface dark:text-white">
-                                    **** {{ substr($store->bank_account_info, -4) ?: '0000' }}
-                                </div>
-                            </div>
-                            
-                            <!-- Card Footer -->
-                            <div class="px-4 py-3 bg-surface-container-lowest dark:bg-[#0d1117] border-t border-outline-variant dark:border-[#30363d] relative z-10 flex justify-between items-center">
-                                <div class="text-sm font-bold text-on-surface-variant dark:text-gray-400 tracking-widest uppercase">
-                                    {{ substr(auth()->user()->name, 0, 1) }}****{{ substr(auth()->user()->name, -1) }} {{ substr($store->bank_account_info, 0, 1) }}****{{ substr($store->bank_account_info, 3, 1) ?? 'U' }}
-                                </div>
-                                <div class="text-[10px] font-bold bg-[#e0f2fe] text-[#0284c7] px-2 py-1 rounded">
-                                    UTAMA
-                                </div>
-                            </div>
-
-                            <!-- Edit Overlay -->
-                            <a href="{{ route('tenant.store.index') }}" class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity z-20 flex items-center justify-center text-white font-bold backdrop-blur-sm">
-                                <span class="flex items-center gap-2"><span class="material-symbols-outlined">edit</span> Ubah Rekening</span>
-                            </a>
-                        </div>
-                    @endif
-
-                </div>
+            <div class="flex items-center gap-3">
+                <button type="button" @click="showModal = true; bankName = 'BCA'; accountNumber = ''; accountHolder = '';" class="px-5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs md:text-sm font-bold shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 transition-all flex items-center gap-2 cursor-pointer">
+                    <span class="material-symbols-outlined text-[18px]">add_circle</span>
+                    {{ empty($store->bank_account_info) ? 'Tambah Rekening' : 'Ubah Rekening' }}
+                </button>
             </div>
         </div>
 
+        <!-- Session Alerts -->
+        @if (session('success'))
+            <div class="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs md:text-sm font-semibold flex items-center gap-2.5 shadow-sm">
+                <span class="material-symbols-outlined text-[20px]">check_circle</span>
+                <span>{{ session('success') }}</span>
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div class="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-400 text-xs md:text-sm font-semibold flex items-center gap-2.5 shadow-sm">
+                <span class="material-symbols-outlined text-[20px]">error</span>
+                <span>{{ session('error') }}</span>
+            </div>
+        @endif
+
+        <!-- Main Card Section -->
+        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl shadow-sm p-6 md:p-8 space-y-6">
+            
+            <div>
+                <h2 class="text-base font-bold text-slate-900 dark:text-white">Daftar Rekening Bank Terdaftar</h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Rekening ini digunakan sebagai tujuan otomatis saat melakukan penarikan saldo toko.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                
+                <!-- Saved Bank Debit Card Showcase -->
+                @if(!empty($store->bank_account_info))
+                    <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white p-6 shadow-xl border border-slate-800 flex flex-col justify-between min-h-[200px] group">
+                        <div class="absolute -right-6 -bottom-6 w-36 h-36 bg-sky-500/10 rounded-full blur-2xl pointer-events-none"></div>
+                        
+                        <!-- Card Top Bar -->
+                        <div class="flex items-center justify-between relative z-10">
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-sky-400 text-[26px]">account_balance</span>
+                                <span class="text-xs font-black tracking-widest uppercase text-slate-300">REKENING BANK</span>
+                            </div>
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                                UTAMA
+                            </span>
+                        </div>
+
+                        <!-- Card Middle Info -->
+                        <div class="my-4 relative z-10">
+                            <div class="text-xs text-slate-400 mb-1 font-sans">Informasi Rekening</div>
+                            <div class="font-mono text-sm text-slate-200 whitespace-pre-line leading-relaxed line-clamp-3">
+                                {{ $store->bank_account_info }}
+                            </div>
+                        </div>
+
+                        <!-- Card Bottom Bar -->
+                        <div class="pt-3 border-t border-white/10 flex items-center justify-between relative z-10">
+                            <div class="text-xs font-bold text-slate-300 uppercase truncate">
+                                {{ $store->name }}
+                            </div>
+                            <button type="button" @click="showModal = true" class="text-xs font-bold text-sky-400 hover:text-sky-300 flex items-center gap-1 cursor-pointer">
+                                <span class="material-symbols-outlined text-[15px]">edit</span> Edit Rekening
+                            </button>
+                        </div>
+                    </div>
+                @endif
+
+                <!-- Tambah / Ubah Rekening Modal Trigger Card -->
+                <button type="button" @click="showModal = true" class="border-2 border-dashed border-slate-200 dark:border-[#222f49] hover:border-sky-500 dark:hover:border-sky-500 hover:bg-sky-50/50 dark:hover:bg-sky-950/10 rounded-2xl p-6 flex flex-col items-center justify-center min-h-[200px] text-center transition-all group cursor-pointer w-full">
+                    <div class="w-12 h-12 rounded-2xl bg-sky-500/10 text-sky-500 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                        <span class="material-symbols-outlined text-2xl">add_circle</span>
+                    </div>
+                    <span class="text-xs font-bold text-slate-800 dark:text-slate-200 block">
+                        {{ empty($store->bank_account_info) ? 'Tambah Rekening Bank Baru' : 'Ganti Rekening Bank' }}
+                    </span>
+                    <span class="text-[11px] text-slate-400 mt-1">
+                        Masukkan nama bank, nomor rekening, dan nama pemilik.
+                    </span>
+                </button>
+
+            </div>
+
+        </div>
+
     </div>
+
+    <!-- MODAL FORM TAMBAH/UBAH REKENING -->
+    <div x-show="showModal" style="display: none;" class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+        <div @click.away="showModal = false" class="bg-white dark:bg-[#111726] border border-slate-200 dark:border-[#222f49] rounded-3xl shadow-2xl max-w-md w-full overflow-hidden transition-all transform scale-100">
+            
+            <!-- Modal Header -->
+            <div class="px-6 py-4 border-b border-slate-100 dark:border-[#222f49] flex items-center justify-between">
+                <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <span class="material-symbols-outlined text-sky-500 text-[20px]">account_balance</span>
+                    {{ empty($store->bank_account_info) ? 'Tambah Rekening Bank' : 'Perbarui Rekening Bank' }}
+                </h3>
+                <button type="button" @click="showModal = false" class="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors cursor-pointer">
+                    <span class="material-symbols-outlined text-[20px]">close</span>
+                </button>
+            </div>
+
+            <!-- Modal Form -->
+            <form action="{{ route('tenant.bank.update') }}" method="POST" class="p-6 space-y-4">
+                @csrf
+                
+                <!-- Nama Bank (Bisa Ketik Manual / Pilih Rekomendasi) -->
+                <div>
+                    <label for="bank_name" class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
+                        Nama Bank / E-Wallet <span class="text-rose-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <input list="bank_options" name="bank_name" id="bank_name" x-model="bankName" required placeholder="Pilih atau ketik manual (Contoh: Bank BCA, DANA, dll)" class="w-full px-4 py-2.5 text-xs md:text-sm bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] text-slate-800 dark:text-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition-all">
+                        <datalist id="bank_options">
+                            <option value="Bank BCA"></option>
+                            <option value="Bank Mandiri"></option>
+                            <option value="Bank BRI"></option>
+                            <option value="Bank BNI"></option>
+                            <option value="Bank Syariah Indonesia (BSI)"></option>
+                            <option value="Bank CIMB Niaga"></option>
+                            <option value="Bank Permata"></option>
+                            <option value="SeaBank"></option>
+                            <option value="Bank Jago"></option>
+                            <option value="Bank Danamon"></option>
+                            <option value="Bank Tabungan Negara (BTN)"></option>
+                            <option value="Bank BJB"></option>
+                            <option value="Bank Jatim"></option>
+                            <option value="Bank Jateng"></option>
+                            <option value="DANA (E-Wallet)"></option>
+                            <option value="GoPay (E-Wallet)"></option>
+                            <option value="OVO (E-Wallet)"></option>
+                            <option value="ShopeePay (E-Wallet)"></option>
+                            <option value="LinkAja (E-Wallet)"></option>
+                        </datalist>
+                    </div>
+                    <p class="text-[11px] text-slate-400 mt-1">Anda bisa memilih dari daftar saran atau mengetik langsung nama bank/e-wallet Anda.</p>
+                </div>
+
+                <!-- Nomor Rekening -->
+                <div>
+                    <label for="account_number" class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
+                        Nomor Rekening / No. HP E-Wallet <span class="text-rose-500">*</span>
+                    </label>
+                    <input type="text" name="account_number" id="account_number" x-model="accountNumber" required placeholder="Contoh: 4370351509" class="w-full px-4 py-2.5 text-xs md:text-sm bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] text-slate-800 dark:text-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 font-mono transition-all">
+                </div>
+
+                <!-- Nama Pemilik Rekening -->
+                <div>
+                    <label for="account_holder" class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
+                        Nama Pemilik Rekening (Sesuai Buku Tabungan) <span class="text-rose-500">*</span>
+                    </label>
+                    <input type="text" name="account_holder" id="account_holder" x-model="accountHolder" required placeholder="Contoh: RANRAN RAHAYU" class="w-full px-4 py-2.5 text-xs md:text-sm bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] text-slate-800 dark:text-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 uppercase transition-all">
+                    <p class="text-[11px] text-slate-400 mt-1">Pastikan nama sama persis dengan rekening agar proses penarikan saldo tidak terhambat.</p>
+                </div>
+
+                <!-- Modal Actions -->
+                <div class="pt-4 border-t border-slate-100 dark:border-[#222f49] flex items-center justify-end gap-3">
+                    <button type="button" @click="showModal = false" class="px-4 py-2 text-xs md:text-sm font-semibold border border-slate-200 dark:border-[#222f49] text-slate-600 dark:text-slate-300 rounded-xl hover:bg-slate-100 dark:hover:bg-[#161f33] transition-colors cursor-pointer">
+                        Batal
+                    </button>
+                    <button type="submit" class="px-5 py-2 text-xs md:text-sm font-bold text-white bg-sky-500 hover:bg-sky-400 rounded-xl shadow-lg shadow-sky-500/25 transition-all flex items-center gap-1.5 cursor-pointer">
+                        <span class="material-symbols-outlined text-[16px]">save</span>
+                        Simpan Rekening
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
 </div>
 @endsection

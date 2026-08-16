@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Tenant;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -11,7 +12,7 @@ class StoreController extends Controller
 {
     public function index()
     {
-        $store = auth()->user()->store;
+        $store = Auth::user()->store;
         return view('tenant.store.index', compact('store'));
     }
 
@@ -26,13 +27,26 @@ class StoreController extends Controller
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $user = auth()->user();
+        $user = Auth::user();
+
+        // Otomatis tentukan lokasi Google Maps untuk Superadmin
+        $mapsLocation = $user->store->maps_location ?? null;
+
+        if ($request->filled('latitude') && $request->filled('longitude')) {
+            $lat = $request->latitude;
+            $lng = $request->longitude;
+            $mapsLocation = "https://www.google.com/maps?q={$lat},{$lng}";
+        } elseif ($request->filled('address')) {
+            $encodedAddress = urlencode($request->address);
+            $mapsLocation = "https://www.google.com/maps/search/?api=1&query={$encodedAddress}";
+        }
+
         $data = [
             'name' => $request->name,
             'description' => $request->description,
             'bank_account_info' => $request->bank_account_info,
             'address' => $request->address,
-            'maps_location' => $request->maps_location,
+            'maps_location' => $mapsLocation,
         ];
 
         if ($request->hasFile('logo')) {

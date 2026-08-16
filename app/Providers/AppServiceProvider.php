@@ -2,6 +2,11 @@
 
 namespace App\Providers;
 
+use App\Models\CompanyProfile;
+use App\Models\PayoutRequest;
+use Illuminate\Auth\Notifications\VerifyEmail;
+use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,18 +24,34 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        \Illuminate\Support\Facades\View::composer('*', function ($view) {
-            $view->with('company', \App\Models\CompanyProfile::first());
+        View::composer('*', function ($view) {
+            $view->with('company', CompanyProfile::first(['*']));
         });
 
-        \Illuminate\Auth\Notifications\VerifyEmail::toMailUsing(function (object $notifiable, string $url) {
-            return (new \Illuminate\Notifications\Messages\MailMessage)
-                ->subject('Verifikasi Alamat Email')
-                ->greeting('Halo!')
-                ->line('Klik tombol di bawah ini untuk memverifikasi alamat email Anda.')
-                ->action('Verifikasi Email', $url)
-                ->line('Jika Anda tidak merasa membuat akun ini, abaikan email ini.')
-                ->salutation('Salam, ' . config('app.name'));
+        View::composer(['layouts.admin', 'admin.*'], function ($view) {
+            $pendingPayoutsCount = PayoutRequest::where('status', 'pending')->count();
+            $pendingPayoutsList = PayoutRequest::with('store')
+                ->where('status', 'pending')
+                ->latest()
+                ->take(5)
+                ->get();
+
+            $view->with([
+                'pendingPayoutsCount' => $pendingPayoutsCount,
+                'pendingPayoutsList' => $pendingPayoutsList,
+            ]);
+        });
+
+        VerifyEmail::toMailUsing(function (object $notifiable, string $url) {
+            $company = CompanyProfile::first(['*']);
+            $companyName = $company->company_name ?? config('app.name', 'Rhantech');
+
+            return (new MailMessage)
+                ->subject('Konfirmasi & Verifikasi Akun Anda - ' . $companyName)
+                ->view('emails.verify_email', [
+                    'user' => $notifiable,
+                    'verificationUrl' => $url,
+                ]);
         });
     }
 }

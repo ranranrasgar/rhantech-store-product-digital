@@ -1,297 +1,253 @@
 @extends('layouts.tenant')
 
-@section('title', 'Produk Saya')
+@section('title', 'Katalog Produk')
 
 @section('content')
-<div class="flex-1 overflow-y-auto p-4 md:p-6 bg-surface-container-lowest dark:bg-[#0d1117]">
-    <div class="max-w-7xl mx-auto space-y-4">
+<div class="flex-1 overflow-y-auto p-4 md:p-8 bg-[#f8fafc] dark:bg-[#090d16] text-[#0f172a] dark:text-[#f1f5f9] transition-colors duration-200">
+    <div class="max-w-7xl mx-auto space-y-6">
         
-        <!-- Header -->
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <h2 class="text-xl font-bold text-on-surface dark:text-white">Produk Saya</h2>
+        <!-- Header & Action Hub -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-2.5">
+                    Katalog Produk
+                </h1>
+                <p class="text-xs md:text-sm text-slate-500 dark:text-slate-400 mt-1">
+                    Kelola etalase produk digital, pantau status publikasi, dan perbarui harga.
+                </p>
+            </div>
+            
             <div class="flex flex-wrap items-center gap-3">
-                <div class="relative group/dropdown-produk">
-                    <button class="px-4 py-2 text-sm font-semibold border border-outline-variant dark:border-[#30363d] rounded bg-surface dark:bg-[#161b22] text-on-surface dark:text-white hover:bg-surface-container-lowest transition-colors flex items-center gap-1">
-                        Pengaturan Produk <span class="material-symbols-outlined text-[16px]">expand_more</span>
-                    </button>
-                    <div class="absolute right-0 top-full mt-1 bg-white dark:bg-[#161b22] border border-gray-200 dark:border-[#30363d] rounded shadow-lg opacity-0 invisible group-hover/dropdown-produk:opacity-100 group-hover/dropdown-produk:visible transition-all z-50 w-48 py-1 text-left">
-                        <button type="button" onclick="alert('Fitur ini akan segera hadir.')" class="w-full text-left block px-4 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#0d1117] transition-colors">Kategori Produk</button>
-                        <button type="button" onclick="alert('Fitur ini akan segera hadir.')" class="w-full text-left block px-4 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#0d1117] transition-colors">Label Produk</button>
-                    </div>
-                </div>
-                
-                <div class="relative group/dropdown-massal">
-                    <button class="px-4 py-2 text-sm font-semibold border border-outline-variant dark:border-[#30363d] rounded bg-surface dark:bg-[#161b22] text-on-surface dark:text-white hover:bg-surface-container-lowest transition-colors flex items-center gap-1">
-                        Pengaturan Massal <span class="material-symbols-outlined text-[16px]">expand_more</span>
-                    </button>
-                    <div class="absolute right-0 top-full mt-1 bg-white dark:bg-[#161b22] border border-gray-200 dark:border-[#30363d] rounded shadow-lg opacity-0 invisible group-hover/dropdown-massal:opacity-100 group-hover/dropdown-massal:visible transition-all z-50 w-56 py-1 text-left">
-                        <button type="button" onclick="massAction('aktifkan')" class="w-full text-left block px-4 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#0d1117] transition-colors">Aktifkan Terpilih</button>
-                        <button type="button" onclick="massAction('nonaktifkan')" class="w-full text-left block px-4 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#0d1117] transition-colors">Nonaktifkan Terpilih</button>
-                        <div class="border-t border-gray-100 dark:border-gray-800 my-1"></div>
-                        <button type="button" onclick="massAction('hapus')" class="w-full text-left block px-4 py-2 text-xs text-error hover:bg-error/5 transition-colors">Hapus Terpilih</button>
-                    </div>
-                </div>
-                <a href="{{ route('tenant.products.create') }}" class="px-4 py-2 text-sm font-bold bg-primary text-white rounded hover:bg-primary/90 transition-colors flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[16px]">add</span> Tambah Produk Baru
+                <a href="{{ route('tenant.products.create') }}" class="px-5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs md:text-sm font-bold shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 transition-all duration-200 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[18px]">add_circle</span>
+                    Tambah Produk Baru
                 </a>
             </div>
         </div>
 
-        <!-- Main Card -->
-        <div class="bg-surface dark:bg-[#161b22] border border-outline-variant dark:border-[#30363d] rounded-md overflow-hidden">
+        <!-- Main Card Container -->
+        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl shadow-sm overflow-hidden">
             
-            <!-- Tabs -->
-            <div class="border-b border-outline-variant dark:border-[#30363d] flex overflow-x-auto hide-scrollbar">
-                <a href="{{ route('tenant.products.index', array_merge(request()->query(), ['tab' => 'all', 'page' => null])) }}" class="px-6 py-4 text-sm font-bold whitespace-nowrap {{ $tab === 'all' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant dark:text-gray-400 hover:text-on-surface transition-colors' }}">Semua ({{ $allCount }})</a>
-                <a href="{{ route('tenant.products.index', array_merge(request()->query(), ['tab' => 'active', 'page' => null])) }}" class="px-6 py-4 text-sm font-bold whitespace-nowrap {{ $tab === 'active' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant dark:text-gray-400 hover:text-on-surface transition-colors' }}">Aktif ({{ $activeCount }})</a>
-                <a href="{{ route('tenant.products.index', array_merge(request()->query(), ['tab' => 'inactive', 'page' => null])) }}" class="px-6 py-4 text-sm font-bold whitespace-nowrap {{ $tab === 'inactive' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant dark:text-gray-400 hover:text-on-surface transition-colors' }}">Non-Aktif ({{ $inactiveCount }})</a>
+            <!-- Filter Tabs -->
+            <div class="border-b border-slate-100 dark:border-[#222f49] px-6 flex items-center gap-8 overflow-x-auto hide-scrollbar bg-slate-50/50 dark:bg-[#0c1220]/50">
+                <a href="{{ route('tenant.products.index', array_merge(request()->query(), ['tab' => 'all', 'page' => null])) }}" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 {{ $tab === 'all' ? 'text-sky-600 dark:text-sky-400 border-sky-600 dark:border-sky-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200' }}">
+                    Semua Produk <span class="ml-1.5 px-2 py-0.5 rounded-full text-[11px] {{ $tab === 'all' ? 'bg-sky-100 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300' : 'bg-slate-200/60 dark:bg-slate-800 text-slate-600 dark:text-slate-400' }}">{{ $allCount }}</span>
+                </a>
+                <a href="{{ route('tenant.products.index', array_merge(request()->query(), ['tab' => 'active', 'page' => null])) }}" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 {{ $tab === 'active' ? 'text-sky-600 dark:text-sky-400 border-sky-600 dark:border-sky-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200' }}">
+                    Aktif / Tayang <span class="ml-1.5 px-2 py-0.5 rounded-full text-[11px] {{ $tab === 'active' ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300' : 'bg-slate-200/60 dark:bg-slate-800 text-slate-600 dark:text-slate-400' }}">{{ $activeCount }}</span>
+                </a>
+                <a href="{{ route('tenant.products.index', array_merge(request()->query(), ['tab' => 'inactive', 'page' => null])) }}" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 {{ $tab === 'inactive' ? 'text-sky-600 dark:text-sky-400 border-sky-600 dark:border-sky-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200' }}">
+                    Non-Aktif / Draft <span class="ml-1.5 px-2 py-0.5 rounded-full text-[11px] {{ $tab === 'inactive' ? 'bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300' : 'bg-slate-200/60 dark:bg-slate-800 text-slate-600 dark:text-slate-400' }}">{{ $inactiveCount }}</span>
+                </a>
             </div>
 
-            <div class="p-4 md:p-6 space-y-6">
-                <!-- Info Banner -->
-                <div id="infoBanner" style="display: none;" class="bg-[#E0F2FE] dark:bg-[#0369A1]/20 border border-[#BAE6FD] dark:border-[#0369A1] rounded-md p-3 flex items-start gap-3">
-                    <span class="material-symbols-outlined text-[#0284C7] dark:text-[#38BDF8] text-lg mt-0.5">info</span>
-                    <div>
-                        <p class="text-sm text-[#0369A1] dark:text-[#E0F2FE]">Tips untuk penjual produk digital: Selalu pastikan tautan unduhan Anda valid. <a href="#" class="font-bold hover:underline">Pelajari lebih lanjut tentang pedoman produk digital</a>.</p>
+            <!-- Search, Filter & Bulk Actions Bar -->
+            <div class="p-5 md:p-6 border-b border-slate-100 dark:border-[#222f49] space-y-4">
+                <form method="GET" action="{{ route('tenant.products.index') }}" id="filterForm" class="flex flex-col md:flex-row items-stretch md:items-center gap-3">
+                    <input type="hidden" name="tab" value="{{ $tab }}">
+                    
+                    <div class="flex-1 relative">
+                        <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">search</span>
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama produk digital atau SKU..." class="w-full pl-10 pr-4 py-2.5 text-xs md:text-sm bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 text-slate-900 dark:text-white transition-all" onkeydown="if(event.key === 'Enter'){this.form.submit();}">
                     </div>
-                    <button type="button" onclick="closeInfoBanner()" class="ml-auto text-[#0284C7] dark:text-[#38BDF8] hover:bg-[#BAE6FD] dark:hover:bg-[#0369A1]/50 p-1 rounded transition-colors flex-shrink-0">
-                        <span class="material-symbols-outlined text-lg">close</span>
-                    </button>
-                </div>
 
-                <!-- Promo Banner -->
-                <div class="bg-gradient-to-r from-error/5 to-error/10 dark:from-error/10 dark:to-error/5 border border-primary/20 dark:border-primary/30 rounded-md p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 bg-white dark:bg-black rounded-lg shadow-sm border border-outline-variant flex items-center justify-center flex-shrink-0">
-                            <span class="material-symbols-outlined text-primary text-3xl">campaign</span>
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-on-surface dark:text-white">Buat Iklan, Tingkatkan Kunjungan dan Dapatkan Voucher!</h4>
-                            <div class="flex flex-wrap items-center gap-x-6 gap-y-1 mt-1 text-sm">
-                                <span class="text-on-surface-variant dark:text-gray-400 flex items-center gap-1">Atur Modal <span class="font-bold text-primary">Rp250.000 >></span></span>
-                                <span class="text-on-surface-variant dark:text-gray-400 flex items-center gap-1">Penjualan Meningkat <span class="font-bold text-primary">>> Rp1.350.000-Rp2.425.000</span></span>
-                            </div>
-                        </div>
+                    <div class="flex flex-wrap items-center gap-3">
+                        <select name="category" onchange="this.form.submit()" class="px-3.5 py-2.5 text-xs md:text-sm bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] text-slate-700 dark:text-slate-200 rounded-xl focus:outline-none focus:border-sky-500 transition-all">
+                            <option value="">Semua Kategori</option>
+                            @foreach($categories as $category)
+                                <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                            @endforeach
+                        </select>
+
+                        <select name="sort" onchange="this.form.submit()" class="px-3.5 py-2.5 text-xs md:text-sm bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] text-slate-700 dark:text-slate-200 rounded-xl focus:outline-none focus:border-sky-500 transition-all">
+                            <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Terbaru</option>
+                            <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Terlama</option>
+                            <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>Harga: Rendah ke Tinggi</option>
+                            <option value="price_desc" {{ request('sort') == 'price_desc' ? 'selected' : '' }}>Harga: Tinggi ke Rendah</option>
+                        </select>
+
+                        <a href="{{ route('tenant.products.index', ['tab' => $tab]) }}" class="px-4 py-2.5 text-xs md:text-sm font-semibold border border-slate-200 dark:border-[#222f49] text-slate-600 dark:text-slate-300 rounded-xl hover:bg-slate-100 dark:hover:bg-[#161f33] transition-colors">
+                            Reset
+                        </a>
                     </div>
-                    <button type="button" onclick="alert('Fitur iklan akan segera hadir! Nantikan pembaruannya.')" class="px-5 py-2 text-sm font-bold bg-primary text-white rounded hover:bg-primary/90 transition-colors whitespace-nowrap">Buat Iklan</button>
-                </div>
+                </form>
+            </div>
 
-                <!-- Search & Filters -->
-                <div class="space-y-4">
-                    <form method="GET" action="{{ route('tenant.products.index') }}" id="filterForm">
-                        <input type="hidden" name="tab" value="{{ $tab }}">
-                        <!-- Filter Row -->
-                        <div class="flex flex-wrap items-center gap-3">
-                            <div class="flex-1 min-w-[250px] relative">
-                                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">search</span>
-                                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari Nama Produk, ID Produk" class="w-full pl-10 pr-4 py-2 text-sm bg-surface-container-lowest dark:bg-[#0d1117] border border-outline-variant dark:border-[#30363d] rounded focus:outline-none focus:border-primary text-on-surface dark:text-white" onkeydown="if(event.key === 'Enter'){this.form.submit();}">
-                            </div>
-                            <select name="category" onchange="this.form.submit()" class="px-4 py-2 text-sm bg-surface-container-lowest dark:bg-[#0d1117] border border-outline-variant dark:border-[#30363d] text-on-surface dark:text-white rounded focus:outline-none focus:border-primary">
-                                <option value="">Semua Kategori</option>
-                                @foreach($categories as $category)
-                                    <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
-                                @endforeach
-                            </select>
-                            <select name="sort" onchange="this.form.submit()" class="px-4 py-2 text-sm bg-surface-container-lowest dark:bg-[#0d1117] border border-outline-variant dark:border-[#30363d] text-on-surface dark:text-white rounded focus:outline-none focus:border-primary">
-                                <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Terbaru</option>
-                                <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Terlama</option>
-                                <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>Harga Terendah</option>
-                                <option value="price_desc" {{ request('sort') == 'price_desc' ? 'selected' : '' }}>Harga Tertinggi</option>
-                            </select>
-                            <a href="{{ route('tenant.products.index', ['tab' => $tab]) }}" class="px-4 py-2 text-sm font-semibold border border-outline-variant dark:border-[#30363d] text-on-surface dark:text-white rounded hover:bg-surface-container-lowest transition-colors">Atur ulang</a>
-                        </div>
-                    </form>
-
-                    <!-- Action Bar -->
-                    <div class="flex flex-wrap items-center justify-between gap-4 mt-2">
-                        <div class="flex flex-wrap items-center gap-2">
-                            <span class="text-sm font-bold mr-2 text-on-surface dark:text-white">{{ $products->total() }} Products</span>
-                            <a href="{{ route('tenant.products.index', array_merge(request()->query(), ['sort' => 'latest'])) }}" class="px-3 py-1 text-xs border border-outline-variant dark:border-[#30363d] rounded-full text-on-surface-variant cursor-pointer hover:bg-surface-container-lowest">Perlu Diiklankan</a>
-                            <a href="{{ route('tenant.products.index', array_merge(request()->query(), ['sort' => 'oldest'])) }}" class="px-3 py-1 text-xs border border-outline-variant dark:border-[#30363d] rounded-full text-on-surface-variant cursor-pointer hover:bg-surface-container-lowest">Berpotensi Memiliki Standar Produk Baru</a>
-                            <a href="#" class="px-3 py-1 text-xs border border-outline-variant dark:border-[#30363d] rounded-full text-on-surface-variant cursor-pointer hover:bg-surface-container-lowest">Stok Menipis</a>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <button class="px-3 py-1.5 text-xs border border-outline-variant dark:border-[#30363d] rounded text-on-surface-variant hover:bg-surface-container-lowest flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">swap_vert</span> Urutkan berdasarkan Rekomendasi</button>
-                            <button class="px-3 py-1.5 border border-outline-variant dark:border-[#30363d] rounded text-on-surface-variant hover:bg-surface-container-lowest"><span class="material-symbols-outlined text-[16px]">grid_view</span></button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Products Table -->
-                <div class="overflow-x-auto border border-outline-variant dark:border-[#30363d] rounded-md">
-                    <table class="w-full text-left text-sm whitespace-nowrap">
-                        <thead class="bg-surface-container-lowest dark:bg-[#0d1117] border-b border-outline-variant dark:border-[#30363d] text-on-surface-variant dark:text-gray-400">
-                            <tr>
-                                <th class="p-4 w-10 font-normal">
-                                    <input type="checkbox" id="selectAllCheckbox" onchange="toggleAllCheckboxes(this)" class="rounded border-outline-variant accent-primary cursor-pointer">
-                                </th>
-                                <th class="p-4 font-normal min-w-[300px]">Produk</th>
-                                <th class="p-4 font-normal hover:text-on-surface dark:hover:text-white transition-colors">
-                                    @php $priceSort = request('sort') == 'price_asc' ? 'price_desc' : 'price_asc'; @endphp
-                                    <a href="{{ route('tenant.products.index', array_merge(request()->query(), ['sort' => $priceSort])) }}" class="flex items-center gap-1 cursor-pointer">
-                                        Harga 
-                                        @if(request('sort') == 'price_asc') <span class="material-symbols-outlined text-[14px]">arrow_upward</span>
-                                        @elseif(request('sort') == 'price_desc') <span class="material-symbols-outlined text-[14px]">arrow_downward</span>
-                                        @else <span class="material-symbols-outlined text-[14px]">unfold_more</span>
+            <!-- Products Clean Table -->
+            <div class="overflow-x-auto pb-24">
+                <table class="w-full text-left text-xs md:text-sm whitespace-nowrap">
+                    <thead class="bg-slate-50/80 dark:bg-[#0c1220]/80 border-b border-slate-100 dark:border-[#222f49] text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider text-[11px]">
+                        <tr>
+                            <th class="p-4 md:px-6 w-12 text-center">
+                                <input type="checkbox" id="selectAllCheckbox" onchange="toggleAllCheckboxes(this)" class="rounded border-slate-300 dark:border-slate-700 text-sky-500 focus:ring-0 cursor-pointer">
+                            </th>
+                            <th class="p-4 md:px-6 min-w-[320px]">Informasi Produk</th>
+                            <th class="p-4 md:px-6">Kategori & Tipe</th>
+                            <th class="p-4 md:px-6">Harga Jual</th>
+                            <th class="p-4 md:px-6 text-center">Status</th>
+                            <th class="p-4 md:px-6 text-right pr-8">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 dark:divide-[#1d273d]">
+                        @forelse($products as $product)
+                        <tr class="hover:bg-slate-50/60 dark:hover:bg-[#151e30]/50 transition-colors">
+                            <td class="p-4 md:px-6 text-center">
+                                <input type="checkbox" name="product_ids[]" value="{{ $product->id }}" class="product-checkbox rounded border-slate-300 dark:border-slate-700 text-sky-500 focus:ring-0 cursor-pointer">
+                            </td>
+                            
+                            <!-- Product Name & Thumbnail -->
+                            <td class="p-4 md:px-6 whitespace-normal min-w-[320px]">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-14 h-14 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden shrink-0 flex items-center justify-center relative">
+                                        @if($product->images->count() > 0)
+                                            @php $mainImg = $product->images->where('is_main', true)->first() ?? $product->images->first(); @endphp
+                                            <img src="{{ asset('storage/' . $mainImg->image_path) }}" class="w-full h-full object-cover">
+                                        @else
+                                            <span class="material-symbols-outlined text-slate-400 text-[24px]">inventory_2</span>
                                         @endif
-                                    </a>
-                                </th>
-                                <th class="p-4 font-normal hover:text-on-surface dark:hover:text-white transition-colors">
-                                    <a href="#" class="flex items-center gap-1 cursor-pointer">Stok <span class="material-symbols-outlined text-[14px]">help</span> <span class="material-symbols-outlined text-[14px]">unfold_more</span></a>
-                                </th>
-                                <th class="p-4 font-normal hover:text-on-surface dark:hover:text-white transition-colors">
-                                    <a href="#" class="flex items-center gap-1 cursor-pointer">Performa <span class="material-symbols-outlined text-[14px]">unfold_more</span></a>
-                                </th>
-                                <th class="p-4 font-normal">
-                                    <div class="flex items-center gap-1">Analisis Produk <span class="material-symbols-outlined text-[14px]">help</span></div>
-                                </th>
-                                <th class="p-4 font-normal text-right pr-6">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-outline-variant dark:divide-[#30363d]">
-                            @forelse($products as $product)
-                            <tr class="hover:bg-surface-container-lowest/50 dark:hover:bg-[#0d1117]/50 group transition-colors">
-                                <td class="p-4"><input type="checkbox" name="product_ids[]" value="{{ $product->id }}" class="product-checkbox rounded border-outline-variant accent-primary cursor-pointer"></td>
-                                <td class="p-4 whitespace-normal min-w-[300px]">
-                                    <div class="flex gap-3">
-                                        <!-- Image -->
-                                        <div class="w-16 h-16 flex-shrink-0 bg-surface-container-high border border-outline-variant rounded overflow-hidden relative">
-                                            @if($product->images->count() > 0)
-                                                <img src="{{ asset('storage/' . $product->images->first()->image_path) }}" class="w-full h-full object-cover">
-                                            @else
-                                                <div class="w-full h-full flex items-center justify-center text-on-surface-variant"><span class="material-symbols-outlined">code</span></div>
-                                            @endif
-                                            @if(!$product->is_active)
-                                                <div class="absolute inset-0 bg-black/50 flex items-center justify-center text-white text-[10px] font-bold">Non-Aktif</div>
-                                            @endif
-                                        </div>
-                                        <!-- Info -->
-                                        <div>
-                                            <a href="{{ route('tenant.products.edit', $product) }}" class="font-bold text-on-surface dark:text-white hover:text-primary dark:hover:text-primary transition-colors line-clamp-2 leading-tight">{{ $product->name }}</a>
-                                            <div class="text-[11px] text-on-surface-variant dark:text-gray-400 mt-1">ID Produk: {{ $product->id }}</div>
-                                            @if($product->slug)
-                                            <div class="text-[11px] text-on-surface-variant dark:text-gray-400">SKU: {{ $product->slug }}</div>
-                                            @endif
-                                            <div class="mt-1">
-                                                <span class="inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-bold text-[#0284C7] bg-[#E0F2FE] border border-[#BAE6FD] rounded cursor-pointer hover:bg-[#BAE6FD] transition-colors">Komisi AMS <span class="material-symbols-outlined text-[10px]">chevron_right</span></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="p-4 align-top pt-5">
-                                    <div class="font-bold text-on-surface dark:text-white">Rp{{ number_format($product->discount_price ?? $product->price, 0, ',', '.') }}</div>
-                                    @if($product->discount_price)
-                                        <div class="text-xs text-on-surface-variant dark:text-gray-500 line-through">Rp{{ number_format($product->price, 0, ',', '.') }}</div>
-                                    @endif
-                                    <a href="{{ route('tenant.products.edit', $product) }}" class="material-symbols-outlined text-[14px] text-on-surface-variant mt-1 cursor-pointer hover:text-primary transition-colors">edit</a>
-                                </td>
-                                <td class="p-4 align-top pt-5">
-                                    <div class="font-bold text-on-surface dark:text-white">99+</div>
-                                    <span class="material-symbols-outlined text-[14px] text-on-surface-variant mt-1 cursor-pointer hover:text-primary transition-colors" onclick="alert('Fitur manajemen stok manual akan segera hadir!')">edit</span>
-                                </td>
-                                <td class="p-4 align-top pt-5">
-                                    <div class="text-xs text-on-surface dark:text-white font-semibold">Penjualan 0</div>
-                                    <div class="text-[10px] text-on-surface-variant dark:text-gray-500 mt-0.5">Penjualan 30 Hari Terakhir 0</div>
-                                    <div class="text-[10px] text-on-surface-variant dark:text-gray-500">Kunjungan 30 Hari Terakhir 0</div>
-                                </td>
-                                <td class="p-4 align-top pt-5 text-center text-on-surface-variant">-</td>
-                                <td class="p-4 align-top pt-5 text-right pr-6">
-                                    <div class="flex flex-col items-end gap-1.5 text-sm font-semibold">
-                                        <a href="{{ route('tenant.products.edit', $product) }}" class="text-[#0055aa] dark:text-[#58a6ff] font-normal hover:underline">Ubah</a>
-                                        <button type="button" onclick="alert('Fitur iklan akan segera hadir! Nantikan pembaruannya.')" class="text-[#0055aa] dark:text-[#58a6ff] font-normal hover:underline cursor-pointer bg-transparent border-none p-0">Iklankan</button>
                                         
-                                        <div class="relative group/dropdown">
-                                            <button class="text-[#0055aa] dark:text-[#58a6ff] font-normal hover:underline flex items-center bg-transparent border-none p-0">Lainnya <span class="material-symbols-outlined text-[14px]">expand_more</span></button>
-                                            <div class="absolute right-0 top-full mt-1 bg-white dark:bg-[#161b22] border border-gray-200 dark:border-[#30363d] rounded shadow-lg opacity-0 invisible group-hover/dropdown:opacity-100 group-hover/dropdown:visible transition-all z-50 w-56 py-1 text-left">
-                                                <button type="button" onclick="alert('Fitur ini akan segera hadir.')" class="w-full text-left block px-4 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#0d1117] transition-colors">Rincian Iklan Produk Otomatis</button>
-                                                <button type="button" onclick="alert('Fitur ini akan segera hadir.')" class="w-full text-left block px-4 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#0d1117] transition-colors">Salin</button>
-                                                
-                                                <a href="{{ route('products.show', $product->slug) }}" target="_blank" class="block px-4 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#0d1117] transition-colors">Tampilan Produk</a>
-                                                
-                                                <button type="button" onclick="alert('Fitur ini akan segera hadir.')" class="w-full text-left block px-4 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#0d1117] transition-colors">Arsipkan</button>
-                                                <button type="button" onclick="alert('Fitur ini akan segera hadir.')" class="w-full text-left block px-4 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#0d1117] transition-colors">Naikkan Produk</button>
-                                                <button type="button" onclick="alert('Fitur ini akan segera hadir.')" class="w-full text-left block px-4 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#0d1117] transition-colors">Atur Komisi Affiliate</button>
-                                                
-                                                <div class="border-t border-gray-100 dark:border-gray-800 my-1"></div>
-                                                <form action="{{ route('tenant.products.toggle_active', $product) }}" method="POST" class="w-full text-left">
-                                                    @csrf @method('PATCH')
-                                                    <button type="submit" class="w-full text-left px-4 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#0d1117] transition-colors">{{ $product->is_active ? 'Nonaktifkan' : 'Aktifkan' }}</button>
-                                                </form>
-                                                <form action="{{ route('tenant.products.destroy', $product) }}" method="POST" class="w-full text-left" onsubmit="return confirm('Hapus produk ini secara permanen?');">
-                                                    @csrf @method('DELETE')
-                                                    <button type="submit" class="w-full text-left px-4 py-2 text-xs text-error hover:bg-error/5 transition-colors">Hapus</button>
-                                                </form>
-                                            </div>
+                                        @if(!$product->is_active)
+                                            <div class="absolute inset-0 bg-slate-900/70 backdrop-blur-xs flex items-center justify-center text-white text-[9px] font-bold tracking-wider uppercase">Draft</div>
+                                        @endif
+                                    </div>
+                                    <div class="min-w-0">
+                                        <a href="{{ route('tenant.products.edit', $product) }}" class="font-bold text-slate-900 dark:text-white hover:text-sky-600 dark:hover:text-sky-400 transition-colors line-clamp-1 leading-snug">
+                                            {{ $product->name }}
+                                        </a>
+                                        <div class="text-[11px] text-slate-400 mt-1 font-mono flex items-center gap-2">
+                                            <span>ID: #{{ $product->id }}</span>
+                                            @if($product->slug)
+                                                <span>•</span>
+                                                <span class="truncate max-w-[140px]">{{ $product->slug }}</span>
+                                            @endif
                                         </div>
                                     </div>
-                                </td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="7" class="p-10 text-center">
-                                    <div class="flex flex-col items-center justify-center text-on-surface-variant">
-                                        <span class="material-symbols-outlined text-6xl mb-2 opacity-50">inventory_2</span>
-                                        <p class="font-semibold text-lg text-on-surface">Tidak ada produk ditemukan</p>
-                                        <p class="text-sm mt-1">Anda belum mengunggah produk apa pun.</p>
-                                        <a href="{{ route('tenant.products.create') }}" class="mt-4 px-6 py-2 bg-primary text-white font-bold rounded hover:bg-primary/90 transition-colors">Tambah Produk Baru</a>
-                                    </div>
-                                </td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
+                                </div>
+                            </td>
 
-                <!-- Footer Pagination Space -->
-                <div class="flex justify-between items-center py-2 text-sm text-on-surface-variant">
-                @if($products->hasPages())
-                <div class="mt-4 w-full">
-                    {{ $products->links() }}
-                </div>
-                @endif
+                            <!-- Category & Type -->
+                            <td class="p-4 md:px-6">
+                                <div class="font-semibold text-slate-800 dark:text-slate-200">
+                                    {{ $product->category->name ?? 'Kategori Umum' }}
+                                </div>
+                                <div class="text-[11px] text-slate-400 mt-0.5">
+                                    {{ $product->type->name ?? 'Digital File' }}
+                                </div>
+                            </td>
+
+                            <!-- Price -->
+                            <td class="p-4 md:px-6">
+                                <div class="font-extrabold text-slate-900 dark:text-white">
+                                    Rp {{ number_format($product->discount_price && $product->discount_price > 0 && $product->discount_price < $product->price ? $product->discount_price : $product->price, 0, ',', '.') }}
+                                </div>
+                                @if($product->discount_price && $product->discount_price > 0 && $product->discount_price < $product->price)
+                                    <div class="text-[11px] text-slate-400 line-through">
+                                        Rp {{ number_format($product->price, 0, ',', '.') }}
+                                    </div>
+                                @endif
+                            </td>
+
+                            <!-- Status Badge -->
+                            <td class="p-4 md:px-6 text-center">
+                                @if($product->is_active)
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Tayang
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span> Non-Aktif
+                                    </span>
+                                @endif
+                            </td>
+
+                            <!-- Actions Dropdown & Buttons -->
+                            <td class="p-4 md:px-6 text-right pr-8">
+                                <div class="flex items-center justify-end gap-2">
+                                    <!-- Edit Button -->
+                                    <a href="{{ route('tenant.products.edit', $product) }}" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition-colors inline-flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-[15px]">edit</span> Ubah
+                                    </a>
+
+                                    <!-- Dropdown Menu -->
+                                    <div class="relative group/dropdown">
+                                        <button class="p-1.5 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer">
+                                            <span class="material-symbols-outlined text-[18px]">more_vert</span>
+                                        </button>
+                                        <div class="absolute right-0 top-full mt-1 bg-white dark:bg-[#111726] border border-slate-200 dark:border-[#222f49] rounded-xl shadow-2xl opacity-0 invisible group-hover/dropdown:opacity-100 group-hover/dropdown:visible transition-all duration-150 z-50 w-52 py-2 text-left">
+                                            
+                                            <!-- Salin / Copy -->
+                                            <a href="{{ route('tenant.products.create', ['copy' => $product->id]) }}" class="flex items-center gap-2 px-4 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#161f33] transition-colors">
+                                                <span class="material-symbols-outlined text-[16px] text-sky-500">content_copy</span> Salin Produk
+                                            </a>
+
+                                            <!-- Tampilan Toko Publik -->
+                                            <a href="{{ route('products.show', $product->slug) }}" target="_blank" class="flex items-center gap-2 px-4 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#161f33] transition-colors">
+                                                <span class="material-symbols-outlined text-[16px] text-indigo-500">open_in_new</span> Lihat di Web
+                                            </a>
+
+                                            <div class="border-t border-slate-100 dark:border-[#1d273d] my-1"></div>
+
+                                            <!-- Toggle Active -->
+                                            <form action="{{ route('tenant.products.toggle_active', $product) }}" method="POST" class="w-full text-left">
+                                                @csrf @method('PATCH')
+                                                <button type="submit" class="w-full flex items-center gap-2 px-4 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#161f33] transition-colors">
+                                                    <span class="material-symbols-outlined text-[16px] {{ $product->is_active ? 'text-amber-500' : 'text-emerald-500' }}">
+                                                        {{ $product->is_active ? 'pause_circle' : 'play_circle' }}
+                                                    </span> 
+                                                    {{ $product->is_active ? 'Nonaktifkan Produk' : 'Aktifkan Produk' }}
+                                                </button>
+                                            </form>
+
+                                            <!-- Hapus -->
+                                            <form action="{{ route('tenant.products.destroy', $product) }}" method="POST" class="w-full text-left" onsubmit="return confirm('Hapus produk {{ $product->name }} secara permanen?');">
+                                                @csrf @method('DELETE')
+                                                <button type="submit" class="w-full flex items-center gap-2 px-4 py-2 text-xs font-semibold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors">
+                                                    <span class="material-symbols-outlined text-[16px]">delete</span> Hapus Permanen
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="6" class="p-16 text-center text-slate-400">
+                                <div class="flex flex-col items-center justify-center max-w-sm mx-auto">
+                                    <div class="w-16 h-16 rounded-2xl bg-sky-500/10 text-sky-500 flex items-center justify-center mb-4">
+                                        <span class="material-symbols-outlined text-[32px]">inventory_2</span>
+                                    </div>
+                                    <h3 class="font-bold text-base text-slate-800 dark:text-white mb-1">Belum ada produk digital</h3>
+                                    <p class="text-xs text-slate-400 mb-5">Mulai tambahkan template, ebook, atau source code aplikasi Anda.</p>
+                                    <a href="{{ route('tenant.products.create') }}" class="px-5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs shadow-lg shadow-sky-500/25 transition-all">
+                                        Tambah Produk Pertama
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
+
+            <!-- Footer Pagination -->
+            @if($products->hasPages())
+            <div class="p-5 border-t border-slate-100 dark:border-[#222f49] flex justify-center">
+                {{ $products->links() }}
+            </div>
+            @endif
+
         </div>
+
     </div>
 </div>
 
 <script>
-    // Fitur Close Tips
-    document.addEventListener('DOMContentLoaded', function() {
-        const infoBanner = document.getElementById('infoBanner');
-        if (infoBanner && !localStorage.getItem('hideTenantProductsInfoBanner')) {
-            infoBanner.style.display = 'flex';
-        }
-    });
-
-    function closeInfoBanner() {
-        const infoBanner = document.getElementById('infoBanner');
-        if (infoBanner) {
-            infoBanner.style.display = 'none';
-            localStorage.setItem('hideTenantProductsInfoBanner', 'true');
-        }
-    }
-
-    // Fitur Select All Checkbox
     function toggleAllCheckboxes(source) {
         const checkboxes = document.querySelectorAll('.product-checkbox');
         checkboxes.forEach(function(checkbox) {
             checkbox.checked = source.checked;
         });
-    }
-    function massAction(action) {
-        const checkboxes = document.querySelectorAll('.product-checkbox:checked');
-        if (checkboxes.length === 0) {
-            alert('Pilih setidaknya satu produk untuk melakukan tindakan ini.');
-            return;
-        }
-        
-        let ids = [];
-        checkboxes.forEach(function(checkbox) {
-            ids.push(checkbox.value);
-        });
-        
-        // Placeholder since the backend mass action endpoints are not built yet
-        alert('Fitur "' + action + '" untuk produk ID: ' + ids.join(', ') + ' akan segera hadir!');
     }
 </script>
 @endsection

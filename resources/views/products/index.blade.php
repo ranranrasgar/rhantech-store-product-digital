@@ -237,7 +237,8 @@
             @forelse($products as $product)
             @php
                 $mainImg = $product->images->where('is_main', true)->first() ?? $product->images->first();
-                $price = $product->discount_price ?? $product->price;
+                $hasDiscount = $product->discount_price && $product->discount_price > 0 && $product->discount_price < $product->price;
+                $price = $hasDiscount ? $product->discount_price : $product->price;
             @endphp
             <a href="{{ route('products.show', $product->slug) }}" class="prod-card">
 
@@ -257,7 +258,7 @@
                     </div>
 
                     {{-- Discount badge --}}
-                    @if($product->discount_price && $product->price > $product->discount_price)
+                    @if($hasDiscount)
                     <div class="absolute top-2 left-2 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow">
                         -{{ round((($product->price - $product->discount_price) / $product->price) * 100) }}%
                     </div>
@@ -270,7 +271,7 @@
                         {{ $product->name }}
                     </p>
 
-                    @if($product->discount_price)
+                    @if($hasDiscount)
                     <p class="text-xs text-gray-400 line-through mb-0.5">
                         Rp{{ number_format($product->price, 0, ',', '.') }}
                     </p>

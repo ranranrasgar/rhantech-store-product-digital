@@ -3,19 +3,20 @@
 namespace App\Http\Controllers\Tenant;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Product;
-use App\Models\ProductImage;
 use App\Models\ProductCategory;
+use App\Models\ProductImage;
 use App\Models\ProductType;
-use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $store = auth()->user()->store;
+        $store = Auth::user()->store;
         if (!$store) return redirect()->route('tenant.store.index')->with('warning', 'Please setup your store first.');
 
         // Get total counts for the tabs
@@ -37,10 +38,10 @@ class ProductController extends Controller
         // 2. Search filter
         if ($request->filled('search')) {
             $search = $request->input('search');
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', '%' . $search . '%')
-                  ->orWhere('id', $search)
-                  ->orWhere('slug', 'like', '%' . $search . '%');
+                    ->orWhere('id', $search)
+                    ->orWhere('slug', 'like', '%' . $search . '%');
             });
         }
 
@@ -67,19 +68,26 @@ class ProductController extends Controller
         return view('tenant.products.index', compact('products', 'allCount', 'activeCount', 'inactiveCount', 'categories', 'tab'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        $store = auth()->user()->store;
+        $store = Auth::user()->store;
         if (!$store) return redirect()->route('tenant.store.index');
-        
+
+        $sourceProduct = null;
+        if ($request->filled('copy')) {
+            $sourceProduct = Product::where('store_id', $store->id)
+                ->with(['images', 'category', 'type'])
+                ->find($request->input('copy'));
+        }
+
         $categories = ProductCategory::orderBy('name', 'asc')->get();
         $types = ProductType::orderBy('name', 'asc')->get();
-        return view('tenant.products.create', compact('categories', 'types'));
+        return view('tenant.products.create', compact('categories', 'types', 'sourceProduct'));
     }
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $rules = [
             'name' => 'required|string|max:255',
             'product_category_id' => 'nullable|exists:product_categories,id',
             'product_type_id' => 'nullable|exists:product_types,id',
@@ -92,11 +100,20 @@ class ProductController extends Controller
             'download_links.*.name' => 'required_with:download_links|string|max:255',
             'download_links.*.url' => 'required_with:download_links|url|max:255',
             'images.*' => 'image|max:2048',
-            'images' => 'required|array|min:1|max:5',
+            'copied_from' => 'nullable|exists:products,id',
             'is_active' => 'boolean'
-        ]);
+        ];
 
-        $store = auth()->user()->store;
+        // If not copying from existing product, images are required
+        if (!$request->filled('copied_from')) {
+            $rules['images'] = 'required|array|min:1|max:5';
+        } else {
+            $rules['images'] = 'nullable|array|max:5';
+        }
+
+        $validated = $request->validate($rules);
+
+        $store = Auth::user()->store;
         if (!$store) return redirect()->route('tenant.store.index');
 
         $product = Product::create([
@@ -116,6 +133,14 @@ class ProductController extends Controller
         if ($request->hasFile('file')) {
             $path = $request->file('file')->store('digital_products'); // local non-public disk
             $product->update(['file_path' => $path]);
+        } elseif ($request->filled('copied_from')) {
+            $sourceProduct = Product::where('store_id', $store->id)->find($request->input('copied_from'));
+            if ($sourceProduct && $sourceProduct->file_path && Storage::exists($sourceProduct->file_path)) {
+                $ext = pathinfo($sourceProduct->file_path, PATHINFO_EXTENSION);
+                $newPath = 'digital_products/' . Str::random(40) . ($ext ? '.' . $ext : '');
+                Storage::copy($sourceProduct->file_path, $newPath);
+                $product->update(['file_path' => $newPath]);
+            }
         }
 
         if ($request->hasFile('images')) {
@@ -126,14 +151,30 @@ class ProductController extends Controller
                     'image_path' => $path
                 ]);
             }
+        } elseif ($request->filled('copied_from')) {
+            $sourceProduct = Product::where('store_id', $store->id)->with('images')->find($request->input('copied_from'));
+            if ($sourceProduct && $sourceProduct->images->count() > 0) {
+                foreach ($sourceProduct->images as $sourceImg) {
+                    if (Storage::disk('public')->exists($sourceImg->image_path)) {
+                        $ext = pathinfo($sourceImg->image_path, PATHINFO_EXTENSION);
+                        $newImagePath = 'products/' . Str::random(40) . ($ext ? '.' . $ext : '');
+                        Storage::disk('public')->copy($sourceImg->image_path, $newImagePath);
+                        ProductImage::create([
+                            'product_id' => $product->id,
+                            'image_path' => $newImagePath,
+                            'is_main' => $sourceImg->is_main
+                        ]);
+                    }
+                }
+            }
         }
 
-        return redirect()->route('tenant.products.index')->with('success', 'Product created successfully.');
+        return redirect()->route('tenant.products.index')->with('success', 'Produk berhasil ditambahkan.');
     }
 
     public function edit(Product $product)
     {
-        if ($product->store_id !== auth()->user()->store->id) abort(403);
+        if ($product->store_id !== Auth::user()->store->id) abort(403);
         $product->load('images');
         $categories = ProductCategory::orderBy('name', 'asc')->get();
         $types = ProductType::orderBy('name', 'asc')->get();
@@ -150,7 +191,7 @@ class ProductController extends Controller
             'demo_url' => 'nullable|url|max:255',
             'price' => 'required|numeric|min:0',
             'discount_price' => 'nullable|numeric|min:0',
-            'file' => 'nullable|file|max:102400', 
+            'file' => 'nullable|file|max:102400',
             'download_links' => 'nullable|array',
             'download_links.*.name' => 'required_with:download_links|string|max:255',
             'download_links.*.url' => 'required_with:download_links|url|max:255',
@@ -159,7 +200,7 @@ class ProductController extends Controller
             'is_active' => 'boolean'
         ]);
 
-        if ($product->store_id !== auth()->user()->store->id) abort(403);
+        if ($product->store_id !== Auth::user()->store->id) abort(403);
 
         $product->update([
             'name' => $validated['name'],
@@ -185,7 +226,7 @@ class ProductController extends Controller
         if ($request->hasFile('images')) {
             $currentImagesCount = $product->images()->count();
             $newImagesCount = count($request->file('images'));
-            
+
             if ($currentImagesCount + $newImagesCount > 5) {
                 return back()->withErrors(['images' => 'Maximum 5 images allowed total.'])->withInput();
             }
@@ -204,7 +245,7 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
     {
-        if ($product->store_id !== auth()->user()->store->id) abort(403);
+        if ($product->store_id !== Auth::user()->store->id) abort(403);
         if ($product->file_path) {
             Storage::delete($product->file_path);
         }
@@ -217,7 +258,7 @@ class ProductController extends Controller
 
     public function destroyImage(ProductImage $image)
     {
-        if ($image->product->store_id !== auth()->user()->store->id) abort(403);
+        if ($image->product->store_id !== Auth::user()->store->id) abort(403);
         Storage::disk('public')->delete($image->image_path);
         $image->delete();
         return back()->with('success', 'Image removed.');
@@ -225,14 +266,14 @@ class ProductController extends Controller
 
     public function toggleActive(Product $product)
     {
-        if ($product->store_id !== auth()->user()->store->id) abort(403);
+        if ($product->store_id !== Auth::user()->store->id) abort(403);
         $product->update(['is_active' => !$product->is_active]);
         return back()->with('success', 'Product status updated.');
     }
 
     public function setMainImage(ProductImage $image)
     {
-        if ($image->product->store_id !== auth()->user()->store->id) abort(403);
+        if ($image->product->store_id !== Auth::user()->store->id) abort(403);
         // Set all other images for this product to not main
         ProductImage::where('product_id', $image->product_id)->update(['is_main' => false]);
         // Set this image to main

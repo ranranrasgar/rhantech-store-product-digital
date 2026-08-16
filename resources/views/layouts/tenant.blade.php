@@ -303,6 +303,9 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
         <a href="{{ route('tenant.orders.index') ?? '#' }}" class="nav-link {{ request()->routeIs('tenant.orders.*') ? 'active' : '' }}">
             <span class="material-symbols-outlined">receipt_long</span> Penjualan
         </a>
+        <a href="{{ route('tenant.chat.index') }}" class="nav-link {{ request()->routeIs('tenant.chat.*') ? 'active' : '' }}">
+            <span class="material-symbols-outlined">chat</span> Chat Pelanggan
+        </a>
 
         <div class="nav-section-label">Marketing</div>
         <a href="{{ route('tenant.affiliates.index') }}" class="nav-link {{ request()->routeIs('tenant.affiliates.*') ? 'active' : '' }}">
@@ -377,8 +380,12 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
                         <div class="dropdown-user-name" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ auth()->user()->name ?? 'Admin' }}</div>
                         <div class="dropdown-user-email" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ auth()->user()->email ?? '' }}</div>
                     </div>
-                    <a href="{{ route('products.index') }}" target="_blank" class="dropdown-item-link">
-                        <span class="material-symbols-outlined" style="font-size:16px;">open_in_new</span> Lihat Toko
+                    @php
+                        $tenantStore = auth()->user()->store ?? null;
+                        $storeUrl = $tenantStore ? route('store.show', $tenantStore->slug) : route('products.index');
+                    @endphp
+                    <a href="{{ $storeUrl }}" target="_blank" class="dropdown-item-link">
+                        <span class="material-symbols-outlined" style="font-size:16px;">storefront</span> Lihat Toko
                     </a>
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf

@@ -1,414 +1,362 @@
 @extends('layouts.tenant')
 
-@section('title', 'Dekorasi Toko Saat Ini')
+@section('title', 'Dekorasi Etalase Toko')
 
 @section('content')
-<!-- Alpine Scope Wrapper -->
-<div class="flex flex-col h-full" x-data="appearanceEditor()">
-    <!-- Header (PPOB Style) -->
-<div class="bg-surface dark:bg-[#161b22] border-b border-outline-variant dark:border-[#30363d] p-4 flex items-center justify-between shadow-sm">
-    <div class="flex items-center gap-4">
-        <h2 class="font-bold text-lg text-on-surface dark:text-white">Dekorasi Toko Saat Ini</h2>
-        <span class="text-xs text-on-surface-variant dark:text-gray-400">Waktu Terakhir Disimpan: {{ date('d-m-Y H:i') }}</span>
-    </div>
-    <div class="flex items-center gap-3">
-        <button class="px-4 py-1.5 text-sm font-semibold border border-outline-variant dark:border-[#30363d] rounded text-on-surface hover:bg-surface-variant/50 transition-colors">Ganti dengan Template Lain</button>
-        <button class="px-4 py-1.5 text-sm font-semibold border border-outline-variant dark:border-[#30363d] rounded text-on-surface hover:bg-surface-variant/50 transition-colors">Preview</button>
-        <button @click="save()" class="px-4 py-1.5 text-sm font-semibold border border-outline-variant dark:border-[#30363d] rounded text-on-surface hover:bg-surface-variant/50 transition-colors">
-            <span x-show="!isSaving">Simpan</span>
-            <span x-show="isSaving">Menyimpan...</span>
-        </button>
-        <button class="px-4 py-1.5 text-sm font-bold border border-error bg-error text-white rounded hover:bg-[#d73f22] transition-colors">Tampilkan</button>
-    </div>
-</div>
-
-<div class="flex-1 flex overflow-hidden bg-surface-container-lowest dark:bg-[#0d1117] h-[calc(100vh-120px)]">
+<div class="flex flex-col h-full bg-[#f8fafc] dark:bg-[#090d16] text-[#0f172a] dark:text-[#f1f5f9] transition-colors duration-200" x-data="appearanceEditor()">
     
-    <!-- LEFT SIDEBAR: COMPONENTS -->
-    <div class="w-[280px] border-r border-outline-variant dark:border-[#30363d] bg-surface dark:bg-[#161b22] flex flex-col h-full z-10 overflow-hidden shrink-0">
-        <!-- Search bar -->
-        <div class="p-4 border-b border-outline-variant dark:border-[#30363d]">
-            <div class="relative">
-                <input type="text" placeholder="Cari" class="w-full pl-3 pr-8 py-1.5 text-sm bg-surface-container-lowest dark:bg-[#0d1117] border border-outline-variant dark:border-[#30363d] rounded focus:outline-none focus:border-error transition-colors">
-                <span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-on-surface-variant text-[16px]">search</span>
-            </div>
+    <!-- Top Action Header -->
+    <div class="bg-white dark:bg-[#111726] border-b border-slate-200/80 dark:border-[#222f49] px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm z-20 shrink-0">
+        <div>
+            <h1 class="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
+                Dekorasi Etalase Toko
+            </h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                Kustomisasi susunan visual dan tata letak halaman toko digital Anda.
+            </p>
         </div>
 
-        <!-- Tabs -->
-        <div class="flex text-sm font-semibold border-b border-outline-variant dark:border-[#30363d]">
-            <button @click="tab = 'komponen'" :class="tab === 'komponen' ? 'border-b-2 border-error text-error' : 'border-b-2 border-transparent text-on-surface hover:text-error'" class="flex-1 py-3 transition-colors text-center">Komponen<br>Dekorasi</button>
-            <button @click="tab = 'template'" :class="tab === 'template' ? 'border-b-2 border-error text-error' : 'border-b-2 border-transparent text-on-surface hover:text-error'" class="flex-1 py-3 transition-colors text-center">Komponen<br>Template</button>
+        <div class="flex items-center gap-3">
+            @if($store && $store->slug)
+            <a href="{{ route('store.show', $store->slug) }}" target="_blank" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm">
+                <span class="material-symbols-outlined text-[16px]">visibility</span> Preview Web
+            </a>
+            @endif
+            <button @click="save()" :disabled="isSaving" class="px-5 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs font-bold shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 transition-all flex items-center gap-1.5 disabled:opacity-60 cursor-pointer">
+                <span class="material-symbols-outlined text-[16px]" x-text="isSaving ? 'hourglass_empty' : 'save'">save</span>
+                <span x-text="isSaving ? 'Menyimpan...' : 'Simpan Perubahan'">Simpan Perubahan</span>
+            </button>
         </div>
-
-        <!-- Tab Content: Komponen Dekorasi -->
-        <div x-show="tab === 'komponen'" class="flex-1 overflow-y-auto p-4 space-y-6 custom-scrollbar">
-            
-            <!-- Category: Tampilan & Teks -->
-            <div>
-                <h3 class="font-bold text-sm mb-4 flex items-center justify-between">Tampilan & Teks <span class="material-symbols-outlined text-[16px]">expand_less</span></h3>
-                <div class="grid grid-cols-2 gap-4">
-                    <!-- Item 1 -->
-                    <div @click="addComponent('banner')" class="cursor-pointer group flex flex-col items-center">
-                        <div class="border border-outline-variant dark:border-[#30363d] rounded p-2 mb-2 group-hover:border-error transition-colors w-full h-16 flex items-center justify-center bg-surface-container-lowest">
-                            <div class="flex gap-1 w-full px-1">
-                                <div class="w-1/2 h-10 bg-[#e0f2fe] rounded"></div>
-                                <div class="w-1/2 h-10 bg-[#fee2e2] rounded"></div>
-                            </div>
-                        </div>
-                        <span class="text-xs text-on-surface-variant text-center">Banner Toko <span class="material-symbols-outlined text-[10px]">help</span></span>
-                    </div>
-                    <!-- Item 2 -->
-                    <div @click="addComponent('single_image')" class="cursor-pointer group flex flex-col items-center">
-                        <div class="border border-outline-variant dark:border-[#30363d] rounded p-2 mb-2 group-hover:border-error transition-colors w-full h-16 flex items-center justify-center bg-surface-container-lowest">
-                            <div class="w-full h-10 bg-gradient-to-r from-teal-400 to-emerald-400 rounded"></div>
-                        </div>
-                        <span class="text-xs text-on-surface-variant text-center">Satu Foto <span class="material-symbols-outlined text-[10px]">help</span></span>
-                    </div>
-                    <!-- Item 3 -->
-                    <div @click="addComponent('text')" class="cursor-pointer group flex flex-col items-center">
-                        <div class="border border-outline-variant dark:border-[#30363d] rounded p-2 mb-2 group-hover:border-error transition-colors w-full h-16 flex items-center justify-center bg-surface-container-lowest text-[8px] text-on-surface-variant">
-                            Abcdefg hijklm nopqrstu vwxyz.
-                        </div>
-                        <span class="text-xs text-on-surface-variant text-center">Teks <span class="material-symbols-outlined text-[10px]">help</span></span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Category: Produk & Kategori -->
-            <div>
-                <h3 class="font-bold text-sm mb-4 flex items-center justify-between">Produk & Kategori <span class="material-symbols-outlined text-[16px]">expand_less</span></h3>
-                <div class="grid grid-cols-2 gap-4">
-                    <!-- Item 1 -->
-                    <div @click="addComponent('products')" class="cursor-pointer group flex flex-col items-center relative">
-                        <div class="border border-outline-variant dark:border-[#30363d] group-hover:border-error transition-colors rounded p-2 mb-2 bg-surface-container-lowest w-full h-20 flex flex-col items-center">
-                            <div class="grid grid-cols-2 gap-1 w-full px-2 mt-1">
-                                <div class="w-full h-10 bg-gray-200 dark:bg-gray-700 rounded"></div>
-                                <div class="w-full h-10 bg-gray-200 dark:bg-gray-700 rounded"></div>
-                            </div>
-                            <div class="absolute bottom-[28px] bg-[#1e88e5] text-white text-[10px] px-2 rounded-t font-bold">Produk</div>
-                        </div>
-                        <span class="text-xs text-on-surface-variant text-center mt-2">Produk Pilihan <span class="material-symbols-outlined text-[10px]">help</span></span>
-                    </div>
-                    <!-- Item 2 -->
-                    <div @click="addComponent('flash_sale')" class="cursor-pointer group flex flex-col items-center relative">
-                        <div class="border border-outline-variant dark:border-[#30363d] group-hover:border-error transition-colors rounded p-2 mb-2 bg-surface-container-lowest w-full h-20 flex flex-col items-center">
-                            <div class="grid grid-cols-2 gap-1 w-full px-2 mt-1">
-                                <div class="w-full h-10 bg-yellow-200 dark:bg-yellow-700 rounded"></div>
-                                <div class="w-full h-10 bg-yellow-200 dark:bg-yellow-700 rounded"></div>
-                            </div>
-                            <div class="absolute bottom-[28px] bg-error text-white text-[10px] px-2 rounded-t font-bold">Flash Sale</div>
-                        </div>
-                        <span class="text-xs text-on-surface-variant text-center mt-2">Flash Sale <span class="material-symbols-outlined text-[10px]">help</span></span>
-                    </div>
-                    <!-- Item 3 -->
-                    <div @click="addComponent('voucher')" class="cursor-pointer group flex flex-col items-center relative">
-                        <div class="border border-outline-variant dark:border-[#30363d] group-hover:border-error transition-colors rounded p-2 mb-2 bg-surface-container-lowest w-full h-20 flex flex-col items-center justify-center text-error">
-                            <span class="material-symbols-outlined text-[32px]">local_activity</span>
-                        </div>
-                        <span class="text-xs text-on-surface-variant text-center mt-2">Voucher <span class="material-symbols-outlined text-[10px]">help</span></span>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <button class="absolute -right-4 top-1/2 -translate-y-1/2 bg-surface dark:bg-[#161b22] border border-outline-variant dark:border-[#30363d] w-8 h-8 rounded-full shadow-md flex items-center justify-center text-on-surface-variant hover:text-on-surface z-20"><span class="material-symbols-outlined text-[16px]">chevron_left</span></button>
     </div>
 
-    <!-- CENTER CANVAS (Store Preview) -->
-    <div class="flex-1 bg-surface-container-lowest dark:bg-[#0d1117] flex flex-col items-center py-8 overflow-auto relative custom-scrollbar">
+    <!-- Workspace Container (Sidebar + Interactive Canvas) -->
+    <div class="flex-1 flex overflow-hidden h-[calc(100vh-130px)]">
         
-        <!-- Device Toggle -->
-        <div class="flex items-center gap-2 mb-6 bg-surface dark:bg-[#161b22] p-1 rounded-lg border border-outline-variant dark:border-[#30363d] shrink-0 shadow-sm">
-            <button @click="device = 'mobile'" :class="device === 'mobile' ? 'bg-[#00b3cc] dark:bg-[#2f81f7] text-white' : 'text-on-surface hover:bg-surface-variant/50'" class="px-4 py-1.5 rounded-md text-sm font-semibold transition-colors flex items-center gap-2">
-                <span class="material-symbols-outlined text-[18px]">smartphone</span> Mobile
-            </button>
-            <button @click="device = 'desktop'" :class="device === 'desktop' ? 'bg-[#00b3cc] dark:bg-[#2f81f7] text-white' : 'text-on-surface hover:bg-surface-variant/50'" class="px-4 py-1.5 rounded-md text-sm font-semibold transition-colors flex items-center gap-2">
-                <span class="material-symbols-outlined text-[18px]">computer</span> Desktop
-            </button>
+        <!-- LEFT SIDEBAR: WIDGET COMPONENT PALETTE -->
+        <div class="w-[300px] border-r border-slate-200/80 dark:border-[#222f49] bg-white dark:bg-[#111726] flex flex-col h-full z-10 shrink-0 shadow-sm overflow-hidden">
+            
+            <div class="p-4 border-b border-slate-100 dark:border-[#222f49]">
+                <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                    Pilihan Blok Widget
+                </h2>
+                <p class="text-[11px] text-slate-400 mt-0.5">Klik blok di bawah untuk menambahkannya ke kanvas:</p>
+            </div>
+
+            <!-- Components List -->
+            <div class="flex-1 overflow-y-auto p-4 space-y-5 custom-scrollbar">
+                
+                <!-- Group 1: Media & Konten -->
+                <div>
+                    <h3 class="text-xs font-bold text-slate-900 dark:text-white mb-2.5 flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-[16px] text-sky-500">photo_library</span> Media & Tampilan
+                    </h3>
+                    <div class="grid grid-cols-2 gap-2.5">
+                        <!-- Banner Carousel -->
+                        <div @click="addComponent('banner')" class="p-3 rounded-xl border border-slate-200 dark:border-[#222f49] hover:border-sky-500 dark:hover:border-sky-500 hover:bg-sky-50/50 dark:hover:bg-sky-950/20 cursor-pointer transition-all text-center group">
+                            <div class="w-8 h-8 rounded-lg bg-sky-500/10 text-sky-500 flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
+                                <span class="material-symbols-outlined text-[18px]">view_carousel</span>
+                            </div>
+                            <span class="text-xs font-bold text-slate-800 dark:text-slate-200 block">Banner Hero</span>
+                            <span class="text-[10px] text-slate-400">Slide Gambar</span>
+                        </div>
+
+                        <!-- Single Highlight Image -->
+                        <div @click="addComponent('single_image')" class="p-3 rounded-xl border border-slate-200 dark:border-[#222f49] hover:border-sky-500 dark:hover:border-sky-500 hover:bg-sky-50/50 dark:hover:bg-sky-950/20 cursor-pointer transition-all text-center group">
+                            <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
+                                <span class="material-symbols-outlined text-[18px]">image</span>
+                            </div>
+                            <span class="text-xs font-bold text-slate-800 dark:text-slate-200 block">Banner Tunggal</span>
+                            <span class="text-[10px] text-slate-400">Gambar Penuh</span>
+                        </div>
+
+                        <!-- Text Block -->
+                        <div @click="addComponent('text')" class="p-3 rounded-xl border border-slate-200 dark:border-[#222f49] hover:border-sky-500 dark:hover:border-sky-500 hover:bg-sky-50/50 dark:hover:bg-sky-950/20 cursor-pointer transition-all text-center group col-span-2">
+                            <div class="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-500 flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
+                                <span class="material-symbols-outlined text-[18px]">format_quote</span>
+                            </div>
+                            <span class="text-xs font-bold text-slate-800 dark:text-slate-200 block">Teks / Pengumuman</span>
+                            <span class="text-[10px] text-slate-400">Blok deskripsi & informasi toko</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Group 2: Produk & Penjualan -->
+                <div>
+                    <h3 class="text-xs font-bold text-slate-900 dark:text-white mb-2.5 flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-[16px] text-amber-500">storefront</span> Produk & Promosi
+                    </h3>
+                    <div class="grid grid-cols-2 gap-2.5">
+                        <!-- Featured Products -->
+                        <div @click="addComponent('products')" class="p-3 rounded-xl border border-slate-200 dark:border-[#222f49] hover:border-sky-500 dark:hover:border-sky-500 hover:bg-sky-50/50 dark:hover:bg-sky-950/20 cursor-pointer transition-all text-center group">
+                            <div class="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-500 flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
+                                <span class="material-symbols-outlined text-[18px]">grid_view</span>
+                            </div>
+                            <span class="text-xs font-bold text-slate-800 dark:text-slate-200 block">Produk Pilihan</span>
+                            <span class="text-[10px] text-slate-400">Grid Katalog</span>
+                        </div>
+
+                        <!-- Flash Sale -->
+                        <div @click="addComponent('flash_sale')" class="p-3 rounded-xl border border-slate-200 dark:border-[#222f49] hover:border-sky-500 dark:hover:border-sky-500 hover:bg-sky-50/50 dark:hover:bg-sky-950/20 cursor-pointer transition-all text-center group">
+                            <div class="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-500 flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
+                                <span class="material-symbols-outlined text-[18px]">bolt</span>
+                            </div>
+                            <span class="text-xs font-bold text-slate-800 dark:text-slate-200 block">Flash Sale</span>
+                            <span class="text-[10px] text-slate-400">Promo Terbatas</span>
+                        </div>
+
+                        <!-- Voucher -->
+                        <div @click="addComponent('voucher')" class="p-3 rounded-xl border border-slate-200 dark:border-[#222f49] hover:border-sky-500 dark:hover:border-sky-500 hover:bg-sky-50/50 dark:hover:bg-sky-950/20 cursor-pointer transition-all text-center group col-span-2">
+                            <div class="w-8 h-8 rounded-lg bg-rose-500/10 text-rose-500 flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
+                                <span class="material-symbols-outlined text-[18px]">confirmation_number</span>
+                            </div>
+                            <span class="text-xs font-bold text-slate-800 dark:text-slate-200 block">Kupon Voucher</span>
+                            <span class="text-[10px] text-slate-400">Daftar kode kupon potongan belanja</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </div>
 
-        <!-- Mobile Frame Wrapper -->
-        <div x-show="device === 'mobile'" class="w-[375px] bg-white border border-outline-variant shadow-lg rounded-[2.5rem] overflow-hidden flex flex-col relative h-[812px] shrink-0 outline outline-[12px] outline-[#f0f0f0] dark:outline-[#1a1a1a]">
+        <!-- CENTER CANVAS: LIVE INTERACTIVE STORE BUILDER -->
+        <div class="flex-1 bg-slate-100/60 dark:bg-[#070a12] flex flex-col items-center py-6 overflow-auto relative custom-scrollbar">
             
-            <!-- Mobile Status Bar (Mock) -->
-            <div class="h-6 bg-black text-white text-[10px] flex justify-between items-center px-4 shrink-0 absolute top-0 left-0 right-0 z-50">
-                <span>12:30</span>
-                <div class="flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[12px]">network_wifi</span>
-                    <span class="material-symbols-outlined text-[12px]">battery_full</span>
+            <!-- Viewport Switcher (Desktop / Mobile) -->
+            <div class="flex items-center gap-1.5 mb-6 bg-white dark:bg-[#111726] p-1.5 rounded-2xl border border-slate-200/80 dark:border-[#222f49] shrink-0 shadow-sm">
+                <button @click="device = 'desktop'" :class="device === 'desktop' ? 'bg-sky-500 text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'" class="px-4 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[16px]">desktop_windows</span> Desktop
+                </button>
+                <button @click="device = 'mobile'" :class="device === 'mobile' ? 'bg-sky-500 text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'" class="px-4 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[16px]">smartphone</span> Mobile
+                </button>
+            </div>
+
+            <!-- DESKTOP CANVAS VIEWPORT -->
+            <div x-show="device === 'desktop'" class="w-[960px] bg-white dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] shadow-2xl rounded-2xl overflow-hidden flex flex-col relative min-h-[600px] shrink-0 mb-12">
+                
+                <!-- Browser Bar -->
+                <div class="h-9 bg-slate-100 dark:bg-[#161f33] border-b border-slate-200 dark:border-[#222f49] flex items-center px-4 gap-3 shrink-0">
+                    <div class="flex gap-1.5">
+                        <div class="w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-600"></div>
+                        <div class="w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-600"></div>
+                        <div class="w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-600"></div>
+                    </div>
+                    <div class="flex-1 flex justify-center">
+                        <div class="bg-white dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] text-[11px] px-4 py-1 rounded-lg text-slate-500 w-[50%] flex items-center justify-center gap-1.5 font-mono truncate">
+                            <span class="material-symbols-outlined text-[13px] text-emerald-500">lock</span>
+                            <span>rhantech.com/toko/{{ $store->slug ?? 'toko-anda' }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Desktop Store Header Banner -->
+                <div class="w-full h-[220px] bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white relative overflow-hidden flex items-end p-6 border-b border-slate-200 dark:border-[#222f49]">
+                    <div class="absolute inset-0 bg-radial from-sky-500/10 to-transparent pointer-events-none"></div>
+                    <div class="relative z-10 flex items-center justify-between w-full">
+                        <div class="flex items-center gap-4">
+                            <div class="w-20 h-20 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 p-1 overflow-hidden shrink-0 shadow-lg">
+                                @if($store && $store->logo)
+                                    <img src="{{ asset('storage/' . $store->logo) }}" class="w-full h-full object-cover rounded-xl">
+                                @else
+                                    <div class="w-full h-full bg-sky-500 rounded-xl flex items-center justify-center font-bold text-xl text-white">
+                                        {{ strtoupper(substr($store->name ?? 'T', 0, 2)) }}
+                                    </div>
+                                @endif
+                            </div>
+                            <div>
+                                <h2 class="text-2xl font-black text-white drop-shadow-sm">{{ $store->name ?? 'Toko Anda' }}</h2>
+                                <p class="text-xs text-slate-300 mt-1 max-w-md line-clamp-1">{{ $store->description ?: 'Platform penyedia produk digital terpercaya.' }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Desktop Droppable Canvas Area -->
+                <div id="desktop-canvas" class="p-6 space-y-4 min-h-[300px]">
+                    <template x-for="(comp, index) in activeComponents" :key="comp.id">
+                        <div class="relative group cursor-move drag-handle transition-all">
+                            <!-- Remove Button -->
+                            <button @click="removeComponent(index)" class="absolute -right-2 -top-2 bg-rose-500 hover:bg-rose-600 text-white rounded-full w-7 h-7 flex items-center justify-center hidden group-hover:flex z-30 shadow-lg transition-transform hover:scale-110">
+                                <span class="material-symbols-outlined text-[15px]">close</span>
+                            </button>
+
+                            <!-- BANNER HERO -->
+                            <template x-if="comp.type === 'banner'">
+                                <div class="bg-slate-50 dark:bg-[#111726] border-2 border-dashed border-slate-200 dark:border-[#222f49] hover:border-sky-500 dark:hover:border-sky-500 rounded-2xl p-8 flex flex-col items-center justify-center text-center shadow-xs transition-colors h-48">
+                                    <span class="material-symbols-outlined text-3xl text-sky-500 mb-1">view_carousel</span>
+                                    <span class="text-sm font-bold text-slate-800 dark:text-white">Blok Banner Slide Utama</span>
+                                    <span class="text-xs text-slate-400 mt-0.5">Menampilkan gambar sorotan campaign toko</span>
+                                </div>
+                            </template>
+
+                            <!-- SINGLE IMAGE -->
+                            <template x-if="comp.type === 'single_image'">
+                                <div class="bg-slate-50 dark:bg-[#111726] border-2 border-dashed border-slate-200 dark:border-[#222f49] hover:border-sky-500 dark:hover:border-sky-500 rounded-2xl p-8 flex flex-col items-center justify-center text-center shadow-xs transition-colors h-56">
+                                    <span class="material-symbols-outlined text-3xl text-emerald-500 mb-1">image</span>
+                                    <span class="text-sm font-bold text-slate-800 dark:text-white">Blok Banner Gambar Penuh</span>
+                                    <span class="text-xs text-slate-400 mt-0.5">Gambar promo spesial etalase toko</span>
+                                </div>
+                            </template>
+
+                            <!-- VOUCHER -->
+                            <template x-if="comp.type === 'voucher'">
+                                <div class="bg-slate-50 dark:bg-[#111726] border-2 border-dashed border-slate-200 dark:border-[#222f49] hover:border-sky-500 dark:hover:border-sky-500 rounded-2xl p-6 flex items-center gap-4 shadow-xs transition-colors">
+                                    <div class="w-12 h-12 rounded-xl bg-rose-500/10 text-rose-500 flex items-center justify-center shrink-0">
+                                        <span class="material-symbols-outlined text-2xl">confirmation_number</span>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-sm font-bold text-slate-900 dark:text-white">Blok Kupon Voucher Toko</h4>
+                                        <p class="text-xs text-slate-400 mt-0.5">Menampilkan daftar voucher diskon aktif yang siap diklaim pembeli.</p>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <!-- FLASH SALE -->
+                            <template x-if="comp.type === 'flash_sale'">
+                                <div class="bg-slate-50 dark:bg-[#111726] border-2 border-dashed border-slate-200 dark:border-[#222f49] hover:border-sky-500 dark:hover:border-sky-500 rounded-2xl p-6 flex items-center gap-4 shadow-xs transition-colors">
+                                    <div class="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center shrink-0">
+                                        <span class="material-symbols-outlined text-2xl">bolt</span>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-sm font-bold text-slate-900 dark:text-white">Blok Flash Sale Terbatas</h4>
+                                        <p class="text-xs text-slate-400 mt-0.5">Menampilkan produk promo diskon kilat dengan countdown timer.</p>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <!-- PRODUCTS -->
+                            <template x-if="comp.type === 'products'">
+                                <div class="bg-slate-50 dark:bg-[#111726] border-2 border-dashed border-slate-200 dark:border-[#222f49] hover:border-sky-500 dark:hover:border-sky-500 rounded-2xl p-6 shadow-xs transition-colors">
+                                    <h4 class="text-sm font-bold text-slate-900 dark:text-white mb-3">Grid Produk Unggulan</h4>
+                                    <div class="grid grid-cols-4 gap-3">
+                                        <div class="h-28 bg-slate-200/60 dark:bg-slate-800 rounded-xl"></div>
+                                        <div class="h-28 bg-slate-200/60 dark:bg-slate-800 rounded-xl"></div>
+                                        <div class="h-28 bg-slate-200/60 dark:bg-slate-800 rounded-xl"></div>
+                                        <div class="h-28 bg-slate-200/60 dark:bg-slate-800 rounded-xl"></div>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <!-- TEXT -->
+                            <template x-if="comp.type === 'text'">
+                                <div class="bg-slate-50 dark:bg-[#111726] border-2 border-dashed border-slate-200 dark:border-[#222f49] hover:border-sky-500 dark:hover:border-sky-500 rounded-2xl p-6 shadow-xs transition-colors">
+                                    <h4 class="text-sm font-bold text-slate-900 dark:text-white mb-1">Blok Informasi / Pengumuman</h4>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                                        Selamat datang di toko digital kami! Temukan beragam source code, template website, dan aplikasi siap pakai terbaik untuk kebutuhan proyek Anda.
+                                    </p>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+
+                    <div x-show="activeComponents.length === 0" class="text-center py-16 text-slate-400 text-sm border-2 border-dashed border-slate-200 dark:border-[#222f49] rounded-2xl">
+                        Kanvas masih kosong. Klik blok widget di sidebar kiri untuk menambahkan.
+                    </div>
                 </div>
             </div>
 
-            <!-- Canvas Content -->
-            <div class="flex-1 overflow-y-auto bg-[#f6f6f6] relative">
+            <!-- MOBILE CANVAS VIEWPORT -->
+            <div x-show="device === 'mobile'" style="display: none;" class="w-[375px] bg-white dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] shadow-2xl rounded-[2.5rem] overflow-hidden flex flex-col relative min-h-[750px] shrink-0 mb-12 outline outline-8 outline-slate-200/60 dark:outline-slate-800">
                 
-                <!-- Store Header Banner -->
-                <div class="h-[140px] bg-[#1a1a1a] relative group border-2 border-transparent hover:border-error transition-all">
-                    <!-- Edit overlay placeholder -->
-                    <div class="absolute inset-0 border border-error bg-error/10 hidden group-hover:block z-20 cursor-pointer"></div>
-
-                    <!-- Background Image (Mock) -->
-                    <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1557683316-973673baf926?w=600&h=300&fit=crop')] bg-cover bg-center opacity-80"></div>
-                    <div class="absolute inset-0 bg-black/40"></div>
-
-                    <!-- Top Bar -->
-                    <div class="absolute top-8 left-4 right-4 flex justify-between text-white z-10">
-                        <span class="material-symbols-outlined">arrow_back</span>
-                        <div class="flex items-center gap-2">
-                            <span class="material-symbols-outlined text-[18px]">search</span>
-                            <span class="material-symbols-outlined text-[18px]">more_vert</span>
-                        </div>
+                <!-- Mobile Status Bar -->
+                <div class="h-7 bg-slate-900 text-white text-[10px] flex justify-between items-center px-5 shrink-0">
+                    <span>09:41</span>
+                    <div class="flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-[12px]">signal_cellular_alt</span>
+                        <span class="material-symbols-outlined text-[12px]">wifi</span>
+                        <span class="material-symbols-outlined text-[12px]">battery_full</span>
                     </div>
+                </div>
 
-                    <!-- Profile Info -->
-                    <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between z-10">
-                        <div class="flex items-center gap-3">
-                            <img src="https://ui-avatars.com/api/?name={{ urlencode($store->name ?? 'Store') }}&background=0D8ABC&color=fff" class="w-12 h-12 rounded-full border-2 border-white object-cover">
-                            <div>
-                                <h1 class="text-white font-bold text-sm drop-shadow-md">{{ $store->name ?? 'Toko Anda' }}</h1>
-                                <div class="text-white text-[10px] drop-shadow-md flex items-center gap-1">
-                                    <span class="text-yellow-400">★ 4.8</span> | 1.6K Pengikut
+                <!-- Mobile Header -->
+                <div class="h-32 bg-slate-900 text-white p-4 flex items-end relative overflow-hidden">
+                    <div class="flex items-center gap-3 relative z-10">
+                        <div class="w-12 h-12 rounded-xl bg-white/10 border border-white/20 p-0.5 overflow-hidden shrink-0">
+                            @if($store && $store->logo)
+                                <img src="{{ asset('storage/' . $store->logo) }}" class="w-full h-full object-cover rounded-lg">
+                            @else
+                                <div class="w-full h-full bg-sky-500 rounded-lg flex items-center justify-center font-bold text-sm text-white">
+                                    {{ strtoupper(substr($store->name ?? 'T', 0, 2)) }}
                                 </div>
-                            </div>
+                            @endif
                         </div>
-                        <div class="flex flex-col gap-1">
-                            <button class="bg-white/20 backdrop-blur text-white border border-white/50 text-[10px] font-bold px-3 py-1 rounded">+ Mengikuti</button>
-                            <button class="bg-white/20 backdrop-blur text-white border border-white/50 text-[10px] font-bold px-3 py-1 rounded">Chat</button>
+                        <div>
+                            <h3 class="font-bold text-sm text-white leading-tight">{{ $store->name ?? 'Toko Anda' }}</h3>
+                            <p class="text-[10px] text-slate-300">Toko Resmi</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Tabs (Mock) -->
-                <div class="bg-white flex text-sm font-semibold sticky top-0 z-30 shadow-sm border-b border-gray-200">
-                    <button class="flex-1 py-3 text-error border-b-2 border-error">Toko</button>
-                    <button class="flex-1 py-3 text-gray-500 hover:text-error hover:border-b-2 hover:border-error border-b-2 border-transparent">Produk</button>
-                    <button class="flex-1 py-3 text-gray-500 hover:text-error hover:border-b-2 hover:border-error border-b-2 border-transparent">Kategori</button>
-                </div>
-
-                <div id="mobile-canvas" class="p-3 space-y-3 pb-20 min-h-[200px]">
+                <!-- Mobile Canvas Droppable Area -->
+                <div id="mobile-canvas" class="p-3 space-y-3 pb-16 min-h-[300px] overflow-y-auto">
                     <template x-for="(comp, index) in activeComponents" :key="comp.id">
                         <div class="relative group cursor-move drag-handle">
-                            <!-- Overlay Delete Button -->
-                            <button @click="removeComponent(index)" class="absolute -right-2 -top-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center hidden group-hover:flex z-50 shadow-md hover:bg-red-600 transition-colors">
+                            <!-- Remove Button -->
+                            <button @click="removeComponent(index)" class="absolute -right-2 -top-2 bg-rose-500 text-white rounded-full w-6 h-6 flex items-center justify-center hidden group-hover:flex z-30 shadow-md">
                                 <span class="material-symbols-outlined text-[14px]">close</span>
                             </button>
 
-                            <!-- VOUCHER -->
-                            <template x-if="comp.type === 'voucher'">
-                                <div class="bg-white border-2 border-transparent hover:border-error transition-all rounded p-4 flex gap-4 items-center shadow-sm">
-                                    <div class="w-10 h-10 border border-gray-300 border-dashed rounded flex items-center justify-center text-gray-300 shrink-0"><span class="material-symbols-outlined text-[20px]">local_activity</span></div>
-                                    <p class="text-[11px] text-gray-400">Kamu belum membuat Voucher. Komponen ini akan disembunyikan otomatis.</p>
-                                </div>
-                            </template>
-
-                            <!-- FLASH SALE -->
-                            <template x-if="comp.type === 'flash_sale'">
-                                <div class="bg-white border-2 border-transparent hover:border-error transition-all rounded p-4 flex gap-4 items-center shadow-sm">
-                                    <div class="w-10 h-10 border border-gray-300 border-dashed rounded flex items-center justify-center text-gray-300 shrink-0"><span class="material-symbols-outlined text-[20px]">bolt</span></div>
-                                    <p class="text-[11px] text-gray-400">Tidak ada produk Flash Sale yang aktif.</p>
-                                </div>
-                            </template>
-
-                            <!-- BANNER -->
                             <template x-if="comp.type === 'banner'">
-                                <div class="bg-white border-2 border-transparent hover:border-error transition-all rounded overflow-hidden shadow-sm h-40 flex items-center justify-center bg-gray-100">
-                                    <span class="text-gray-400 text-sm font-semibold">Banner Toko (Pilih Gambar)</span>
-                                </div>
-                            </template>
-                            
-                            <!-- SINGLE IMAGE -->
-                            <template x-if="comp.type === 'single_image'">
-                                <div class="bg-white border-2 border-transparent hover:border-error transition-all rounded overflow-hidden shadow-sm h-60 flex items-center justify-center bg-gray-100">
-                                    <span class="text-gray-400 text-sm font-semibold">Satu Foto (Pilih Gambar)</span>
+                                <div class="bg-slate-50 dark:bg-[#111726] border border-slate-200 dark:border-[#222f49] rounded-xl p-4 text-center h-28 flex flex-col items-center justify-center">
+                                    <span class="text-xs font-bold text-slate-800 dark:text-white">Banner Slide</span>
                                 </div>
                             </template>
 
-                            <!-- TEKS -->
-                            <template x-if="comp.type === 'text'">
-                                <div class="bg-white border-2 border-transparent hover:border-error transition-all rounded p-4 shadow-sm">
-                                    <p class="text-xs text-gray-600 leading-relaxed font-serif">Tambahkan teks deksripsi atau promosi toko Anda di sini. Anda dapat mengedit teks ini di panel pengaturan komponen.</p>
+                            <template x-if="comp.type === 'single_image'">
+                                <div class="bg-slate-50 dark:bg-[#111726] border border-slate-200 dark:border-[#222f49] rounded-xl p-4 text-center h-36 flex flex-col items-center justify-center">
+                                    <span class="text-xs font-bold text-slate-800 dark:text-white">Banner Gambar</span>
                                 </div>
                             </template>
-                            
-                            <!-- PRODUK PILIHAN -->
+
+                            <template x-if="comp.type === 'voucher'">
+                                <div class="bg-slate-50 dark:bg-[#111726] border border-slate-200 dark:border-[#222f49] rounded-xl p-3 flex items-center gap-2.5">
+                                    <span class="material-symbols-outlined text-rose-500 text-[18px]">confirmation_number</span>
+                                    <span class="text-xs font-bold text-slate-800 dark:text-white">Kupon Voucher</span>
+                                </div>
+                            </template>
+
+                            <template x-if="comp.type === 'flash_sale'">
+                                <div class="bg-slate-50 dark:bg-[#111726] border border-slate-200 dark:border-[#222f49] rounded-xl p-3 flex items-center gap-2.5">
+                                    <span class="material-symbols-outlined text-amber-500 text-[18px]">bolt</span>
+                                    <span class="text-xs font-bold text-slate-800 dark:text-white">Flash Sale</span>
+                                </div>
+                            </template>
+
                             <template x-if="comp.type === 'products'">
-                                <div class="bg-white border-2 border-transparent hover:border-error transition-all rounded p-4 shadow-sm">
-                                    <h4 class="font-bold text-sm mb-3 text-center">Produk Pilihan</h4>
+                                <div class="bg-slate-50 dark:bg-[#111726] border border-slate-200 dark:border-[#222f49] rounded-xl p-3">
+                                    <span class="text-xs font-bold text-slate-800 dark:text-white mb-2 block">Produk Pilihan</span>
                                     <div class="grid grid-cols-2 gap-2">
-                                        <div class="h-24 bg-gray-100 rounded"></div>
-                                        <div class="h-24 bg-gray-100 rounded"></div>
-                                    </div>
-                                </div>
-                            </template>
-                        </div>
-                    </template>
-                    
-                    <div x-show="activeComponents.length === 0" class="text-center py-10 text-gray-400 text-sm border-2 border-dashed border-gray-300 rounded-lg">
-                        Tarik komponen dari sidebar ke sini
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-        <!-- Desktop Frame Wrapper -->
-        <div x-show="device === 'desktop'" style="display: none;" class="w-[1024px] bg-white dark:bg-[#0d1117] border border-outline-variant dark:border-[#30363d] shadow-lg rounded-xl overflow-hidden flex flex-col relative min-h-[768px] shrink-0">
-            
-            <!-- Desktop Browser Mock -->
-            <div class="h-10 bg-gray-100 dark:bg-[#161b22] border-b border-gray-200 dark:border-[#30363d] flex items-center px-4 gap-4 shrink-0">
-                <div class="flex gap-2">
-                    <div class="w-3.5 h-3.5 rounded-full bg-red-400"></div>
-                    <div class="w-3.5 h-3.5 rounded-full bg-yellow-400"></div>
-                    <div class="w-3.5 h-3.5 rounded-full bg-green-400"></div>
-                </div>
-                <div class="flex-1 flex justify-center">
-                    <div class="bg-white dark:bg-[#0d1117] border border-gray-200 dark:border-[#30363d] text-xs px-4 py-1.5 rounded-md text-gray-500 w-[60%] flex items-center gap-2">
-                        <span class="material-symbols-outlined text-[14px]">lock</span>
-                        <span class="truncate">https://rhantech.com/toko/{{ strtolower(str_replace(' ', '-', $store->name ?? 'toko-anda')) }}</span>
-                    </div>
-                </div>
-                <div class="w-[54px]"></div>
-            </div>
-
-            <!-- Canvas Content (Desktop) -->
-            <div class="flex-1 overflow-y-auto bg-[#f6f6f6] dark:bg-[#0d1117] relative flex flex-col items-center custom-scrollbar">
-                
-                <!-- Desktop Header -->
-                <div class="w-full h-[300px] bg-[#1a1a1a] relative group border-2 border-transparent hover:border-error transition-all cursor-pointer">
-                    <!-- Edit overlay placeholder -->
-                    <div class="absolute inset-0 border border-error bg-error/10 hidden group-hover:block z-20"></div>
-
-                    <!-- Background Image (Mock) -->
-                    <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1557683316-973673baf926?w=1200&h=400&fit=crop')] bg-cover bg-center opacity-80"></div>
-                    <div class="absolute inset-0 bg-black/50"></div>
-
-                    <div class="absolute bottom-8 left-0 right-0 flex items-end justify-between z-10 max-w-[960px] mx-auto w-full px-6">
-                        <div class="flex items-center gap-6">
-                            <img src="https://ui-avatars.com/api/?name={{ urlencode($store->name ?? 'Store') }}&background=0D8ABC&color=fff" class="w-[120px] h-[120px] rounded-full border-[5px] border-white object-cover shadow-lg">
-                            <div class="pb-3">
-                                <h1 class="text-white font-bold text-4xl drop-shadow-md mb-2">{{ $store->name ?? 'Toko Anda' }}</h1>
-                                <div class="text-white text-sm drop-shadow-md flex items-center gap-3">
-                                    <span class="flex items-center gap-1 text-yellow-400 font-bold"><span class="material-symbols-outlined text-[18px]">star</span> 4.8</span>
-                                    <span class="text-white/50">•</span>
-                                    <span>1.6K Pengikut</span>
-                                    <span class="text-white/50">•</span>
-                                    <span>89 Produk</span>
-                                    <span class="text-white/50">•</span>
-                                    <span>Aktif 2 menit lalu</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="flex gap-3 pb-3">
-                            <button class="bg-[#00b3cc] hover:bg-[#00838f] dark:bg-[#2f81f7] dark:hover:bg-[#1f6feb] text-white font-bold px-6 py-2.5 rounded shadow transition flex items-center gap-2">
-                                <span class="material-symbols-outlined text-[18px]">add</span> Mengikuti
-                            </button>
-                            <button class="bg-white/10 backdrop-blur text-white border border-white/50 font-bold px-6 py-2.5 rounded hover:bg-white/20 transition flex items-center gap-2">
-                                <span class="material-symbols-outlined text-[18px]">chat</span> Chat
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Tabs (Desktop) -->
-                <div class="w-full bg-white dark:bg-[#161b22] border-b border-gray-200 dark:border-[#30363d] sticky top-0 z-30 shadow-sm flex justify-center">
-                    <div class="max-w-[960px] w-full flex text-base font-semibold px-6">
-                        <button class="px-6 py-4 text-[#00b3cc] dark:text-[#2f81f7] border-b-[3px] border-[#00b3cc] dark:border-[#2f81f7]">Halaman Utama</button>
-                        <button class="px-6 py-4 text-gray-500 hover:text-[#00b3cc] dark:hover:text-[#2f81f7] border-b-[3px] border-transparent transition-colors">Semua Produk</button>
-                        <button class="px-6 py-4 text-gray-500 hover:text-[#00b3cc] dark:hover:text-[#2f81f7] border-b-[3px] border-transparent transition-colors">Kategori Profil</button>
-                    </div>
-                </div>
-
-                <!-- Desktop Content Area -->
-                <div id="desktop-canvas" class="w-full max-w-[960px] p-6 space-y-6 pb-20 min-h-[300px]">
-                    <template x-for="(comp, index) in activeComponents" :key="comp.id">
-                        <div class="relative group cursor-move drag-handle">
-                            <!-- Overlay Delete Button -->
-                            <button @click="removeComponent(index)" class="absolute -right-3 -top-3 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hidden group-hover:flex z-50 shadow-md hover:bg-red-600 transition-colors">
-                                <span class="material-symbols-outlined text-[18px]">close</span>
-                            </button>
-
-                            <!-- VOUCHER -->
-                            <template x-if="comp.type === 'voucher'">
-                                <div class="bg-white dark:bg-[#161b22] border-2 border-transparent hover:border-error transition-all rounded-lg p-6 flex gap-6 items-center shadow-sm">
-                                    <div class="w-16 h-16 border-2 border-gray-300 border-dashed rounded flex items-center justify-center text-gray-300 shrink-0"><span class="material-symbols-outlined text-[32px]">local_activity</span></div>
-                                    <div>
-                                        <h4 class="font-bold text-gray-700 dark:text-gray-300 text-lg mb-1">Voucher Toko</h4>
-                                        <p class="text-sm text-gray-400">Kamu belum membuat Voucher. Komponen ini akan disembunyikan otomatis.</p>
+                                        <div class="h-16 bg-slate-200 dark:bg-slate-800 rounded-lg"></div>
+                                        <div class="h-16 bg-slate-200 dark:bg-slate-800 rounded-lg"></div>
                                     </div>
                                 </div>
                             </template>
 
-                            <!-- FLASH SALE -->
-                            <template x-if="comp.type === 'flash_sale'">
-                                <div class="bg-white dark:bg-[#161b22] border-2 border-transparent hover:border-error transition-all rounded-lg p-6 flex gap-6 items-center shadow-sm">
-                                    <div class="w-16 h-16 border-2 border-gray-300 border-dashed rounded flex items-center justify-center text-gray-300 shrink-0"><span class="material-symbols-outlined text-[32px]">bolt</span></div>
-                                    <div>
-                                        <h4 class="font-bold text-gray-700 dark:text-gray-300 text-lg mb-1">Flash Sale</h4>
-                                        <p class="text-sm text-gray-400">Tidak ada produk Flash Sale yang aktif.</p>
-                                    </div>
-                                </div>
-                            </template>
-
-                            <!-- BANNER -->
-                            <template x-if="comp.type === 'banner'">
-                                <div class="bg-white dark:bg-[#161b22] border-2 border-transparent hover:border-error transition-all rounded-lg overflow-hidden shadow-sm h-80 flex items-center justify-center bg-gray-100 dark:bg-gray-800">
-                                    <span class="text-gray-400 text-lg font-semibold">Banner Toko (Pilih Gambar)</span>
-                                </div>
-                            </template>
-                            
-                            <!-- SINGLE IMAGE -->
-                            <template x-if="comp.type === 'single_image'">
-                                <div class="bg-white dark:bg-[#161b22] border-2 border-transparent hover:border-error transition-all rounded-lg overflow-hidden shadow-sm h-[400px] flex items-center justify-center bg-gray-100 dark:bg-gray-800">
-                                    <span class="text-gray-400 text-lg font-semibold">Satu Foto (Pilih Gambar)</span>
-                                </div>
-                            </template>
-
-                            <!-- TEKS -->
                             <template x-if="comp.type === 'text'">
-                                <div class="bg-white dark:bg-[#161b22] border-2 border-transparent hover:border-error transition-all rounded-lg p-6 shadow-sm">
-                                    <h3 class="text-xl font-bold mb-3 text-on-surface dark:text-white">Informasi</h3>
-                                    <p class="text-sm text-gray-600 dark:text-gray-300 leading-relaxed font-serif">Tambahkan teks deksripsi atau promosi toko Anda di sini. Anda dapat mengedit teks ini di panel pengaturan komponen.</p>
-                                </div>
-                            </template>
-                            
-                            <!-- PRODUK PILIHAN -->
-                            <template x-if="comp.type === 'products'">
-                                <div class="bg-white dark:bg-[#161b22] border-2 border-transparent hover:border-error transition-all rounded-lg p-6 shadow-sm">
-                                    <h3 class="text-xl font-bold mb-6 text-on-surface dark:text-white text-center">Produk Pilihan</h3>
-                                    <div class="grid grid-cols-4 gap-6">
-                                        <div class="h-48 bg-gray-100 dark:bg-gray-800 rounded-lg"></div>
-                                        <div class="h-48 bg-gray-100 dark:bg-gray-800 rounded-lg"></div>
-                                        <div class="h-48 bg-gray-100 dark:bg-gray-800 rounded-lg"></div>
-                                        <div class="h-48 bg-gray-100 dark:bg-gray-800 rounded-lg"></div>
-                                    </div>
+                                <div class="bg-slate-50 dark:bg-[#111726] border border-slate-200 dark:border-[#222f49] rounded-xl p-3">
+                                    <p class="text-[11px] text-slate-600 dark:text-slate-400 line-clamp-2">Deskripsi etalase toko digital...</p>
                                 </div>
                             </template>
                         </div>
                     </template>
-                    
-                    <div x-show="activeComponents.length === 0" class="text-center py-16 text-gray-400 text-lg border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg">
-                        Tarik komponen dari sidebar ke sini
+
+                    <div x-show="activeComponents.length === 0" class="text-center py-10 text-slate-400 text-xs border border-dashed border-slate-200 dark:border-[#222f49] rounded-xl">
+                        Belum ada blok widget.
                     </div>
                 </div>
-
             </div>
+
         </div>
 
     </div>
 
-    <!-- Help Button (Absolute) -->
-    <button class="absolute right-8 bottom-8 bg-surface dark:bg-[#161b22] border border-outline-variant dark:border-[#30363d] w-10 h-10 rounded-full shadow-lg flex items-center justify-center text-on-surface hover:text-primary transition-colors">
-        <span class="material-symbols-outlined text-[20px]">help_outline</span>
-    </button>
 </div>
-</div>
+
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 <script>
     document.addEventListener('alpine:init', () => {
         Alpine.data('appearanceEditor', () => ({
-            tab: 'komponen',
-            device: 'mobile',
+            device: 'desktop',
             activeComponents: @json($store->appearance_data ?? []),
             isSaving: false,
             sortableMobile: null,
@@ -416,12 +364,11 @@
             
             init() {
                 if (!Array.isArray(this.activeComponents) || this.activeComponents.length === 0) {
-                    // Default components if empty
                     this.activeComponents = [
-                        { id: this.generateId(), type: 'voucher' },
                         { id: this.generateId(), type: 'banner' },
-                        { id: this.generateId(), type: 'text' },
-                        { id: this.generateId(), type: 'flash_sale' }
+                        { id: this.generateId(), type: 'voucher' },
+                        { id: this.generateId(), type: 'products' },
+                        { id: this.generateId(), type: 'text' }
                     ];
                 }
                 
@@ -430,7 +377,6 @@
                     this.initSortable('desktop-canvas');
                 });
                 
-                // Re-init sortable on device change just in case
                 this.$watch('device', () => {
                     this.$nextTick(() => {
                         this.initSortable('mobile-canvas');
@@ -445,7 +391,6 @@
             
             addComponent(type) {
                 this.activeComponents.push({ id: this.generateId(), type: type });
-                // scroll to bottom
                 this.$nextTick(() => {
                     const canvas = this.device === 'mobile' ? document.getElementById('mobile-canvas') : document.getElementById('desktop-canvas');
                     if(canvas) canvas.scrollIntoView({ behavior: 'smooth', block: 'end' });
@@ -460,14 +405,13 @@
                 const el = document.getElementById(refId);
                 if (!el) return;
                 
-                // destroy previous instance if exists to prevent duplicates
                 if(refId === 'mobile-canvas' && this.sortableMobile) this.sortableMobile.destroy();
                 if(refId === 'desktop-canvas' && this.sortableDesktop) this.sortableDesktop.destroy();
                 
                 const sortable = new Sortable(el, {
                     animation: 150,
                     handle: '.drag-handle',
-                    ghostClass: 'opacity-50',
+                    ghostClass: 'opacity-40',
                     onEnd: (evt) => {
                         if (evt.oldIndex !== evt.newIndex) {
                             const item = this.activeComponents.splice(evt.oldIndex, 1)[0];
@@ -494,7 +438,7 @@
                 .then(data => {
                     this.isSaving = false;
                     if(data.success) {
-                        alert('Dekorasi toko berhasil disimpan!');
+                        alert('Dekorasi etalase toko berhasil disimpan!');
                     } else {
                         alert('Gagal menyimpan dekorasi: ' + (data.message || 'Error'));
                     }

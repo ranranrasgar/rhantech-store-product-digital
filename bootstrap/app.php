@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'is_tenant' => \App\Http\Middleware\IsTenant::class,
+            'is_admin' => \App\Http\Middleware\IsAdmin::class,
         ]);
 
         $middleware->validateCsrfTokens([

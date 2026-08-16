@@ -1,220 +1,210 @@
 @extends('layouts.tenant')
 
-@section('title', 'Saldo Penjual')
+@section('title', 'Saldo & Mutasi Penjual')
 
 @section('content')
-<div class="flex-1 overflow-y-auto p-4 md:p-6 bg-surface-container-lowest dark:bg-[#0d1117] text-on-surface dark:text-white font-body-md">
+<div class="flex-1 overflow-y-auto p-4 md:p-8 bg-[#f8fafc] dark:bg-[#090d16] text-[#0f172a] dark:text-[#f1f5f9] transition-colors duration-200">
     <div class="max-w-7xl mx-auto space-y-6">
 
-        <!-- Top Alerts (Session Success/Error) -->
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-2.5">
+                    Saldo & Mutasi Toko
+                </h1>
+                <p class="text-xs md:text-sm text-slate-500 dark:text-slate-400 mt-1">
+                    Ringkasan saldo terkini, mutasi transaksi, dan opsi pencairan dana ke rekening bank.
+                </p>
+            </div>
+            
+            <a href="{{ route('tenant.payouts.index') }}" class="px-5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs md:text-sm font-bold shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 transition-all flex items-center gap-2 self-start sm:self-auto">
+                <span class="material-symbols-outlined text-[18px]">account_balance_wallet</span>
+                Kelola Pencairan Dana
+            </a>
+        </div>
+
+        <!-- Session Alerts -->
         @if (session('success'))
-            <div class="bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-800 p-4 rounded-lg flex items-center justify-between">
+            <div class="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs md:text-sm font-semibold flex items-center gap-2.5 shadow-sm">
+                <span class="material-symbols-outlined text-[20px]">check_circle</span>
                 <span>{{ session('success') }}</span>
-                <button class="opacity-50 hover:opacity-100" onclick="this.parentElement.style.display='none'"><span class="material-symbols-outlined text-sm">close</span></button>
             </div>
         @endif
         @if (session('error'))
-            <div class="bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800 p-4 rounded-lg flex items-center justify-between">
+            <div class="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-400 text-xs md:text-sm font-semibold flex items-center gap-2.5 shadow-sm">
+                <span class="material-symbols-outlined text-[20px]">error</span>
                 <span>{{ session('error') }}</span>
-                <button class="opacity-50 hover:opacity-100" onclick="this.parentElement.style.display='none'"><span class="material-symbols-outlined text-sm">close</span></button>
             </div>
         @endif
 
-        <!-- Informasi Saldo -->
-        <div class="bg-surface dark:bg-[#161b22] border border-outline-variant dark:border-[#30363d] rounded-md overflow-hidden">
-            <div class="px-6 py-4 flex justify-between items-center bg-surface-container-lowest dark:bg-[#0d1117] border-b border-outline-variant dark:border-[#30363d]">
-                <h3 class="font-bold text-lg text-on-surface dark:text-white">Informasi Saldo</h3>
-            </div>
+        <!-- Balance & Bank Card Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
             
-            <div class="p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                <!-- Saldo Kiri -->
+            <!-- Executive Balance Card -->
+            <div class="md:col-span-2 relative overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white rounded-3xl p-6 md:p-8 border border-slate-800 shadow-xl flex flex-col justify-between">
+                <div class="absolute -right-8 -bottom-8 w-48 h-48 bg-sky-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                
                 <div>
-                    <p class="text-sm text-on-surface-variant dark:text-gray-400 mb-2">Saldo</p>
-                    <div class="flex items-center gap-4">
-                        <h2 class="text-3xl font-bold text-on-surface dark:text-white">Rp{{ number_format($store->balance, 0, ',', '.') }}</h2>
-                        <!-- Form Tarik Dana -->
-                        <form action="{{ route('tenant.payouts.store') }}" method="POST" class="inline">
-                            @csrf
-                            <!-- Hidden input for max withdrawal -->
-                            <input type="hidden" name="amount" value="{{ $store->balance }}">
-                            <button type="submit" class="px-4 py-2 text-sm font-bold bg-[#ee4d2d] text-white rounded hover:bg-[#d73f22] transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed" {{ $store->balance < 10000 ? 'disabled' : '' }}>
-                                Tarik Dana
-                            </button>
-                        </form>
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-white/10 backdrop-blur-md border border-white/20 text-sky-300 flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Saldo Aktif
+                        </span>
+                        <span class="material-symbols-outlined text-white/30 text-[28px]">payments</span>
                     </div>
-                    @if($store->balance < 10000)
-                        <p class="text-xs text-on-surface-variant dark:text-gray-400 mt-2">Minimal penarikan Rp 10.000</p>
-                    @endif
+
+                    <div class="space-y-1">
+                        <div class="text-xs font-medium text-slate-300">Total Saldo Tersedia</div>
+                        <div class="text-3xl md:text-5xl font-black tracking-tight text-white">
+                            Rp {{ number_format($store->balance, 0, ',', '.') }}
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Rekening Kanan -->
-                <div class="border border-outline-variant dark:border-[#30363d] rounded p-4 flex flex-col gap-2 min-w-[250px]">
-                    <div class="flex justify-between items-center">
-                        <span class="text-sm text-on-surface-variant dark:text-gray-400">Rekening Bank Saya</span>
-                        <a href="{{ route('tenant.store.index') }}" class="text-xs font-semibold text-[#0055aa] dark:text-[#38bdf8] flex items-center hover:underline">Lainnya <span class="material-symbols-outlined text-[14px]">chevron_right</span></a>
+                <!-- Fast Payout Button Row -->
+                <div class="mt-8 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+                    <div class="text-xs text-slate-300">
+                        Minimal penarikan saldo adalah <span class="font-bold text-white">Rp 10.000</span>
                     </div>
+                    <form action="{{ route('tenant.payouts.store') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="amount" value="{{ $store->balance }}">
+                        <button type="submit" class="w-full sm:w-auto px-5 py-2.5 text-xs md:text-sm font-bold bg-sky-500 hover:bg-sky-400 text-white rounded-xl shadow-lg shadow-sky-500/30 transition-all flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer" {{ $store->balance < 10000 ? 'disabled' : '' }}>
+                            <span>Tarik Semua Saldo</span>
+                            <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Rekening Bank Tujuan Card -->
+            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-3xl p-6 shadow-sm flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Rekening Pencairan</span>
+                        <div class="w-8 h-8 rounded-xl bg-sky-500/10 text-sky-500 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[18px]">account_balance</span>
+                        </div>
+                    </div>
+
                     @if(!empty($store->bank_account_info))
-                        <div class="flex items-center gap-3 mt-1">
-                            <span class="material-symbols-outlined text-primary text-[24px]">account_balance</span>
-                            <div>
-                                <div class="text-sm font-bold text-on-surface dark:text-white flex items-center gap-2">
-                                    BANK
-                                    <span class="text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 px-1 rounded border border-green-200 dark:border-green-800">Utama</span>
-                                </div>
-                                <div class="text-xs text-on-surface-variant dark:text-gray-400 flex items-center gap-2 mt-0.5">
-                                    **** {{ substr($store->bank_account_info, -4) ?: 'Tersimpan' }}
-                                    <span class="text-xs text-on-surface-variant dark:text-gray-500">Telah Ditambahkan</span>
-                                </div>
-                            </div>
+                        <div class="p-4 rounded-2xl bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49]">
+                            <div class="text-xs font-mono text-slate-800 dark:text-slate-200 whitespace-pre-line leading-relaxed">{{ $store->bank_account_info }}</div>
                         </div>
                     @else
-                        <div class="flex items-center gap-2 mt-1">
-                            <span class="material-symbols-outlined text-warning-dark dark:text-yellow-400 text-[24px]">warning</span>
-                            <span class="text-sm font-bold text-on-surface dark:text-white">Belum Diatur</span>
+                        <div class="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400">
+                            <div class="flex items-center gap-1.5 font-bold text-xs">
+                                <span class="material-symbols-outlined text-[16px]">warning</span> Rekening Belum Diatur
+                            </div>
+                            <p class="text-[11px] mt-1 text-slate-500 dark:text-slate-400">Silakan atur info rekening bank Anda di profil toko untuk pencairan.</p>
                         </div>
                     @endif
                 </div>
-            </div>
-        </div>
 
-        <!-- Banner Promo Modal Bisnis -->
-        <div class="bg-surface dark:bg-[#161b22] border border-outline-variant dark:border-[#30363d] rounded-md overflow-hidden">
-            <div class="px-6 py-4 flex justify-between items-center bg-surface-container-lowest dark:bg-[#0d1117] border-b border-outline-variant dark:border-[#30363d]">
-                <h3 class="font-bold text-lg text-on-surface dark:text-white">Kembangkan Modal Bisnis Anda</h3>
-            </div>
-            <div class="p-6">
-                <div class="border border-outline-variant dark:border-[#30363d] rounded-md p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 flex-shrink-0 bg-error/10 text-error rounded-full flex items-center justify-center">
-                            <span class="material-symbols-outlined text-[24px]">storefront</span>
-                        </div>
-                        <div>
-                            <h4 class="font-bold text-on-surface dark:text-white">SPinjam Untuk Penjual</h4>
-                            <p class="text-xs text-on-surface-variant dark:text-gray-400 mt-1">Kembangkan toko Anda dengan modal usaha eksklusif!</p>
-                        </div>
-                    </div>
-                    <button class="px-4 py-2 text-sm font-bold border border-error text-error rounded hover:bg-error/5 transition-colors whitespace-nowrap">Lihat Rincian</button>
+                <div class="mt-6 pt-4 border-t border-slate-100 dark:border-[#1d273d]">
+                    <a href="{{ route('tenant.store.index') }}" class="text-xs font-bold text-sky-600 dark:text-sky-400 hover:underline flex items-center justify-between">
+                        <span>Pengaturan Rekening</span>
+                        <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+                    </a>
                 </div>
             </div>
+
         </div>
 
-        <!-- Transaksi Terakhir -->
-        <div class="bg-surface dark:bg-[#161b22] border border-outline-variant dark:border-[#30363d] rounded-md overflow-hidden">
-            <div class="px-6 py-4 bg-surface-container-lowest dark:bg-[#0d1117] border-b border-outline-variant dark:border-[#30363d]">
-                <h3 class="font-bold text-lg text-on-surface dark:text-white">Transaksi Terakhir</h3>
-            </div>
+        <!-- History Table Section -->
+        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl shadow-sm overflow-hidden">
             
-            <div class="p-6 space-y-6">
-                
-                <!-- Filters -->
-                <div class="space-y-4">
-                    <div class="flex flex-col md:flex-row md:items-center gap-4">
-                        <span class="text-sm text-on-surface-variant dark:text-gray-400 min-w-[150px]">Tanggal Transaksi Dibuat</span>
-                        <div class="flex items-center border border-outline-variant dark:border-[#30363d] rounded px-3 py-1.5 text-sm bg-surface-container-lowest dark:bg-[#0d1117] w-full md:w-auto">
-                            <span class="material-symbols-outlined text-[16px] text-on-surface-variant mr-2">calendar_today</span>
-                            <span class="text-on-surface-variant mr-4">Dalam bulan ini:</span>
-                            <span class="font-semibold">{{ date('01/m/Y') }} - {{ date('t/m/Y') }}</span>
-                            <span class="material-symbols-outlined text-[16px] text-on-surface-variant ml-2">expand_more</span>
-                        </div>
-                    </div>
-                    <div class="flex flex-col md:flex-row md:items-center gap-4">
-                        <span class="text-sm text-on-surface-variant dark:text-gray-400 min-w-[150px]">Jenis Transaksi</span>
-                        <div class="flex rounded overflow-hidden">
-                            <button class="px-4 py-1.5 text-sm font-semibold border border-error bg-error text-white">Semua</button>
-                            <button class="px-4 py-1.5 text-sm font-semibold border-y border-r border-error text-error bg-surface hover:bg-error/5">Transaksi Masuk</button>
-                            <button class="px-4 py-1.5 text-sm font-semibold border-y border-r border-error text-error bg-surface hover:bg-error/5">Transaksi Keluar</button>
-                        </div>
-                    </div>
-                    <!-- Detailed check filters (Mock) -->
-                    <div class="flex flex-col md:flex-row items-start md:items-center gap-4 pt-2">
-                        <span class="text-sm text-on-surface-variant dark:text-gray-400 min-w-[150px]">Tipe Transaksi</span>
-                        <div class="flex flex-wrap gap-4 text-sm text-on-surface-variant">
-                            <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" checked class="accent-error"> Penghasilan dari Pesanan</label>
-                            <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" checked class="accent-error"> Penyesuaian</label>
-                            <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" checked class="accent-error"> Penarikan Dana</label>
-                            <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" checked class="accent-error"> Pengembalian Dana</label>
-                        </div>
-                    </div>
-
-                    <div class="flex justify-end gap-2 border-t border-outline-variant dark:border-[#30363d] pt-4 mt-2">
-                        <button class="px-4 py-1.5 text-sm font-semibold border border-outline-variant dark:border-[#30363d] rounded hover:bg-surface-container-lowest transition-colors">Atur Ulang</button>
-                        <button class="px-4 py-1.5 text-sm font-semibold border border-error text-error rounded hover:bg-error/5 transition-colors">Terapkan</button>
-                    </div>
+            <div class="p-5 md:p-6 border-b border-slate-100 dark:border-[#222f49] flex items-center justify-between">
+                <div>
+                    <h2 class="text-base font-bold text-slate-900 dark:text-white">Riwayat Mutasi & Penarikan</h2>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Catatan seluruh aktivitas mutasi saldo masuk dan pengajuan penarikan dana.</p>
                 </div>
-
-                <!-- Table Header Actions -->
-                <div class="flex flex-col md:flex-row justify-between md:items-center gap-4 pt-4">
-                    <span class="font-bold text-sm text-on-surface dark:text-white">{{ $payouts->count() }} Transaksi <span class="text-on-surface-variant font-normal">(Total: {{ $payouts->total() }})</span></span>
-                    <div class="flex items-center gap-2 w-full md:w-auto">
-                        <div class="relative flex-1 md:w-48">
-                            <input type="text" placeholder="Cari No. Pesanan" class="w-full pl-3 pr-8 py-1.5 text-sm bg-surface-container-lowest dark:bg-[#0d1117] border border-outline-variant dark:border-[#30363d] rounded focus:outline-none focus:border-primary">
-                            <span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-on-surface-variant text-[16px]">search</span>
-                        </div>
-                        <button class="px-3 py-1.5 text-sm font-semibold border border-outline-variant dark:border-[#30363d] rounded hover:bg-surface-container-lowest transition-colors bg-surface-container-lowest dark:bg-[#0d1117]">Export</button>
-                        <button class="px-2 py-1.5 border border-outline-variant dark:border-[#30363d] rounded hover:bg-surface-container-lowest transition-colors bg-surface-container-lowest dark:bg-[#0d1117]"><span class="material-symbols-outlined text-sm">view_list</span></button>
-                    </div>
-                </div>
-
-                <!-- Transaction Table -->
-                <div class="overflow-x-auto min-h-[300px]">
-                    <table class="w-full text-left text-sm whitespace-nowrap">
-                        <thead class="bg-surface-container-lowest dark:bg-[#0d1117] border-b border-outline-variant dark:border-[#30363d] text-on-surface-variant dark:text-gray-400">
-                            <tr>
-                                <th class="p-4 font-normal">Waktu Dibuat</th>
-                                <th class="p-4 font-normal">Tipe Transaksi</th>
-                                <th class="p-4 font-normal">Status</th>
-                                <th class="p-4 font-normal text-right">Jumlah</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-outline-variant dark:divide-[#30363d]">
-                            @forelse($payouts as $payout)
-                            <tr class="hover:bg-surface-container-lowest/50 dark:hover:bg-[#0d1117]/50 transition-colors">
-                                <td class="p-4">
-                                    <div class="text-on-surface dark:text-white">{{ $payout->created_at->format('d M Y') }}</div>
-                                    <div class="text-xs text-on-surface-variant dark:text-gray-400">{{ $payout->created_at->format('H:i:s') }}</div>
-                                </td>
-                                <td class="p-4">
-                                    <div class="font-semibold text-on-surface dark:text-white">Penarikan Dana</div>
-                                    <div class="text-xs text-on-surface-variant dark:text-gray-400">{{ $payout->notes ?? 'Penarikan ke Rekening' }}</div>
-                                </td>
-                                <td class="p-4">
-                                    @if($payout->status === 'pending')
-                                        <span class="text-yellow-600 dark:text-yellow-400 font-bold">Diproses</span>
-                                    @elseif($payout->status === 'approved')
-                                        <span class="text-green-600 dark:text-green-400 font-bold">Berhasil</span>
-                                    @elseif($payout->status === 'rejected')
-                                        <span class="text-error font-bold">Gagal/Ditolak</span>
-                                    @endif
-                                </td>
-                                <td class="p-4 text-right font-bold text-error">
-                                    -Rp{{ number_format($payout->amount, 0, ',', '.') }}
-                                </td>
-                            </tr>
-                            @empty
-                            <!-- Empty State -->
-                            <tr>
-                                <td colspan="4" class="p-16 text-center border-b-0">
-                                    <div class="flex flex-col items-center justify-center text-on-surface-variant">
-                                        <div class="w-16 h-20 border-2 border-outline-variant/30 rounded mb-4 relative flex items-center justify-center opacity-50 bg-surface-container-lowest">
-                                            <div class="w-8 border-b-2 border-outline-variant/50 mt-2"></div>
-                                            <div class="w-4 border-b-2 border-outline-variant/50 absolute bottom-6 left-4"></div>
-                                        </div>
-                                        <p class="text-sm font-semibold">Tidak Ada Data</p>
-                                    </div>
-                                </td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-
-                @if($payouts->hasPages())
-                <div class="pt-2">
-                    {{ $payouts->links() }}
-                </div>
-                @endif
-                
             </div>
+
+            <!-- Table -->
+            <div class="overflow-x-auto pb-12">
+                <table class="w-full text-left text-xs md:text-sm whitespace-nowrap">
+                    <thead class="bg-slate-50/80 dark:bg-[#0c1220]/80 border-b border-slate-100 dark:border-[#222f49] text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider text-[11px]">
+                        <tr>
+                            <th class="p-4 md:px-6">Waktu Mutasi</th>
+                            <th class="p-4 md:px-6">Aktivitas Transaksi</th>
+                            <th class="p-4 md:px-6 text-center">Status</th>
+                            <th class="p-4 md:px-6 text-right pr-8">Nominal</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 dark:divide-[#1d273d]">
+                        @forelse($payouts as $payout)
+                        <tr class="hover:bg-slate-50/60 dark:hover:bg-[#151e30]/50 transition-colors">
+                            
+                            <!-- Date -->
+                            <td class="p-4 md:px-6">
+                                <div class="font-bold text-slate-900 dark:text-white text-xs">
+                                    {{ $payout->created_at->format('d M Y') }}
+                                </div>
+                                <div class="text-[11px] text-slate-400 mt-0.5 font-mono">
+                                    {{ $payout->created_at->format('H:i') }} WIB
+                                </div>
+                            </td>
+
+                            <!-- Activity Description -->
+                            <td class="p-4 md:px-6">
+                                <div class="font-bold text-slate-900 dark:text-white text-xs md:text-sm flex items-center gap-1.5">
+                                    <span class="material-symbols-outlined text-[16px] text-rose-500">arrow_outward</span>
+                                    Penarikan Saldo Toko
+                                </div>
+                                <div class="text-[11px] text-slate-400 mt-0.5">
+                                    {{ $payout->notes ?: 'Pengajuan transfer ke rekening bank' }}
+                                </div>
+                            </td>
+
+                            <!-- Status -->
+                            <td class="p-4 md:px-6 text-center">
+                                @if($payout->status === 'pending')
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span> Diproses
+                                    </span>
+                                @elseif($payout->status === 'approved')
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Berhasil Ditransfer
+                                    </span>
+                                @elseif($payout->status === 'rejected')
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-100 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-800/50">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Ditolak
+                                    </span>
+                                @endif
+                            </td>
+
+                            <!-- Amount -->
+                            <td class="p-4 md:px-6 text-right pr-8">
+                                <div class="font-extrabold text-rose-600 dark:text-rose-400 text-sm md:text-base">
+                                    - Rp {{ number_format($payout->amount, 0, ',', '.') }}
+                                </div>
+                            </td>
+
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="4" class="p-16 text-center text-slate-400">
+                                <div class="flex flex-col items-center justify-center max-w-sm mx-auto">
+                                    <div class="w-16 h-16 rounded-2xl bg-sky-500/10 text-sky-500 flex items-center justify-center mb-4">
+                                        <span class="material-symbols-outlined text-[32px]">receipt_long</span>
+                                    </div>
+                                    <h3 class="font-bold text-base text-slate-800 dark:text-white mb-1">Belum ada riwayat mutasi</h3>
+                                    <p class="text-xs text-slate-400">Setiap transaksi penarikan dana yang Anda lakukan akan tercatat di tabel ini.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Footer Pagination -->
+            @if(method_exists($payouts, 'hasPages') && $payouts->hasPages())
+            <div class="p-5 border-t border-slate-100 dark:border-[#222f49] flex justify-center">
+                {{ $payouts->links() }}
+            </div>
+            @endif
+
         </div>
 
     </div>

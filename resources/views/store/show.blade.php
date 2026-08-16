@@ -32,7 +32,14 @@
 
                 <!-- Actions -->
                 <div class="flex items-center gap-3 mt-4 md:mt-0">
-                    <button class="px-6 py-2 bg-transparent border border-white text-white rounded font-bold hover:bg-white/20 transition-colors flex items-center gap-2">
+                    <button @click="window.dispatchEvent(new CustomEvent('open-chat-with-store', { 
+                        detail: { 
+                            store_id: {{ $store->id }}, 
+                            store_name: '{{ addslashes($store->name) }}',
+                            store_slug: '{{ $store->slug }}',
+                            store_logo: '{{ $store->logo ? asset('storage/' . $store->logo) : '' }}'
+                        } 
+                    }))" class="px-6 py-2 bg-transparent border border-white text-white rounded font-bold hover:bg-white/20 transition-colors flex items-center gap-2">
                         <span class="material-symbols-outlined text-[18px]">chat</span> Chat
                     </button>
                     <button class="px-6 py-2 bg-primary border border-primary text-white rounded font-bold hover:bg-primary/90 transition-colors flex items-center gap-2">
@@ -72,7 +79,7 @@
 
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             @forelse($products as $product)
-            <a href="{{ route('products.show', $product->slug) }}" class="group bg-white border border-outline-variant hover:border-primary rounded overflow-hidden hover:shadow-lg transition-all flex flex-col" wire:navigate>
+            <a href="{{ route('products.show', $product->slug) }}" class="group bg-white border border-outline-variant hover:border-primary rounded overflow-hidden hover:shadow-lg transition-all flex flex-col">
                 <div class="aspect-square w-full bg-surface-container-high relative overflow-hidden">
                     @if($product->images->count() > 0)
                         @php $mainImg = $product->images->where('is_main', true)->first() ?? $product->images->first(); @endphp

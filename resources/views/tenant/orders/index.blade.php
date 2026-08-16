@@ -1,153 +1,204 @@
 @extends('layouts.tenant')
 
-@section('title', 'Pesanan Saya')
+@section('title', 'Riwayat Penjualan')
 
 @section('content')
-<div class="flex-1 overflow-y-auto p-4 md:p-6 bg-surface-container-lowest dark:bg-[#0d1117]">
-    <div class="max-w-7xl mx-auto space-y-4">
+<div class="flex-1 overflow-y-auto p-4 md:p-8 bg-[#f8fafc] dark:bg-[#090d16] text-[#0f172a] dark:text-[#f1f5f9] transition-colors duration-200">
+    <div class="max-w-7xl mx-auto space-y-6">
         
         <!-- Header -->
-        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <h2 class="text-xl font-bold text-on-surface dark:text-white">Pesanan Saya</h2>
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-2.5">
+                    Riwayat Penjualan
+                </h1>
+                <p class="text-xs md:text-sm text-slate-500 dark:text-slate-400 mt-1">
+                    Pantau transaksi pelanggan, status verifikasi pembayaran, dan pesanan produk digital.
+                </p>
+            </div>
+            
             <div class="flex flex-wrap items-center gap-3">
-                <button onclick="alert('Fitur eksport data (CSV/Excel) sedang dalam pengembangan.')" class="px-4 py-2 text-sm font-semibold border border-outline-variant dark:border-[#30363d] rounded bg-surface dark:bg-[#161b22] text-on-surface dark:text-white hover:bg-surface-container-lowest transition-colors flex items-center gap-1">
-                    Export
-                </button>
-                <button onclick="alert('Riwayat aktivitas pelanggan akan segera hadir.')" class="px-4 py-2 text-sm font-semibold border border-outline-variant dark:border-[#30363d] rounded bg-surface dark:bg-[#161b22] text-on-surface dark:text-white hover:bg-surface-container-lowest transition-colors flex items-center gap-1">
-                    Riwayat Download
-                </button>
+                <a href="{{ route('tenant.payouts.index') }}" class="px-4 py-2.5 rounded-xl bg-white dark:bg-[#111726] border border-slate-200 dark:border-[#222f49] hover:bg-slate-50 dark:hover:bg-[#161f33] text-slate-700 dark:text-slate-200 text-xs md:text-sm font-semibold transition-all shadow-sm flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[18px] text-emerald-500">account_balance_wallet</span>
+                    Pencairan Saldo
+                </a>
             </div>
         </div>
 
-        <!-- Main Card -->
-        <div class="bg-surface dark:bg-[#161b22] border border-outline-variant dark:border-[#30363d] rounded-md overflow-hidden">
+        <!-- Main Card Container -->
+        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl shadow-sm overflow-hidden">
             
-            <!-- Tabs -->
-            <div class="border-b border-outline-variant dark:border-[#30363d] flex overflow-x-auto hide-scrollbar">
-                <a href="{{ route('tenant.orders.index', array_merge(request()->query(), ['tab' => 'all', 'page' => null])) }}" class="px-6 py-4 text-sm font-bold whitespace-nowrap {{ $tab === 'all' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant dark:text-gray-400 hover:text-on-surface transition-colors' }}">Semua</a>
-                <a href="{{ route('tenant.orders.index', array_merge(request()->query(), ['tab' => 'pending', 'page' => null])) }}" class="px-6 py-4 text-sm font-bold whitespace-nowrap {{ $tab === 'pending' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant dark:text-gray-400 hover:text-on-surface transition-colors' }}">Belum Bayar (Pending)</a>
-                <a href="{{ route('tenant.orders.index', array_merge(request()->query(), ['tab' => 'completed', 'page' => null])) }}" class="px-6 py-4 text-sm font-bold whitespace-nowrap {{ $tab === 'completed' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant dark:text-gray-400 hover:text-on-surface transition-colors' }}">Selesai (Paid/Downloaded)</a>
-                <a href="{{ route('tenant.orders.index', array_merge(request()->query(), ['tab' => 'cancelled', 'page' => null])) }}" class="px-6 py-4 text-sm font-bold whitespace-nowrap {{ $tab === 'cancelled' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant dark:text-gray-400 hover:text-on-surface transition-colors' }}">Pengembalian/Pembatalan</a>
+            <!-- Filter Tabs -->
+            <div class="border-b border-slate-100 dark:border-[#222f49] px-6 flex items-center gap-8 overflow-x-auto hide-scrollbar bg-slate-50/50 dark:bg-[#0c1220]/50">
+                <a href="{{ route('tenant.orders.index', array_merge(request()->query(), ['tab' => 'all', 'page' => null])) }}" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 {{ $tab === 'all' ? 'text-sky-600 dark:text-sky-400 border-sky-600 dark:border-sky-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200' }}">
+                    Semua Transaksi
+                </a>
+                <a href="{{ route('tenant.orders.index', array_merge(request()->query(), ['tab' => 'completed', 'page' => null])) }}" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 {{ $tab === 'completed' ? 'text-sky-600 dark:text-sky-400 border-sky-600 dark:border-sky-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200' }}">
+                    Sukses (Paid / Unduh)
+                </a>
+                <a href="{{ route('tenant.orders.index', array_merge(request()->query(), ['tab' => 'pending', 'page' => null])) }}" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 {{ $tab === 'pending' ? 'text-sky-600 dark:text-sky-400 border-sky-600 dark:border-sky-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200' }}">
+                    Menunggu Pembayaran
+                </a>
+                <a href="{{ route('tenant.orders.index', array_merge(request()->query(), ['tab' => 'cancelled', 'page' => null])) }}" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 {{ $tab === 'cancelled' ? 'text-sky-600 dark:text-sky-400 border-sky-600 dark:border-sky-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200' }}">
+                    Dibatalkan / Kedaluwarsa
+                </a>
             </div>
 
-            <div class="p-4 md:p-6 space-y-6">
-                <!-- Search & Filters -->
-                <form method="GET" action="{{ route('tenant.orders.index') }}" class="flex flex-wrap items-center gap-4">
+            <!-- Search & Filters Row -->
+            <div class="p-5 md:p-6 border-b border-slate-100 dark:border-[#222f49]">
+                <form method="GET" action="{{ route('tenant.orders.index') }}" class="flex flex-col md:flex-row items-stretch md:items-center gap-3">
                     <input type="hidden" name="tab" value="{{ $tab }}">
-                    <div class="flex items-center w-full md:w-auto">
-                        <select name="search_type" class="px-3 py-2 text-sm bg-surface-container-lowest dark:bg-[#0d1117] border border-outline-variant dark:border-[#30363d] border-r-0 text-on-surface-variant rounded-l focus:outline-none focus:border-primary">
-                            <option value="invoice" {{ request('search_type') === 'invoice' ? 'selected' : '' }}>No. Pesanan</option>
-                            <option value="customer" {{ request('search_type') === 'customer' ? 'selected' : '' }}>Nama Pembeli</option>
+                    
+                    <div class="flex items-center flex-1">
+                        <select name="search_type" class="px-3.5 py-2.5 text-xs md:text-sm bg-slate-100 dark:bg-[#161f33] border border-r-0 border-slate-200 dark:border-[#222f49] text-slate-700 dark:text-slate-200 rounded-l-xl focus:outline-none focus:border-sky-500 shrink-0">
+                            <option value="invoice" {{ request('search_type') === 'invoice' ? 'selected' : '' }}>No. Invoice</option>
+                            <option value="customer" {{ request('search_type') === 'customer' ? 'selected' : '' }}>Nama / Email Pembeli</option>
                         </select>
-                        <input type="text" name="search_query" value="{{ request('search_query') }}" placeholder="Cari..." class="flex-1 md:w-64 px-4 py-2 text-sm bg-surface-container-lowest dark:bg-[#0d1117] border border-outline-variant dark:border-[#30363d] rounded-r focus:outline-none focus:border-primary">
+                        <input type="text" name="search_query" value="{{ request('search_query') }}" placeholder="Ketik kata kunci pencarian..." class="flex-1 px-4 py-2.5 text-xs md:text-sm bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-r-xl focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 text-slate-900 dark:text-white transition-all">
                     </div>
-                    <div class="flex items-center w-full md:w-auto">
-                        <select name="product_id" onchange="this.form.submit()" class="flex-1 md:w-48 px-4 py-2 text-sm bg-surface-container-lowest dark:bg-[#0d1117] border border-outline-variant dark:border-[#30363d] text-on-surface-variant rounded focus:outline-none focus:border-primary">
+
+                    <div class="flex flex-wrap items-center gap-3">
+                        <select name="product_id" onchange="this.form.submit()" class="px-3.5 py-2.5 text-xs md:text-sm bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] text-slate-700 dark:text-slate-200 rounded-xl focus:outline-none focus:border-sky-500 transition-all">
                             <option value="">Semua Produk</option>
                             @foreach($products as $product)
                                 <option value="{{ $product->id }}" {{ request('product_id') == $product->id ? 'selected' : '' }}>{{ $product->name }}</option>
                             @endforeach
                         </select>
+
+                        <button type="submit" class="px-4 py-2.5 text-xs md:text-sm font-bold bg-sky-500 hover:bg-sky-400 text-white rounded-xl shadow-sm transition-colors">
+                            Terapkan
+                        </button>
+                        <a href="{{ route('tenant.orders.index', ['tab' => $tab]) }}" class="px-4 py-2.5 text-xs md:text-sm font-semibold border border-slate-200 dark:border-[#222f49] text-slate-600 dark:text-slate-300 rounded-xl hover:bg-slate-100 dark:hover:bg-[#161f33] transition-colors">
+                            Reset
+                        </a>
                     </div>
-                    <button type="submit" class="px-4 py-2 text-sm font-semibold border border-primary text-primary rounded hover:bg-primary/5 transition-colors">Terapkan</button>
-                    <a href="{{ route('tenant.orders.index', ['tab' => $tab]) }}" class="px-4 py-2 text-sm font-semibold border border-outline-variant dark:border-[#30363d] text-on-surface dark:text-white rounded hover:bg-surface-container-lowest transition-colors">Atur Ulang</a>
                 </form>
+            </div>
 
-                <!-- Order Count -->
-                <div class="text-sm font-bold text-on-surface dark:text-white">
-                    {{ $orders->total() }} Pesanan
-                </div>
+            <!-- Orders Table -->
+            <div class="overflow-x-auto pb-12">
+                <table class="w-full text-left text-xs md:text-sm whitespace-nowrap">
+                    <thead class="bg-slate-50/80 dark:bg-[#0c1220]/80 border-b border-slate-100 dark:border-[#222f49] text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider text-[11px]">
+                        <tr>
+                            <th class="p-4 md:px-6">No. Invoice & Tanggal</th>
+                            <th class="p-4 md:px-6 min-w-[280px]">Produk Dipesan</th>
+                            <th class="p-4 md:px-6">Pelanggan</th>
+                            <th class="p-4 md:px-6 text-right">Pendapatan Toko</th>
+                            <th class="p-4 md:px-6 text-center">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 dark:divide-[#1d273d]">
+                        @forelse($orders as $order)
+                        @php
+                            $tenantItems = $order->orderItems->filter(function($item) use ($store) {
+                                return $item->product && $item->product->store_id == $store->id;
+                            });
+                            $firstItem = $tenantItems->first() ?? $order->orderItems->first();
+                            $firstProduct = $firstItem ? $firstItem->product : $order->product;
+                            $tenantTotal = $tenantItems->isNotEmpty() ? $tenantItems->sum(function($item) { return $item->price * $item->quantity; }) : $order->amount;
+                        @endphp
+                        <tr class="hover:bg-slate-50/60 dark:hover:bg-[#151e30]/50 transition-colors">
+                            
+                            <!-- Invoice & Date -->
+                            <td class="p-4 md:px-6">
+                                <div class="font-mono font-bold text-slate-900 dark:text-white text-xs">
+                                    {{ $order->invoice_number }}
+                                </div>
+                                <div class="text-[11px] text-slate-400 mt-1">
+                                    {{ $order->created_at->format('d M Y, H:i') }} WIB
+                                </div>
+                            </td>
 
-                <!-- Orders Table -->
-                <div class="overflow-x-auto rounded-md">
-                    <table class="w-full text-left text-sm whitespace-nowrap border border-outline-variant dark:border-[#30363d]">
-                        <thead class="bg-surface-container-lowest dark:bg-[#0d1117] border-b border-outline-variant dark:border-[#30363d] text-on-surface-variant dark:text-gray-400">
-                            <tr>
-                                <th class="p-4 font-normal min-w-[300px]">Produk & Pembeli</th>
-                                <th class="p-4 font-normal text-center">Dibayar Pembeli</th>
-                                <th class="p-4 font-normal text-center">Status</th>
-                                <th class="p-4 font-normal text-center">Waktu Transaksi</th>
-                                <th class="p-4 font-normal text-center">Invoice</th>
-                                <th class="p-4 font-normal text-center">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-outline-variant dark:divide-[#30363d] bg-surface dark:bg-[#161b22]">
-                            @forelse($orders as $order)
-                            <tr class="hover:bg-surface-container-lowest/50 dark:hover:bg-[#0d1117]/50 transition-colors">
-                                <td class="p-4 whitespace-normal min-w-[300px]">
-                                    <div class="flex items-start gap-3">
-                                        <!-- Placeholder Image for product -->
-                                        <div class="w-16 h-16 flex-shrink-0 bg-surface-container-high border border-outline-variant rounded overflow-hidden flex items-center justify-center text-on-surface-variant">
-                                            @if($order->product && $order->product->images->count() > 0)
-                                                <img src="{{ asset('storage/' . $order->product->images->first()->image_path) }}" class="w-full h-full object-cover">
+                            <!-- Products -->
+                            <td class="p-4 md:px-6 whitespace-normal min-w-[280px]">
+                                <div class="flex items-center gap-3.5">
+                                    <div class="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden shrink-0 flex items-center justify-center">
+                                        @if($firstProduct && $firstProduct->images->count() > 0)
+                                            @php $img = $firstProduct->images->where('is_main', true)->first() ?? $firstProduct->images->first(); @endphp
+                                            <img src="{{ asset('storage/' . $img->image_path) }}" class="w-full h-full object-cover">
+                                        @else
+                                            <span class="material-symbols-outlined text-slate-400 text-[20px]">inventory_2</span>
+                                        @endif
+                                    </div>
+                                    <div class="min-w-0">
+                                        <div class="font-bold text-slate-900 dark:text-white line-clamp-1 leading-snug text-xs md:text-sm">
+                                            @if($tenantItems->count() > 1)
+                                                {{ $firstProduct->name ?? 'Produk Digital' }} <span class="text-xs font-semibold text-sky-600 dark:text-sky-400">(+{{ $tenantItems->count() - 1 }} lainnya)</span>
                                             @else
-                                                <span class="material-symbols-outlined">code</span>
+                                                {{ $firstProduct->name ?? 'Produk Digital' }}
                                             @endif
                                         </div>
-                                        <!-- Info -->
-                                        <div>
-                                            <div class="font-bold text-on-surface dark:text-white line-clamp-2 leading-tight">{{ $order->product->name ?? 'Produk Dihapus' }}</div>
-                                            <div class="mt-2 text-xs">
-                                                <span class="text-on-surface-variant dark:text-gray-400 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">person</span> {{ $order->customer_name }}</span>
-                                            </div>
-                                            <div class="text-[11px] text-on-surface-variant dark:text-gray-400 mt-0.5">
-                                                {{ $order->customer_email }}
-                                            </div>
+                                        <div class="text-[11px] text-slate-400 mt-0.5 font-mono">
+                                            {{ $firstItem ? 'Qty: ' . $firstItem->quantity . 'x' : '1 item' }}
                                         </div>
                                     </div>
-                                </td>
-                                <td class="p-4 align-middle text-center">
-                                    <div class="font-bold text-on-surface dark:text-white">Rp{{ number_format($order->amount, 0, ',', '.') }}</div>
-                                </td>
-                                <td class="p-4 align-middle text-center">
-                                    @if($order->status === 'paid' || $order->status === 'downloaded')
-                                        <div class="text-xs font-bold text-green-600 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded px-2 py-1 inline-block">Selesai</div>
-                                    @elseif($order->status === 'failed')
-                                        <div class="text-xs font-bold text-error bg-error/10 border border-error/20 rounded px-2 py-1 inline-block">Dibatalkan</div>
-                                    @else
-                                        <div class="text-xs font-bold text-yellow-600 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded px-2 py-1 inline-block">Belum Bayar</div>
-                                    @endif
-                                </td>
-                                <td class="p-4 align-middle text-center text-on-surface-variant">
-                                    <div class="text-xs">{{ $order->created_at->format('d M Y') }}</div>
-                                    <div class="text-[10px]">{{ $order->created_at->format('H:i') }} WIB</div>
-                                </td>
-                                <td class="p-4 align-middle text-center text-xs text-on-surface-variant font-mono">
-                                    {{ $order->invoice_number }}
-                                </td>
-                                <td class="p-4 align-middle text-center">
-                                    <button type="button" onclick="alert('Fitur detail pesanan akan segera hadir.')" class="text-sm font-semibold text-primary hover:underline bg-transparent border-none p-0 cursor-pointer">Lihat Detail</button>
-                                </td>
-                            </tr>
-                            @empty
-                            <!-- Empty State -->
-                            <tr>
-                                <td colspan="6" class="p-16 text-center">
-                                    <div class="flex flex-col items-center justify-center text-on-surface-variant">
-                                        <div class="w-16 h-20 border-2 border-outline-variant/30 rounded mb-4 relative flex items-center justify-center opacity-50">
-                                            <div class="absolute top-0 left-1/2 -translate-x-1/2 -mt-2 w-8 h-3 border-2 border-outline-variant/30 rounded-full bg-surface-container-lowest"></div>
-                                            <div class="w-8 border-b-2 border-outline-variant/30 mt-2"></div>
-                                            <div class="w-6 border-b-2 border-outline-variant/30 absolute bottom-6 left-4"></div>
-                                        </div>
-                                        <p class="text-sm">Belum ada pesanan yang sesuai dengan filter Anda.</p>
-                                    </div>
-                                </td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
+                                </div>
+                            </td>
 
-                <!-- Pagination -->
-                @if($orders->hasPages())
-                <div class="pt-2 w-full">
-                    {{ $orders->links() }}
-                </div>
-                @endif
-                
+                            <!-- Customer -->
+                            <td class="p-4 md:px-6">
+                                <div class="font-bold text-slate-900 dark:text-white text-xs md:text-sm flex items-center gap-1.5">
+                                    <span class="material-symbols-outlined text-[15px] text-slate-400">person</span>
+                                    {{ $order->customer_name }}
+                                </div>
+                                <div class="text-[11px] text-slate-400 mt-0.5">
+                                    {{ $order->customer_email }}
+                                </div>
+                            </td>
+
+                            <!-- Tenant Earning Amount -->
+                            <td class="p-4 md:px-6 text-right">
+                                <div class="font-extrabold text-slate-900 dark:text-white text-sm">
+                                    Rp {{ number_format($tenantTotal, 0, ',', '.') }}
+                                </div>
+                                <div class="text-[10px] text-slate-400 font-semibold">
+                                    Saldo Masuk
+                                </div>
+                            </td>
+
+                            <!-- Status -->
+                            <td class="p-4 md:px-6 text-center">
+                                @if($order->status === 'paid' || $order->status === 'downloaded')
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Sukses
+                                    </span>
+                                @elseif($order->status === 'failed')
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-100 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-800/50">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Gagal
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span> Pending
+                                    </span>
+                                @endif
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="5" class="p-16 text-center text-slate-400">
+                                <div class="flex flex-col items-center justify-center max-w-sm mx-auto">
+                                    <div class="w-16 h-16 rounded-2xl bg-sky-500/10 text-sky-500 flex items-center justify-center mb-4">
+                                        <span class="material-symbols-outlined text-[32px]">receipt_long</span>
+                                    </div>
+                                    <h3 class="font-bold text-base text-slate-800 dark:text-white mb-1">Belum ada riwayat pesanan</h3>
+                                    <p class="text-xs text-slate-400">Pesanan dari pembeli akan otomatis tercatat dan masuk ke daftar ini.</p>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
+
+            <!-- Footer Pagination -->
+            @if($orders->hasPages())
+            <div class="p-5 border-t border-slate-100 dark:border-[#222f49] flex justify-center">
+                {{ $orders->links() }}
+            </div>
+            @endif
+
         </div>
-        
+
     </div>
 </div>
 @endsection

@@ -132,8 +132,8 @@
                     Dashboard
                 </a>
 <a class="font-label-md text-label-md {{ request()->routeIs('admin.company.*') ? 'bg-surface-variant font-semibold before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[3px] before:bg-[#58a6ff] before:rounded-r-md relative' : 'text-on-surface hover:bg-surface-variant/50 hover:underline' }} px-3 py-1.5 flex items-center gap-2 transition-all rounded-md" href="{{ route('admin.company.index') }}" wire:navigate>
-<span class="material-symbols-outlined text-[1rem]">business</span>
-                    Company Profile
+<span class="material-symbols-outlined text-[1rem]">settings</span>
+                    Pengaturan
                 </a>
 <a class="font-label-md text-label-md {{ request()->routeIs('admin.services.*') ? 'bg-surface-variant font-semibold before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[3px] before:bg-[#58a6ff] before:rounded-r-md relative' : 'text-on-surface hover:bg-surface-variant/50 hover:underline' }} px-3 py-1.5 flex items-center gap-2 transition-all rounded-md" href="{{ route('admin.services.index') }}" wire:navigate>
 <span class="material-symbols-outlined text-[1rem]">layers</span>
@@ -190,10 +190,17 @@
 <span class="material-symbols-outlined text-[1rem]">storefront</span>
                     Stores
                 </a>
-<a class="font-label-md text-label-md {{ request()->routeIs('admin.payouts.*') ? 'bg-surface-variant font-semibold before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[3px] before:bg-[#58a6ff] before:rounded-r-md relative' : 'text-on-surface hover:bg-surface-variant/50 hover:underline' }} px-3 py-1.5 flex items-center gap-2 transition-all rounded-md" href="{{ route('admin.payouts.index') }}" wire:navigate>
-<span class="material-symbols-outlined text-[1rem]">payments</span>
-                    Payouts
-                </a>
+<a class="font-label-md text-label-md {{ request()->routeIs('admin.payouts.*') ? 'bg-surface-variant font-semibold before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[3px] before:bg-[#58a6ff] before:rounded-r-md relative' : 'text-on-surface hover:bg-surface-variant/50 hover:underline' }} px-3 py-1.5 flex items-center justify-between transition-all rounded-md" href="{{ route('admin.payouts.index') }}" wire:navigate>
+    <span class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-[1rem]">payments</span>
+        Payouts
+    </span>
+    @if(isset($pendingPayoutsCount) && $pendingPayoutsCount > 0)
+        <span class="px-1.5 py-0.5 bg-amber-500 text-white rounded-full text-[10px] font-extrabold animate-pulse">
+            {{ $pendingPayoutsCount }}
+        </span>
+    @endif
+</a>
 <a class="font-label-md text-label-md {{ request()->routeIs('admin.gateway_apps.*') ? 'bg-surface-variant font-semibold before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[3px] before:bg-[#58a6ff] before:rounded-r-md relative' : 'text-on-surface hover:bg-surface-variant/50 hover:underline' }} px-3 py-1.5 flex items-center gap-2 transition-all rounded-md" href="{{ route('admin.gateway_apps.index') }}" wire:navigate>
 <span class="material-symbols-outlined text-[1rem]">api</span>
                     Gateway Apps
@@ -232,9 +239,59 @@
 <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant dark:text-gray-400">search</span>
 <input class="pl-10 pr-4 py-1.5 bg-background dark:bg-white/10 border border-outline-variant dark:border-gray-600 rounded-md font-body-md text-body-md focus:outline-none focus:border-primary dark:focus:border-blue-500 transition-all w-64 text-on-surface dark:text-white placeholder:text-on-surface-variant dark:placeholder:text-gray-400" placeholder="Type / to search" type="text"/>
 </div>
-<button class="text-on-surface-variant dark:text-gray-300 hover:text-on-surface dark:hover:text-white hover:bg-surface-variant/50 dark:hover:bg-white/10 p-2 rounded-md transition-colors relative">
-<span class="material-symbols-outlined text-[1.25rem]">notifications</span>
-</button>
+
+<!-- Notification Dropdown -->
+<div class="relative" x-data="{ openNotif: false }">
+    <button @click="openNotif = !openNotif" @click.outside="openNotif = false" class="text-on-surface-variant dark:text-gray-300 hover:text-on-surface dark:hover:text-white hover:bg-surface-variant/50 dark:hover:bg-white/10 p-2 rounded-md transition-colors relative" title="Notifikasi">
+        <span class="material-symbols-outlined text-[1.25rem]">notifications</span>
+        @if(isset($pendingPayoutsCount) && $pendingPayoutsCount > 0)
+            <span class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-amber-500 rounded-full ring-2 ring-surface animate-ping"></span>
+            <span class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-amber-500 rounded-full ring-2 ring-surface"></span>
+        @endif
+    </button>
+    <div x-show="openNotif" style="display: none;" x-transition class="absolute right-0 mt-2 w-80 bg-surface border border-outline-variant rounded-xl shadow-xl py-2 z-50 text-on-surface">
+        <div class="px-4 py-2 border-b border-outline-variant/30 flex items-center justify-between">
+            <span class="font-bold text-sm">Notifikasi Masuk</span>
+            @if(isset($pendingPayoutsCount) && $pendingPayoutsCount > 0)
+                <span class="px-2 py-0.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-bold rounded-full">
+                    {{ $pendingPayoutsCount }} Perlu Diproses
+                </span>
+            @endif
+        </div>
+        <div class="max-h-80 overflow-y-auto divide-y divide-outline-variant/20">
+            @if(isset($pendingPayoutsCount) && $pendingPayoutsCount > 0)
+                @foreach($pendingPayoutsList as $item)
+                    <a href="{{ route('admin.payouts.index') }}" class="block px-4 py-3 hover:bg-surface-container-low transition-colors">
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-full bg-amber-500/10 text-amber-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <span class="material-symbols-outlined text-[18px]">payments</span>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs font-bold text-on-surface truncate">
+                                    {{ $item->store->name ?? 'Tenant' }}
+                                </p>
+                                <p class="text-xs text-amber-600 dark:text-amber-400 font-semibold">
+                                    Mengajukan pencairan Rp {{ number_format($item->amount, 0, ',', '.') }}
+                                </p>
+                                <p class="text-[10px] text-on-surface-variant mt-0.5">
+                                    {{ $item->created_at->diffForHumans() }}
+                                </p>
+                            </div>
+                        </div>
+                    </a>
+                @endforeach
+            @else
+                <div class="px-4 py-6 text-center text-xs text-on-surface-variant">
+                    <span class="material-symbols-outlined text-[28px] text-on-surface-variant/40 mb-1">check_circle</span>
+                    <p>Tidak ada pengajuan pencairan yang tertunda</p>
+                </div>
+            @endif
+        </div>
+        <a href="{{ route('admin.payouts.index') }}" class="block text-center py-2 text-xs font-bold text-primary hover:underline border-t border-outline-variant/30">
+            Lihat Semua Permintaan Pencairan →
+        </a>
+    </div>
+</div>
 <div class="relative" x-data="{ open: false }">
 <button @click="open = !open" @click.outside="open = false" class="text-on-surface-variant dark:text-gray-300 hover:text-on-surface dark:hover:text-white hover:bg-surface-variant/50 dark:hover:bg-white/10 p-2 rounded-md transition-colors focus:outline-none">
 <span class="material-symbols-outlined text-[1.25rem]">account_circle</span>

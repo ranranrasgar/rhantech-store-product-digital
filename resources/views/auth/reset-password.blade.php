@@ -1,272 +1,215 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="h-full">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     @include('components.theme-init')
-    <title>Reset Password — {{ $company->company_name ?? 'rhantech' }}</title>
+    <title>Reset Password — {{ $company->company_name ?? 'Rhantech' }}</title>
+    <link rel="icon" href="{{ isset($company) && $company->favicon ? asset('storage/'.$company->favicon) : asset('favicon.ico') }}" />
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#e6f7f9',
+                            100: '#cceef3',
+                            500: '#00838f',
+                            600: '#00727d',
+                            700: '#005b64',
+                            800: '#00474e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
     <style>
-        * { font-family: 'Inter', sans-serif; box-sizing: border-box; }
-
         body {
-            margin: 0; padding: 0;
-            min-height: 100vh;
-            background: #060d1a;
-            display: flex;
-            overflow: hidden;
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
-
-        /* ── Animated background ── */
-        .bg-grid {
-            position: fixed; inset: 0; z-index: 0;
-            background-image:
-                linear-gradient(rgba(0,212,255,0.04) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0,212,255,0.04) 1px, transparent 1px);
-            background-size: 60px 60px;
-        }
-        .orb {
-            position: fixed; border-radius: 50%;
-            filter: blur(90px); opacity: 0.25; pointer-events: none;
-        }
-        .orb-1 { width: 500px; height: 500px; background: #00b3cc; top: -100px; left: -100px; animation: float1 8s ease-in-out infinite; }
-        .orb-2 { width: 400px; height: 400px; background: #0056a0; bottom: -100px; right: -50px; animation: float2 10s ease-in-out infinite; }
-        .orb-3 { width: 250px; height: 250px; background: #00d4ff; top: 40%; left: 60%; animation: float3 6s ease-in-out infinite; opacity: 0.1; }
-
-        @keyframes float1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(40px,30px)} }
-        @keyframes float2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-30px,-40px)} }
-        @keyframes float3 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(20px,-20px)} }
-
-        /* ── Branding panel (now on right) ── */
-        .branding-panel {
-            flex: 1; display: flex; flex-direction: column;
-            justify-content: center; align-items: flex-start; 
-            padding: 60px 80px; position: relative; z-index: 1;
-        }
-        .branding-content {
-            display: flex; flex-direction: column;
-            align-items: flex-start; text-align: left;
-            max-width: 420px;
-        }
-        .brand-logo {
-            display: flex; align-items: center; gap: 10px;
-            margin-bottom: 60px; text-decoration: none;
-        }
-        .brand-dot {
-            width: 10px; height: 10px; border-radius: 50%;
-            background: #00d4ff;
-            box-shadow: 0 0 14px #00d4ff;
-            animation: pulse-d 2s ease-in-out infinite;
-        }
-        @keyframes pulse-d {
-            0%,100%{box-shadow:0 0 10px #00d4ff}
-            50%{box-shadow:0 0 24px #00d4ff,0 0 40px rgba(0,212,255,0.4)}
-        }
-        .brand-name {
-            font-size: 24px; font-weight: 900; letter-spacing: -0.5px;
-            background: linear-gradient(135deg, #fff, #a8e6f0);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-        .branding-headline {
-            font-size: clamp(32px, 3.5vw, 52px);
-            font-weight: 900; line-height: 1.1;
-            letter-spacing: -1px;
-            color: #fff; margin-bottom: 20px;
-        }
-        .branding-headline span {
-            background: linear-gradient(135deg, #00d4ff, #00b3cc);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-        .branding-sub {
-            color: rgba(255,255,255,0.5);
-            font-size: 16px; line-height: 1.6;
-            max-width: 380px; margin-bottom: 48px;
-        }
-        .feature-item {
-            display: flex; align-items: center; gap: 12px;
-            margin-bottom: 16px; color: rgba(255,255,255,0.65); font-size: 14px;
-        }
-        .feature-icon {
-            width: 32px; height: 32px; border-radius: 8px;
-            background: rgba(0,212,255,0.12); border: 1px solid rgba(0,212,255,0.2);
-            display: flex; align-items: center; justify-content: center;
-            color: #00d4ff; font-size: 16px; flex-shrink: 0;
-        }
-        .material-symbols-outlined { font-family: 'Material Symbols Outlined'; font-size: inherit; font-weight: normal; font-style: normal; line-height: 1; display: inline-block; }
-
-        /* ── Form panel (now on left) ── */
-        .login-panel {
-            width: 100%; max-width: 460px;
-            background: rgba(255,255,255,0.04);
-            backdrop-filter: blur(24px);
-            border-right: 1px solid rgba(255,255,255,0.07);
-            display: flex; flex-direction: column;
-            justify-content: center; padding: 60px 50px;
-            position: relative; z-index: 1;
-            overflow-y: auto;
-        }
-        .login-panel::-webkit-scrollbar { width: 6px; }
-        .login-panel::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
-        
-        .card-title {
-            font-size: 26px; font-weight: 800; color: #fff;
-            margin-bottom: 6px; letter-spacing: -0.5px;
-        }
-        .card-sub {
-            color: rgba(255,255,255,0.45); font-size: 14px;
-            margin-bottom: 36px; line-height: 1.5;
-        }
-        .form-label {
-            display: block; font-size: 12px; font-weight: 600;
-            color: rgba(255,255,255,0.55); letter-spacing: 0.5px;
-            text-transform: uppercase; margin-bottom: 8px;
-        }
-        input.form-input {
-            width: 100%;
-            background: rgba(255,255,255,0.06) !important;
-            border: 1.5px solid rgba(255,255,255,0.1) !important;
-            border-radius: 10px;
-            color: #fff !important; font-size: 15px;
-            padding: 13px 16px;
-            outline: none;
-            transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
-        }
-        input.form-input::placeholder { color: rgba(255,255,255,0.25) !important; }
-        input.form-input:focus {
-            border-color: #00d4ff !important;
-            background: rgba(0,212,255,0.05) !important;
-            box-shadow: 0 0 0 3px rgba(0,212,255,0.12) !important;
-        }
-        input.form-input:-webkit-autofill,
-        input.form-input:-webkit-autofill:hover, 
-        input.form-input:-webkit-autofill:focus, 
-        input.form-input:-webkit-autofill:active {
-            -webkit-box-shadow: 0 0 0 30px #0f1623 inset !important;
-            -webkit-text-fill-color: #fff !important;
-            transition: background-color 5000s ease-in-out 0s;
-        }
-        .submit-btn {
-            width: 100%;
-            background: linear-gradient(135deg, #00b3cc, #0077a8);
-            color: #fff; font-size: 15px; font-weight: 700;
-            border: none; border-radius: 10px;
-            padding: 14px; cursor: pointer;
-            transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
-            box-shadow: 0 4px 20px rgba(0,179,204,0.35);
-            letter-spacing: 0.3px;
-        }
-        .submit-btn:hover {
-            opacity: 0.92;
-            transform: translateY(-1px);
-            box-shadow: 0 8px 28px rgba(0,179,204,0.45);
-        }
-        .submit-btn:active { transform: translateY(0); }
-        .error-box {
-            background: rgba(239,68,68,0.12);
-            border: 1px solid rgba(239,68,68,0.3);
-            color: #fca5a5; border-radius: 10px;
-            padding: 12px 16px; font-size: 13px;
-            margin-bottom: 24px;
-        }
-
-        /* Mobile */
-        @media (max-width: 768px) {
-            body { flex-direction: column; overflow: auto; }
-            .branding-panel { display: none; }
-            .login-panel {
-                max-width: 100%; border-right: none;
-                border-top: 1px solid rgba(255,255,255,0.07);
-                padding: 40px 28px;
-                min-height: 100vh;
-                justify-content: center;
-            }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
         }
     </style>
 </head>
-<body>
-    <div class="bg-grid"></div>
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
+<body class="min-h-full bg-[#f6f9fa] dark:bg-[#0b0f17] text-slate-800 dark:text-slate-200 antialiased flex flex-col justify-between transition-colors duration-200">
 
-    {{-- LEFT — Reset Password form --}}
-    <div class="login-panel">
-        <div class="card-title">Password Baru 🗝️</div>
-        <div class="card-sub">Silakan buat password baru yang kuat untuk akun Anda.</div>
-
-        @if($errors->any())
-            <div class="error-box">
-                <ul style="list-style-type: disc; padding-left: 20px; margin: 0;">
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
-        <form method="POST" action="{{ route('password.update') }}">
-            @csrf
-
-            <!-- Password Reset Token -->
-            <input type="hidden" name="token" value="{{ $request->route('token') }}">
-
-            <div style="margin-bottom: 16px;">
-                <label class="form-label">Email</label>
-                <input type="email" name="email" value="{{ old('email', $request->email) }}"
-                    class="form-input" placeholder="nama@email.com" required autofocus>
+    <!-- Top Header / Navbar (Marketplace Style) -->
+    <header class="w-full bg-white dark:bg-[#161c28] border-b border-slate-200/80 dark:border-slate-800/80 py-3.5 px-4 sm:px-8 lg:px-16">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="{{ url('/') }}" class="flex items-center gap-2.5">
+                    @if(isset($company) && $company->logo)
+                        <img src="{{ asset('storage/' . $company->logo) }}" alt="{{ $company->company_name ?? 'Logo' }}" class="h-9 w-auto object-contain">
+                    @else
+                        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#00838f] to-teal-500 flex items-center justify-center text-white font-black text-base shadow-sm">
+                            {{ strtoupper(substr($company->company_name ?? 'R', 0, 1)) }}
+                        </div>
+                    @endif
+                    <span class="text-xl font-bold tracking-tight text-[#00838f] dark:text-teal-400">
+                        {{ $company->company_name ?? 'Rhantech' }}
+                    </span>
+                </a>
+                <span class="hidden sm:inline-block text-xl text-slate-300 dark:text-slate-600 font-light">|</span>
+                <span class="text-base sm:text-lg font-semibold text-slate-800 dark:text-slate-200">
+                    Kata Sandi Baru
+                </span>
             </div>
 
-            <div style="margin-bottom: 16px;">
-                <label class="form-label">Password Baru</label>
-                <input type="password" name="password"
-                    class="form-input" placeholder="••••••••" required>
+            <div class="flex items-center gap-4">
+                @if(!empty($company->phone) || !empty($company->whatsapp))
+                    <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $company->whatsapp ?? $company->phone) }}?text=Halo,%20saya%20butuh%20bantuan%20reset%20password" target="_blank" class="text-xs sm:text-sm font-semibold text-[#00838f] dark:text-teal-400 hover:underline inline-flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[18px]">support_agent</span>
+                        <span>Butuh bantuan?</span>
+                    </a>
+                @else
+                    <a href="{{ url('/') }}#contact" class="text-xs sm:text-sm font-semibold text-[#00838f] dark:text-teal-400 hover:underline">
+                        Butuh bantuan?
+                    </a>
+                @endif
             </div>
+        </div>
+    </header>
 
-            <div style="margin-bottom: 28px;">
-                <label class="form-label">Konfirmasi Password</label>
-                <input type="password" name="password_confirmation"
-                    class="form-input" placeholder="••••••••" required>
-            </div>
-
-            <button type="submit" class="submit-btn">
-                Simpan Password Baru
-            </button>
-        </form>
-    </div>
-
-    {{-- RIGHT — Branding panel --}}
-    <div class="branding-panel">
-        <div class="branding-content">
-            <a href="{{ url('/') }}" class="brand-logo">
-                <span class="brand-dot"></span>
-                <span class="brand-name">{{ $company->company_name ?? 'rhantech' }}</span>
-            </a>
-
-            <h1 class="branding-headline">
-                Platform<br>Produk <span>Digital</span><br>Terpercaya
-            </h1>
-            <p class="branding-sub">
-                Amankan kembali akses ke akun Anda untuk terus mengelola produk digital dan memantau transaksi.
-            </p>
-
-            <div>
-                <div class="feature-item">
-                    <div class="feature-icon"><span class="material-symbols-outlined" style="font-size:16px">verified</span></div>
-                    Produk digital berkualitas tinggi & terverifikasi
+    <!-- Main Content Section (Split Layout) -->
+    <main class="flex-1 flex items-center justify-center py-10 px-4 sm:px-8 lg:px-16">
+        <div class="max-w-6xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            
+            <!-- Left Side: Marketplace Illustration & Branding -->
+            <div class="lg:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left space-y-6">
+                <div>
+                    <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
+                        Buat Kata Sandi <span class="text-[#00838f] dark:text-teal-400">Baru yang Kuat</span>
+                    </h1>
+                    <p class="mt-3 text-sm sm:text-base text-slate-600 dark:text-slate-300 max-w-lg leading-relaxed">
+                        Gunakan kombinasi huruf, angka, dan simbol untuk melindungi akun toko serta transaksi produk digital Anda.
+                    </p>
                 </div>
-                <div class="feature-item">
-                    <div class="feature-icon"><span class="material-symbols-outlined" style="font-size:16px">bolt</span></div>
-                    Transaksi instan, aman & terpercaya
+
+                <!-- Showcase Feature Grid -->
+                <div class="relative w-full max-w-md bg-gradient-to-br from-teal-50 to-cyan-50/50 dark:from-slate-800/60 dark:to-teal-950/20 border border-teal-100 dark:border-slate-700/60 rounded-3xl p-6 sm:p-8 shadow-sm">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-white dark:bg-[#161c28] p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-teal-500/10 flex items-center justify-center text-[#00838f] dark:text-teal-400">
+                                <span class="material-symbols-outlined text-2xl">lock_reset</span>
+                            </div>
+                            <div class="text-left">
+                                <div class="text-xs text-slate-500 dark:text-slate-400">Pembaruan</div>
+                                <div class="text-xs font-bold text-slate-800 dark:text-white">Instan & Langsung</div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-[#161c28] p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                                <span class="material-symbols-outlined text-2xl">shield</span>
+                            </div>
+                            <div class="text-left">
+                                <div class="text-xs text-slate-500 dark:text-slate-400">Keamanan</div>
+                                <div class="text-xs font-bold text-slate-800 dark:text-white">Perlindungan Akun</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="feature-item">
-                    <div class="feature-icon"><span class="material-symbols-outlined" style="font-size:16px">headset_mic</span></div>
-                    Dukungan pelanggan 24 jam non-stop
+            </div>
+
+            <!-- Right Side: Clean Auth Card -->
+            <div class="lg:col-span-5 w-full max-w-md mx-auto">
+                <div class="bg-white dark:bg-[#161c28] p-6 sm:p-8 rounded-2xl shadow-lg shadow-slate-200/60 dark:shadow-black/50 border border-slate-200/90 dark:border-slate-800">
+                    
+                    <div class="mb-5">
+                        <h2 class="text-xl font-bold text-slate-900 dark:text-white">
+                            Reset Password
+                        </h2>
+                    </div>
+
+                    @if($errors->any())
+                        <div class="mb-5 rounded-xl bg-rose-50 dark:bg-rose-950/40 p-3.5 border border-rose-200 dark:border-rose-800/60">
+                            <div class="flex items-start gap-2.5">
+                                <span class="material-symbols-outlined text-rose-600 dark:text-rose-400 text-lg flex-shrink-0 mt-0.5">error</span>
+                                <div class="text-xs text-rose-700 dark:text-rose-300 font-medium">
+                                    <ul class="list-disc pl-4 space-y-0.5">
+                                        @foreach($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
+                    <form method="POST" action="{{ route('password.update') }}" class="space-y-3.5">
+                        @csrf
+
+                        <!-- Password Reset Token -->
+                        <input type="hidden" name="token" value="{{ $request->route('token') }}">
+
+                        <!-- Email Input -->
+                        <div>
+                            <input id="email" type="email" name="email" value="{{ old('email', $request->email) }}" required autofocus
+                                placeholder="Alamat Email"
+                                class="block w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3.5 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:border-[#00838f] focus:ring-1 focus:ring-[#00838f] focus:outline-none transition-all">
+                        </div>
+
+                        <!-- Password Input -->
+                        <div>
+                            <input id="password" type="password" name="password" required
+                                placeholder="Password Baru (Min. 8 Karakter)"
+                                class="block w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3.5 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:border-[#00838f] focus:ring-1 focus:ring-[#00838f] focus:outline-none transition-all">
+                        </div>
+
+                        <!-- Password Confirmation Input -->
+                        <div>
+                            <input id="password_confirmation" type="password" name="password_confirmation" required
+                                placeholder="Konfirmasi Password Baru"
+                                class="block w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3.5 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:border-[#00838f] focus:ring-1 focus:ring-[#00838f] focus:outline-none transition-all">
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="pt-2">
+                            <button type="submit" 
+                                class="w-full py-3 px-4 rounded-lg shadow-sm text-sm font-bold tracking-wide uppercase text-white bg-[#00838f] hover:bg-[#00727d] active:scale-[0.99] transition-all">
+                                SIMPAN PASSWORD BARU
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Divider -->
+                    <div class="relative my-5 text-center">
+                        <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-200 dark:border-slate-800"></div></div>
+                        <span class="relative bg-white dark:bg-[#161c28] px-3 text-xs text-slate-400 uppercase">atau</span>
+                    </div>
+
+                    <!-- Login Link -->
+                    <div class="text-center text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+                        Kembali ke halaman
+                        <a href="{{ route('login') }}" class="font-bold text-[#00838f] dark:text-teal-400 hover:underline ml-1">
+                            Masuk
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Back to Home / Catalog -->
+                <div class="mt-4 text-center">
+                    <a href="{{ url('/products') }}" class="text-xs text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 inline-flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[15px]">arrow_back</span>
+                        <span>Kembali ke Katalog Produk</span>
+                    </a>
                 </div>
             </div>
         </div>
-    </div>
+    </main>
+
+    <!-- Bottom Footer (Marketplace Style) -->
+    <footer class="w-full border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-[#161c28] py-4 px-4 text-center text-xs text-slate-500 dark:text-slate-400">
+        <p>&copy; {{ date('Y') }} {{ $company->company_name ?? 'Rhantech' }}. Hak Cipta Dilindungi.</p>
+    </footer>
 
     @include('components.theme-manager')
 </body>
