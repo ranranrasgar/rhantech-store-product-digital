@@ -17,12 +17,13 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::firstOrCreate(
+        User::updateOrCreate(
             ['email' => 'admin@rhantech.com'],
             [
                 'name' => 'Admin',
-                'password' => bcrypt('Admin123456!'), // or use factory default
+                'password' => bcrypt('Admin123456!'),
                 'email_verified_at' => now(),
+                'role' => 'Admin',
             ]
         );
 
