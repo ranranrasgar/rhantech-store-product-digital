@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Tenant;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\Password;
@@ -17,7 +18,7 @@ class ProfileController extends Controller
 
     public function update(Request $request)
     {
-        $user = auth()->user();
+        $user = Auth::user();
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -25,6 +26,9 @@ class ProfileController extends Controller
             'avatar' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp,gif,svg', 'max:2048'],
             'current_password' => ['nullable', 'required_with:password', 'string'],
             'password' => ['nullable', 'confirmed', Password::defaults()],
+        ], [
+            'avatar.max' => 'Ukuran avatar tidak boleh lebih dari 2 MB.',
+            'avatar.image' => 'File harus berupa gambar.',
         ]);
 
         if (isset($validated['current_password']) && !Hash::check($validated['current_password'], $user->password)) {

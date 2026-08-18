@@ -111,7 +111,13 @@ class ProductController extends Controller
             $rules['images'] = 'nullable|array|max:5';
         }
 
-        $validated = $request->validate($rules);
+        $validated = $request->validate($rules, [
+            'images.*.max' => 'Ukuran setiap gambar produk tidak boleh lebih dari 2 MB.',
+            'images.*.image' => 'File harus berupa gambar.',
+            'images.*.mimes' => 'Format gambar harus jpeg, png, jpg, webp, atau gif.',
+            'images.max' => 'Maksimal 5 gambar diperbolehkan.',
+            'file.max' => 'Ukuran file produk maksimal 100 MB.',
+        ]);
 
         $store = Auth::user()->store;
         if (!$store) return redirect()->route('tenant.store.index');
@@ -198,6 +204,12 @@ class ProductController extends Controller
             'images.*' => 'image|mimes:jpeg,png,jpg,webp,gif|max:2048',
             'images' => 'nullable|array|max:5',
             'is_active' => 'boolean'
+        ], [
+            'images.*.max' => 'Ukuran setiap gambar produk tidak boleh lebih dari 2 MB.',
+            'images.*.image' => 'File harus berupa gambar.',
+            'images.*.mimes' => 'Format gambar harus jpeg, png, jpg, webp, atau gif.',
+            'images.max' => 'Maksimal 5 gambar diperbolehkan.',
+            'file.max' => 'Ukuran file produk maksimal 100 MB.',
         ]);
 
         if ($product->store_id !== Auth::user()->store->id) abort(403);

@@ -25,6 +25,9 @@ class StoreController extends Controller
             'address' => 'nullable|string|max:500',
             'maps_location' => 'nullable|string',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ], [
+            'logo.max' => 'Ukuran logo tidak boleh lebih dari 2 MB.',
+            'logo.image' => 'File harus berupa gambar.',
         ]);
 
         $user = Auth::user();
