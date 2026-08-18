@@ -182,6 +182,14 @@ function tenantChatManager() {
                     this.fetchMessages(this.selectedUser.id, false);
                 }
             }, 4000);
+
+            // Listen for global FCM messages
+            window.addEventListener('fcm-message-received', (e) => {
+                this.fetchConversations();
+                if (this.selectedUser) {
+                    this.fetchMessages(this.selectedUser.id, false);
+                }
+            });
         },
 
         fetchConversations() {

@@ -35,7 +35,7 @@
                 <div class="flex flex-col sm:flex-row sm:items-center gap-6 pb-8 border-b border-slate-100 dark:border-[#222f49]">
                     <div class="relative inline-block">
                         @if(auth()->user()->avatar)
-                            <img src="{{ Str::startsWith(auth()->user()->avatar, 'http') ? auth()->user()->avatar : asset('storage/' . auth()->user()->avatar) }}" 
+                            <img src="{{ Str::startsWith(auth()->user()->avatar, 'http') ? auth()->user()->avatar : asset('storage/' . auth()->user()->avatar) }}" referrerpolicy="no-referrer"
                                  class="w-20 h-20 md:w-24 md:h-24 rounded-full object-cover border-4 border-white dark:border-[#161f33] shadow-sm">
                         @else
                             <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name ?? 'Admin') }}&background=0284c7&color=fff" 

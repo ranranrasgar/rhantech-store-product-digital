@@ -31,14 +31,43 @@ class AppearanceController extends Controller
 
         $request->validate([
             'components' => 'required|array',
+            'header_banner' => 'nullable|string',
         ]);
 
         $store->appearance_data = $request->input('components');
+        if ($request->has('header_banner')) {
+            $store->banner = $request->input('header_banner');
+        }
         $store->save();
 
         return response()->json([
             'success' => true,
             'message' => 'Dekorasi toko berhasil disimpan.'
         ]);
+    }
+
+    public function uploadImage(Request $request)
+    {
+        $store = Auth::user()->store;
+        
+        if (!$store) {
+            return response()->json(['success' => false, 'message' => 'Toko tidak ditemukan.'], 404);
+        }
+
+        $request->validate([
+            'image' => 'required|image|max:2048', // max 2MB
+        ]);
+
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('store_appearance', 'public');
+            $url = asset('storage/' . $path);
+            
+            return response()->json([
+                'success' => true,
+                'url' => $url,
+            ]);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Gagal mengunggah gambar.'], 400);
     }
 }

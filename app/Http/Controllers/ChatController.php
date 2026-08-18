@@ -71,6 +71,10 @@ class ChatController extends Controller
 
     /**
      * Get chat messages between logged-in user and a specific store
+     * 
+     * @param \Illuminate\Http\Request $request
+     * @param int|string $storeId
+     * @return \Illuminate\Http\JsonResponse
      */
     public function getMessages(Request $request, $storeId)
     {
@@ -149,6 +153,20 @@ class ChatController extends Controller
             'product_id' => $request->product_id,
             'is_read' => false,
         ]);
+
+        // Send push notification to tenant
+        $firebase = app(\App\Services\FirebaseService::class);
+        $firebase->sendNotificationToUser(
+            $store->user,
+            'Pesan Baru dari ' . Auth::user()->name,
+            substr($request->message, 0, 50) . (strlen($request->message) > 50 ? '...' : ''),
+            [
+                'type' => 'chat_message',
+                'store_id' => $store->id,
+                'user_id' => $userId,
+                'url' => route('tenant.chat.index')
+            ]
+        );
 
         return response()->json([
             'success' => true,

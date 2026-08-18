@@ -115,9 +115,12 @@
 @livewireStyles
 @stack('styles')
 </head>
-<body class="bg-background text-on-background font-body-md min-h-screen flex">
+<body class="bg-background text-on-background font-body-md min-h-screen flex" x-data="{ sidebarOpen: false }">
+<!-- Mobile Sidebar Overlay -->
+<div x-show="sidebarOpen" @click="sidebarOpen = false" class="fixed inset-0 bg-black/50 z-40 md:hidden" style="display: none;" x-transition.opacity></div>
+
 <!-- SideNavBar -->
-<aside class="fixed left-0 top-0 h-screen w-64 bg-background z-50 flex flex-col justify-between overflow-y-auto">
+<aside class="fixed left-0 top-0 h-screen w-64 bg-background z-50 flex flex-col justify-between overflow-y-auto transition-transform duration-300 md:translate-x-0" :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'">
 <div class="flex flex-col gap-1 p-4">
 <div class="mb-lg px-sm">
 <h1 class="font-headline-lg text-headline-lg font-black text-on-background dark:text-white dark:text-on-primary-container flex items-center gap-2">
@@ -240,11 +243,14 @@
 </div>
 </aside>
 <!-- Main Content Area -->
-<main class="flex-1 ml-64 flex flex-col min-h-screen">
+<main class="flex-1 md:ml-64 flex flex-col min-h-screen w-full min-w-0">
 <!-- TopNavBar -->
 <header class="sticky top-0 z-40 bg-surface dark:bg-[#010409] border-b border-outline-variant/30 flex justify-between items-center h-[56px] px-lg w-full text-on-surface dark:text-white">
-<div class="flex items-center">
-<h2 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg font-bold text-on-surface dark:text-white">@yield('title')</h2>
+<div class="flex items-center gap-3">
+<button @click="sidebarOpen = !sidebarOpen" class="md:hidden text-on-surface-variant hover:text-on-surface focus:outline-none flex items-center justify-center p-1 rounded hover:bg-surface-variant/50">
+    <span class="material-symbols-outlined text-[1.5rem]">menu</span>
+</button>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg font-bold text-on-surface dark:text-white truncate max-w-[140px] sm:max-w-xs md:max-w-none">@yield('title')</h2>
 </div>
 <div class="flex items-center gap-md">
 <x-theme-toggle />

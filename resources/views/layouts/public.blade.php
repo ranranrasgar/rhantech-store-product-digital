@@ -171,7 +171,7 @@
                         <!-- User Avatar Dropdown -->
                         <div class="relative" x-data="{ open: false }">
                             <button @click="open = !open" @click.outside="open = false" class="flex items-center gap-2 focus:outline-none rounded-full ring-2 ring-transparent hover:ring-primary/20 transition-all">
-                                <img src="{{ auth()->user()->avatar ? (Str::startsWith(auth()->user()->avatar, 'http') ? auth()->user()->avatar : asset('storage/' . auth()->user()->avatar)) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=0284c7&color=fff' }}" alt="Avatar" class="w-9 h-9 rounded-full object-cover ">
+                                <img src="{{ auth()->user()->avatar ? (Str::startsWith(auth()->user()->avatar, 'http') ? auth()->user()->avatar : asset('storage/' . auth()->user()->avatar)) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=0284c7&color=fff' }}" alt="Avatar" referrerpolicy="no-referrer" class="w-9 h-9 rounded-full object-cover ">
                             </button>
                             
                             <!-- Dropdown Menu -->
@@ -389,6 +389,11 @@
         });
     </script>
     @include('components.theme-manager')
+    @auth
+        @include('components.firebase-init')
+        <div x-data="firebaseManager" x-init="initFirebase()" style="display:none;"></div>
+    @endauth
+    @include('components.chat-widget')
     @livewireScripts
 </body>
 </html>

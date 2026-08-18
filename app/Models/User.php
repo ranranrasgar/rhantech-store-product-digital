@@ -65,4 +65,14 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasOne(Store::class);
     }
+
+    public function followingStores()
+    {
+        return $this->belongsToMany(Store::class, 'followers', 'user_id', 'store_id')->withTimestamps();
+    }
+
+    public function fcmTokens()
+    {
+        return $this->hasMany(FcmToken::class);
+    }
 }

@@ -150,8 +150,19 @@
                 </div>
 
                 <!-- Desktop Store Header Banner -->
-                <div class="w-full h-[220px] bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white relative overflow-hidden flex items-end p-6 border-b border-slate-200 dark:border-[#222f49]">
-                    <div class="absolute inset-0 bg-radial from-sky-500/10 to-transparent pointer-events-none"></div>
+                <div class="w-full h-[220px] bg-slate-900 text-white relative overflow-hidden flex items-end p-6 border-b border-slate-200 dark:border-[#222f49] group/header">
+                    <div class="absolute inset-0 bg-cover bg-center opacity-40 mix-blend-overlay transition-all" :style="headerBanner ? `background-image: url('${headerBanner}')` : ''"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/80 to-transparent pointer-events-none"></div>
+                    
+                    <!-- Upload Header Banner Button -->
+                    <div class="absolute top-4 right-4 z-20 opacity-0 group-hover/header:opacity-100 transition-opacity">
+                        <label class="cursor-pointer bg-white/20 hover:bg-white/30 backdrop-blur-md text-white px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 border border-white/30 transition-colors shadow-lg">
+                            <span class="material-symbols-outlined text-[18px]">photo_camera</span>
+                            Ganti Background
+                            <input type="file" class="hidden" accept="image/*" @change="uploadHeaderBanner($event)">
+                        </label>
+                    </div>
+
                     <div class="relative z-10 flex items-center justify-between w-full">
                         <div class="flex items-center gap-4">
                             <div class="w-20 h-20 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 p-1 overflow-hidden shrink-0 shadow-lg">
@@ -175,26 +186,57 @@
                 <div id="desktop-canvas" class="p-6 space-y-4 min-h-[300px]">
                     <template x-for="(comp, index) in activeComponents" :key="comp.id">
                         <div class="relative group cursor-move drag-handle transition-all">
-                            <!-- Remove Button -->
-                            <button @click="removeComponent(index)" class="absolute -right-2 -top-2 bg-rose-500 hover:bg-rose-600 text-white rounded-full w-7 h-7 flex items-center justify-center hidden group-hover:flex z-30 shadow-lg transition-transform hover:scale-110">
-                                <span class="material-symbols-outlined text-[15px]">close</span>
-                            </button>
+                            <!-- Action Buttons -->
+                            <div class="absolute -right-2 -top-2 hidden group-hover:flex items-center gap-1 z-30">
+                                <button @click="openSettings(index)" class="bg-sky-500 hover:bg-sky-600 text-white rounded-full w-7 h-7 flex items-center justify-center shadow-lg transition-transform hover:scale-110">
+                                    <span class="material-symbols-outlined text-[15px]">settings</span>
+                                </button>
+                                <button @click="removeComponent(index)" class="bg-rose-500 hover:bg-rose-600 text-white rounded-full w-7 h-7 flex items-center justify-center shadow-lg transition-transform hover:scale-110">
+                                    <span class="material-symbols-outlined text-[15px]">close</span>
+                                </button>
+                            </div>
 
                             <!-- BANNER HERO -->
                             <template x-if="comp.type === 'banner'">
-                                <div class="bg-slate-50 dark:bg-[#111726] border-2 border-dashed border-slate-200 dark:border-[#222f49] hover:border-sky-500 dark:hover:border-sky-500 rounded-2xl p-8 flex flex-col items-center justify-center text-center shadow-xs transition-colors h-48">
-                                    <span class="material-symbols-outlined text-3xl text-sky-500 mb-1">view_carousel</span>
-                                    <span class="text-sm font-bold text-slate-800 dark:text-white">Blok Banner Slide Utama</span>
-                                    <span class="text-xs text-slate-400 mt-0.5">Menampilkan gambar sorotan campaign toko</span>
+                                <div class="relative bg-slate-50 dark:bg-[#111726] border-2 border-dashed border-slate-200 dark:border-[#222f49] hover:border-sky-500 dark:hover:border-sky-500 rounded-2xl flex flex-col items-center justify-center text-center shadow-xs transition-colors h-48 overflow-hidden group/banner">
+                                    <template x-if="comp.data?.images && comp.data.images.length > 0 && comp.data.images[0].image_url">
+                                        <div class="absolute inset-0 w-full h-full">
+                                            <img :src="comp.data.images[0].image_url" class="w-full h-full object-cover opacity-90 group-hover/banner:opacity-40 transition-opacity">
+                                            <div class="absolute inset-0 flex flex-col items-center justify-center bg-black/40 text-white opacity-0 group-hover/banner:opacity-100 transition-opacity">
+                                                <span class="material-symbols-outlined text-3xl mb-1">view_carousel</span>
+                                                <span class="text-sm font-bold" x-text="comp.data.images.length + ' Slide Gambar'"></span>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template x-if="!comp.data?.images || comp.data.images.length === 0 || !comp.data.images[0].image_url">
+                                        <div class="p-8 flex flex-col items-center justify-center w-full h-full">
+                                            <span class="material-symbols-outlined text-3xl text-sky-500 mb-1">view_carousel</span>
+                                            <span class="text-sm font-bold text-slate-800 dark:text-white">Blok Banner Slide Utama</span>
+                                            <span class="text-xs text-slate-400 mt-0.5">Menampilkan gambar sorotan campaign toko</span>
+                                        </div>
+                                    </template>
                                 </div>
                             </template>
 
                             <!-- SINGLE IMAGE -->
                             <template x-if="comp.type === 'single_image'">
-                                <div class="bg-slate-50 dark:bg-[#111726] border-2 border-dashed border-slate-200 dark:border-[#222f49] hover:border-sky-500 dark:hover:border-sky-500 rounded-2xl p-8 flex flex-col items-center justify-center text-center shadow-xs transition-colors h-56">
-                                    <span class="material-symbols-outlined text-3xl text-emerald-500 mb-1">image</span>
-                                    <span class="text-sm font-bold text-slate-800 dark:text-white">Blok Banner Gambar Penuh</span>
-                                    <span class="text-xs text-slate-400 mt-0.5">Gambar promo spesial etalase toko</span>
+                                <div class="relative bg-slate-50 dark:bg-[#111726] border-2 border-dashed border-slate-200 dark:border-[#222f49] hover:border-sky-500 dark:hover:border-sky-500 rounded-2xl flex flex-col items-center justify-center text-center shadow-xs transition-colors h-56 overflow-hidden group/single">
+                                    <template x-if="comp.data?.image_url">
+                                        <div class="absolute inset-0 w-full h-full">
+                                            <img :src="comp.data.image_url" class="w-full h-full object-cover opacity-90 group-hover/single:opacity-40 transition-opacity">
+                                            <div class="absolute inset-0 flex flex-col items-center justify-center bg-black/40 text-white opacity-0 group-hover/single:opacity-100 transition-opacity">
+                                                <span class="material-symbols-outlined text-3xl mb-1">image</span>
+                                                <span class="text-sm font-bold">Preview Banner</span>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template x-if="!comp.data?.image_url">
+                                        <div class="p-8 flex flex-col items-center justify-center w-full h-full">
+                                            <span class="material-symbols-outlined text-3xl text-emerald-500 mb-1">image</span>
+                                            <span class="text-sm font-bold text-slate-800 dark:text-white">Blok Banner Gambar Penuh</span>
+                                            <span class="text-xs text-slate-400 mt-0.5">Gambar promo spesial etalase toko</span>
+                                        </div>
+                                    </template>
                                 </div>
                             </template>
 
@@ -269,7 +311,18 @@
                 </div>
 
                 <!-- Mobile Header -->
-                <div class="h-32 bg-slate-900 text-white p-4 flex items-end relative overflow-hidden">
+                <div class="h-32 bg-slate-900 text-white p-4 flex items-end relative overflow-hidden group/mheader">
+                    <div class="absolute inset-0 bg-cover bg-center opacity-40 mix-blend-overlay transition-all" :style="headerBanner ? `background-image: url('${headerBanner}')` : ''"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent pointer-events-none"></div>
+                    
+                    <!-- Mobile Upload Header Banner Button -->
+                    <div class="absolute top-3 right-3 z-20 opacity-0 group-hover/mheader:opacity-100 transition-opacity">
+                        <label class="cursor-pointer bg-white/20 hover:bg-white/30 backdrop-blur-md text-white p-1.5 rounded-lg flex items-center justify-center border border-white/30 transition-colors shadow-lg" title="Ganti Background">
+                            <span class="material-symbols-outlined text-[16px]">photo_camera</span>
+                            <input type="file" class="hidden" accept="image/*" @change="uploadHeaderBanner($event)">
+                        </label>
+                    </div>
+
                     <div class="flex items-center gap-3 relative z-10">
                         <div class="w-12 h-12 rounded-xl bg-white/10 border border-white/20 p-0.5 overflow-hidden shrink-0">
                             @if($store && $store->logo)
@@ -291,10 +344,15 @@
                 <div id="mobile-canvas" class="p-3 space-y-3 pb-16 min-h-[300px] overflow-y-auto">
                     <template x-for="(comp, index) in activeComponents" :key="comp.id">
                         <div class="relative group cursor-move drag-handle">
-                            <!-- Remove Button -->
-                            <button @click="removeComponent(index)" class="absolute -right-2 -top-2 bg-rose-500 text-white rounded-full w-6 h-6 flex items-center justify-center hidden group-hover:flex z-30 shadow-md">
-                                <span class="material-symbols-outlined text-[14px]">close</span>
-                            </button>
+                            <!-- Action Buttons -->
+                            <div class="absolute -right-2 -top-2 hidden group-hover:flex items-center gap-1 z-30">
+                                <button @click="openSettings(index)" class="bg-sky-500 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-md">
+                                    <span class="material-symbols-outlined text-[14px]">settings</span>
+                                </button>
+                                <button @click="removeComponent(index)" class="bg-rose-500 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-md">
+                                    <span class="material-symbols-outlined text-[14px]">close</span>
+                                </button>
+                            </div>
 
                             <template x-if="comp.type === 'banner'">
                                 <div class="bg-slate-50 dark:bg-[#111726] border border-slate-200 dark:border-[#222f49] rounded-xl p-4 text-center h-28 flex flex-col items-center justify-center">
@@ -350,6 +408,231 @@
 
     </div>
 
+    <!-- Cropper Modal -->
+    <div x-show="isCropperModalOpen" style="display: none;" class="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div x-show="isCropperModalOpen" x-transition.opacity class="fixed inset-0 bg-black/80 backdrop-blur-sm" @click="closeCropper()"></div>
+        
+        <div x-show="isCropperModalOpen" x-transition.scale.95 class="bg-white dark:bg-[#0d1117] rounded-3xl shadow-2xl w-full max-w-4xl relative z-10 overflow-hidden flex flex-col border border-slate-200 dark:border-[#222f49]">
+            <div class="px-6 py-4 border-b border-slate-100 dark:border-[#222f49] flex justify-between items-center bg-slate-50/50 dark:bg-[#111726]">
+                <h3 class="font-bold text-lg text-slate-800 dark:text-white flex items-center gap-2">
+                    <span class="material-symbols-outlined text-sky-500">crop</span>
+                    Potong Gambar (<span x-text="cropperTarget?.isHeader ? 'Banner Kepala Toko' : (cropperAspectRatio === 0 ? 'Bebas' : 'Banner Slide')"></span>)
+                </h3>
+                <button @click="closeCropper()" class="text-slate-400 hover:text-rose-500 transition-colors">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            
+            <div class="p-6 bg-slate-100 dark:bg-[#161f33] flex justify-center items-center h-[50vh] overflow-hidden">
+                <div class="w-full h-full flex items-center justify-center">
+                    <img id="cropper-image" class="max-w-full max-h-full block" src="">
+                </div>
+            </div>
+            
+            <div class="px-6 py-4 border-t border-slate-100 dark:border-[#222f49] flex justify-between items-center bg-slate-50/50 dark:bg-[#111726]">
+                <div class="text-xs text-slate-500 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[16px]">info</span>
+                    Geser atau perbesar gambar agar sesuai dengan area kotak.
+                </div>
+                <div class="flex gap-3">
+                    <button @click="closeCropper()" type="button" class="px-5 py-2.5 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-[#222f49] transition-colors">Batal</button>
+                    <button @click="applyCrop()" type="button" class="px-5 py-2.5 bg-sky-500 hover:bg-sky-600 text-white rounded-xl text-sm font-bold shadow-lg shadow-sky-500/30 transition-colors flex items-center gap-2" :class="{'opacity-50 cursor-not-allowed': isCropping}" :disabled="isCropping">
+                        <span x-show="!isCropping" class="material-symbols-outlined text-[18px]">check</span>
+                        <span x-show="isCropping" class="material-symbols-outlined text-[18px] animate-spin">refresh</span>
+                        <span x-text="isCropping ? 'Memproses...' : 'Potong & Simpan'"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div x-show="isSettingsModalOpen" style="display: none;" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <!-- Backdrop -->
+        <div x-show="isSettingsModalOpen" x-transition.opacity class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" @click="closeSettings()"></div>
+        
+        <!-- Modal Content -->
+        <div x-show="isSettingsModalOpen" x-transition.scale.95 class="bg-white dark:bg-[#111726] rounded-2xl shadow-2xl w-full max-w-lg relative z-10 overflow-hidden flex flex-col max-h-[90vh]">
+            <!-- Modal Header -->
+            <div class="px-6 py-4 border-b border-slate-200 dark:border-[#222f49] flex items-center justify-between shrink-0">
+                <h3 class="font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                    <span class="material-symbols-outlined text-sky-500 text-[20px]">settings</span>
+                    Pengaturan Blok
+                </h3>
+                <button @click="closeSettings()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">close</span>
+                </button>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="p-6 overflow-y-auto flex-1 custom-scrollbar" x-if="editingData">
+                
+                <!-- Text Block Settings -->
+                <div x-show="editingData && editingData.type === 'text'" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Teks Pengumuman</label>
+                        <textarea x-model="editingData?.data?.text" rows="4" class="w-full bg-slate-50 dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] rounded-xl px-4 py-2.5 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:border-sky-500" placeholder="Ketik pengumuman atau deskripsi di sini..."></textarea>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Posisi Teks</label>
+                            <select x-model="editingData?.data?.align" class="w-full bg-slate-50 dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] rounded-xl px-4 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:border-sky-500">
+                                <option value="left">Kiri</option>
+                                <option value="center">Tengah</option>
+                                <option value="right">Kanan</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Ukuran Huruf</label>
+                            <select x-model="editingData?.data?.size" class="w-full bg-slate-50 dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] rounded-xl px-4 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:border-sky-500">
+                                <option value="sm">Kecil</option>
+                                <option value="md">Sedang</option>
+                                <option value="lg">Besar</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Single Image Settings -->
+                <div x-show="editingData && editingData.type === 'single_image'" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Gambar Banner</label>
+                        <div class="flex gap-2">
+                            <input type="text" x-model="editingData?.data?.image_url" class="flex-1 bg-slate-50 dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] rounded-xl px-4 py-2.5 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:border-sky-500" placeholder="https://contoh.com/gambar.jpg">
+                            <label class="cursor-pointer bg-sky-100 hover:bg-sky-200 text-sky-600 px-4 py-2.5 rounded-xl text-sm font-bold flex items-center justify-center transition-colors">
+                                <span class="material-symbols-outlined text-[18px]">upload</span>
+                                <input type="file" class="hidden" accept="image/*" @change="openCropper($event, editingData.data, 'image_url', false, 0)">
+                            </label>
+                        </div>
+                        <p class="text-[10px] text-slate-500 mt-1">Masukkan URL gambar atau upload dari perangkat Anda (Maks 2MB).</p>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Link Tujuan (Opsional)</label>
+                        <input type="text" x-model="editingData?.data?.link" class="w-full bg-slate-50 dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] rounded-xl px-4 py-2.5 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:border-sky-500" placeholder="https://...">
+                    </div>
+                </div>
+                
+                <!-- Products Settings -->
+                <div x-show="editingData && editingData.type === 'products'" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Pilih Mode Produk</label>
+                        <select x-model="editingData?.data?.type" class="w-full bg-slate-50 dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] rounded-xl px-4 py-2.5 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:border-sky-500">
+                            <option value="latest">Otomatis (Produk Terbaru)</option>
+                            <option value="bestseller">Otomatis (Terlaris)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Jumlah Maksimal Ditampilkan</label>
+                        <select x-model="editingData?.data?.count" class="w-full bg-slate-50 dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] rounded-xl px-4 py-2.5 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:border-sky-500">
+                            <option value="4">4 Produk</option>
+                            <option value="8">8 Produk</option>
+                            <option value="12">12 Produk</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Flash Sale Settings -->
+                <div x-show="editingData && editingData.type === 'flash_sale'" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Batas Waktu Flash Sale</label>
+                        <input type="datetime-local" x-model="editingData?.data?.end_date" class="w-full bg-slate-50 dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] rounded-xl px-4 py-2.5 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:border-sky-500">
+                    </div>
+                </div>
+                
+                <!-- Banner Settings -->
+                <div x-show="editingData && editingData.type === 'banner'" class="space-y-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">Daftar Gambar Slide</label>
+                        <button type="button" @click="if(!editingData.data.images) editingData.data.images = []; editingData.data.images.push({image_url: '', link: ''})" class="text-[10px] bg-sky-100 text-sky-600 hover:bg-sky-200 px-2 py-1 rounded font-bold flex items-center gap-1 transition-colors">
+                            <span class="material-symbols-outlined text-[12px]">add</span> Tambah Slide
+                        </button>
+                    </div>
+                    
+                    <template x-if="!editingData?.data?.images || editingData.data.images.length === 0">
+                        <div class="p-4 bg-slate-50 dark:bg-[#0d1117] rounded-xl border border-dashed border-slate-200 dark:border-[#222f49] text-center text-xs text-slate-400">Belum ada slide gambar.</div>
+                    </template>
+                    
+                    <div class="space-y-3 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
+                        <template x-for="(img, imgIdx) in editingData?.data?.images" :key="imgIdx">
+                            <div class="p-3 bg-slate-50 dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] rounded-xl relative group">
+                                <button type="button" @click="editingData.data.images.splice(imgIdx, 1)" class="absolute top-2 right-2 text-rose-500 hover:bg-rose-100 dark:hover:bg-rose-900/30 p-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <span class="material-symbols-outlined text-[14px]">delete</span>
+                                </button>
+                                <div class="space-y-3 pr-6">
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-slate-500 mb-1">Gambar Slide</label>
+                                        <div class="flex gap-2">
+                                            <input type="text" x-model="img.image_url" class="flex-1 bg-white dark:bg-[#161f33] border border-slate-200 dark:border-[#222f49] rounded-lg px-3 py-1.5 text-xs text-slate-800 dark:text-slate-200 focus:border-sky-500 focus:outline-none" placeholder="https://...">
+                                            <label class="cursor-pointer bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 px-2 rounded-lg flex items-center justify-center transition-colors" title="Upload Gambar">
+                                                <span class="material-symbols-outlined text-[14px]">upload</span>
+                                                <input type="file" class="hidden" accept="image/*" @change="openCropper($event, img, 'image_url', false, 2.5/1)">
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-slate-500 mb-1">Link Tujuan (Opsional)</label>
+                                        <input type="text" x-model="img.link" class="w-full bg-white dark:bg-[#161f33] border border-slate-200 dark:border-[#222f49] rounded-lg px-3 py-1.5 text-xs text-slate-800 dark:text-slate-200 focus:border-sky-500 focus:outline-none" placeholder="https://...">
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- Voucher Settings -->
+                <div x-show="editingData && editingData.type === 'voucher'" class="space-y-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">Daftar Kupon</label>
+                        <button type="button" @click="if(!editingData.data.vouchers) editingData.data.vouchers = []; editingData.data.vouchers.push({title: 'Diskon Baru', subtitle: 'Min. Belanja Rp 0', theme: 'rose'})" class="text-[10px] bg-sky-100 text-sky-600 hover:bg-sky-200 px-2 py-1 rounded font-bold flex items-center gap-1 transition-colors">
+                            <span class="material-symbols-outlined text-[12px]">add</span> Tambah Kupon
+                        </button>
+                    </div>
+                    
+                    <template x-if="!editingData?.data?.vouchers || editingData.data.vouchers.length === 0">
+                        <div class="p-4 bg-slate-50 dark:bg-[#0d1117] rounded-xl border border-dashed border-slate-200 dark:border-[#222f49] text-center text-xs text-slate-400">Belum ada kupon yang ditambahkan.</div>
+                    </template>
+                    
+                    <div class="space-y-3 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
+                        <template x-for="(v, vIdx) in editingData?.data?.vouchers" :key="vIdx">
+                            <div class="p-3 bg-slate-50 dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] rounded-xl relative group">
+                                <button type="button" @click="editingData.data.vouchers.splice(vIdx, 1)" class="absolute top-2 right-2 text-rose-500 hover:bg-rose-100 dark:hover:bg-rose-900/30 p-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <span class="material-symbols-outlined text-[14px]">delete</span>
+                                </button>
+                                <div class="space-y-3 pr-6">
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-slate-500 mb-1">Judul Diskon</label>
+                                        <input type="text" x-model="v.title" class="w-full bg-white dark:bg-[#161f33] border border-slate-200 dark:border-[#222f49] rounded-lg px-3 py-1.5 text-xs text-slate-800 dark:text-slate-200 focus:border-sky-500 focus:outline-none" placeholder="Misal: Diskon Spesial 50%">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-slate-500 mb-1">Syarat / Subtitle</label>
+                                        <input type="text" x-model="v.subtitle" class="w-full bg-white dark:bg-[#161f33] border border-slate-200 dark:border-[#222f49] rounded-lg px-3 py-1.5 text-xs text-slate-800 dark:text-slate-200 focus:border-sky-500 focus:outline-none" placeholder="Misal: Min. Belanja Rp 100.000">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-slate-500 mb-1">Tema Warna</label>
+                                        <select x-model="v.theme" class="w-full bg-white dark:bg-[#161f33] border border-slate-200 dark:border-[#222f49] rounded-lg px-3 py-1.5 text-xs text-slate-800 dark:text-slate-200 focus:border-sky-500 focus:outline-none">
+                                            <option value="rose">Merah Muda (Rose)</option>
+                                            <option value="emerald">Hijau (Emerald)</option>
+                                            <option value="amber">Kuning (Amber)</option>
+                                            <option value="sky">Biru (Sky)</option>
+                                            <option value="violet">Ungu (Violet)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+            </div>
+            
+            <!-- Modal Footer -->
+            <div class="px-6 py-4 border-t border-slate-200 dark:border-[#222f49] bg-slate-50 dark:bg-[#161f33] flex items-center justify-end gap-3 shrink-0 rounded-b-2xl">
+                <button @click="closeSettings()" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">Batal</button>
+                <button @click="saveSettings()" class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs font-bold shadow-lg shadow-sky-500/25 transition-all">Simpan Pengaturan</button>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
@@ -357,19 +640,37 @@
     document.addEventListener('alpine:init', () => {
         Alpine.data('appearanceEditor', () => ({
             device: 'desktop',
-            activeComponents: @json($store->appearance_data ?? []),
+            activeComponents: {!! json_encode($store->appearance_data ?? []) !!},
+            headerBanner: '{{ $store->banner }}' || '',
             isSaving: false,
+            draggedItem: null,
             sortableMobile: null,
             sortableDesktop: null,
+            
+            // Cropper state
+            isCropperModalOpen: false,
+            cropperInstance: null,
+            cropperTarget: null,
+            cropperAspectRatio: 3 / 1,
+            isCropping: false,
+            
+            isSettingsModalOpen: false,
+            editingIndex: -1,
+            editingData: null,
             
             init() {
                 if (!Array.isArray(this.activeComponents) || this.activeComponents.length === 0) {
                     this.activeComponents = [
-                        { id: this.generateId(), type: 'banner' },
-                        { id: this.generateId(), type: 'voucher' },
-                        { id: this.generateId(), type: 'products' },
-                        { id: this.generateId(), type: 'text' }
+                        { id: this.generateId(), type: 'banner', data: this.getDefaultData('banner') },
+                        { id: this.generateId(), type: 'voucher', data: this.getDefaultData('voucher') },
+                        { id: this.generateId(), type: 'products', data: this.getDefaultData('products') },
+                        { id: this.generateId(), type: 'text', data: this.getDefaultData('text') }
                     ];
+                } else {
+                    // Ensure all existing components have data objects
+                    this.activeComponents.forEach(comp => {
+                        if (!comp.data) comp.data = this.getDefaultData(comp.type);
+                    });
                 }
                 
                 this.$nextTick(() => {
@@ -389,8 +690,20 @@
                 return Math.random().toString(36).substr(2, 9);
             },
             
+            getDefaultData(type) {
+                switch(type) {
+                    case 'text': return { text: '', align: 'center', size: 'md' };
+                    case 'banner': return { images: [] };
+                    case 'single_image': return { image_url: '', link: '' };
+                    case 'products': return { type: 'latest', count: 8 };
+                    case 'flash_sale': return { end_date: '', discount: 10 };
+                    case 'voucher': return {};
+                    default: return {};
+                }
+            },
+            
             addComponent(type) {
-                this.activeComponents.push({ id: this.generateId(), type: type });
+                this.activeComponents.push({ id: this.generateId(), type: type, data: this.getDefaultData(type) });
                 this.$nextTick(() => {
                     const canvas = this.device === 'mobile' ? document.getElementById('mobile-canvas') : document.getElementById('desktop-canvas');
                     if(canvas) canvas.scrollIntoView({ behavior: 'smooth', block: 'end' });
@@ -399,6 +712,29 @@
             
             removeComponent(index) {
                 this.activeComponents.splice(index, 1);
+            },
+            
+            openSettings(index) {
+                this.editingIndex = index;
+                const comp = this.activeComponents[index];
+                this.editingData = JSON.parse(JSON.stringify(comp)); // Deep clone
+                if (!this.editingData.data) {
+                    this.editingData.data = this.getDefaultData(comp.type);
+                }
+                this.isSettingsModalOpen = true;
+            },
+            
+            saveSettings() {
+                if (this.editingIndex >= 0 && this.editingData) {
+                    this.activeComponents[this.editingIndex] = JSON.parse(JSON.stringify(this.editingData));
+                }
+                this.closeSettings();
+            },
+            
+            closeSettings() {
+                this.isSettingsModalOpen = false;
+                this.editingIndex = -1;
+                this.editingData = null;
             },
             
             initSortable(refId) {
@@ -432,7 +768,10 @@
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
-                    body: JSON.stringify({ components: this.activeComponents })
+                    body: JSON.stringify({ 
+                        components: this.activeComponents,
+                        header_banner: this.headerBanner 
+                    })
                 })
                 .then(res => res.json())
                 .then(data => {
@@ -448,8 +787,135 @@
                     alert('Terjadi kesalahan koneksi saat menyimpan.');
                     console.error(err);
                 });
+            },
+            
+            uploadImage(event, targetObject, propertyName) {
+                // Not used directly anymore, replaced by openCropper
+            },
+
+            uploadHeaderBanner(event) {
+                this.openCropper(event, null, null, true, 3/1);
+            },
+            
+            openCropper(event, targetObject, propertyName, isHeader = false, aspectRatio = 0) {
+                const file = event.target.files[0];
+                if (!file) return;
+                
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('Ukuran file maksimal 5MB!');
+                    return;
+                }
+
+                this.cropperAspectRatio = aspectRatio;
+                this.cropperTarget = { object: targetObject, property: propertyName, isHeader: isHeader };
+                
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const imgElement = document.getElementById('cropper-image');
+                    imgElement.src = e.target.result;
+                    this.isCropperModalOpen = true;
+                    
+                    this.$nextTick(() => {
+                        if (this.cropperInstance) {
+                            this.cropperInstance.destroy();
+                        }
+                        this.cropperInstance = new Cropper(imgElement, {
+                            aspectRatio: this.cropperAspectRatio > 0 ? this.cropperAspectRatio : NaN,
+                            viewMode: 1,
+                            dragMode: 'move',
+                            autoCropArea: 1,
+                            restore: false,
+                            guides: true,
+                            center: true,
+                            highlight: false,
+                            cropBoxMovable: true,
+                            cropBoxResizable: true,
+                            toggleDragModeOnDblclick: false,
+                        });
+                    });
+                };
+                reader.readAsDataURL(file);
+                event.target.value = '';
+            },
+            
+            closeCropper() {
+                this.isCropperModalOpen = false;
+                if (this.cropperInstance) {
+                    this.cropperInstance.destroy();
+                    this.cropperInstance = null;
+                }
+                this.cropperTarget = null;
+                this.isCropping = false;
+            },
+            
+            applyCrop() {
+                if (!this.cropperInstance || !this.cropperTarget) return;
+                
+                this.isCropping = true;
+                const canvas = this.cropperInstance.getCroppedCanvas({
+                    maxWidth: 1600,
+                    maxHeight: 1600,
+                });
+                
+                canvas.toBlob((blob) => {
+                    if (!blob) {
+                        alert('Gagal memotong gambar.');
+                        this.isCropping = false;
+                        return;
+                    }
+                    
+                    const formData = new FormData();
+                    formData.append('image', blob, 'cropped.jpg');
+                    
+                    const originalUrl = this.cropperTarget.isHeader ? this.headerBanner : this.cropperTarget.object[this.cropperTarget.property];
+                    
+                    if (this.cropperTarget.isHeader) {
+                        this.headerBanner = 'Mengunggah...';
+                    } else {
+                        this.cropperTarget.object[this.cropperTarget.property] = 'Mengunggah...';
+                    }
+                    
+                    const uploadTarget = this.cropperTarget; 
+                    this.closeCropper(); 
+                    
+                    fetch('{{ route('tenant.appearance.upload') }}', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: formData
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            if (uploadTarget.isHeader) {
+                                this.headerBanner = data.url;
+                            } else {
+                                uploadTarget.object[uploadTarget.property] = data.url;
+                            }
+                        } else {
+                            if (uploadTarget.isHeader) {
+                                this.headerBanner = originalUrl;
+                            } else {
+                                uploadTarget.object[uploadTarget.property] = originalUrl;
+                            }
+                            alert(data.message || 'Gagal mengunggah gambar');
+                        }
+                    })
+                    .catch(err => {
+                        if (uploadTarget.isHeader) {
+                            this.headerBanner = originalUrl;
+                        } else {
+                            uploadTarget.object[uploadTarget.property] = originalUrl;
+                        }
+                        alert('Terjadi kesalahan koneksi saat mengunggah.');
+                        console.error(err);
+                    });
+                }, 'image/jpeg', 0.85);
             }
         }));
     });
 </script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 @endsection

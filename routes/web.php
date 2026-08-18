@@ -33,6 +33,7 @@ Route::post('/checkout', [\App\Http\Controllers\CheckoutController::class, 'proc
 Route::post('/checkout/select', [\App\Http\Controllers\CheckoutController::class, 'selectItems'])->name('checkout.select');
 Route::get('/payment/{invoice_number}', [\App\Http\Controllers\CheckoutController::class, 'payment'])->name('checkout.payment');
 Route::get('/toko/{slug}', [\App\Http\Controllers\PublicStoreController::class, 'show'])->name('store.show');
+Route::post('/toko/{store}/follow', [\App\Http\Controllers\PublicStoreController::class, 'toggleFollow'])->name('store.follow')->middleware('auth');
 Route::get('/download/{token}', [\App\Http\Controllers\DownloadController::class, 'download'])->name('products.download');
 Route::get('/download/{token}/file/{item}', [\App\Http\Controllers\DownloadController::class, 'downloadFile'])->name('products.download.file');
 Route::post('/api/webhooks/midtrans/callback', [\App\Http\Controllers\WebhookController::class, 'midtrans']);
@@ -103,6 +104,7 @@ Route::middleware(['auth', 'verified', 'is_tenant'])->prefix('tenant')->name('te
     Route::get('performance', [\App\Http\Controllers\Tenant\PerformanceController::class, 'index'])->name('performance.index');
     Route::get('appearance', [\App\Http\Controllers\Tenant\AppearanceController::class, 'index'])->name('appearance.index');
     Route::post('appearance', [\App\Http\Controllers\Tenant\AppearanceController::class, 'update'])->name('appearance.update');
+    Route::post('appearance/upload', [\App\Http\Controllers\Tenant\AppearanceController::class, 'uploadImage'])->name('appearance.upload');
 
     // kerja sama
     Route::resource('affiliates', \App\Http\Controllers\Tenant\AffiliateController::class);
@@ -122,6 +124,7 @@ Route::middleware(['auth'])->prefix('chat')->name('chat.')->group(function () {
     Route::get('/conversations', [\App\Http\Controllers\ChatController::class, 'getConversations'])->name('conversations');
     Route::get('/messages/{storeId}', [\App\Http\Controllers\ChatController::class, 'getMessages'])->name('messages');
     Route::post('/send', [\App\Http\Controllers\ChatController::class, 'sendMessage'])->name('send');
+    Route::post('/fcm-token', [\App\Http\Controllers\FcmController::class, 'storeToken'])->name('fcm-token');
 });
 
 Route::middleware(['auth', 'is_admin'])->prefix('admin')->name('admin.')->group(function () {

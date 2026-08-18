@@ -278,11 +278,21 @@ html.dark .sidebar-logout-btn:hover { color: #f87171; }
 html.dark .html-dark-border { border-bottom-color: #30363d !important; }
 </style>
 
+<style>
+/* Responsive overrides */
+@media (max-width: 768px) {
+    .tenant-sidebar { transform: translateX(-100%); transition: transform 0.3s ease-in-out; }
+    .tenant-sidebar.open { transform: translateX(0); }
+    .tenant-main { margin-left: 0 !important; width: 100%; }
+}
+</style>
 </head>
-<body>
+<body x-data="{ sidebarOpen: false }">
+<!-- Mobile Sidebar Overlay -->
+<div x-show="sidebarOpen" @click="sidebarOpen = false" style="position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:45; display:none;" x-transition.opacity></div>
 
 <!-- Sidebar -->
-<aside class="tenant-sidebar">
+<aside class="tenant-sidebar" :class="sidebarOpen ? 'open' : ''">
     <!-- Brand -->
     <a href="{{ url('/') }}" class="sidebar-brand">
         <span class="brand-dot-s"></span>
@@ -358,6 +368,7 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
     <div class="sidebar-user">
         @if(auth()->user()->avatar)
             <img src="{{ Str::startsWith(auth()->user()->avatar, 'http') ? auth()->user()->avatar : asset('storage/' . auth()->user()->avatar) }}" 
+                 referrerpolicy="no-referrer"
                  style="width:34px; height:34px; border-radius:50%; border:2px solid rgba(0,179,204,0.4); flex-shrink:0; object-fit:cover;">
         @else
             <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name ?? 'Admin') }}&background=0d2240&color=00b3cc"
@@ -377,13 +388,18 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
 </aside>
 
 <!-- Main Content -->
-<main style="flex:1; margin-left:240px; display:flex; flex-direction:column; min-height:100vh;">
+<main class="tenant-main" style="flex:1; margin-left:240px; display:flex; flex-direction:column; min-height:100vh;">
     <!-- Top bar -->
     <header class="tenant-topbar">
-        <h2 class="topbar-title">@yield('title')</h2>
+        <div style="display:flex; align-items:center; gap:12px;">
+            <button @click="sidebarOpen = !sidebarOpen" class="topbar-icon-btn md:hidden" style="display:flex; width:36px; height:36px;">
+                <span class="material-symbols-outlined" style="font-size:20px;">menu</span>
+            </button>
+            <h2 class="topbar-title truncate max-w-[120px] sm:max-w-xs md:max-w-none" style="display: block;">@yield('title')</h2>
+        </div>
         <div style="display:flex; align-items:center; gap:8px;">
             <x-theme-toggle />
-            <div class="topbar-search">
+            <div class="topbar-search hidden md:flex">
                 <span class="material-symbols-outlined" style="font-size:16px; color:rgba(255,255,255,0.3);">search</span>
                 <input type="text" placeholder="Cari...">
             </div>
@@ -393,7 +409,7 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
             <div style="position:relative;" x-data="{ open: false }">
                 <button class="topbar-icon-btn" @click="open = !open" @click.outside="open = false" style="padding:0; width:34px; height:34px; border-radius:50%; overflow:hidden; border:2px solid transparent; transition:border-color 0.2s;">
                     @if(auth()->user()->avatar)
-                        <img src="{{ Str::startsWith(auth()->user()->avatar, 'http') ? auth()->user()->avatar : asset('storage/' . auth()->user()->avatar) }}" style="width:100%; height:100%; object-fit:cover;">
+                        <img src="{{ Str::startsWith(auth()->user()->avatar, 'http') ? auth()->user()->avatar : asset('storage/' . auth()->user()->avatar) }}" referrerpolicy="no-referrer" style="width:100%; height:100%; object-fit:cover;">
                     @else
                         <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name ?? 'Admin') }}&background=00b3cc&color=fff" style="width:100%; height:100%; object-fit:cover;">
                     @endif
@@ -426,6 +442,8 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
     <!-- Page Content -->
     @yield('content')
 </main>
+@include('components.firebase-init')
+<div x-data="firebaseManager" x-init="initFirebase()" style="display:none;"></div>
 @include('components.theme-manager')
 @livewireScripts
 </body></html>

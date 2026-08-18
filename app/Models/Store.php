@@ -26,4 +26,9 @@ class Store extends Model
     {
         return $this->hasMany(PayoutRequest::class);
     }
+
+    public function followers()
+    {
+        return $this->belongsToMany(User::class, 'followers', 'store_id', 'user_id')->withTimestamps();
+    }
 }

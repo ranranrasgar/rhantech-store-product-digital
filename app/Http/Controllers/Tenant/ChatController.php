@@ -161,6 +161,22 @@ class ChatController extends Controller
             'is_read' => false,
         ]);
 
+        // Send push notification to buyer
+        $user = User::find($request->user_id);
+        if ($user) {
+            $firebase = app(\App\Services\FirebaseService::class);
+            $firebase->sendNotificationToUser(
+                $user,
+                'Pesan Baru dari ' . $store->name,
+                substr($request->message, 0, 50) . (strlen($request->message) > 50 ? '...' : ''),
+                [
+                    'type' => 'chat_message',
+                    'store_id' => $store->id,
+                    'url' => route('home')
+                ]
+            );
+        }
+
         return response()->json([
             'success' => true,
             'message' => [
