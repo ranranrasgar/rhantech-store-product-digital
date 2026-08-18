@@ -296,6 +296,12 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
             <span class="material-symbols-outlined">space_dashboard</span> Dashboard
         </a>
 
+        <div class="nav-section-label">Akun Saya</div>
+        <a href="{{ route('tenant.purchases.index') }}" class="nav-link {{ request()->routeIs('tenant.purchases.*') ? 'active' : '' }}">
+            <span class="material-symbols-outlined">shopping_bag</span> Pembelian Saya
+        </a>
+
+        @if(auth()->user()->store)
         <div class="nav-section-label">Manajemen Toko</div>
         <a href="{{ route('tenant.products.index') }}" class="nav-link {{ request()->routeIs('tenant.products.*') ? 'active' : '' }}">
             <span class="material-symbols-outlined">inventory_2</span> Katalog Produk
@@ -338,12 +344,23 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
         <a href="{{ route('tenant.performance.index') ?? '#' }}" class="nav-link {{ request()->routeIs('tenant.performance.*') ? 'active' : '' }}">
             <span class="material-symbols-outlined">monitoring</span> Performa Toko
         </a>
+        @else
+        <div class="nav-section-label">Toko Saya</div>
+        <a href="{{ route('tenant.store.index') }}" class="nav-link {{ request()->routeIs('tenant.store.*') ? 'active' : '' }}">
+            <span class="material-symbols-outlined">storefront</span> Mulai Berjualan
+        </a>
+        @endif
     </nav>
 
     <!-- User -->
     <div class="sidebar-user">
-        <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name ?? 'Admin') }}&background=0d2240&color=00b3cc"
-             style="width:34px; height:34px; border-radius:50%; border:2px solid rgba(0,179,204,0.4); flex-shrink:0;">
+        @if(auth()->user()->avatar)
+            <img src="{{ Str::startsWith(auth()->user()->avatar, 'http') ? auth()->user()->avatar : asset('storage/' . auth()->user()->avatar) }}" 
+                 style="width:34px; height:34px; border-radius:50%; border:2px solid rgba(0,179,204,0.4); flex-shrink:0; object-fit:cover;">
+        @else
+            <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name ?? 'Admin') }}&background=0d2240&color=00b3cc"
+                 style="width:34px; height:34px; border-radius:50%; border:2px solid rgba(0,179,204,0.4); flex-shrink:0; object-fit:cover;">
+        @endif
         <div style="flex:1; min-width:0;">
             <div class="sidebar-user-name">{{ auth()->user()->name ?? 'Admin' }}</div>
             <div class="sidebar-user-email">{{ auth()->user()->email ?? '' }}</div>
@@ -372,14 +389,21 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
                 <span class="material-symbols-outlined" style="font-size:20px;">notifications</span>
             </button>
             <div style="position:relative;" x-data="{ open: false }">
-                <button class="topbar-icon-btn" @click="open = !open" @click.outside="open = false">
-                    <span class="material-symbols-outlined" style="font-size:20px;">account_circle</span>
+                <button class="topbar-icon-btn" @click="open = !open" @click.outside="open = false" style="padding:0; width:34px; height:34px; border-radius:50%; overflow:hidden; border:2px solid transparent; transition:border-color 0.2s;">
+                    @if(auth()->user()->avatar)
+                        <img src="{{ Str::startsWith(auth()->user()->avatar, 'http') ? auth()->user()->avatar : asset('storage/' . auth()->user()->avatar) }}" style="width:100%; height:100%; object-fit:cover;">
+                    @else
+                        <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name ?? 'Admin') }}&background=00b3cc&color=fff" style="width:100%; height:100%; object-fit:cover;">
+                    @endif
                 </button>
                 <div x-show="open" class="topbar-dropdown" style="display:none;" x-transition>
-                    <div style="padding:10px 12px 8px; border-bottom:1px solid #e5e7eb; margin-bottom:4px;" class="html-dark-border">
+                    <a href="{{ route('tenant.profile.index') }}" style="display:block; padding:10px 12px 8px; border-bottom:1px solid #e5e7eb; margin-bottom:4px; text-decoration:none; transition:background 0.2s;" class="html-dark-border hover-bg-gray">
                         <div class="dropdown-user-name" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ auth()->user()->name ?? 'Admin' }}</div>
-                        <div class="dropdown-user-email" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ auth()->user()->email ?? '' }}</div>
-                    </div>
+                        <div class="dropdown-user-email" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-bottom:4px;">{{ auth()->user()->email ?? '' }}</div>
+                        <div style="font-size:11px; color:#00b3cc; font-weight:600; display:flex; align-items:center; gap:2px;">
+                            <span class="material-symbols-outlined" style="font-size:12px;">edit</span> Edit Profil
+                        </div>
+                    </a>
                     @php
                         $tenantStore = auth()->user()->store ?? null;
                         $storeUrl = $tenantStore ? route('store.show', $tenantStore->slug) : route('products.index');

@@ -29,7 +29,7 @@ Route::post('/cart/remove', [\App\Http\Controllers\CartController::class, 'remov
 
 // Checkout Routes
 Route::get('/checkout', [\App\Http\Controllers\CheckoutController::class, 'index'])->name('checkout.index');
-Route::post('/checkout', [\App\Http\Controllers\CheckoutController::class, 'process'])->name('checkout.process');
+Route::post('/checkout', [\App\Http\Controllers\CheckoutController::class, 'process'])->name('checkout.process')->middleware('throttle:checkout');
 Route::post('/checkout/select', [\App\Http\Controllers\CheckoutController::class, 'selectItems'])->name('checkout.select');
 Route::get('/payment/{invoice_number}', [\App\Http\Controllers\CheckoutController::class, 'payment'])->name('checkout.payment');
 Route::get('/toko/{slug}', [\App\Http\Controllers\PublicStoreController::class, 'show'])->name('store.show');
@@ -39,10 +39,15 @@ Route::post('/api/webhooks/midtrans/callback', [\App\Http\Controllers\WebhookCon
 Route::get('/contact', [PublicController::class, 'contact'])->name('contact');
 Route::post('/contact', [PublicController::class, 'storeContact'])->name('contact.store');
 
+// Help Center Routes
+Route::get('/help', [\App\Http\Controllers\HelpController::class, 'index'])->name('help.index');
+Route::get('/help/article/{slug}', [\App\Http\Controllers\HelpController::class, 'show'])->name('help.show');
+Route::post('/help/article/{id}/feedback', [\App\Http\Controllers\HelpController::class, 'feedback'])->name('help.feedback');
+
 Route::get('/login', [\App\Http\Controllers\Auth\AuthController::class, 'create'])->name('login')->middleware('guest');
-Route::post('/login', [\App\Http\Controllers\Auth\AuthController::class, 'store'])->middleware('guest');
+Route::post('/login', [\App\Http\Controllers\Auth\AuthController::class, 'store'])->middleware(['guest', 'throttle:auth']);
 Route::get('/register', [\App\Http\Controllers\Auth\AuthController::class, 'showRegisterForm'])->name('register')->middleware('guest');
-Route::post('/register', [\App\Http\Controllers\Auth\AuthController::class, 'register'])->middleware('guest');
+Route::post('/register', [\App\Http\Controllers\Auth\AuthController::class, 'register'])->middleware(['guest', 'throttle:auth']);
 
 // Socialite OAuth Routes (Google)
 Route::get('/auth/{provider}', [\App\Http\Controllers\Auth\SocialiteController::class, 'redirectToProvider'])->name('social.redirect')->middleware('guest');
@@ -73,12 +78,23 @@ Route::middleware(['auth', 'verified', 'is_tenant'])->prefix('tenant')->name('te
     Route::get('/store', [\App\Http\Controllers\Tenant\StoreController::class, 'index'])->name('store.index');
     Route::post('/store', [\App\Http\Controllers\Tenant\StoreController::class, 'store'])->name('store.store');
     
+    // User Profile
+    Route::get('/profile', [\App\Http\Controllers\Tenant\ProfileController::class, 'index'])->name('profile.index');
+    Route::put('/profile', [\App\Http\Controllers\Tenant\ProfileController::class, 'update'])->name('profile.update');
+    
+    // User Purchases
+    Route::get('/purchases', [\App\Http\Controllers\Tenant\PurchaseController::class, 'index'])->name('purchases.index');
+    
     Route::resource('products', \App\Http\Controllers\Tenant\ProductController::class);
     Route::delete('products/image/{image}', [\App\Http\Controllers\Tenant\ProductController::class, 'destroyImage'])->name('products.image.destroy');
     Route::patch('products/{product}/toggle-active', [\App\Http\Controllers\Tenant\ProductController::class, 'toggleActive'])->name('products.toggle_active');
     Route::patch('products/image/{image}/set-main', [\App\Http\Controllers\Tenant\ProductController::class, 'setMainImage'])->name('products.image.set_main');
     
     Route::get('orders', [\App\Http\Controllers\Tenant\OrderController::class, 'index'])->name('orders.index');
+    Route::put('orders/{order}', [\App\Http\Controllers\Tenant\OrderController::class, 'update'])->name('orders.update');
+    Route::delete('orders/{order}', [\App\Http\Controllers\Tenant\OrderController::class, 'destroy'])->name('orders.destroy');
+    Route::patch('orders/{order}/mark-paid', [\App\Http\Controllers\Tenant\OrderController::class, 'markPaid'])->name('orders.mark_paid');
+    Route::post('orders/{order}/resend-email', [\App\Http\Controllers\Tenant\OrderController::class, 'resendEmail'])->name('orders.resend_email');
     
     Route::resource('payouts', \App\Http\Controllers\Tenant\PayoutController::class);
     Route::get('balance', [\App\Http\Controllers\Tenant\BalanceController::class, 'index'])->name('balance.index');
@@ -134,6 +150,10 @@ Route::middleware(['auth', 'is_admin'])->prefix('admin')->name('admin.')->group(
     // Banners
     Route::get('banners', [\App\Http\Controllers\Admin\BannerController::class, 'index'])->name('banners.index');
     Route::post('banners/update', [\App\Http\Controllers\Admin\BannerController::class, 'update'])->name('banners.update');
+    
+    // Help Center
+    Route::resource('help_categories', \App\Http\Controllers\Admin\HelpCategoryController::class);
+    Route::resource('help_articles', \App\Http\Controllers\Admin\HelpArticleController::class);
     
     // Multi-tenant features
     Route::get('stores', [\App\Http\Controllers\Admin\StoreController::class, 'index'])->name('stores.index');

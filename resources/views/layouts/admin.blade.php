@@ -184,6 +184,17 @@
                     Banners
                 </a>
 
+<!-- Help Center -->
+<div class="pt-3 mt-3 mb-1 border-t border-outline-variant/30 text-xs font-bold text-on-surface-variant tracking-wider px-3">Help Center</div>
+<a class="font-label-md text-label-md {{ request()->routeIs('admin.help_categories.*') ? 'bg-surface-variant font-semibold before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[3px] before:bg-[#58a6ff] before:rounded-r-md relative' : 'text-on-surface hover:bg-surface-variant/50 hover:underline' }} px-3 py-1.5 flex items-center gap-2 transition-all rounded-md" href="{{ route('admin.help_categories.index') }}" wire:navigate>
+<span class="material-symbols-outlined text-[1rem]">help_center</span>
+                    Kategori Bantuan
+                </a>
+<a class="font-label-md text-label-md {{ request()->routeIs('admin.help_articles.*') ? 'bg-surface-variant font-semibold before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[3px] before:bg-[#58a6ff] before:rounded-r-md relative' : 'text-on-surface hover:bg-surface-variant/50 hover:underline' }} px-3 py-1.5 flex items-center gap-2 transition-all rounded-md" href="{{ route('admin.help_articles.index') }}" wire:navigate>
+<span class="material-symbols-outlined text-[1rem]">article</span>
+                    Artikel Bantuan
+                </a>
+
 <!-- Multi-Tenant -->
 <div class="pt-3 mt-3 mb-1 border-t border-outline-variant/30 text-xs font-bold text-on-surface-variant tracking-wider px-3">Tenant</div>
 <a class="font-label-md text-label-md {{ request()->routeIs('admin.stores.*') ? 'bg-surface-variant font-semibold before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[3px] before:bg-[#58a6ff] before:rounded-r-md relative' : 'text-on-surface hover:bg-surface-variant/50 hover:underline' }} px-3 py-1.5 flex items-center gap-2 transition-all rounded-md" href="{{ route('admin.stores.index') }}" wire:navigate>

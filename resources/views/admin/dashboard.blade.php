@@ -11,43 +11,16 @@
         <!-- Page Header -->
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-                <h2 class="font-headline-lg text-headline-lg text-on-surface">Overview</h2>
-                <p class="font-body-md text-body-md text-on-surface-variant mt-1">Ringkasan performa sistem, pesanan toko, proyek, dan aktivitas platform.</p>
+                <h2 class="font-headline-lg text-headline-lg text-on-surface">Marketplace Overview</h2>
+                <p class="font-body-md text-body-md text-on-surface-variant mt-1">Ringkasan performa penjualan produk digital, status toko, dan aktivitas transaksi.</p>
             </div>
             <div class="flex items-center gap-3">
                 <a href="{{ route('admin.orders.index') }}" class="px-4 py-2 bg-primary text-on-primary rounded-md font-label-md font-bold hover:opacity-90 transition flex items-center gap-2">
                     <span class="material-symbols-outlined text-[18px]">receipt_long</span>
-                    Lihat Transaksi
-                </a>
-                <a href="{{ route('admin.products.create') }}" class="px-4 py-2 bg-surface-variant text-on-surface hover:bg-surface-container-high rounded-md font-label-md font-bold transition flex items-center gap-2">
-                    <span class="material-symbols-outlined text-[18px]">add_circle</span>
-                    Tambah Produk
+                    Semua Transaksi
                 </a>
             </div>
         </div>
-
-        <!-- Urgent Payout Alert Banner -->
-        @if(isset($pendingPayoutsCount) && $pendingPayoutsCount > 0)
-            <div class="bg-gradient-to-r from-amber-500/15 via-amber-500/10 to-transparent border-l-4 border-amber-500 rounded-r-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-amber-500 text-white flex items-center justify-center flex-shrink-0 animate-bounce">
-                        <span class="material-symbols-outlined text-[22px]">priority_high</span>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-base text-on-surface flex items-center gap-2">
-                            Perhatian: {{ $pendingPayoutsCount }} Permintaan Pencairan Dana Perlu Segera Diproses!
-                        </h4>
-                        <p class="text-xs text-on-surface-variant mt-0.5">
-                            Ada tenant yang sedang menunggu transfer dana saldo toko. Harap segera periksa dan konfirmasi.
-                        </p>
-                    </div>
-                </div>
-                <a href="{{ route('admin.payouts.index') }}" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold rounded-lg shadow transition flex items-center gap-1.5 whitespace-nowrap">
-                    <span class="material-symbols-outlined text-[16px]">payments</span>
-                    Proses Pencairan Sekarang →
-                </a>
-            </div>
-        @endif
 
         <!-- 4 Primary Metric Cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-md">
@@ -57,7 +30,7 @@
                     <div class="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center">
                         <span class="material-symbols-outlined" style="font-size: 20px;">payments</span>
                     </div>
-                    <span class="text-xs font-bold text-emerald-600">Paid Orders</span>
+                    <span class="text-xs font-bold text-emerald-600">Total</span>
                 </div>
                 <p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-1">Total Pendapatan</p>
                 <h3 class="font-display-md text-display-md font-bold text-on-surface">Rp {{ number_format($totalRevenue, 0, ',', '.') }}</h3>
@@ -69,22 +42,22 @@
                     <div class="w-10 h-10 rounded-lg bg-[#E0F2FE] text-[#0284C7] flex items-center justify-center">
                         <span class="material-symbols-outlined" style="font-size: 20px;">receipt_long</span>
                     </div>
-                    <span class="text-xs font-bold text-sky-600">{{ $totalProducts }} Produk</span>
+                    <span class="text-xs font-bold text-sky-600">Sukses</span>
                 </div>
-                <p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-1">Total Transaksi Selesai</p>
+                <p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-1">Transaksi Berhasil</p>
                 <h3 class="font-display-md text-display-md font-bold text-on-surface">{{ number_format($totalOrders) }}</h3>
             </div>
             
-            <!-- Total Projects & Clients -->
+            <!-- Total Stores -->
             <div class="bg-surface rounded-md border border-outline-variant p-lg flex flex-col justify-between">
                 <div class="flex items-center justify-between mb-4">
-                    <div class="w-10 h-10 rounded-lg bg-surface-container-high text-on-surface-variant flex items-center justify-center">
-                        <span class="material-symbols-outlined" style="font-size: 20px;">rocket_launch</span>
+                    <div class="w-10 h-10 rounded-lg bg-purple-500/10 text-purple-600 flex items-center justify-center">
+                        <span class="material-symbols-outlined" style="font-size: 20px;">storefront</span>
                     </div>
-                    <span class="text-xs font-bold text-on-surface-variant">{{ $totalClients }} Klien</span>
+                    <span class="text-xs font-bold text-purple-600">{{ $totalProducts }} Produk</span>
                 </div>
-                <p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-1">Total Projects</p>
-                <h3 class="font-display-md text-display-md font-bold text-on-surface">{{ number_format($totalProjects) }}</h3>
+                <p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-1">Total Toko</p>
+                <h3 class="font-display-md text-display-md font-bold text-on-surface">{{ number_format($totalStores) }}</h3>
             </div>
 
             <!-- New Messages -->
@@ -115,9 +88,6 @@
                         <h3 class="font-headline-sm text-headline-sm font-bold text-on-surface">Tren Penjualan Produk</h3>
                         <p class="text-xs text-on-surface-variant">Grafik pendapatan riil 6 bulan terakhir</p>
                     </div>
-                    <div class="flex gap-2 border border-outline-variant rounded p-0.5 bg-surface-container-lowest">
-                        <button class="px-3 py-1 bg-primary text-on-primary font-label-sm font-bold rounded">6 Bulan</button>
-                    </div>
                 </div>
                 <!-- Box border for chart area -->
                 <div class="border border-outline-variant rounded-lg p-4 relative h-72 w-full flex items-end gap-2 bg-surface">
@@ -125,38 +95,38 @@
                 </div>
             </div>
 
-            <!-- Project Status -->
+            <!-- Order Status -->
             <div class="bg-surface rounded-md border border-outline-variant p-lg">
-                <h3 class="font-headline-sm text-headline-sm font-bold text-on-surface mb-1">Status Portofolio Project</h3>
-                <p class="text-xs text-on-surface-variant mb-6">Distribusi progress pengerjaan proyek</p>
+                <h3 class="font-headline-sm text-headline-sm font-bold text-on-surface mb-1">Status Transaksi</h3>
+                <p class="text-xs text-on-surface-variant mb-6">Distribusi status pesanan di sistem</p>
                 <div class="relative h-44 w-full flex justify-center items-center">
                     <canvas id="statusChart"></canvas>
                     <div class="absolute inset-0 flex flex-col justify-center items-center pointer-events-none mt-2">
-                        <span class="font-display-md text-display-md font-bold text-on-surface leading-none">{{ $totalProjects }}</span>
-                        <span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mt-1">Total</span>
+                        <span class="font-display-md text-display-md font-bold text-on-surface leading-none">{{ $allOrdersCount }}</span>
+                        <span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mt-1">Pesanan</span>
                     </div>
                 </div>
                 <div class="mt-6 space-y-2.5 px-2">
                     <div class="flex justify-between items-center">
                         <div class="flex items-center gap-3">
-                            <span class="w-3 h-3 rounded-full bg-[#06B6D4]"></span>
-                            <span class="font-body-md text-on-surface">In Progress</span>
+                            <span class="w-3 h-3 rounded-full bg-[#10B981]"></span>
+                            <span class="font-body-md text-on-surface">Sukses / Dibayar</span>
                         </div>
-                        <span class="font-body-md text-on-surface font-semibold">{{ $percentInProgress }}%</span>
+                        <span class="font-body-md text-on-surface font-semibold">{{ $percentSuccess }}%</span>
                     </div>
                     <div class="flex justify-between items-center">
                         <div class="flex items-center gap-3">
-                            <span class="w-3 h-3 rounded-full bg-[#0F172A] dark:bg-slate-400"></span>
-                            <span class="font-body-md text-on-surface">Completed</span>
+                            <span class="w-3 h-3 rounded-full bg-[#F59E0B]"></span>
+                            <span class="font-body-md text-on-surface">Menunggu / Pending</span>
                         </div>
-                        <span class="font-body-md text-on-surface font-semibold">{{ $percentCompleted }}%</span>
+                        <span class="font-body-md text-on-surface font-semibold">{{ $percentPending }}%</span>
                     </div>
                     <div class="flex justify-between items-center">
                         <div class="flex items-center gap-3">
-                            <span class="w-3 h-3 rounded-full bg-[#CBD5E1]"></span>
-                            <span class="font-body-md text-on-surface">On Hold / Draft</span>
+                            <span class="w-3 h-3 rounded-full bg-[#EF4444]"></span>
+                            <span class="font-body-md text-on-surface">Gagal / Dibatalkan</span>
                         </div>
-                        <span class="font-body-md text-on-surface font-semibold">{{ $percentOnHold }}%</span>
+                        <span class="font-body-md text-on-surface font-semibold">{{ $percentFailed }}%</span>
                     </div>
                 </div>
             </div>
@@ -164,47 +134,59 @@
 
         <!-- Bottom Section -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-md">
-            <!-- Top Services List -->
+            <!-- Recent Transactions List -->
             <div class="lg:col-span-2 bg-surface rounded-md border border-outline-variant p-lg">
                 <div class="flex justify-between items-center mb-md">
-                    <h3 class="font-headline-sm text-headline-sm font-bold text-on-surface">Layanan Agency Aktif</h3>
-                    <a href="{{ route('admin.services.index') }}" class="font-label-sm text-primary hover:underline">Kelola Layanan</a>
+                    <h3 class="font-headline-sm text-headline-sm font-bold text-on-surface">Transaksi Terbaru</h3>
+                    <a href="{{ route('admin.orders.index') }}" class="font-label-sm text-primary hover:underline">Semua Transaksi</a>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="border-b border-outline-variant">
-                                <th class="pb-3 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Nama Layanan</th>
+                                <th class="pb-3 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Invoice / Pembeli</th>
+                                <th class="pb-3 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Produk</th>
                                 <th class="pb-3 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-center">Status</th>
-                                <th class="pb-3 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-right pr-4">Aksi</th>
+                                <th class="pb-3 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-right pr-4">Total</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-outline-variant/50">
-                            @forelse($topServices as $service)
+                            @forelse($recentTransactions as $order)
                             <tr class="hover:bg-surface-container-lowest transition-colors group">
                                 <td class="py-4">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-8 h-8 rounded bg-surface-container-high flex items-center justify-center text-primary shrink-0">
-                                            <span class="material-symbols-outlined text-[18px]">{{ $service->icon ?? 'layers' }}</span>
-                                        </div>
-                                        <span class="font-body-md font-semibold text-on-surface">{{ $service->title ?? $service->name }}</span>
-                                    </div>
+                                    <div class="font-bold text-on-surface font-mono text-sm">{{ $order->invoice_number }}</div>
+                                    <div class="text-xs text-on-surface-variant mt-0.5">{{ $order->customer_email }}</div>
                                 </td>
-                                <td class="py-4 text-center font-body-md">
-                                    @if($service->is_active)
-                                        <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400">Aktif</span>
+                                <td class="py-4">
+                                    @if($order->orderItems && $order->orderItems->count() > 0 && $order->orderItems->first()->product)
+                                        <div class="font-body-md font-semibold text-on-surface max-w-[200px] truncate" title="{{ $order->orderItems->first()->product->name }}">
+                                            {{ $order->orderItems->first()->product->name }}
+                                        </div>
+                                        <div class="text-xs text-on-surface-variant truncate max-w-[200px] flex items-center gap-1">
+                                            <span class="material-symbols-outlined text-[12px]">storefront</span> 
+                                            {{ $order->orderItems->first()->product->store->store_name ?? 'Toko' }}
+                                        </div>
                                     @else
-                                        <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-600">Nonaktif</span>
+                                        <div class="text-xs text-slate-400 italic">Produk dihapus/tidak diketahui</div>
                                     @endif
                                 </td>
-                                <td class="py-4 text-right pr-4 font-body-md">
-                                    <a href="{{ route('admin.services.edit', $service) }}" class="text-primary hover:underline text-xs font-bold">Edit</a>
+                                <td class="py-4 text-center font-body-md">
+                                    @if($order->status === 'paid' || $order->status === 'downloaded')
+                                        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">Sukses</span>
+                                    @elseif($order->status === 'pending')
+                                        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">Pending</span>
+                                    @else
+                                        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400">Batal</span>
+                                    @endif
+                                </td>
+                                <td class="py-4 text-right pr-4 font-bold text-on-surface">
+                                    Rp {{ number_format($order->amount, 0, ',', '.') }}
                                 </td>
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="3" class="py-8 text-center text-on-surface-variant">
-                                    Belum ada layanan yang ditambahkan.
+                                <td colspan="4" class="py-8 text-center text-on-surface-variant">
+                                    Belum ada transaksi di platform ini.
                                 </td>
                             </tr>
                             @endforelse
@@ -213,46 +195,26 @@
                 </div>
             </div>
 
-            <!-- Activity Feed -->
+            <!-- Activity Feed (Messages) -->
             <div class="bg-surface rounded-md border border-outline-variant p-lg">
                 <div class="flex justify-between items-center mb-md">
-                    <h3 class="font-headline-sm text-headline-sm font-bold text-on-surface">Aktivitas Terbaru</h3>
+                    <h3 class="font-headline-sm text-headline-sm font-bold text-on-surface">Pesan Terbaru</h3>
                     <a href="{{ route('admin.messages.index') }}" class="font-label-sm text-primary hover:underline">Semua Pesan</a>
                 </div>
                 <div class="space-y-4 mt-4">
-                    @forelse($recentOrders as $rOrder)
-                    <div class="flex gap-3 items-start relative pb-3 border-b border-outline-variant/30">
-                        <div class="w-8 h-8 rounded-full border border-primary flex items-center justify-center text-primary flex-shrink-0 mt-0.5 bg-surface">
-                            <span class="material-symbols-outlined" style="font-size: 16px;">shopping_bag</span>
-                        </div>
-                        <div class="min-w-0 flex-1">
-                            <p class="font-body-sm text-on-surface truncate">
-                                Pesanan <span class="font-bold font-mono">{{ $rOrder->invoice_number }}</span>
-                            </p>
-                            <p class="text-xs text-on-surface-variant mt-0.5">
-                                Rp {{ number_format($rOrder->amount, 0, ',', '.') }} • {{ $rOrder->created_at->diffForHumans() }}
-                            </p>
-                        </div>
-                    </div>
-                    @empty
-                    @endforelse
-
                     @forelse($recentMessages as $msg)
                     <div class="flex gap-3 items-start relative pb-3 border-b border-outline-variant/30 last:border-0 last:pb-0">
                         <div class="w-8 h-8 rounded-full border border-sky-500 flex items-center justify-center text-sky-500 flex-shrink-0 mt-0.5 bg-surface">
                             <span class="material-symbols-outlined" style="font-size: 16px;">mail</span>
                         </div>
                         <div class="min-w-0 flex-1">
-                            <p class="font-body-sm text-on-surface truncate">Pesan dari <span class="font-bold">{{ $msg->name }}</span></p>
+                            <p class="font-body-sm text-on-surface truncate">Dari: <span class="font-bold">{{ $msg->name }}</span></p>
                             <p class="text-xs text-on-surface-variant mt-0.5 truncate">{{ Str::limit($msg->message, 45) }}</p>
                         </div>
                     </div>
                     @empty
+                        <p class="text-xs text-on-surface-variant py-4 text-center">Belum ada pesan masuk.</p>
                     @endforelse
-
-                    @if($recentOrders->isEmpty() && $recentMessages->isEmpty())
-                        <p class="text-xs text-on-surface-variant py-4 text-center">Belum ada aktivitas transaksi atau pesan.</p>
-                    @endif
                 </div>
             </div>
         </div>
@@ -273,7 +235,7 @@
                 datasets: [{
                     label: 'Pendapatan (Rp)',
                     data: revData,
-                    backgroundColor: '#0284c7',
+                    backgroundColor: '#0284c7', // Sky-600
                     borderRadius: 4,
                     borderSkipped: false,
                     barPercentage: 0.6,
@@ -298,31 +260,44 @@
                 },
                 scales: {
                     x: {
-                        grid: { display: false }
+                        grid: { display: false, drawBorder: false },
+                        ticks: {
+                            font: { family: 'Geist', size: 12 },
+                            color: '#64748B' // slate-500
+                        }
                     },
                     y: {
-                        grid: { color: 'rgba(150, 150, 150, 0.1)' },
-                        beginAtZero: true
+                        grid: {
+                            color: function(context) {
+                                return document.documentElement.classList.contains('dark') ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
+                            },
+                            drawBorder: false,
+                        },
+                        ticks: {
+                            font: { family: 'Geist', size: 11 },
+                            color: '#64748B',
+                            callback: function(value) {
+                                if (value >= 1000000) return (value / 1000000) + 'M';
+                                if (value >= 1000) return (value / 1000) + 'K';
+                                return value;
+                            }
+                        }
                     }
                 }
             }
         });
 
-        // Project Status Chart (Doughnut)
+        // Status Chart (Doughnut)
         const ctxStatus = document.getElementById('statusChart').getContext('2d');
-        const pProg = {{ $percentInProgress }};
-        const pComp = {{ $percentCompleted }};
-        const pHold = {{ $percentOnHold }};
-
         new Chart(ctxStatus, {
             type: 'doughnut',
             data: {
-                labels: ['In Progress', 'Completed', 'On Hold'],
+                labels: ['Sukses', 'Pending', 'Gagal/Batal'],
                 datasets: [{
-                    data: [pProg, pComp, pHold],
-                    backgroundColor: ['#06B6D4', '#0F172A', '#CBD5E1'],
+                    data: [{{ $orderSuccess }}, {{ $orderPending }}, {{ $orderFailed }}],
+                    backgroundColor: ['#10B981', '#F59E0B', '#EF4444'], // Emerald, Amber, Red
                     borderWidth: 0,
-                    hoverOffset: 0
+                    hoverOffset: 4
                 }]
             },
             options: {
@@ -334,9 +309,18 @@
                     tooltip: {
                         backgroundColor: '#0F172A',
                         padding: 12,
+                        titleFont: { family: 'Geist', size: 13 },
+                        bodyFont: { family: 'Geist', size: 14, weight: 'bold' },
                         callbacks: {
                             label: function(context) {
-                                return context.label + ': ' + context.parsed + '%';
+                                let label = context.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed !== null) {
+                                    label += context.parsed + ' Pesanan';
+                                }
+                                return label;
                             }
                         }
                     }

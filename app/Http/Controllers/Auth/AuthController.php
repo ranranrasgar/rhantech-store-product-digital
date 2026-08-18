@@ -16,6 +16,18 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
+    protected function validateTurnstile($token)
+    {
+        $secretKey = env('TURNSTILE_SECRET_KEY', '1x0000000000000000000000000000000AA');
+        
+        $response = \Illuminate\Support\Facades\Http::asForm()->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
+            'secret' => $secretKey,
+            'response' => $token,
+        ]);
+
+        return $response->json('success') === true;
+    }
+
     public function store(Request $request)
     {
         $credentials = $request->validate([
@@ -27,11 +39,15 @@ class AuthController extends Controller
             'password.required' => 'Password wajib diisi.',
         ]);
 
+        if (!$this->validateTurnstile($request->input('cf-turnstile-response'))) {
+            return back()->withErrors(['email' => 'Verifikasi keamanan (CAPTCHA) gagal. Silakan coba lagi.'])->onlyInput('email');
+        }
+
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
-            
+
             // Redirect based on role
-            if (Auth::user()->role === 'admin') {
+            if (Auth::user()->role === 'Admin') {
                 return redirect()->intended('admin');
             }
             return redirect()->intended(route('tenant.dashboard'));
@@ -62,6 +78,10 @@ class AuthController extends Controller
             'password.min' => 'Password minimal harus 8 karakter.',
             'password.confirmed' => 'Konfirmasi password tidak cocok.',
         ]);
+
+        if (!$this->validateTurnstile($request->input('cf-turnstile-response'))) {
+            return back()->withErrors(['email' => 'Verifikasi keamanan (CAPTCHA) gagal. Silakan coba lagi.'])->withInput();
+        }
 
         $user = User::create([
             'name' => $validated['name'],

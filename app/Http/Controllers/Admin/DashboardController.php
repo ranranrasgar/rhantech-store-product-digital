@@ -3,9 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Project;
-use App\Models\Service;
-use App\Models\Client;
 use App\Models\ContactMessage;
 use App\Models\Order;
 use App\Models\Store;
@@ -17,26 +14,24 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // 1. Basic counts
-        $totalProjects = Project::query()->count('*');
-        $activeServices = Service::query()->where('is_active', true)->count('*');
-        $newMessages = ContactMessage::query()->where('read_at', null)->count('*');
-        $totalClients = Client::query()->count('*');
+        // 1. Basic counts for Digital Marketplace
         $totalOrders = Order::query()->whereIn('status', ['paid', 'downloaded'])->count('*');
         $totalRevenue = Order::query()->whereIn('status', ['paid', 'downloaded'])->sum('amount');
         $totalStores = Store::query()->count('*');
-        $totalProducts = Product::query()->count('*');
+        $totalProducts = Product::query()->where('is_active', true)->count('*');
+        $newMessages = ContactMessage::query()->where('read_at', null)->count('*');
 
-        // 2. Project status breakdown
-        $projectInProgress = Project::query()->where('status', 'in_progress')->count('*');
-        $projectCompleted = Project::query()->where('status', 'completed')->count('*');
-        $projectOnHold = Project::query()->where('status', 'on_hold')->count('*');
+        // 2. Order status breakdown
+        $orderPending = Order::query()->where('status', 'pending')->count('*');
+        $orderSuccess = Order::query()->whereIn('status', ['paid', 'downloaded'])->count('*');
+        $orderFailed = Order::query()->where('status', 'failed')->count('*');
+        $allOrdersCount = $orderPending + $orderSuccess + $orderFailed;
 
-        // Fallback percentages if no status or 0 projects
-        $projTotal = max(1, $totalProjects);
-        $percentInProgress = $totalProjects > 0 ? round(($projectInProgress / $projTotal) * 100) : 50;
-        $percentCompleted = $totalProjects > 0 ? round(($projectCompleted / $projTotal) * 100) : 35;
-        $percentOnHold = $totalProjects > 0 ? (100 - $percentInProgress - $percentCompleted) : 15;
+        // Percentages
+        $projTotal = max(1, $allOrdersCount);
+        $percentSuccess = $allOrdersCount > 0 ? round(($orderSuccess / $projTotal) * 100) : 0;
+        $percentPending = $allOrdersCount > 0 ? round(($orderPending / $projTotal) * 100) : 0;
+        $percentFailed = $allOrdersCount > 0 ? (100 - $percentSuccess - $percentPending) : 0;
 
         // 3. Monthly Revenue (Past 6 Months)
         $monthlyRevenue = [];
@@ -55,33 +50,30 @@ class DashboardController extends Controller
             $monthlyRevenue[] = (float) $rev;
         }
 
-        // 4. Top Services or Digital Products
-        $topServices = Service::query()->where('is_active', true)->take(5)->get();
+        // 4. Recent Transactions (Orders)
+        // Menampilkan 6 transaksi terbaru untuk tabel
+        $recentTransactions = Order::query()->with('orderItems.product.store')->latest()->take(6)->get();
 
-        // 5. Recent Activity Feed (Recent messages & latest orders)
+        // 5. Recent Activity Feed (Recent messages)
         $recentMessages = ContactMessage::query()->latest()->take(3)->get();
-        $recentOrders = Order::query()->with('product')->latest()->take(3)->get();
 
         return view('admin.dashboard', compact(
-            'totalProjects',
-            'activeServices',
-            'newMessages',
-            'totalClients',
             'totalOrders',
             'totalRevenue',
             'totalStores',
             'totalProducts',
-            'projectInProgress',
-            'projectCompleted',
-            'projectOnHold',
-            'percentInProgress',
-            'percentCompleted',
-            'percentOnHold',
+            'newMessages',
+            'orderPending',
+            'orderSuccess',
+            'orderFailed',
+            'allOrdersCount',
+            'percentSuccess',
+            'percentPending',
+            'percentFailed',
             'monthLabels',
             'monthlyRevenue',
-            'topServices',
-            'recentMessages',
-            'recentOrders'
+            'recentTransactions',
+            'recentMessages'
         ));
     }
 }

@@ -170,15 +170,18 @@
                         <!-- User Avatar Dropdown -->
                         <div class="relative" x-data="{ open: false }">
                             <button @click="open = !open" @click.outside="open = false" class="flex items-center gap-2 focus:outline-none rounded-full ring-2 ring-transparent hover:ring-primary/20 transition-all">
-                                <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=random" alt="Avatar" class="w-9 h-9 rounded-full object-cover ">
+                                <img src="{{ auth()->user()->avatar ? (Str::startsWith(auth()->user()->avatar, 'http') ? auth()->user()->avatar : asset('storage/' . auth()->user()->avatar)) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=0284c7&color=fff' }}" alt="Avatar" class="w-9 h-9 rounded-full object-cover ">
                             </button>
                             
                             <!-- Dropdown Menu -->
                             <div x-show="open" style="display: none;" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95" class="absolute right-0 mt-2 w-56 bg-surface-container-lowest border border-outline-variant rounded-md shadow-xl py-2 z-50">
-                                <div class="px-4 py-3 border-b border-outline-variant/50 mb-1">
+                                <a href="{{ route('tenant.profile.index') }}" class="block px-4 py-3 border-b border-outline-variant/50 mb-1 hover:bg-surface-container-low transition-colors">
                                     <p class="text-sm font-bold text-on-surface truncate">{{ auth()->user()->name }}</p>
-                                    <p class="text-xs text-on-surface-variant truncate">{{ auth()->user()->email }}</p>
-                                </div>
+                                    <p class="text-xs text-on-surface-variant truncate mb-1">{{ auth()->user()->email }}</p>
+                                    <div class="flex items-center gap-1 text-[11px] text-primary font-semibold">
+                                        <span class="material-symbols-outlined text-[12px]">edit</span> Edit Profil
+                                    </div>
+                                </a>
                                 
                                 @if(auth()->user()->role === 'admin')
                                 <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-on-surface hover:bg-surface-container-low transition-colors">

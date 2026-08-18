@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('role')->default('User')->after('password');
+        Schema::table('help_articles', function (Blueprint $table) {
+            $table->unsignedInteger('helpful_yes')->default(0)->after('views');
+            $table->unsignedInteger('helpful_no')->default(0)->after('helpful_yes');
         });
     }
 
@@ -21,8 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('role');
+        Schema::table('help_articles', function (Blueprint $table) {
+            $table->dropColumn(['helpful_yes', 'helpful_no']);
         });
     }
 };

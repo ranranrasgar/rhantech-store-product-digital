@@ -85,6 +85,7 @@
                             <th class="p-4 md:px-6">Pelanggan</th>
                             <th class="p-4 md:px-6 text-right">Pendapatan Toko</th>
                             <th class="p-4 md:px-6 text-center">Status</th>
+                            <th class="p-4 md:px-6 text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100 dark:divide-[#1d273d]">
@@ -172,6 +173,56 @@
                                     </span>
                                 @endif
                             </td>
+
+                            <!-- Aksi -->
+                            <td class="p-4 md:px-6 text-center">
+                                <div class="relative inline-block text-left" x-data="{ open: false }">
+                                    <button @click="open = !open" @click.away="open = false" type="button" class="inline-flex justify-center w-8 h-8 items-center rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 focus:outline-none transition-colors">
+                                        <span class="material-symbols-outlined text-[18px]">more_vert</span>
+                                    </button>
+
+                                    <div x-show="open" x-transition class="origin-top-right absolute right-0 mt-2 w-48 rounded-xl shadow-lg bg-white dark:bg-slate-800 ring-1 ring-black ring-opacity-5 divide-y divide-slate-100 dark:divide-slate-700 focus:outline-none z-50 text-left" style="display: none;">
+                                        <div class="py-1">
+                                            <button @click="open = false; $dispatch('open-edit-order-modal', { id: {{ $order->id }}, name: '{{ addslashes($order->customer_name) }}', email: '{{ addslashes($order->customer_email) }}', phone: '{{ addslashes($order->customer_phone ?? '') }}' })" class="w-full text-left group flex items-center px-4 py-2 text-xs text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-sky-600 dark:hover:text-sky-400">
+                                                <span class="material-symbols-outlined mr-3 text-[16px] text-slate-400 group-hover:text-sky-500">edit</span>
+                                                Edit Pesanan
+                                            </button>
+                                        </div>
+                                        @if($order->status === 'pending')
+                                        <div class="py-1">
+                                            <form action="{{ route('tenant.orders.mark_paid', $order) }}" method="POST">
+                                                @csrf
+                                                @method('PATCH')
+                                                <button type="submit" onclick="return confirm('Tandai pesanan ini sebagai Lunas? Email berisi link produk akan otomatis dikirim ke pembeli.')" class="w-full text-left group flex items-center px-4 py-2 text-xs text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-emerald-600 dark:hover:text-emerald-400">
+                                                    <span class="material-symbols-outlined mr-3 text-[16px] text-slate-400 group-hover:text-emerald-500">check_circle</span>
+                                                    Tandai Lunas
+                                                </button>
+                                            </form>
+                                        </div>
+                                        @elseif(in_array($order->status, ['paid', 'downloaded']))
+                                        <div class="py-1">
+                                            <form action="{{ route('tenant.orders.resend_email', $order) }}" method="POST">
+                                                @csrf
+                                                <button type="submit" onclick="return confirm('Kirim ulang email berisi link produk ke {{ $order->customer_email }}?')" class="w-full text-left group flex items-center px-4 py-2 text-xs text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-sky-600 dark:hover:text-sky-400">
+                                                    <span class="material-symbols-outlined mr-3 text-[16px] text-slate-400 group-hover:text-sky-500">forward_to_inbox</span>
+                                                    Kirim Ulang Email
+                                                </button>
+                                            </form>
+                                        </div>
+                                        @endif
+                                        <div class="py-1">
+                                            <form action="{{ route('tenant.orders.destroy', $order) }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" onclick="return confirm('Apakah Anda yakin ingin menghapus pesanan ini secara permanen?')" class="w-full text-left group flex items-center px-4 py-2 text-xs text-slate-700 dark:text-slate-200 hover:bg-rose-50 dark:hover:bg-rose-900/20 hover:text-rose-600 dark:hover:text-rose-400">
+                                                    <span class="material-symbols-outlined mr-3 text-[16px] text-slate-400 group-hover:text-rose-500">delete</span>
+                                                    Hapus Pesanan
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
                         </tr>
                         @empty
                         <tr>
@@ -201,4 +252,86 @@
 
     </div>
 </div>
+
+<!-- Edit Order Modal -->
+<div x-data="{ 
+        isOpen: false, 
+        orderId: '', 
+        customerName: '', 
+        customerEmail: '', 
+        customerPhone: '',
+        init() {
+            window.addEventListener('open-edit-order-modal', event => {
+                this.orderId = event.detail.id;
+                this.customerName = event.detail.name;
+                this.customerEmail = event.detail.email;
+                this.customerPhone = event.detail.phone;
+                this.isOpen = true;
+            });
+        }
+    }" 
+    x-show="isOpen" 
+    style="display: none;" 
+    class="fixed inset-0 z-50 overflow-y-auto"
+    aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    
+    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <div x-show="isOpen" x-transition.opacity class="fixed inset-0 bg-slate-900/75 transition-opacity" @click="isOpen = false" aria-hidden="true"></div>
+
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+        <div x-show="isOpen" 
+             x-transition:enter="ease-out duration-300" 
+             x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" 
+             x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" 
+             x-transition:leave="ease-in duration-200" 
+             x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" 
+             x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" 
+             class="inline-block align-bottom bg-white dark:bg-[#111726] rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg w-full border border-slate-200 dark:border-[#222f49]">
+            
+            <form :action="`/tenant/orders/${orderId}`" method="POST">
+                @csrf
+                @method('PUT')
+                
+                <div class="px-6 py-5 border-b border-slate-100 dark:border-[#222f49] flex justify-between items-center bg-slate-50/50 dark:bg-[#0c1220]/50">
+                    <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sky-500">edit_document</span>
+                        Edit Detail Pesanan
+                    </h3>
+                    <button type="button" @click="isOpen = false" class="text-slate-400 hover:text-slate-500 focus:outline-none">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                
+                <div class="p-6 space-y-4">
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">Nama Pembeli <span class="text-rose-500">*</span></label>
+                        <input type="text" name="customer_name" x-model="customerName" required class="w-full px-3.5 py-2.5 text-sm bg-white dark:bg-[#161f33] border border-slate-200 dark:border-[#222f49] rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 text-slate-900 dark:text-white transition-all">
+                    </div>
+                    
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">Email Pembeli <span class="text-rose-500">*</span></label>
+                        <input type="email" name="customer_email" x-model="customerEmail" required class="w-full px-3.5 py-2.5 text-sm bg-white dark:bg-[#161f33] border border-slate-200 dark:border-[#222f49] rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 text-slate-900 dark:text-white transition-all">
+                        <p class="text-[11px] text-slate-500 mt-1">Ubah email ini jika pembeli salah mengetikkan alamat email mereka saat memesan.</p>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">Nomor WhatsApp (Opsional)</label>
+                        <input type="text" name="customer_phone" x-model="customerPhone" class="w-full px-3.5 py-2.5 text-sm bg-white dark:bg-[#161f33] border border-slate-200 dark:border-[#222f49] rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 text-slate-900 dark:text-white transition-all">
+                    </div>
+                </div>
+                
+                <div class="px-6 py-4 bg-slate-50/80 dark:bg-[#0c1220]/80 border-t border-slate-100 dark:border-[#222f49] flex justify-end gap-3">
+                    <button type="button" @click="isOpen = false" class="px-4 py-2.5 bg-white dark:bg-[#161f33] border border-slate-200 dark:border-[#222f49] rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#1c273f] transition-all">
+                        Batal
+                    </button>
+                    <button type="submit" class="px-5 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-sm font-semibold shadow-sm shadow-sky-600/20 transition-all flex items-center gap-2">
+                        Simpan Perubahan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @endsection

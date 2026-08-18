@@ -45,7 +45,7 @@ class SocialiteController extends Controller
 
             if ($user) {
                 // Update Google info if not yet attached
-                $user->update([      
+                $user->update([
                     'provider_name' => $provider,
                     'provider_id' => $socialUser->getId(),
                     'avatar' => $socialUser->getAvatar() ?? $user->avatar,
@@ -62,7 +62,7 @@ class SocialiteController extends Controller
                     'provider_id' => $socialUser->getId(),
                     'avatar' => $socialUser->getAvatar(),
                     'email_verified_at' => now(),
-                    'role' => 'user',
+                    'role' => 'User',
                 ]);
             }
 
@@ -75,7 +75,6 @@ class SocialiteController extends Controller
             }
 
             return redirect()->intended('/')->with('success', 'Berhasil masuk dengan akun Google.');
-
         } catch (\Exception $e) {
             return redirect()->route('login')->withErrors(['email' => 'Gagal login dengan Google: ' . $e->getMessage()]);
         }

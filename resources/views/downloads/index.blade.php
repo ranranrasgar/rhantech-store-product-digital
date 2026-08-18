@@ -12,8 +12,9 @@
                 @foreach($order->orderItems as $item)
                     <div class="border border-outline-variant rounded-lg p-4 flex flex-col md:flex-row gap-4 items-center justify-between">
                         <div class="flex items-center gap-4">
-                            @if($item->product->images->count() > 0)
-                                <img src="{{ asset('storage/' . $item->product->images->where('is_main', true)->first()->image_path ?? $item->product->images->first()->image_path) }}" class="w-16 h-16 object-cover rounded">
+                            @if($item->product && $item->product->images->count() > 0)
+                                @php $img = $item->product->images->where('is_main', true)->first() ?? $item->product->images->first(); @endphp
+                                <img src="{{ asset('storage/' . $img->image_path) }}" class="w-16 h-16 object-cover rounded">
                             @else
                                 <div class="w-16 h-16 rounded bg-surface-container-high flex items-center justify-center">
                                     <span class="material-symbols-outlined">description</span>

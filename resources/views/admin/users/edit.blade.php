@@ -33,8 +33,12 @@
         <div>
             <label for="role" class="block font-label-md font-bold text-on-surface mb-2">Role</label>
             <select name="role" id="role" class="w-full bg-surface-container-low border @error('role') border-error @else border-outline-variant @enderror rounded-lg px-4 py-2 text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary" required>
-                <option value="user" {{ old('role', $user->role) == 'user' ? 'selected' : '' }}>User</option>
-                <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>Admin</option>
+                <option value="guest" {{ old('role') == 'Guest' ? 'selected' : '' }}>Guest</option>
+                <option value="user" {{ old('role') == 'User' ? 'selected' : '' }}>User</option>
+                <option value="admin" {{ old('role') == 'Admin' ? 'selected' : '' }}>Admin</option>
+                <option value="accounting" {{ old('role') == 'Accounting' ? 'selected' : '' }}>Accounting</option>
+                <option value="superadmin" {{ old('role') == 'Superadmin' ? 'selected' : '' }}>Superadmin</option>
+                
             </select>
             @error('role')
                 <p class="text-error text-sm mt-1">{{ $message }}</p>

@@ -14,7 +14,8 @@ class DashboardController extends Controller
         $store = $user->store;
 
         if (!$store) {
-            return redirect()->route('tenant.store.index')->with('info', 'Silakan buat profil toko Anda terlebih dahulu.');
+            // Jika user belum punya toko, tampilkan dashboard khusus pembeli
+            return view('tenant.dashboard_buyer');
         }
 
         // Hitung total produk & produk aktif

@@ -68,4 +68,82 @@ class OrderController extends Controller
 
         return view('tenant.orders.index', compact('orders', 'products', 'tab', 'store'));
     }
+
+    private function checkOrderAccess(Order $order)
+    {
+        $store = Auth::user()->store;
+        if (!$store) abort(403);
+
+        $belongsToStore = false;
+        if ($order->product && $order->product->store_id == $store->id) {
+            $belongsToStore = true;
+        } elseif ($order->orderItems()->whereHas('product', function($q) use($store) { $q->where('store_id', $store->id); })->exists()) {
+            $belongsToStore = true;
+        }
+
+        if (!$belongsToStore) {
+            abort(403, 'Akses ditolak.');
+        }
+    }
+
+    public function update(Request $request, Order $order)
+    {
+        $this->checkOrderAccess($order);
+
+        $validated = $request->validate([
+            'customer_name' => 'required|string|max:255',
+            'customer_email' => 'required|email|max:255',
+            'customer_phone' => 'nullable|string|max:20',
+        ]);
+
+        $order->update($validated);
+
+        return back()->with('success', 'Detail pesanan berhasil diperbarui.');
+    }
+
+    public function destroy(Order $order)
+    {
+        $this->checkOrderAccess($order);
+        
+        $order->delete();
+
+        return back()->with('success', 'Pesanan berhasil dihapus.');
+    }
+
+    public function markPaid(Order $order)
+    {
+        $this->checkOrderAccess($order);
+
+        if ($order->status !== 'pending') {
+            return back()->with('error', 'Status pesanan tidak dapat diubah.');
+        }
+
+        $order->update(['status' => 'paid']);
+
+        // Send email
+        try {
+            \Illuminate\Support\Facades\Mail::to($order->customer_email)->send(new \App\Mail\OrderPaidMail($order));
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Failed to send OrderPaidMail: ' . $e->getMessage());
+        }
+
+        return back()->with('success', 'Status pesanan diubah menjadi Lunas dan email produk telah dikirim.');
+    }
+
+    public function resendEmail(Order $order)
+    {
+        $this->checkOrderAccess($order);
+
+        if (!in_array($order->status, ['paid', 'downloaded'])) {
+            return back()->with('error', 'Hanya pesanan lunas yang dapat dikirim ulang emailnya.');
+        }
+
+        try {
+            \Illuminate\Support\Facades\Mail::to($order->customer_email)->send(new \App\Mail\OrderPaidMail($order));
+            return back()->with('success', 'Email produk berhasil dikirim ulang ke ' . $order->customer_email);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Failed to send OrderPaidMail: ' . $e->getMessage());
+            return back()->with('error', 'Gagal mengirim email: ' . $e->getMessage());
+        }
+    }
 }

@@ -7,6 +7,8 @@
     <title>Daftar Buka Toko — {{ $company->company_name ?? 'Rhantech' }}</title>
     <link rel="icon" href="{{ isset($company) && $company->favicon ? asset('storage/'.$company->favicon) : asset('favicon.ico') }}" />
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Cloudflare Turnstile -->
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     <script>
         tailwind.config = {
             darkMode: "class",
@@ -39,10 +41,10 @@
         }
     </style>
 </head>
-<body class="min-h-full bg-[#f6f9fa] dark:bg-[#0b0f17] text-slate-800 dark:text-slate-200 antialiased flex flex-col justify-between transition-colors duration-200">
+<body class="min-h-full bg-[#f6f9fa] dark:bg-[#0d1117] text-slate-800 dark:text-slate-200 antialiased flex flex-col justify-between transition-colors duration-200">
 
     <!-- Top Header / Navbar (Marketplace Style) -->
-    <header class="w-full bg-white dark:bg-[#161c28] border-b border-slate-200/80 dark:border-slate-800/80 py-3.5 px-4 sm:px-8 lg:px-16">
+    <header class="w-full bg-white dark:bg-[#161b22] border-b border-slate-200/80 dark:border-slate-800/80 py-3.5 px-4 sm:px-8 lg:px-16">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
             <div class="flex items-center gap-4">
                 <a href="{{ url('/') }}" class="flex items-center gap-2.5">
@@ -64,16 +66,10 @@
             </div>
 
             <div class="flex items-center gap-4">
-                @if(!empty($company->phone) || !empty($company->whatsapp))
-                    <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $company->whatsapp ?? $company->phone) }}?text=Halo,%20saya%20butuh%20bantuan%20pendaftaran" target="_blank" class="text-xs sm:text-sm font-semibold text-[#00838f] dark:text-teal-400 hover:underline inline-flex items-center gap-1">
-                        <span class="material-symbols-outlined text-[18px]">support_agent</span>
-                        <span>Butuh bantuan?</span>
-                    </a>
-                @else
-                    <a href="{{ url('/') }}#contact" class="text-xs sm:text-sm font-semibold text-[#00838f] dark:text-teal-400 hover:underline">
-                        Butuh bantuan?
-                    </a>
-                @endif
+                <a href="{{ route('help.index') }}" class="text-xs sm:text-sm font-semibold text-[#00838f] dark:text-teal-400 hover:underline inline-flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[18px]">help_center</span>
+                    <span>Pusat Bantuan</span>
+                </a>
             </div>
         </div>
     </header>
@@ -96,7 +92,7 @@
                 <!-- Showcase Feature Grid -->
                 <div class="relative w-full max-w-md bg-gradient-to-br from-teal-50 to-cyan-50/50 dark:from-slate-800/60 dark:to-teal-950/20 border border-teal-100 dark:border-slate-700/60 rounded-3xl p-6 sm:p-8 shadow-sm">
                     <div class="grid grid-cols-2 gap-4">
-                        <div class="bg-white dark:bg-[#161c28] p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-3">
+                        <div class="bg-white dark:bg-[#161b22] p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-3">
                             <div class="w-10 h-10 rounded-xl bg-teal-500/10 flex items-center justify-center text-[#00838f] dark:text-teal-400">
                                 <span class="material-symbols-outlined text-2xl">store</span>
                             </div>
@@ -106,7 +102,7 @@
                             </div>
                         </div>
 
-                        <div class="bg-white dark:bg-[#161c28] p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-3">
+                        <div class="bg-white dark:bg-[#161b22] p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-3">
                             <div class="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center text-cyan-600 dark:text-cyan-400">
                                 <span class="material-symbols-outlined text-2xl">payments</span>
                             </div>
@@ -116,7 +112,7 @@
                             </div>
                         </div>
 
-                        <div class="bg-white dark:bg-[#161c28] p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-3">
+                        <div class="bg-white dark:bg-[#161b22] p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-3">
                             <div class="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
                                 <span class="material-symbols-outlined text-2xl">security</span>
                             </div>
@@ -126,7 +122,7 @@
                             </div>
                         </div>
 
-                        <div class="bg-white dark:bg-[#161c28] p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-3">
+                        <div class="bg-white dark:bg-[#161b22] p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-3">
                             <div class="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
                                 <span class="material-symbols-outlined text-2xl">monitoring</span>
                             </div>
@@ -141,7 +137,7 @@
 
             <!-- Right Side: Clean Auth Card (Shopee/Tokopedia Form Style) -->
             <div class="lg:col-span-5 w-full max-w-md mx-auto">
-                <div class="bg-white dark:bg-[#161c28] p-6 sm:p-8 rounded-2xl shadow-lg shadow-slate-200/60 dark:shadow-black/50 border border-slate-200/90 dark:border-slate-800">
+                <div class="bg-white dark:bg-[#161b22] p-6 sm:p-8 rounded-2xl shadow-lg shadow-slate-200/60 dark:shadow-black/50 border border-slate-200/90 dark:border-slate-800">
                     
                     <div class="mb-5">
                         <h2 class="text-xl font-bold text-slate-900 dark:text-white">
@@ -195,6 +191,9 @@
                                 class="block w-full rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3.5 py-2.5 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:border-[#00838f] focus:ring-1 focus:ring-[#00838f] focus:outline-none transition-all">
                         </div>
 
+                        <!-- Cloudflare Turnstile Widget -->
+                        <div class="cf-turnstile" data-sitekey="{{ env('TURNSTILE_SITE_KEY', '1x00000000000000000000AA') }}" data-theme="auto" data-size="flexible"></div>
+
                         <!-- Submit Button -->
                         <div class="pt-2">
                             <button type="submit" 
@@ -207,13 +206,13 @@
                     <!-- Divider -->
                     <div class="relative my-5 text-center">
                         <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-200 dark:border-slate-800"></div></div>
-                        <span class="relative bg-white dark:bg-[#161c28] px-3 text-xs text-slate-400 uppercase">atau daftar dengan</span>
+                        <span class="relative bg-white dark:bg-[#161b22] px-3 text-xs text-slate-400 uppercase">atau daftar dengan</span>
                     </div>
 
                     <!-- Google Sign Up Button -->
                     <div>
                         <a href="{{ route('social.redirect', 'google') }}" 
-                            class="w-full flex items-center justify-center gap-2.5 py-2.5 px-4 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-[#161c28] hover:bg-slate-50 dark:hover:bg-slate-800/80 text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200 shadow-sm transition-all">
+                            class="w-full flex items-center justify-center gap-2.5 py-2.5 px-4 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-[#161b22] hover:bg-slate-50 dark:hover:bg-slate-800/80 text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200 shadow-sm transition-all">
                             <svg class="w-4 h-4" viewBox="0 0 24 24">
                                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                                 <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -245,7 +244,7 @@
     </main>
 
     <!-- Bottom Footer (Marketplace Style) -->
-    <footer class="w-full border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-[#161c28] py-4 px-4 text-center text-xs text-slate-500 dark:text-slate-400">
+    <footer class="w-full border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-[#161b22] py-4 px-4 text-center text-xs text-slate-500 dark:text-slate-400">
         <p>&copy; {{ date('Y') }} {{ $company->company_name ?? 'Rhantech' }}. Hak Cipta Dilindungi.</p>
     </footer>
 
