@@ -33,29 +33,33 @@ class DatabaseSeeder extends Seeder
             GatewayAppSeeder::class,
         ]);
 
-        // Seed exact amounts requested
-        $this->command->info('Seeding Clients...');
-        \App\Models\Client::factory(500)->create();
+        if (app()->environment('local') || class_exists(\Faker\Factory::class)) {
+            // Seed exact amounts requested
+            $this->command->info('Seeding Clients...');
+            \App\Models\Client::factory(500)->create();
 
-        $this->command->info('Seeding Services...');
-        \App\Models\Service::factory(10)->create();
+            $this->command->info('Seeding Services...');
+            \App\Models\Service::factory(10)->create();
 
-        $this->command->info('Seeding Projects...');
-        // We chunk it into batches to avoid memory bloat
-        for ($i = 0; $i < 10; $i++) {
-            \App\Models\Project::factory(10)->create(); // 10 x 10 = 100 projects
+            $this->command->info('Seeding Projects...');
+            // We chunk it into batches to avoid memory bloat
+            for ($i = 0; $i < 10; $i++) {
+                \App\Models\Project::factory(10)->create(); // 10 x 10 = 100 projects
+            }
+
+            $this->command->info('Seeding Project Images...');
+            for ($i = 0; $i < 10; $i++) {
+                \App\Models\ProjectImage::factory(10)->create();
+            }
+
+            $this->command->info('Seeding Testimonials...');
+            \App\Models\Testimonial::factory(50)->create();
+
+            $this->command->info('Seeding Contact Messages...');
+            \App\Models\ContactMessage::factory(100)->create();
+        } else {
+            $this->command->info('Skipping dummy factory data in production (Faker is not installed).');
         }
-
-        $this->command->info('Seeding Project Images...');
-        for ($i = 0; $i < 10; $i++) {
-            \App\Models\ProjectImage::factory(10)->create();
-        }
-
-        $this->command->info('Seeding Testimonials...');
-        \App\Models\Testimonial::factory(50)->create();
-
-        $this->command->info('Seeding Contact Messages...');
-        \App\Models\ContactMessage::factory(100)->create();
 
 
 
