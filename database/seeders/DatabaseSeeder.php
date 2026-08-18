@@ -31,6 +31,7 @@ class DatabaseSeeder extends Seeder
             MasterDataSeeder::class,
             ProductSeeder::class,
             GatewayAppSeeder::class,
+            HelpCenterSeeder::class,
         ]);
 
         if (app()->environment('local') || class_exists(\Faker\Factory::class)) {
