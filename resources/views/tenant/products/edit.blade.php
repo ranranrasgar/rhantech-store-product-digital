@@ -76,26 +76,40 @@
 
             <div class="p-md bg-surface-container-low border border-outline-variant rounded-lg">
                 <div class="flex justify-between items-center mb-xs">
-                    <label class="block font-label-md text-on-surface">External Download Links (Optional)</label>
-                    <button type="button" onclick="addLink()" class="text-xs bg-primary text-white px-3 py-1 rounded font-bold hover:brightness-110 transition">+ Add Link</button>
+                    <label class="block font-label-md text-on-surface">Tautan Unduhan Eksternal <span class="text-error">*</span></label>
+                    <button type="button" onclick="addLink()" class="text-xs bg-primary text-white px-3 py-1 rounded font-bold hover:brightness-110 transition">+ Tambah Link</button>
                 </div>
-                <p class="text-xs text-on-surface-variant mb-4">Add multiple external links (e.g., Google Drive, Mega) to be sent to the buyer's email.</p>
+                <p class="text-xs text-on-surface-variant mb-4">Tambahkan minimal 1 tautan eksternal (contoh: Google Drive, Mega) yang akan dikirim ke email pembeli.</p>
                 
                 <div id="links-container" class="flex flex-col gap-sm">
                     @php $links = old('download_links', $product->download_links ?? []); @endphp
-                    @foreach($links as $index => $link)
-                    <div class="flex gap-2 items-start">
-                        <div class="flex-1">
-                            <input type="text" name="download_links[{{ $index }}][name]" value="{{ $link['name'] ?? '' }}" placeholder="Link Name (e.g., Source Code)" required class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-sm mb-1">
+                    @if(!empty($links) && is_array($links))
+                        @foreach($links as $index => $link)
+                        <div class="flex gap-2 items-start">
+                            <div class="flex-1">
+                                <input type="text" name="download_links[{{ $index }}][name]" value="{{ $link['name'] ?? '' }}" placeholder="Nama Link (cth: Source Code)" required class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-sm mb-1">
+                            </div>
+                            <div class="flex-[2]">
+                                <input type="url" name="download_links[{{ $index }}][url]" value="{{ $link['url'] ?? '' }}" placeholder="https://..." required class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-sm">
+                            </div>
+                            <button type="button" onclick="if(document.querySelectorAll('#links-container > div').length > 1) this.parentElement.remove(); else alert('Minimal 1 tautan harus diisi.');" class="p-2 text-error hover:bg-error/10 rounded-lg transition" title="Hapus Link">
+                                <span class="material-symbols-outlined text-sm">delete</span>
+                            </button>
                         </div>
-                        <div class="flex-[2]">
-                            <input type="url" name="download_links[{{ $index }}][url]" value="{{ $link['url'] ?? '' }}" placeholder="https://..." required class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-sm">
+                        @endforeach
+                    @else
+                        <div class="flex gap-2 items-start">
+                            <div class="flex-1">
+                                <input type="text" name="download_links[0][name]" placeholder="Nama Link (cth: Source Code)" required class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-sm mb-1">
+                            </div>
+                            <div class="flex-[2]">
+                                <input type="url" name="download_links[0][url]" placeholder="https://..." required class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-sm">
+                            </div>
+                            <button type="button" onclick="if(document.querySelectorAll('#links-container > div').length > 1) this.parentElement.remove(); else alert('Minimal 1 tautan harus diisi.');" class="p-2 text-error hover:bg-error/10 rounded-lg transition" title="Hapus Link">
+                                <span class="material-symbols-outlined text-sm">delete</span>
+                            </button>
                         </div>
-                        <button type="button" onclick="this.parentElement.remove()" class="p-2 text-error hover:bg-error/10 rounded-lg transition" title="Remove Link">
-                            <span class="material-symbols-outlined text-sm">delete</span>
-                        </button>
-                    </div>
-                    @endforeach
+                    @endif
                 </div>
             </div>
 
