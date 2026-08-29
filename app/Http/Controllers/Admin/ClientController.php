@@ -29,7 +29,7 @@ class ClientController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg,ico|max:2048',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,ico|max:2048',
             'url' => 'nullable|url|max:255',
             'email' => 'nullable|email|max:255',
             'phone' => 'nullable|string|max:20',
@@ -53,7 +53,7 @@ class ClientController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,svg,ico|max:2048',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,ico|max:2048',
             'url' => 'nullable|url|max:255',
             'email' => 'nullable|email|max:255',
             'phone' => 'nullable|string|max:20',

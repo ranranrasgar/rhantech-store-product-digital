@@ -14,7 +14,7 @@ class PublicController extends Controller
     public function home()
     {
         $services = Service::query()->where('is_active', true)->get();
-        $projects = Project::query()->where('status', 'published')->latest()->take(3)->get();
+        $projects = Project::query()->with('projectCategory')->where('status', 'published')->latest()->take(3)->get();
         $clients = Client::query()->where('is_active', true)->get();
         $testimonials = Testimonial::query()->with('client')->where('is_active', true)->latest()->get();
         $popupAd = \App\Models\PopupAd::query()->where('is_active', true)->latest()->first();
