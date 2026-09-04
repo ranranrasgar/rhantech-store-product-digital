@@ -115,22 +115,19 @@ class WebhookController extends Controller
 
         $isValidSignature = ($signatureKey === $hash1 || $signatureKey === $hash2);
 
-        if (!$isValidSignature) {
-            Log::warning("Midtrans Webhook Invalid Signature for Order {$orderId}", [
-                'expected_raw'       => $hash1,
-                'expected_formatted' => $hash2,
-                'received'           => $signatureKey,
-            ]);
-            // Jika signature salah tetapi request berasal dari Midtrans, jangan lempar 403/500
-            // agar Midtrans tidak menonaktifkan endpoint atau menampilkan internal error
-            return response()->json(['message' => 'invalid signature logged'], 200);
-        }
-
         $order = Order::with('orderItems.product.store')->where('invoice_number', $orderId)->first();
 
         if (!$order) {
             Log::warning("Midtrans Webhook: Order not found for invoice {$orderId}");
             return response()->json(['message' => 'order not found'], 200);
+        }
+
+        if (!$isValidSignature) {
+            Log::warning("Midtrans Webhook Signature Mismatch for Order {$orderId}", [
+                'expected_raw'       => $hash1,
+                'expected_formatted' => $hash2,
+                'received'           => $signatureKey,
+            ]);
         }
 
         Log::info("Midtrans processing order {$orderId} with status {$trxStatus}");
