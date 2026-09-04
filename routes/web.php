@@ -148,6 +148,7 @@ Route::middleware(['auth', 'is_admin'])->prefix('admin')->name('admin.')->group(
     Route::patch('products/image/{image}/set-main', [ProductController::class, 'setMainImage'])->name('products.image.set_main');
     Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
     Route::patch('orders/{order}/approve', [OrderController::class, 'approve'])->name('orders.approve');
+    Route::post('orders/{order}/sync-status', [OrderController::class, 'syncStatus'])->name('orders.sync_status');
     Route::delete('orders/{order}', [OrderController::class, 'destroy'])->name('orders.destroy');
     Route::resource('projects', ProjectController::class);
     Route::resource('testimonials', TestimonialController::class);

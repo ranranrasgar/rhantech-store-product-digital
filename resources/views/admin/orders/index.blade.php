@@ -85,6 +85,13 @@
                         <td class="p-4 text-right pr-6">
                             <div class="flex items-center justify-end gap-2">
                                 @if($order->status !== 'paid' && $order->status !== 'downloaded')
+                                <form action="{{ route('admin.orders.sync_status', $order) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="px-2.5 py-1 bg-sky-600 hover:bg-sky-700 text-white rounded text-xs font-bold flex items-center gap-1 shadow-sm transition-colors cursor-pointer" title="Cek status realtime dari Midtrans">
+                                        <span class="material-symbols-outlined text-[14px]">sync</span> Sync Midtrans
+                                    </button>
+                                </form>
+
                                 <form action="{{ route('admin.orders.approve', $order) }}" method="POST" onsubmit="return confirm('Setujui pesanan {{ $order->invoice_number }} menjadi PAID & kirim email ke pelanggan?');">
                                     @csrf @method('PATCH')
                                     <button type="submit" class="px-2.5 py-1 bg-green-600 hover:bg-green-700 text-white rounded text-xs font-bold flex items-center gap-1 shadow-sm transition-colors cursor-pointer" title="Approve / Tandai Lunas">
