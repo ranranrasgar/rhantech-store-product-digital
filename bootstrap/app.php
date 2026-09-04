@@ -17,9 +17,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'is_admin' => \App\Http\Middleware\IsAdmin::class,
         ]);
 
-        $middleware->validateCsrfTokens([
+        $middleware->validateCsrfTokens(except: [
             'api/webhooks/midtrans/callback',
-            
         ]);
     })->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
