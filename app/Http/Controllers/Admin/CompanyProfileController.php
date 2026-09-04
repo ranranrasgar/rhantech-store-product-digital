@@ -192,7 +192,7 @@ class CompanyProfileController extends Controller
             try {
                 $this->backupViaPHP($path, $dbName);
             } catch (\Throwable $e) {
-                return redirect()->route('admin.company.index', ['tab' => 'database'])
+                return redirect()->route('admin.company.index', ['tab' => 'backup'])
                     ->with('error', 'Backup gagal: ' . $e->getMessage());
             }
         }
@@ -261,7 +261,7 @@ class CompanyProfileController extends Controller
 
         Storage::disk('local')->delete('backups/' . $filename);
 
-        return redirect()->route('admin.company.index', ['tab' => 'database'])
+        return redirect()->route('admin.company.index', ['tab' => 'backup'])
             ->with('success', "Backup '{$filename}' berhasil dihapus.");
     }
 
@@ -275,14 +275,14 @@ class CompanyProfileController extends Controller
         $ext  = strtolower($file->getClientOriginalExtension());
 
         if (!in_array($ext, ['sql', 'txt'])) {
-            return redirect()->route('admin.company.index', ['tab' => 'database'])
+            return redirect()->route('admin.company.index', ['tab' => 'backup'])
                 ->with('error', 'Format file tidak didukung. Gunakan file .sql');
         }
 
         $raw = file_get_contents($file->getRealPath());
 
         if (empty(trim($raw))) {
-            return redirect()->route('admin.company.index', ['tab' => 'database'])
+            return redirect()->route('admin.company.index', ['tab' => 'backup'])
                 ->with('error', 'File SQL kosong atau tidak valid.');
         }
 
@@ -299,16 +299,16 @@ class CompanyProfileController extends Controller
         $sql = implode("\n", $cleanLines);
 
         if (empty(trim($sql))) {
-            return redirect()->route('admin.company.index', ['tab' => 'database'])
+            return redirect()->route('admin.company.index', ['tab' => 'backup'])
                 ->with('error', 'File SQL kosong atau tidak valid setelah pembersihan.');
         }
 
         try {
             DB::unprepared($sql);
-            return redirect()->route('admin.company.index', ['tab' => 'database'])
+            return redirect()->route('admin.company.index', ['tab' => 'backup'])
                 ->with('success', 'Database berhasil direstore dari file: ' . $file->getClientOriginalName());
         } catch (\Throwable $e) {
-            return redirect()->route('admin.company.index', ['tab' => 'database'])
+            return redirect()->route('admin.company.index', ['tab' => 'backup'])
                 ->with('error', 'Restore gagal: ' . $e->getMessage());
         }
     }

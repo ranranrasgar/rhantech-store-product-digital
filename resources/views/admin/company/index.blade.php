@@ -57,15 +57,22 @@
         <button @click="currentTab = 'database'" 
                 :class="currentTab === 'database' ? 'border-primary text-primary font-bold bg-primary/5' : 'border-transparent text-on-surface-variant hover:text-on-surface hover:border-outline-variant'"
                 class="px-5 py-3 border-b-2 text-sm transition-all flex items-center gap-2 whitespace-nowrap rounded-t-xl cursor-pointer">
-            <span class="material-symbols-outlined text-[18px]">database</span>
-            Database & Storage
+            <span class="material-symbols-outlined text-[18px]">table_chart</span>
+            Struktur Tabel
+        </button>
+
+        <button @click="currentTab = 'backup'" 
+                :class="currentTab === 'backup' ? 'border-primary text-primary font-bold bg-primary/5' : 'border-transparent text-on-surface-variant hover:text-on-surface hover:border-outline-variant'"
+                class="px-5 py-3 border-b-2 text-sm transition-all flex items-center gap-2 whitespace-nowrap rounded-t-xl cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">backup</span>
+            Backup &amp; Restore
         </button>
 
         <button @click="currentTab = 'system'" 
                 :class="currentTab === 'system' ? 'border-primary text-primary font-bold bg-primary/5' : 'border-transparent text-on-surface-variant hover:text-on-surface hover:border-outline-variant'"
                 class="px-5 py-3 border-b-2 text-sm transition-all flex items-center gap-2 whitespace-nowrap rounded-t-xl cursor-pointer">
             <span class="material-symbols-outlined text-[18px]">tune</span>
-            Sistem & Cache
+            Sistem &amp; Cache
         </button>
     </div>
 
@@ -473,8 +480,10 @@
                 </table>
             </div>
         </div>
+    </div>
 
-        {{-- ===== BACKUP & RESTORE ===== --}}
+    <!-- ==================== TAB BACKUP & RESTORE ==================== -->
+    <div x-show="currentTab === 'backup'" x-transition style="display: none;" class="space-y-6">
         <div class="bg-surface rounded-2xl border border-outline-variant overflow-hidden shadow-xs">
             <div class="p-6 border-b border-outline-variant flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
@@ -568,7 +577,7 @@
         </div>
     </div>
 
-    <!-- ==================== TAB 4: SISTEM & PEMELIHARAAN ==================== -->
+    <!-- ==================== TAB 5: SISTEM & PEMELIHARAAN ==================== -->
     <div x-show="currentTab === 'system'" x-transition style="display: none;" class="space-y-6">
         
         <div class="bg-surface rounded-2xl border border-outline-variant p-6 md:p-8 shadow-xs">
