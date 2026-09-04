@@ -79,20 +79,28 @@ class WebhookController extends Controller
             return $this->processLocal($request);
         }
 
-        // Teruskan ke callback_url aplikasi lain
+        // Teruskan ke callback_url aplikasi lain (contoh: NOC Rhantech)
         try {
             Log::info("Forwarding webhook for Order {$orderId} to App: {$targetApp->name} at {$targetApp->callback_url}");
-            $response = Http::post($targetApp->callback_url, $request->all());
-            Log::info("Forward response status: " . $response->status());
+            
+            $payload = $request->json()->all() ?: $request->all();
+            
+            $response = Http::withHeaders([
+                'Content-Type' => 'application/json',
+                'Accept'       => 'application/json',
+            ])->timeout(15)->post($targetApp->callback_url, $payload);
+
+            Log::info("Forward response status for {$orderId}: " . $response->status());
 
             return response()->json([
                 'message'       => 'forwarded',
                 'target'        => $targetApp->name,
                 'target_status' => $response->status(),
-            ]);
+            ], 200);
         } catch (\Exception $e) {
             Log::error("Failed to forward webhook to {$targetApp->name}: " . $e->getMessage());
-            return response()->json(['message' => 'forward failed'], 500);
+            // Tetap kembalikan 200 agar Midtrans menganggap callback sudah diterima
+            return response()->json(['message' => 'forward logged with error', 'error' => $e->getMessage()], 200);
         }
     }
 
