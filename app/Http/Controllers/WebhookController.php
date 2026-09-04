@@ -29,7 +29,13 @@ class WebhookController extends Controller
             return response()->json(['message' => 'Test notification received successfully'], 200);
         }
 
-        // Ambil semua gateway apps yang aktif
+        // 1. Prioritaskan jika order ini milik aplikasi ini sendiri (ada di tabel orders)
+        $localOrderExists = Order::where('invoice_number', $orderId)->exists();
+        if ($localOrderExists) {
+            return $this->processLocal($request);
+        }
+
+        // 2. Jika bukan order lokal, cari di Gateway Apps yang aktif untuk diteruskan
         $apps = \App\Models\GatewayApp::where('is_active', true)->get();
         $targetApp = null;
         $fallbackApp = null;
@@ -57,12 +63,6 @@ class WebhookController extends Controller
         }
 
         if (!$targetApp) {
-            // Jika tidak ada gateway app terdaftar, coba cek apakah order ada di database lokal
-            $localOrderExists = Order::where('invoice_number', $orderId)->exists();
-            if ($localOrderExists) {
-                return $this->processLocal($request);
-            }
-
             Log::warning("Webhook received with unknown prefix, no fallback available: {$orderId}");
             return response()->json(['message' => 'ignored, no matching gateway app'], 200);
         }
