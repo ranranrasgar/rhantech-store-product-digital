@@ -171,15 +171,18 @@ class CompanyProfileController extends Controller
         }
 
         // Coba mysqldump terlebih dahulu
-        $passFlag = $dbPass ? '-p' . $dbPass : '';
-        $command  = sprintf(
-            'mysqldump -h %s -P %s -u %s %s %s > %s 2>&1',
+        // Gunakan --password= dan arahkan stderr ke /dev/null agar warning tidak masuk file SQL
+        $passFlag  = $dbPass ? '--password=' . $dbPass : '';
+        $nullDev   = PHP_OS_FAMILY === 'Windows' ? 'NUL' : '/dev/null';
+        $command   = sprintf(
+            'mysqldump -h %s -P %s -u %s %s %s > %s 2>%s',
             escapeshellarg($dbHost),
             (int) $dbPort,
             escapeshellarg($dbUser),
             $passFlag,
             escapeshellarg($dbName),
-            escapeshellarg($path)
+            escapeshellarg($path),
+            $nullDev
         );
 
         exec($command, $output, $returnCode);
@@ -276,11 +279,28 @@ class CompanyProfileController extends Controller
                 ->with('error', 'Format file tidak didukung. Gunakan file .sql');
         }
 
-        $sql = file_get_contents($file->getRealPath());
+        $raw = file_get_contents($file->getRealPath());
+
+        if (empty(trim($raw))) {
+            return redirect()->route('admin.company.index', ['tab' => 'database'])
+                ->with('error', 'File SQL kosong atau tidak valid.');
+        }
+
+        // Hapus baris warning mysqldump (baris non-SQL di awal file)
+        // Contoh: "mysqldump: [Warning] Using a password on the command line..."
+        $lines = explode("\n", $raw);
+        $cleanLines = array_filter($lines, function ($line) {
+            $trimmed = ltrim($line);
+            // Hapus baris yang dimulai dengan 'mysqldump:' atau warning serupa
+            if (preg_match('/^mysqldump\s*:/i', $trimmed)) return false;
+            if (preg_match('/^\[Warning\]/i', $trimmed)) return false;
+            return true;
+        });
+        $sql = implode("\n", $cleanLines);
 
         if (empty(trim($sql))) {
             return redirect()->route('admin.company.index', ['tab' => 'database'])
-                ->with('error', 'File SQL kosong atau tidak valid.');
+                ->with('error', 'File SQL kosong atau tidak valid setelah pembersihan.');
         }
 
         try {

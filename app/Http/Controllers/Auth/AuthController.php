@@ -18,10 +18,15 @@ class AuthController extends Controller
 
     protected function validateTurnstile($token)
     {
+        // Bypass CAPTCHA di local environment (development)
+        if (app()->environment('local')) {
+            return true;
+        }
+
         $secretKey = env('TURNSTILE_SECRET_KEY', '1x0000000000000000000000000000000AA');
-        
+
         $response = \Illuminate\Support\Facades\Http::asForm()->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
-            'secret' => $secretKey,
+            'secret'   => $secretKey,
             'response' => $token,
         ]);
 
