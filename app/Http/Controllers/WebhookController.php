@@ -16,61 +16,65 @@ class WebhookController extends Controller
     {
         $orderId = $request->order_id;
 
-        // Jika order_id berawalan RHN-, tidak perlu di-forward
-        if ($orderId && !Str::startsWith($orderId, 'RHN-')) {
-            // Ambil semua gateway apps yang aktif
-            $apps = \App\Models\GatewayApp::where('is_active', true)->get();
-            $targetApp = null;
+        // Ambil semua gateway apps yang aktif
+        $apps = \App\Models\GatewayApp::where('is_active', true)->get();
+        $targetApp = null;
+        $fallbackApp = null;
 
-            // Cocokkan awalan order_id dengan prefix di database
-            $fallbackApp = null;
-            foreach ($apps as $app) {
-
-
-                // Mendukung multi-prefix dengan pemisah koma (contoh: "PLT-, INV-, NOC-")
-                $prefixes = array_map('trim', explode(',', $app->prefix));
-                foreach ($prefixes as $p) {
-                    if ($p !== '' && Str::startsWith($orderId, $p)) {
-                        $targetApp = $app;
-                        break 2; // keluar dari 2 lapis foreach
-                    }
-                }
-
-                // Jika prefix diset menjadi *, jadikan sebagai fallback
-                if (trim($app->prefix) === '*') {
-                    $fallbackApp = $app;
-                    continue;
+        // Cocokkan awalan order_id dengan prefix di database
+        foreach ($apps as $app) {
+            // Mendukung multi-prefix dengan pemisah koma (contoh: "PLT-, INV-, NOC-")
+            $prefixes = array_map('trim', explode(',', $app->prefix));
+            foreach ($prefixes as $p) {
+                if ($p !== '' && $p !== '*' && Str::startsWith($orderId, $p)) {
+                    $targetApp = $app;
+                    break 2;
                 }
             }
 
-            // Jika tidak ada prefix yang cocok, gunakan fallback (yang prefix-nya *)
-            if (!$targetApp && $fallbackApp) {
-                $targetApp = $fallbackApp;
-            }
-
-            if ($targetApp) {
-                try {
-                    Log::info("Forwarding webhook for Order {$orderId} to App: {$targetApp->name} at {$targetApp->callback_url}");
-                    $response = Http::post($targetApp->callback_url, $request->all());
-                    Log::info("Forward response status: " . $response->status());
-
-                    return response()->json([
-                        'message' => 'forwarded',
-                        'target' => $targetApp->name,
-                        'target_status' => $response->status()
-                    ]);
-                } catch (\Exception $e) {
-                    Log::error("Failed to forward webhook to {$targetApp->name}: " . $e->getMessage());
-                    return response()->json(['message' => 'forward failed'], 500);
-                }
-            } else {
-                // Tidak ada prefix yang cocok, abaikan atau catat log
-                Log::warning("Webhook received with unknown prefix: {$orderId}");
-                return response()->json(['message' => 'ignored, unknown prefix'], 200);
+            // Jika prefix diset menjadi *, jadikan sebagai fallback
+            if (trim($app->prefix) === '*') {
+                $fallbackApp = $app;
             }
         }
 
-        // Proses lokal untuk rhantech.com (awalan RHN-)
+        // Jika tidak ada prefix yang cocok, gunakan fallback (yang prefix-nya *)
+        if (!$targetApp && $fallbackApp) {
+            $targetApp = $fallbackApp;
+        }
+
+        if (!$targetApp) {
+            Log::warning("Webhook received with unknown prefix, no fallback available: {$orderId}");
+            return response()->json(['message' => 'ignored, no matching gateway app'], 200);
+        }
+
+        // Jika app ini ditandai is_local, proses di sini (aplikasi rhantech ini sendiri)
+        if ($targetApp->is_local) {
+            return $this->processLocal($request);
+        }
+
+        // Teruskan ke callback_url aplikasi lain
+        try {
+            Log::info("Forwarding webhook for Order {$orderId} to App: {$targetApp->name} at {$targetApp->callback_url}");
+            $response = Http::post($targetApp->callback_url, $request->all());
+            Log::info("Forward response status: " . $response->status());
+
+            return response()->json([
+                'message'       => 'forwarded',
+                'target'        => $targetApp->name,
+                'target_status' => $response->status(),
+            ]);
+        } catch (\Exception $e) {
+            Log::error("Failed to forward webhook to {$targetApp->name}: " . $e->getMessage());
+            return response()->json(['message' => 'forward failed'], 500);
+        }
+    }
+
+    /**
+     * Proses webhook secara lokal untuk aplikasi ini.
+     */
+    private function processLocal(Request $request)
+    {
         $serverKey = config('midtrans.server_key');
         $hashed = hash("sha512", $request->order_id . $request->status_code . $request->gross_amount . $serverKey);
 
@@ -95,7 +99,7 @@ class WebhookController extends Controller
                         Log::error("Failed to send order email: " . $e->getMessage());
                     }
                 }
-            } elseif ($request->transaction_status == 'cancel' || $request->transaction_status == 'deny' || $request->transaction_status == 'expire') {
+            } elseif (in_array($request->transaction_status, ['cancel', 'deny', 'expire'])) {
                 $order = Order::where('invoice_number', $request->order_id)->first();
                 if ($order && $order->status === 'pending') {
                     $order->update(['status' => 'failed']);

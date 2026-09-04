@@ -13,6 +13,7 @@ class GatewayApp extends Model
         'name',
         'prefix',
         'callback_url',
-        'is_active'
+        'is_active',
+        'is_local',
     ];
 }
