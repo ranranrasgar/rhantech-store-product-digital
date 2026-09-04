@@ -132,6 +132,10 @@ Route::middleware(['auth', 'is_admin'])->prefix('admin')->name('admin.')->group(
     Route::get('/', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
     Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
     Route::post('company/optimize-database', [CompanyProfileController::class, 'optimizeDatabase'])->name('company.optimize_database');
+    Route::post('company/backup', [CompanyProfileController::class, 'backupDatabase'])->name('company.backup');
+    Route::get('company/backup/download/{filename}', [CompanyProfileController::class, 'downloadBackup'])->name('company.backup.download')->where('filename', '.*');
+    Route::delete('company/backup/{filename}', [CompanyProfileController::class, 'deleteBackup'])->name('company.backup.delete')->where('filename', '.*');
+    Route::post('company/restore', [CompanyProfileController::class, 'restoreDatabase'])->name('company.restore');
     Route::resource('company', CompanyProfileController::class);
     Route::resource('services', ServiceController::class);
     Route::resource('clients', ClientController::class);
