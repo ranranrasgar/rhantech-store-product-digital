@@ -65,16 +65,19 @@ class CompanyProfileController extends Controller
 
         // List existing backups
         $backups = [];
-        Storage::disk('local')->makeDirectory('backups');
-        $files = Storage::disk('local')->files('backups');
-        foreach ($files as $file) {
-            if (Str::endsWith($file, ['.sql', '.sql.gz'])) {
-                $backups[] = [
-                    'filename'   => basename($file),
-                    'size'       => $this->formatBytes(Storage::disk('local')->size($file)),
-                    'created_at' => date('d M Y H:i', Storage::disk('local')->lastModified($file)),
-                ];
-            }
+        $backupDir = storage_path('app/backups');
+        if (!file_exists($backupDir)) {
+            mkdir($backupDir, 0755, true);
+        }
+
+        $files = glob($backupDir . DIRECTORY_SEPARATOR . '*.{sql,sql.gz}', GLOB_BRACE) ?: [];
+        foreach ($files as $filePath) {
+            $filename = basename($filePath);
+            $backups[] = [
+                'filename'   => $filename,
+                'size'       => $this->formatBytes(filesize($filePath)),
+                'created_at' => date('d M Y H:i', filemtime($filePath)),
+            ];
         }
         usort($backups, fn($a, $b) => strcmp($b['filename'], $a['filename']));
 
@@ -197,11 +200,8 @@ class CompanyProfileController extends Controller
             }
         }
 
-        // Simpan nama file di session agar bisa auto-download setelah redirect
-        session(['backup_download' => $filename]);
-
         return redirect()->route('admin.company.index', ['tab' => 'backup'])
-            ->with('success', "Backup berhasil dibuat: {$filename}. Klik tombol Unduh untuk mengunduh.");
+            ->with('success', "Backup berhasil dibuat: {$filename}. Anda dapat mengunduh atau merestore file dari daftar tabel kapan saja.");
     }
 
     /**
@@ -262,7 +262,10 @@ class CompanyProfileController extends Controller
             abort(400, 'Nama file tidak valid.');
         }
 
-        Storage::disk('local')->delete('backups/' . $filename);
+        $path = storage_path('app/backups/' . $filename);
+        if (file_exists($path)) {
+            unlink($path);
+        }
 
         return redirect()->route('admin.company.index', ['tab' => 'backup'])
             ->with('success', "Backup '{$filename}' berhasil dihapus.");
@@ -308,6 +311,8 @@ class CompanyProfileController extends Controller
 
         try {
             DB::unprepared($sql);
+            // Hapus session backup_download agar script auto-download tidak terpicu setelah restore
+            session()->forget('backup_download');
             return redirect()->route('admin.company.index', ['tab' => 'backup'])
                 ->with('success', 'Database berhasil direstore dari file: ' . $file->getClientOriginalName());
         } catch (\Throwable $e) {

@@ -485,20 +485,6 @@
     <!-- ==================== TAB BACKUP & RESTORE ==================== -->
     <div x-show="currentTab === 'backup'" x-transition style="display: none;" class="space-y-6">
 
-        {{-- Auto-download setelah backup berhasil --}}
-        @if(session('backup_download'))
-        <script>
-            window.addEventListener('DOMContentLoaded', function () {
-                var link = document.createElement('a');
-                link.href = '{{ route('admin.company.backup.download', session('backup_download')) }}';
-                link.download = '{{ session('backup_download') }}';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            });
-        </script>
-        @endif
-
         <div class="bg-surface rounded-2xl border border-outline-variant overflow-hidden shadow-xs">
             <div class="p-6 border-b border-outline-variant flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
@@ -506,14 +492,14 @@
                         <span class="material-symbols-outlined text-primary text-[20px]">backup</span>
                         Backup & Restore Database
                     </h3>
-                    <p class="text-xs text-on-surface-variant mt-1">Buat backup database dan restore jika diperlukan. Backup disimpan di server.</p>
+                    <p class="text-xs text-on-surface-variant mt-1">Buat backup database ke server dan unduh kapan saja dari daftar di bawah.</p>
                 </div>
                 <form action="{{ route('admin.company.backup') }}" method="POST">
                     @csrf
                     <button type="submit" onclick="this.disabled=true; this.innerText='Membuat backup...'; this.form.submit();"
                             class="px-5 py-2.5 bg-primary text-on-primary rounded-xl text-xs font-bold hover:brightness-110 transition-all flex items-center gap-2 shadow-sm whitespace-nowrap">
-                        <span class="material-symbols-outlined text-[16px]">download</span>
-                        Buat & Unduh Backup
+                        <span class="material-symbols-outlined text-[16px]">add_circle</span>
+                        Buat Backup Database
                     </button>
                 </form>
             </div>
