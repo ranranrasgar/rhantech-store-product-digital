@@ -197,8 +197,11 @@ class CompanyProfileController extends Controller
             }
         }
 
-        return response()->download($path, $filename, ['Content-Type' => 'application/sql'])
-            ->deleteFileAfterSend(false);
+        // Simpan nama file di session agar bisa auto-download setelah redirect
+        session(['backup_download' => $filename]);
+
+        return redirect()->route('admin.company.index', ['tab' => 'backup'])
+            ->with('success', "Backup berhasil dibuat: {$filename}. Klik tombol Unduh untuk mengunduh.");
     }
 
     /**

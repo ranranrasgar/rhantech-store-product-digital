@@ -484,6 +484,21 @@
 
     <!-- ==================== TAB BACKUP & RESTORE ==================== -->
     <div x-show="currentTab === 'backup'" x-transition style="display: none;" class="space-y-6">
+
+        {{-- Auto-download setelah backup berhasil --}}
+        @if(session('backup_download'))
+        <script>
+            window.addEventListener('DOMContentLoaded', function () {
+                var link = document.createElement('a');
+                link.href = '{{ route('admin.company.backup.download', session('backup_download')) }}';
+                link.download = '{{ session('backup_download') }}';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+        </script>
+        @endif
+
         <div class="bg-surface rounded-2xl border border-outline-variant overflow-hidden shadow-xs">
             <div class="p-6 border-b border-outline-variant flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
