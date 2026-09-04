@@ -27,12 +27,6 @@
                         </div>
 
                         <div class="flex gap-2">
-                            @if($item->product->file_path)
-                                <a href="{{ route('products.download.file', ['token' => $order->download_token, 'item' => $item->id]) }}" class="bg-primary text-white px-4 py-2 rounded text-sm font-bold flex items-center gap-1 hover:brightness-110">
-                                    <span class="material-symbols-outlined text-[18px]">download</span> Unduh File
-                                </a>
-                            @endif
-                            
                             @if(!empty($item->product->download_links))
                                 @foreach($item->product->download_links as $link)
                                     <a href="{{ $link['url'] }}" target="_blank" class="bg-surface-variant border border-primary text-primary px-4 py-2 rounded text-sm font-bold flex items-center gap-1 hover:bg-primary/10">
