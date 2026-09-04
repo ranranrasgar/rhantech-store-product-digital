@@ -28,10 +28,11 @@ class GatewayAppController extends Controller
         ]);
 
         GatewayApp::create([
-            'name' => $validated['name'],
-            'prefix' => $validated['prefix'],
+            'name'         => $validated['name'],
+            'prefix'       => $validated['prefix'],
             'callback_url' => $validated['callback_url'],
-            'is_active' => $request->has('is_active'),
+            'is_active'    => $request->has('is_active'),
+            'is_local'     => $request->has('is_local'),
         ]);
 
         return redirect()->route('admin.gateway_apps.index')->with('success', 'Gateway App created successfully.');
@@ -51,10 +52,11 @@ class GatewayAppController extends Controller
         ]);
 
         $gatewayApp->update([
-            'name' => $validated['name'],
-            'prefix' => $validated['prefix'],
+            'name'         => $validated['name'],
+            'prefix'       => $validated['prefix'],
             'callback_url' => $validated['callback_url'],
-            'is_active' => $request->has('is_active'),
+            'is_active'    => $request->has('is_active'),
+            'is_local'     => $request->has('is_local'),
         ]);
 
         return redirect()->route('admin.gateway_apps.index')->with('success', 'Gateway App updated successfully.');

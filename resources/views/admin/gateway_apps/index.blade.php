@@ -26,6 +26,7 @@
                         <th class="p-4 font-label-md font-bold text-on-surface-variant uppercase">Prefix</th>
                         <th class="p-4 font-label-md font-bold text-on-surface-variant uppercase">Callback URL</th>
                         <th class="p-4 font-label-md font-bold text-on-surface-variant uppercase">Status</th>
+                        <th class="p-4 font-label-md font-bold text-on-surface-variant uppercase">Local</th>
                         <th class="p-4 font-label-md font-bold text-on-surface-variant uppercase">Actions</th>
                     </tr>
                 </thead>
@@ -40,6 +41,17 @@
                                     <span class="bg-[#e6f4ea] text-[#137333] px-2 py-1 rounded-full text-xs font-bold">Active</span>
                                 @else
                                     <span class="bg-[#fce8e6] text-[#c5221f] px-2 py-1 rounded-full text-xs font-bold">Inactive</span>
+                                @endif
+                            </td>
+                            <td class="p-4 font-body-md">
+                                @if($app->is_local)
+                                    <span class="bg-[#e8f0fe] text-[#1967d2] px-2 py-1 rounded-full text-xs font-bold flex items-center gap-1 w-fit">
+                                        <span class="material-symbols-outlined text-[0.9rem]">home</span> Local
+                                    </span>
+                                @else
+                                    <span class="bg-surface-variant text-on-surface-variant px-2 py-1 rounded-full text-xs font-bold flex items-center gap-1 w-fit">
+                                        <span class="material-symbols-outlined text-[0.9rem]">forward</span> Forward
+                                    </span>
                                 @endif
                             </td>
                             <td class="p-4 font-body-md">
@@ -59,7 +71,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="p-8 text-center text-on-surface-variant">
+                            <td colspan="6" class="p-8 text-center text-on-surface-variant">
                                 No Gateway Apps found. Create one to get started.
                             </td>
                         </tr>

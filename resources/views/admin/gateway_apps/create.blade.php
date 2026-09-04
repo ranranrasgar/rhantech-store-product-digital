@@ -50,6 +50,17 @@
             @enderror
         </div>
 
+        <div>
+            <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" name="is_local" value="1" {{ old('is_local') ? 'checked' : '' }} class="w-5 h-5 text-primary focus:ring-primary rounded border-outline-variant cursor-pointer">
+                <span class="font-label-md font-bold text-on-surface">Process Locally</span>
+            </label>
+            <p class="text-sm text-on-surface-variant mt-1 ml-7">Jika diaktifkan, webhook akan diproses langsung di aplikasi ini (bukan diteruskan ke Callback URL). Gunakan untuk aplikasi <strong>rhantech.com</strong> sendiri.</p>
+            @error('is_local')
+                <p class="text-error text-sm mt-1">{{ $message }}</p>
+            @enderror
+        </div>
+
         <div class="flex justify-end pt-4 border-t border-outline-variant/30">
             <button type="submit" class="bg-primary text-on-primary px-6 py-2 rounded-lg font-bold hover:bg-primary/90 transition-colors">Save App</button>
         </div>
