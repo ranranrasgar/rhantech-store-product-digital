@@ -53,6 +53,13 @@ class WebhookController extends Controller
             return $this->processLocal($request);
         }
 
+        // Proteksi anti-loop: jika callback_url mengarah ke server ini sendiri, proses lokal
+        $ownUrl = url('/api/webhooks/midtrans/callback');
+        if (rtrim($targetApp->callback_url, '/') === rtrim($ownUrl, '/')) {
+            Log::warning("Self-loop detected for {$targetApp->name}, processing locally instead. Set is_local=true to remove this warning.");
+            return $this->processLocal($request);
+        }
+
         // Teruskan ke callback_url aplikasi lain
         try {
             Log::info("Forwarding webhook for Order {$orderId} to App: {$targetApp->name} at {$targetApp->callback_url}");
