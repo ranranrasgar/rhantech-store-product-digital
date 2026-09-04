@@ -36,7 +36,7 @@ Route::get('/toko/{slug}', [\App\Http\Controllers\PublicStoreController::class, 
 Route::post('/toko/{store}/follow', [\App\Http\Controllers\PublicStoreController::class, 'toggleFollow'])->name('store.follow')->middleware('auth');
 Route::get('/download/{token}', [\App\Http\Controllers\DownloadController::class, 'download'])->name('products.download');
 Route::get('/download/{token}/file/{item}', [\App\Http\Controllers\DownloadController::class, 'downloadFile'])->name('products.download.file');
-Route::post('/api/webhooks/midtrans/callback', [\App\Http\Controllers\WebhookController::class, 'midtrans'])
+Route::match(['get', 'post', 'head'], '/api/webhooks/midtrans/callback', [\App\Http\Controllers\WebhookController::class, 'midtrans'])
     ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);
 Route::get('/contact', [PublicController::class, 'contact'])->name('contact');
 Route::post('/contact', [PublicController::class, 'storeContact'])->name('contact.store');
