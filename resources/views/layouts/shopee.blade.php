@@ -235,7 +235,7 @@
     <div class="hidden md:flex max-w-[1280px] mx-auto px-6 items-center justify-between py-1.5 text-[12px]">
         <div class="flex items-center gap-5 text-white/60">
             <a href="{{ route('tenant.dashboard') }}" class="hover:text-white/90 transition-colors">
-                <span class="material-symbols-outlined text-[13px] align-middle">storefront</span> Seller Portal
+                <span class="material-symbols-outlined text-[13px] align-middle">storefront</span> Client Area
             </a>
             <span class="h-3 w-px bg-white/15"></span>
             <span class="text-white/40">Ikuti kami:</span>
