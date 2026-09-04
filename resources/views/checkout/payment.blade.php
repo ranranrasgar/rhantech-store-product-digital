@@ -48,17 +48,17 @@
     document.getElementById('pay-button').onclick = function(){
         snap.pay('{{ $order->snap_token }}', {
             onSuccess: function(result){
-                alert("Payment success!");
-                window.location.href = "{{ route('products.index') }}"; // Redirect to a success page later if needed
+                window.location.href = "{{ route('checkout.finish', $order->invoice_number) }}";
             },
             onPending: function(result){
-                alert("Waiting for payment!");
+                window.location.href = "{{ route('checkout.finish', $order->invoice_number) }}";
             },
             onError: function(result){
-                alert("Payment failed!");
+                alert("Pembayaran gagal!");
+                window.location.href = "{{ route('tenant.purchases.index') }}";
             },
             onClose: function(){
-                console.log('User closed the popup without finishing the payment');
+                window.location.href = "{{ route('checkout.finish', $order->invoice_number) }}";
             }
         });
     };

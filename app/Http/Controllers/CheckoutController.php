@@ -147,7 +147,10 @@ class CheckoutController extends Controller
                 'email' => $order->customer_email,
                 'phone' => $order->customer_phone,
             ),
-            'item_details' => $midtransItemDetails
+            'item_details' => $midtransItemDetails,
+            'override_notification_urls' => array(
+                url('/api/webhooks/midtrans/callback')
+            )
         );
 
         try {
@@ -168,9 +171,56 @@ class CheckoutController extends Controller
         $order = Order::with('orderItems.product')->where('invoice_number', $invoice_number)->firstOrFail();
         
         if ($order->status !== 'pending') {
-            return redirect()->route('products.index')->with('success', 'Order already processed.');
+            return redirect()->route('tenant.purchases.index')->with('success', 'Pembayaran berhasil dikonfirmasi!');
         }
 
         return view('checkout.payment', compact('order'));
+    }
+
+    /**
+     * Endpoint untuk sinkronisasi realtime saat pembayaran di Midtrans Snap selesai
+     */
+    public function checkStatus($invoice_number)
+    {
+        $order = Order::with('orderItems.product.store')->where('invoice_number', $invoice_number)->firstOrFail();
+
+        $serverKey = config('midtrans.server_key');
+        $isProduction = config('midtrans.is_production');
+        $baseUrl = $isProduction ? 'https://api.midtrans.com' : 'https://api.sandbox.midtrans.com';
+
+        try {
+            $response = \Illuminate\Support\Facades\Http::withBasicAuth($serverKey, '')
+                ->get("{$baseUrl}/v2/{$order->invoice_number}/status");
+
+            if ($response->successful()) {
+                $data = $response->json();
+                $trxStatus = $data['transaction_status'] ?? null;
+
+                if ($trxStatus === 'settlement' || $trxStatus === 'capture') {
+                    if ($order->status !== 'paid' && $order->status !== 'downloaded') {
+                        $order->update(['status' => 'paid']);
+
+                        foreach ($order->orderItems as $item) {
+                            if ($item->product && $item->product->store_id) {
+                                $itemTotal = $item->price * $item->quantity;
+                                $item->product->store->increment('balance', $itemTotal);
+                            }
+                        }
+
+                        try {
+                            \Illuminate\Support\Facades\Mail::to($order->customer_email)->send(new \App\Mail\OrderPaidMail($order));
+                        } catch (\Exception $e) {
+                            \Illuminate\Support\Facades\Log::error("Failed to send order email: " . $e->getMessage());
+                        }
+                    }
+                } elseif (in_array($trxStatus, ['cancel', 'deny', 'expire'])) {
+                    $order->update(['status' => 'failed']);
+                }
+            }
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error("Failed to check status: " . $e->getMessage());
+        }
+
+        return redirect()->route('tenant.purchases.index')->with('success', 'Pembayaran berhasil dikonfirmasi!');
     }
 }

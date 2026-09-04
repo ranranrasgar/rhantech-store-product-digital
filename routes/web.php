@@ -32,6 +32,7 @@ Route::get('/checkout', [\App\Http\Controllers\CheckoutController::class, 'index
 Route::post('/checkout', [\App\Http\Controllers\CheckoutController::class, 'process'])->name('checkout.process')->middleware('throttle:checkout');
 Route::post('/checkout/select', [\App\Http\Controllers\CheckoutController::class, 'selectItems'])->name('checkout.select');
 Route::get('/payment/{invoice_number}', [\App\Http\Controllers\CheckoutController::class, 'payment'])->name('checkout.payment');
+Route::get('/checkout/finish/{invoice_number}', [\App\Http\Controllers\CheckoutController::class, 'checkStatus'])->name('checkout.finish');
 Route::get('/toko/{slug}', [\App\Http\Controllers\PublicStoreController::class, 'show'])->name('store.show');
 Route::post('/toko/{store}/follow', [\App\Http\Controllers\PublicStoreController::class, 'toggleFollow'])->name('store.follow')->middleware('auth');
 Route::get('/download/{token}', [\App\Http\Controllers\DownloadController::class, 'download'])->name('products.download');
