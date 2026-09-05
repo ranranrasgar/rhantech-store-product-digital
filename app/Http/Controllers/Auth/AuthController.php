@@ -23,7 +23,7 @@ class AuthController extends Controller
             return true;
         }
 
-        $secretKey = env('TURNSTILE_SECRET_KEY', '1x0000000000000000000000000000000AA');
+        $secretKey = config('services.turnstile.secret_key', env('TURNSTILE_SECRET_KEY'));
 
         $response = \Illuminate\Support\Facades\Http::asForm()->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
             'secret'   => $secretKey,

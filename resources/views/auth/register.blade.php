@@ -193,7 +193,7 @@
                         </div>
 
                         <!-- Cloudflare Turnstile Widget -->
-                        <div class="cf-turnstile" data-sitekey="{{ env('TURNSTILE_SITE_KEY', '1x00000000000000000000AA') }}" data-theme="auto" data-size="flexible"></div>
+                        <div class="cf-turnstile" data-sitekey="{{ config('services.turnstile.site_key', env('TURNSTILE_SITE_KEY')) }}" data-theme="auto" data-size="flexible"></div>
 
                         <!-- Submit Button -->
                         <div class="pt-2">
