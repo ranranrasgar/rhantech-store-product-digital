@@ -67,7 +67,7 @@
                         </div>
                         <div>
                             <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-1.5">Nomor WhatsApp <span class="text-rose-500">*</span></label>
-                            <input type="text" name="customer_phone" required value="{{ old('customer_phone') }}" class="w-full text-sm bg-surface-container-low border border-outline-variant rounded-sm px-3.5 py-2.5 text-on-surface focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/50 transition-colors" placeholder="08xxxxxxxxxx">
+                            <input type="text" name="customer_phone" required value="{{ old('customer_phone', $defaultPhone ?? (auth()->check() ? auth()->user()->phone : '')) }}" class="w-full text-sm bg-surface-container-low border border-outline-variant rounded-sm px-3.5 py-2.5 text-on-surface focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/50 transition-colors" placeholder="08xxxxxxxxxx">
                             <span class="text-[11px] text-on-surface-variant mt-1 block">Untuk notifikasi status invoice otomatis.</span>
                             @error('customer_phone')<span class="text-rose-500 text-xs mt-1 block font-medium">{{ $message }}</span>@enderror
                         </div>

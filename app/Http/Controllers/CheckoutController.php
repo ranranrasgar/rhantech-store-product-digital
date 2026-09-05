@@ -55,7 +55,22 @@ class CheckoutController extends Controller
             return redirect()->route('cart.index')->with('error', 'Tidak ada produk yang dipilih.');
         }
 
-        return view('checkout.index', compact('cart'));
+        // Ambil nomor HP default jika pembeli sedang login
+        $defaultPhone = '';
+        if (Auth::check()) {
+            $user = Auth::user();
+            $defaultPhone = $user->phone ?? '';
+
+            // Jika di kolom user->phone masih kosong, cek riwayat order terakhir
+            if (empty($defaultPhone)) {
+                $defaultPhone = Order::where('customer_email', $user->email)
+                    ->whereNotNull('customer_phone')
+                    ->latest()
+                    ->value('customer_phone') ?? '';
+            }
+        }
+
+        return view('checkout.index', compact('cart', 'defaultPhone'));
     }
 
     public function process(Request $request)
@@ -86,6 +101,7 @@ class CheckoutController extends Controller
                 $newUser = User::query()->create([
                     'name' => $validated['customer_name'],
                     'email' => $validated['customer_email'],
+                    'phone' => $validated['customer_phone'],
                     'password' => Hash::make($randomPassword),
                     'role' => 'User',
                 ]);
@@ -95,6 +111,16 @@ class CheckoutController extends Controller
 
                 // Auto log in the user so their session is active
                 Auth::login($newUser);
+            } else {
+                if (empty($existingUser->phone)) {
+                    $existingUser->update(['phone' => $validated['customer_phone']]);
+                }
+            }
+        } else {
+            // Update phone user jika belum terisi
+            $currentUser = Auth::user();
+            if (empty($currentUser->phone)) {
+                $currentUser->update(['phone' => $validated['customer_phone']]);
             }
         }
 
