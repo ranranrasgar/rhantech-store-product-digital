@@ -20,7 +20,25 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Custom URL Generator to intercept asset('storage/...') and route directly to Cloudflare R2 / S3
+        $this->app->extend('url', function (\Illuminate\Contracts\Routing\UrlGenerator $url, $app) {
+            return new class($app['routes'], $app->rebinding('request', function ($app, $request) {
+                $app['url']->setRequest($request);
+            }), $app['config']['app.asset_url']) extends \Illuminate\Routing\UrlGenerator {
+                public function asset($path, $secure = null)
+                {
+                    $clean = ltrim($path, '/');
+                    if (\Illuminate\Support\Str::startsWith($clean, 'storage/')) {
+                        $r2Url = config('filesystems.disks.r2.url');
+                        if (!empty($r2Url)) {
+                            $mediaPath = \Illuminate\Support\Str::after($clean, 'storage/');
+                            return rtrim($r2Url, '/') . '/' . ltrim($mediaPath, '/');
+                        }
+                    }
+                    return parent::asset($path, $secure);
+                }
+            };
+        });
     }
 
     /**
