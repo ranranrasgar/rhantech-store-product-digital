@@ -8,6 +8,7 @@ use App\Models\Project;
 use App\Models\Client;
 use App\Models\ProjectCategory;
 use App\Models\ProjectType;
+use App\Models\ProjectImage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
@@ -64,6 +65,7 @@ class ProjectController extends Controller
             'status' => 'required|string|in:draft,published,archived',
             'is_featured' => 'boolean',
             'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,ico|max:2048',
+            'brochure_file' => 'nullable|file|mimes:pdf|max:10240',
             'images' => 'nullable|array',
             'images.*' => 'image|mimes:jpeg,png,jpg,webp,gif,ico|max:3072',
         ]);
@@ -74,6 +76,10 @@ class ProjectController extends Controller
 
         if ($request->hasFile('thumbnail')) {
             $validated['thumbnail'] = $request->file('thumbnail')->store('projects', 'public');
+        }
+
+        if ($request->hasFile('brochure_file')) {
+            $validated['brochure_file'] = $request->file('brochure_file')->store('brochures', 'public');
         }
 
         $validated['is_featured'] = $request->has('is_featured');
@@ -144,6 +150,8 @@ class ProjectController extends Controller
             'status' => 'required|string|in:draft,published,archived',
             'is_featured' => 'boolean',
             'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,ico|max:2048',
+            'brochure_file' => 'nullable|file|mimes:pdf|max:10240',
+            'remove_brochure' => 'nullable|boolean',
             'images' => 'nullable|array',
             'images.*' => 'image|mimes:jpeg,png,jpg,webp,gif,ico|max:3072',
         ]);
@@ -159,6 +167,18 @@ class ProjectController extends Controller
             $validated['thumbnail'] = $request->file('thumbnail')->store('projects', 'public');
         }
 
+        if ($request->boolean('remove_brochure')) {
+            if ($project->brochure_file) {
+                Storage::disk('public')->delete($project->brochure_file);
+            }
+            $validated['brochure_file'] = null;
+        } elseif ($request->hasFile('brochure_file')) {
+            if ($project->brochure_file) {
+                Storage::disk('public')->delete($project->brochure_file);
+            }
+            $validated['brochure_file'] = $request->file('brochure_file')->store('brochures', 'public');
+        }
+
         $validated['is_featured'] = $request->has('is_featured');
 
         // Jika client_id kosong tapi ada client_ids, ambil client pertama sebagai primary client_id
@@ -171,7 +191,7 @@ class ProjectController extends Controller
             $clientIds[] = $validated['client_id'];
         }
 
-        unset($validated['client_ids'], $validated['images']);
+        unset($validated['client_ids'], $validated['images'], $validated['remove_brochure']);
 
         $project->update($validated);
         $project->clients()->sync($clientIds);
@@ -201,6 +221,10 @@ class ProjectController extends Controller
     {
         if ($project->thumbnail) {
             Storage::disk('public')->delete($project->thumbnail);
+        }
+
+        if ($project->brochure_file) {
+            Storage::disk('public')->delete($project->brochure_file);
         }
 
         // Hapus juga file gambar gallery terkait di R2/storage jika ada
@@ -248,12 +272,12 @@ class ProjectController extends Controller
     /**
      * Remove a single gallery image from project.
      */
-    public function destroyImage(\App\Models\ProjectImage $image)
+    public function destroyImage(ProjectImage $image)
     {
         if ($image->image) {
             Storage::disk('public')->delete($image->image);
         }
-        $image->delete();
+        $image->deleteOrFail();
 
         return back()->with('success', 'Foto galeri berhasil dihapus.');
     }

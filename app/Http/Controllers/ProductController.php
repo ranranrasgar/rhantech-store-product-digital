@@ -9,19 +9,64 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $categories = \App\Models\ProductCategory::all();
-        $types = \App\Models\ProductType::all();
-        $stores = \App\Models\Store::all();
+        $categories = \App\Models\ProductCategory::select(['id', 'store_id', 'name'])
+            ->whereHas('products', function ($q) {
+                $q->where('is_active', true);
+            })
+            ->withCount(['products' => function ($q) {
+                $q->where('is_active', true);
+            }])
+            ->with('store:id,name')
+            ->orderByRaw('store_id IS NULL DESC, name ASC')
+            ->get();
+
+        $types = \App\Models\ProductType::select(['id', 'store_id', 'name'])
+            ->whereHas('products', function ($q) {
+                $q->where('is_active', true);
+            })
+            ->withCount(['products' => function ($q) {
+                $q->where('is_active', true);
+            }])
+            ->with('store:id,name')
+            ->orderByRaw('store_id IS NULL DESC, name ASC')
+            ->get();
+
+        $stores = \App\Models\Store::select(['id', 'name', 'slug'])->get();
         $banners = \App\Models\Banner::where('is_active', true)->get()->keyBy('position');
 
-        $query = Product::with('store')->where('is_active', true);
+        // Produk unggulan yang paling banyak diklik / dilihat + relasi store dan image
+        $topProducts = Product::with(['store:id,name,slug', 'images'])
+            ->where('is_active', true)
+            ->orderBy('views', 'desc')
+            ->orderBy('sales_count', 'desc')
+            ->limit(5)
+            ->get();
+
+        $query = Product::with(['store:id,name,slug', 'images', 'category:id,name', 'type:id,name'])
+            ->where('is_active', true);
 
         if ($request->filled('category')) {
-            $query->where('product_category_id', $request->category);
+            $catVal = $request->category;
+            $query->where(function($q) use ($catVal) {
+                $q->where('product_category_id', $catVal);
+                if (is_string($catVal) && !is_numeric($catVal)) {
+                    $q->orWhereHas('category', function($cq) use ($catVal) {
+                        $cq->where('name', $catVal);
+                    });
+                }
+            });
         }
 
         if ($request->filled('type')) {
-            $query->where('product_type_id', $request->type);
+            $typeVal = $request->type;
+            $query->where(function($q) use ($typeVal) {
+                $q->where('product_type_id', $typeVal);
+                if (is_string($typeVal) && !is_numeric($typeVal)) {
+                    $q->orWhereHas('type', function($tq) use ($typeVal) {
+                        $tq->where('name', $typeVal);
+                    });
+                }
+            });
         }
 
         if ($request->filled('store')) {
@@ -30,9 +75,12 @@ class ProductController extends Controller
 
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
+                    ->orWhere('description', 'like', "%{$search}%")
+                    ->orWhereHas('store', function ($sq) use ($search) {
+                        $sq->where('name', 'like', "%{$search}%");
+                    });
             });
         }
 
@@ -48,18 +96,73 @@ class ProductController extends Controller
             $query->withCount(['orders' => function ($q) {
                 $q->where('status', 'paid');
             }])->orderBy('orders_count', 'desc');
+        } elseif ($request->sort == 'popular') {
+            $query->orderBy('views', 'desc');
+        } elseif ($request->sort == 'price_low') {
+            $query->orderByRaw('COALESCE(discount_price, price) ASC');
+        } elseif ($request->sort == 'price_high') {
+            $query->orderByRaw('COALESCE(discount_price, price) DESC');
         } else {
             $query->latest();
         }
 
         $products = $query->paginate(12)->withQueryString();
 
-        return view('products.index', compact('products', 'categories', 'types', 'stores', 'banners'));
+        // Jika AJAX request
+        if ($request->ajax() || $request->header('X-Requested-With') === 'XMLHttpRequest' || $request->boolean('ajax')) {
+            return view('products._list', compact('products'))->render();
+        }
+
+        return view('products.index', compact('products', 'categories', 'types', 'stores', 'banners', 'topProducts'));
     }
 
     public function show($slug)
     {
-        $product = Product::where('slug', $slug)->where('is_active', true)->firstOrFail();
-        return view('products.show', compact('product'));
+        $product = Product::with([
+            'store:id,name,slug,logo', 
+            'helpCategory.articles' => function($q) {
+                $q->where('is_published', true);
+            },
+            'reviews.user'
+        ])->where('slug', $slug)->where('is_active', true)->firstOrFail();
+
+        // Increment views count saat produk dibuka
+        $product->increment('views');
+
+        $hasPurchased = false;
+        $userReview = null;
+        $userOrder = null;
+
+        if (\Illuminate\Support\Facades\Auth::check()) {
+            $user = \Illuminate\Support\Facades\Auth::user();
+            $userOrder = \App\Models\Order::where('customer_email', $user->email)
+                ->whereIn('status', ['paid', 'downloaded'])
+                ->whereHas('orderItems', function ($q) use ($product) {
+                    $q->where('product_id', $product->id);
+                })
+                ->latest()
+                ->first();
+
+            if ($userOrder) {
+                $hasPurchased = true;
+                $userReview = \App\Models\ProductReview::where('product_id', $product->id)
+                    ->where('user_id', $user->id)
+                    ->first();
+            }
+        }
+
+        return view('products.show', compact('product', 'hasPurchased', 'userReview', 'userOrder'));
+    }
+
+    public function brochure($slug)
+    {
+        $product = Product::with(['category', 'type', 'images', 'store'])
+            ->where('slug', $slug)
+            ->where('is_active', true)
+            ->firstOrFail();
+
+        $company = \App\Models\CompanyProfile::first(['*']);
+
+        return view('products.brochure', compact('product', 'company'));
     }
 }

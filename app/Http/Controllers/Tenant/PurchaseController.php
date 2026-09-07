@@ -16,7 +16,7 @@ class PurchaseController extends Controller
         // Cari semua pesanan di mana customer_email sama dengan email user
         // Karena sistem ini tidak pakai user_id di order, melainkan email
         $query = Order::where('customer_email', $user->email)
-            ->with(['product', 'orderItems.product.images']);
+            ->with(['product', 'orderItems.product.images', 'reviews']);
 
         // Tab filter (mirip dengan halaman riwayat penjualan)
         $tab = $request->input('tab', 'all');

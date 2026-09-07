@@ -261,6 +261,36 @@
                     @error('thumbnail')<span class="text-error text-xs">{{ $message }}</span>@enderror
                 </div>
 
+                <div>
+                    <label class="block font-label-md text-on-surface mb-xs flex items-center justify-between">
+                        <span>File Brosur (PDF)</span>
+                        <span class="text-xs text-on-surface-variant font-normal">Opsional (Maks. 10MB)</span>
+                    </label>
+
+                    @if($project->brochure_file)
+                        <div class="mb-3 p-3 rounded-lg bg-surface-container-low border border-outline-variant/60 flex items-center justify-between gap-3">
+                            <div class="flex items-center gap-2.5 min-w-0">
+                                <span class="material-symbols-outlined text-rose-500 text-2xl">picture_as_pdf</span>
+                                <div class="min-w-0">
+                                    <p class="text-xs font-semibold text-on-surface truncate">{{ basename($project->brochure_file) }}</p>
+                                    <a href="{{ media_url($project->brochure_file) }}" target="_blank" class="text-[11px] text-primary hover:underline flex items-center gap-1">
+                                        <span>Lihat / Unduh Brosur Saat Ini</span>
+                                        <span class="material-symbols-outlined text-[12px]">open_in_new</span>
+                                    </a>
+                                </div>
+                            </div>
+                            <label class="flex items-center gap-1.5 text-xs text-error cursor-pointer hover:bg-error/5 px-2 py-1 rounded transition-colors flex-shrink-0">
+                                <input type="checkbox" name="remove_brochure" value="1" class="rounded border-outline-variant text-error focus:ring-error">
+                                <span>Hapus Brosur</span>
+                            </label>
+                        </div>
+                    @endif
+
+                    <input type="file" name="brochure_file" accept=".pdf,application/pdf" class="w-full bg-surface-container-low border border-[#CBD5E1] rounded-lg py-2 px-4 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all">
+                    <p class="text-xs text-on-surface-variant mt-1">Upload file PDF brosur/katalog baru untuk mengganti brosur lama, atau biarkan kosong jika tidak ada perubahan.</p>
+                    @error('brochure_file')<span class="text-error text-xs">{{ $message }}</span>@enderror
+                </div>
+
                 <!-- Existing Gallery Images (Foto Saat Ini) -->
                 @if($project->images && $project->images->count() > 0)
                 <div class="p-4 rounded-xl bg-surface-container-low border border-outline-variant/60">

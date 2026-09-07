@@ -11,7 +11,7 @@ class Project extends Model
 
     protected $fillable = [
         'client_id', 'project_category_id', 'project_type_id', 'title', 'slug', 'short_description', 'description',
-        'thumbnail', 'project_url', 'order_url', 'technologies', 
+        'thumbnail', 'brochure_file', 'project_url', 'order_url', 'technologies', 
         'completed_at', 'is_featured', 'status'
     ];
 

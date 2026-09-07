@@ -278,6 +278,16 @@
                     @error('thumbnail')<span class="text-error text-xs">{{ $message }}</span>@enderror
                 </div>
 
+                <div>
+                    <label class="block font-label-md text-on-surface mb-xs flex items-center justify-between">
+                        <span>File Brosur (PDF)</span>
+                        <span class="text-xs text-on-surface-variant font-normal">Opsional (Maks. 10MB)</span>
+                    </label>
+                    <input type="file" name="brochure_file" accept=".pdf,application/pdf" class="w-full bg-surface-container-low border border-[#CBD5E1] rounded-lg py-2 px-4 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all">
+                    <p class="text-[11px] text-on-surface-variant mt-1">Upload brosur/katalog produk berformat PDF agar pengunjung dapat mengunduhnya langsung di halaman detail produk.</p>
+                    @error('brochure_file')<span class="text-error text-xs">{{ $message }}</span>@enderror
+                </div>
+
                 <!-- Gallery Images Section (+ Image Tidak Terbatas) -->
                 <div class="p-4 rounded-xl bg-surface-container-low border border-outline-variant/60" 
                      x-data="{

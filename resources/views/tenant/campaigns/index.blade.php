@@ -69,12 +69,29 @@
 
                             <!-- Type -->
                             <td class="p-4 md:px-6">
-                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
-                                    <span class="material-symbols-outlined text-[15px] {{ $campaign->type === 'discount' ? 'text-amber-500' : 'text-sky-500' }}">
-                                        {{ $campaign->type === 'discount' ? 'local_offer' : 'confirmation_number' }}
+                                <div class="space-y-1">
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                                        <span class="material-symbols-outlined text-[15px] {{ $campaign->type === 'discount' ? 'text-amber-500' : 'text-sky-500' }}">
+                                            {{ $campaign->type === 'discount' ? 'local_offer' : 'confirmation_number' }}
+                                        </span>
+                                        {{ $campaign->type === 'discount' ? 'Diskon Langsung' : 'Kupon Voucher' }}
                                     </span>
-                                    {{ $campaign->type === 'discount' ? 'Diskon Langsung' : 'Kupon Voucher' }}
-                                </span>
+                                    <div>
+                                        @if(($campaign->applies_to ?? 'all') === 'all')
+                                            <span class="inline-flex items-center gap-1 text-[10px] text-slate-500 dark:text-slate-400">
+                                                <span class="material-symbols-outlined text-[12px]">storefront</span> Semua Produk
+                                            </span>
+                                        @elseif($campaign->applies_to === 'category')
+                                            <span class="inline-flex items-center gap-1 text-[10px] text-primary font-medium">
+                                                <span class="material-symbols-outlined text-[12px]">folder</span> {{ count((array)$campaign->category_ids) }} Kategori
+                                            </span>
+                                        @elseif($campaign->applies_to === 'product')
+                                            <span class="inline-flex items-center gap-1 text-[10px] text-sky-500 font-medium">
+                                                <span class="material-symbols-outlined text-[12px]">inventory_2</span> {{ count((array)$campaign->product_ids) }} Produk
+                                            </span>
+                                        @endif
+                                    </div>
+                                </div>
                             </td>
 
                             <!-- Discount Value -->

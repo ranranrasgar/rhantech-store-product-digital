@@ -11,7 +11,7 @@ class DownloadController extends Controller
 {
     public function download($token)
     {
-        $order = Order::with('orderItems.product')->where('download_token', $token)->firstOrFail();
+        $order = Order::with(['orderItems.product', 'reviews'])->where('download_token', $token)->firstOrFail();
 
         if ($order->status === 'pending' || $order->status === 'failed') {
             abort(403, 'Payment has not been completed.');

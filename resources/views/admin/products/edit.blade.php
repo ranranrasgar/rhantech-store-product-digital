@@ -105,6 +105,15 @@
                 <p class="text-xs text-on-surface-variant mt-1">Maximum 5 images total.</p>
                 @error('images')<span class="text-error text-xs">{{ $message }}</span>@enderror
             </div>
+
+            @include('products._custom_fields', ['productItem' => $product])
+
+            <div>
+                <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" name="is_active" value="1" {{ old('is_active', $product->is_active) ? 'checked' : '' }} class="rounded border-outline-variant text-primary focus:ring-primary">
+                    <span class="font-label-md text-on-surface">Active (Visible in Store)</span>
+                </label>
+            </div>
             
             <div class="flex justify-end pt-md border-t border-outline-variant">
                 <button type="submit" class="px-md py-2 bg-primary text-white rounded-lg font-label-md font-bold hover:brightness-110 transition shadow">Update Product</button>

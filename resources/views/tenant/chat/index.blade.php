@@ -214,7 +214,7 @@ function tenantChatManager() {
         },
 
         fetchMessages(userId, scrollDown = true) {
-            fetch('{{ url("tenant/chat/messages") }}/' + userId)
+            fetch('{{ url("dashboard/chat/messages") }}/' + userId)
                 .then(r => r.json())
                 .then(data => {
                     this.messages = data.messages || [];

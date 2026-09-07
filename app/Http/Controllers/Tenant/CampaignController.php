@@ -32,7 +32,10 @@ class CampaignController extends Controller
     public function create()
     {
         $store = $this->getStore();
-        return view('tenant.campaigns.create', compact('store'));
+        $categories = \App\Models\ProductCategory::orderBy('name', 'asc')->get();
+        $products = $store->products()->where('is_active', true)->orderBy('name', 'asc')->get();
+
+        return view('tenant.campaigns.create', compact('store', 'categories', 'products'));
     }
 
     public function store(Request $request)
@@ -42,6 +45,9 @@ class CampaignController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'type' => 'required|in:discount,voucher',
+            'applies_to' => 'required|in:all,category,product',
+            'category_ids' => 'nullable|array',
+            'product_ids' => 'nullable|array',
             'discount_type' => 'required|in:percentage,fixed',
             'discount_value' => 'required|numeric|min:0',
             'code' => 'nullable|string|max:50',
@@ -56,6 +62,15 @@ class CampaignController extends Controller
         $validated['store_id'] = $store->id;
         $validated['minimum_spend'] = $validated['minimum_spend'] ?? 0;
 
+        if ($validated['applies_to'] === 'all') {
+            $validated['category_ids'] = null;
+            $validated['product_ids'] = null;
+        } elseif ($validated['applies_to'] === 'category') {
+            $validated['product_ids'] = null;
+        } elseif ($validated['applies_to'] === 'product') {
+            $validated['category_ids'] = null;
+        }
+
         Campaign::create($validated);
 
         return redirect()->route('tenant.campaigns.index')->with('success', 'Campaign berhasil dibuat.');
@@ -69,7 +84,10 @@ class CampaignController extends Controller
             abort(403);
         }
 
-        return view('tenant.campaigns.edit', compact('store', 'campaign'));
+        $categories = \App\Models\ProductCategory::orderBy('name', 'asc')->get();
+        $products = $store->products()->where('is_active', true)->orderBy('name', 'asc')->get();
+
+        return view('tenant.campaigns.edit', compact('store', 'campaign', 'categories', 'products'));
     }
 
     public function update(Request $request, Campaign $campaign)
@@ -83,6 +101,9 @@ class CampaignController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'type' => 'required|in:discount,voucher',
+            'applies_to' => 'required|in:all,category,product',
+            'category_ids' => 'nullable|array',
+            'product_ids' => 'nullable|array',
             'discount_type' => 'required|in:percentage,fixed',
             'discount_value' => 'required|numeric|min:0',
             'code' => 'nullable|string|max:50',
@@ -95,6 +116,15 @@ class CampaignController extends Controller
         ]);
 
         $validated['minimum_spend'] = $validated['minimum_spend'] ?? 0;
+
+        if ($validated['applies_to'] === 'all') {
+            $validated['category_ids'] = null;
+            $validated['product_ids'] = null;
+        } elseif ($validated['applies_to'] === 'category') {
+            $validated['product_ids'] = null;
+        } elseif ($validated['applies_to'] === 'product') {
+            $validated['category_ids'] = null;
+        }
         
         $campaign->update($validated);
 

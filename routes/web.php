@@ -18,9 +18,11 @@ use App\Http\Controllers\Admin\ContactMessageController;
 Route::get('/', [PublicController::class, 'home'])->name('home');
 Route::get('/projects', [PublicController::class, 'projects'])->name('projects.index');
 Route::get('/projects/{slug}', [PublicController::class, 'projectDetail'])->name('projects.show');
+Route::get('/projects/{slug}/brochure', [PublicController::class, 'downloadBrochure'])->name('projects.brochure');
 Route::get('/clients', [PublicController::class, 'clients'])->name('clients.index');
 Route::get('/products', [\App\Http\Controllers\ProductController::class, 'index'])->name('products.index');
 Route::get('/products/{slug}', [\App\Http\Controllers\ProductController::class, 'show'])->name('products.show');
+Route::get('/products/{slug}/brochure', [\App\Http\Controllers\ProductController::class, 'brochure'])->name('products.brochure');
 
 // Cart Routes
 Route::get('/cart', [\App\Http\Controllers\CartController::class, 'index'])->name('cart.index');
@@ -34,10 +36,11 @@ Route::post('/checkout', [\App\Http\Controllers\CheckoutController::class, 'proc
 Route::post('/checkout/select', [\App\Http\Controllers\CheckoutController::class, 'selectItems'])->name('checkout.select');
 Route::get('/payment/{invoice_number}', [\App\Http\Controllers\CheckoutController::class, 'payment'])->name('checkout.payment');
 Route::get('/checkout/finish/{invoice_number}', [\App\Http\Controllers\CheckoutController::class, 'checkStatus'])->name('checkout.finish');
-Route::get('/toko/{slug}', [\App\Http\Controllers\PublicStoreController::class, 'show'])->name('store.show');
+Route::get('/toko/{slug}', [\App\Http\Controllers\PublicStoreController::class, 'show']);
 Route::post('/toko/{store}/follow', [\App\Http\Controllers\PublicStoreController::class, 'toggleFollow'])->name('store.follow')->middleware('auth');
 Route::get('/download/{token}', [\App\Http\Controllers\DownloadController::class, 'download'])->name('products.download');
 Route::get('/download/{token}/file/{item}', [\App\Http\Controllers\DownloadController::class, 'downloadFile'])->name('products.download.file');
+Route::post('/products/{product}/review', [\App\Http\Controllers\ProductReviewController::class, 'store'])->name('products.review.store');
 Route::get('/contact', [PublicController::class, 'contact'])->name('contact');
 Route::post('/contact', [PublicController::class, 'storeContact'])->name('contact.store');
 
@@ -75,7 +78,12 @@ Route::post('/email/verification-notification', function (\Illuminate\Http\Reque
     return back()->with('message', 'Email verifikasi telah dikirim ulang!');
 })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
-Route::middleware(['auth', 'verified', 'is_tenant'])->prefix('tenant')->name('tenant.')->group(function () {
+// Backward compatibility redirect /tenant/{any?} -> /dashboard/{any?}
+Route::any('/tenant/{any?}', function ($any = null) {
+    return redirect('/dashboard' . ($any ? '/' . $any : ''), 301);
+})->where('any', '.*');
+
+Route::middleware(['auth', 'verified', 'is_tenant'])->prefix('dashboard')->name('tenant.')->group(function () {
     Route::get('/', [\App\Http\Controllers\Tenant\DashboardController::class, 'index'])->name('dashboard');
     Route::get('/store', [\App\Http\Controllers\Tenant\StoreController::class, 'index'])->name('store.index');
     Route::post('/store', [\App\Http\Controllers\Tenant\StoreController::class, 'store'])->name('store.store');
@@ -110,6 +118,10 @@ Route::middleware(['auth', 'verified', 'is_tenant'])->prefix('tenant')->name('te
     // kerja sama
     Route::resource('affiliates', \App\Http\Controllers\Tenant\AffiliateController::class);
     
+    // Kategori & Tipe Custom Toko Tenant
+    Route::post('categories/quick-store', [\App\Http\Controllers\Tenant\ProductController::class, 'quickStoreCategory'])->name('categories.quick-store');
+    Route::post('types/quick-store', [\App\Http\Controllers\Tenant\ProductController::class, 'quickStoreType'])->name('types.quick-store');
+
     // iklan
     Route::resource('campaigns', \App\Http\Controllers\Tenant\CampaignController::class);
 
@@ -151,6 +163,7 @@ Route::middleware(['auth', 'is_admin'])->prefix('admin')->name('admin.')->group(
     Route::delete('products/image/{image}', [ProductController::class, 'destroyImage'])->name('products.image.destroy');
     Route::patch('products/{product}/toggle-active', [ProductController::class, 'toggleActive'])->name('products.toggle_active');
     Route::patch('products/image/{image}/set-main', [ProductController::class, 'setMainImage'])->name('products.image.set_main');
+    Route::delete('products/review/{review}', [\App\Http\Controllers\ProductReviewController::class, 'destroy'])->name('products.reviews.destroy');
     Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
     Route::patch('orders/{order}/approve', [OrderController::class, 'approve'])->name('orders.approve');
     Route::post('orders/{order}/sync-status', [OrderController::class, 'syncStatus'])->name('orders.sync_status');
@@ -189,3 +202,9 @@ Route::get('/storage/{path}', function (string $path) {
     $r2Url = rtrim(config('filesystems.disks.r2.url', 'https://cdn.rhantech.com'), '/') . '/' . ltrim($path, '/');
     return redirect()->away($r2Url, 302);
 })->where('path', '.*');
+
+// Direct Store URL: http://127.0.0.1:8000/<nama-toko> (e.g., http://127.0.0.1:8000/gudang-aplikasi)
+Route::get('/{slug}', [\App\Http\Controllers\PublicStoreController::class, 'show'])
+    ->where('slug', '^(?!admin|tenant|dashboard|projects|products|clients|cart|checkout|payment|download|contact|help|login|register|logout|forgot-password|reset-password|email|storage|chat|toko).*$')
+    ->name('store.show');
+

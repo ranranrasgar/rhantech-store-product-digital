@@ -94,6 +94,8 @@
                 @error('images.*')<span class="text-error text-xs">{{ $message }}</span>@enderror
             </div>
 
+            @include('products._custom_fields', ['productItem' => null])
+
             <div>
                 <label class="flex items-center gap-2 cursor-pointer">
                     <input type="checkbox" name="is_active" value="1" checked class="rounded border-outline-variant text-primary focus:ring-primary">

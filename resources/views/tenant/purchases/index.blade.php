@@ -131,10 +131,12 @@
 
                             <td class="p-4 md:px-6 text-center">
                                 @if($order->status === 'paid' || $order->status === 'downloaded')
-                                    <a href="{{ route('products.download', $order->download_token) }}" target="_blank" class="inline-flex justify-center items-center gap-1.5 px-4 py-1.5 rounded-xl bg-sky-50 dark:bg-sky-900/20 text-sky-600 dark:text-sky-400 font-bold hover:bg-sky-100 dark:hover:bg-sky-900/40 transition-colors text-xs border border-sky-200 dark:border-sky-800/30">
-                                        <span class="material-symbols-outlined text-[16px]">cloud_download</span>
-                                        Download
-                                    </a>
+                                    <div class="flex items-center justify-center gap-1.5 flex-wrap">
+                                        <a href="{{ route('products.download', $order->download_token) }}" target="_blank" class="inline-flex justify-center items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sky-50 dark:bg-sky-900/20 text-sky-600 dark:text-sky-400 font-bold hover:bg-sky-100 dark:hover:bg-sky-900/40 transition-colors text-xs border border-sky-200 dark:border-sky-800/30" title="Unduh File & Beri Ulasan">
+                                            <span class="material-symbols-outlined text-[16px]">cloud_download</span>
+                                            Download & Ulas
+                                        </a>
+                                    </div>
                                 @elseif($order->status === 'pending')
                                     <a href="{{ route('checkout.payment', $order->invoice_number) }}" class="inline-flex justify-center items-center gap-1.5 px-4 py-1.5 rounded-xl bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 font-bold hover:bg-amber-100 dark:hover:bg-amber-900/40 transition-colors text-xs border border-amber-200 dark:border-amber-800/30">
                                         <span class="material-symbols-outlined text-[16px]">payment</span>

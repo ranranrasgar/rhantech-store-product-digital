@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use App\Models\Service;
 use App\Models\Client;
 use App\Models\Project;
@@ -99,6 +101,25 @@ class PublicController extends Controller
     {
         $project = Project::query()->with(['clients', 'client', 'projectCategory', 'projectType', 'images'])->where('slug', $slug)->where('status', 'published')->firstOrFail();
         return view('projects.show', compact('project'));
+    }
+
+    public function downloadBrochure(string $slug)
+    {
+        $project = Project::query()->with(['clients', 'client', 'projectCategory', 'projectType', 'images'])
+            ->where('slug', $slug)
+            ->where('status', 'published')
+            ->firstOrFail();
+
+        // Jika ada file brosur custom yang diunggah, utamakan unduh file tersebut jika diminta direct
+        if (!empty($project->brochure_file) && request()->query('format') === 'file' && Storage::disk('public')->exists($project->brochure_file)) {
+            $extension = pathinfo($project->brochure_file, PATHINFO_EXTENSION) ?: 'pdf';
+            $downloadName = 'Brosur-' . Str::slug($project->title) . '.' . $extension;
+            return response()->download(Storage::disk('public')->path($project->brochure_file), $downloadName);
+        }
+
+        $company = \App\Models\CompanyProfile::first(['*']);
+
+        return view('projects.brochure', compact('project', 'company'));
     }
 
     public function clients()

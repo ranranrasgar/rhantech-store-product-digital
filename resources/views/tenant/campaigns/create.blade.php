@@ -85,6 +85,77 @@
                     <p class="text-xs text-gray-500 mt-1">Batas maksimal kupon ini bisa dipakai.</p>
                 </div>
 
+                <!-- Target / Cakupan Promo -->
+                <div class="md:col-span-2 p-4 rounded-xl bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49]" x-data="{ appliesTo: '{{ old('applies_to', 'all') }}' }">
+                    <label class="block text-sm font-bold text-slate-800 dark:text-slate-100 mb-2 flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-primary text-[18px]">target</span>
+                        <span>Cakupan Target Promo <span class="text-error">*</span></span>
+                    </label>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-3">Tentukan apakah promo ini berlaku untuk seluruh produk di toko, atau hanya kategori & produk tertentu.</p>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+                        <label class="flex items-center gap-2.5 p-3 rounded-lg border cursor-pointer transition-all"
+                               :class="appliesTo === 'all' ? 'border-primary bg-primary/5 text-primary font-bold shadow-xs' : 'border-slate-200 dark:border-[#222f49] hover:bg-slate-100 dark:hover:bg-[#161f30] text-slate-700 dark:text-slate-300'">
+                            <input type="radio" name="applies_to" value="all" x-model="appliesTo" class="text-primary focus:ring-primary">
+                            <div>
+                                <div class="text-xs font-bold">Semua Produk Toko</div>
+                                <div class="text-[10px] opacity-75">Berlaku untuk semua katalog</div>
+                            </div>
+                        </label>
+
+                        <label class="flex items-center gap-2.5 p-3 rounded-lg border cursor-pointer transition-all"
+                               :class="appliesTo === 'category' ? 'border-primary bg-primary/5 text-primary font-bold shadow-xs' : 'border-slate-200 dark:border-[#222f49] hover:bg-slate-100 dark:hover:bg-[#161f30] text-slate-700 dark:text-slate-300'">
+                            <input type="radio" name="applies_to" value="category" x-model="appliesTo" class="text-primary focus:ring-primary">
+                            <div>
+                                <div class="text-xs font-bold">Kategori Tertentu</div>
+                                <div class="text-[10px] opacity-75">Pilih kategori khusus</div>
+                            </div>
+                        </label>
+
+                        <label class="flex items-center gap-2.5 p-3 rounded-lg border cursor-pointer transition-all"
+                               :class="appliesTo === 'product' ? 'border-primary bg-primary/5 text-primary font-bold shadow-xs' : 'border-slate-200 dark:border-[#222f49] hover:bg-slate-100 dark:hover:bg-[#161f30] text-slate-700 dark:text-slate-300'">
+                            <input type="radio" name="applies_to" value="product" x-model="appliesTo" class="text-primary focus:ring-primary">
+                            <div>
+                                <div class="text-xs font-bold">Produk Tertentu (Pilihan)</div>
+                                <div class="text-[10px] opacity-75">Pilih produk spesifik</div>
+                            </div>
+                        </label>
+                    </div>
+
+                    <!-- Checklist Kategori (Jika Kategori Tertentu dipilih) -->
+                    <div x-show="appliesTo === 'category'" x-cloak class="mt-3 pt-3 border-t border-slate-200 dark:border-[#222f49]">
+                        <span class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-2">Pilih Kategori yang Dapat Promo:</span>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-48 overflow-y-auto p-2 bg-white dark:bg-[#0d1117] rounded-lg border border-slate-200 dark:border-[#30363d]">
+                            @forelse($categories as $category)
+                            <label class="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-300 cursor-pointer p-1.5 hover:bg-slate-50 dark:hover:bg-[#161b22] rounded">
+                                <input type="checkbox" name="category_ids[]" value="{{ $category->id }}" class="rounded text-primary focus:ring-primary" {{ in_array($category->id, old('category_ids', [])) ? 'checked' : '' }}>
+                                <span class="truncate">{{ $category->name }}</span>
+                            </label>
+                            @empty
+                            <span class="col-span-full text-xs text-slate-400 italic">Belum ada kategori terdaftar.</span>
+                            @endforelse
+                        </div>
+                    </div>
+
+                    <!-- Checklist Produk (Jika Produk Tertentu dipilih) -->
+                    <div x-show="appliesTo === 'product'" x-cloak class="mt-3 pt-3 border-t border-slate-200 dark:border-[#222f49]">
+                        <span class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-2">Pilih Produk Toko yang Dapat Promo:</span>
+                        <div class="space-y-1.5 max-h-56 overflow-y-auto p-2 bg-white dark:bg-[#0d1117] rounded-lg border border-slate-200 dark:border-[#30363d]">
+                            @forelse($products as $prod)
+                            <label class="flex items-center justify-between gap-3 text-xs text-slate-700 dark:text-slate-300 cursor-pointer p-2 hover:bg-slate-50 dark:hover:bg-[#161b22] rounded border border-transparent hover:border-slate-200 dark:hover:border-[#30363d] transition-all">
+                                <div class="flex items-center gap-2.5 min-w-0">
+                                    <input type="checkbox" name="product_ids[]" value="{{ $prod->id }}" class="rounded text-primary focus:ring-primary" {{ in_array($prod->id, old('product_ids', [])) ? 'checked' : '' }}>
+                                    <span class="font-medium truncate">{{ $prod->name }}</span>
+                                </div>
+                                <span class="text-[11px] font-bold text-primary shrink-0">Rp{{ number_format($prod->price, 0, ',', '.') }}</span>
+                            </label>
+                            @empty
+                            <span class="text-xs text-slate-400 italic p-2 block">Toko Anda belum memiliki produk aktif.</span>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Status -->
                 <div>
                     <label class="block text-sm font-semibold mb-2">Status Promo <span class="text-error">*</span></label>

@@ -13,6 +13,11 @@ class Product extends Model
 
     protected $casts = [
         'download_links' => 'array',
+        'highlights' => 'array',
+        'package_includes' => 'array',
+        'system_requirements' => 'array',
+        'guarantees' => 'array',
+        'faqs' => 'array',
     ];
 
     public function images()
@@ -38,5 +43,15 @@ class Product extends Model
     public function orders()
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function helpCategory()
+    {
+        return $this->belongsTo(HelpCategory::class, 'help_category_id');
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(ProductReview::class)->where('is_visible', true)->latest();
     }
 }

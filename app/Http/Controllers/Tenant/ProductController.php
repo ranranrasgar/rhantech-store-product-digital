@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\ProductImage;
 use App\Models\ProductType;
+use App\Models\HelpCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -80,9 +81,58 @@ class ProductController extends Controller
                 ->find($request->input('copy'));
         }
 
-        $categories = ProductCategory::orderBy('name', 'asc')->get();
-        $types = ProductType::orderBy('name', 'asc')->get();
-        return view('tenant.products.create', compact('categories', 'types', 'sourceProduct'));
+        $categories = ProductCategory::whereNull('store_id')
+            ->orWhere('store_id', $store->id)
+            ->orderByRaw('store_id IS NULL DESC, name ASC')
+            ->get();
+        $types = ProductType::whereNull('store_id')
+            ->orWhere('store_id', $store->id)
+            ->orderByRaw('store_id IS NULL DESC, name ASC')
+            ->get();
+        $helpCategories = HelpCategory::orderBy('name', 'asc')->get();
+        return view('tenant.products.create', compact('categories', 'types', 'sourceProduct', 'helpCategories'));
+    }
+
+    public function quickStoreCategory(Request $request)
+    {
+        $store = Auth::user()->store;
+        if (!$store) return response()->json(['success' => false, 'message' => 'Toko tidak ditemukan'], 403);
+
+        $request->validate(['name' => 'required|string|max:100']);
+        $slug = \Illuminate\Support\Str::slug($request->name) . '-' . $store->id;
+
+        $cat = ProductCategory::create([
+            'store_id' => $store->id,
+            'name' => $request->name,
+            'slug' => $slug,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'category' => $cat,
+            'message' => 'Kategori toko berhasil ditambahkan'
+        ]);
+    }
+
+    public function quickStoreType(Request $request)
+    {
+        $store = Auth::user()->store;
+        if (!$store) return response()->json(['success' => false, 'message' => 'Toko tidak ditemukan'], 403);
+
+        $request->validate(['name' => 'required|string|max:100']);
+        $slug = \Illuminate\Support\Str::slug($request->name) . '-' . $store->id;
+
+        $type = ProductType::create([
+            'store_id' => $store->id,
+            'name' => $request->name,
+            'slug' => $slug,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'type' => $type,
+            'message' => 'Tipe produk berhasil ditambahkan'
+        ]);
     }
 
     public function store(Request $request)
@@ -91,6 +141,7 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'product_category_id' => 'nullable|exists:product_categories,id',
             'product_type_id' => 'nullable|exists:product_types,id',
+            'help_category_id' => 'nullable|exists:help_categories,id',
             'description' => 'required|string',
             'demo_url' => 'nullable|url|max:255',
             'price' => 'required|numeric|min:0',
@@ -101,7 +152,15 @@ class ProductController extends Controller
             'download_links.*.url' => 'required|url|max:255',
             'images.*' => 'image|mimes:jpeg,png,jpg,webp,gif|max:2048',
             'copied_from' => 'nullable|exists:products,id',
-            'is_active' => 'boolean'
+            'is_active' => 'boolean',
+            'rating_override' => 'nullable|numeric|min:1|max:5',
+            'reviews_count' => 'nullable|integer|min:0',
+            'sales_count' => 'nullable|integer|min:0',
+            'highlights' => 'nullable|array',
+            'package_includes' => 'nullable|array',
+            'system_requirements' => 'nullable|array',
+            'guarantees' => 'nullable|array',
+            'faqs' => 'nullable|array',
         ];
 
         // If not copying from existing product, images are required
@@ -122,6 +181,12 @@ class ProductController extends Controller
         $store = Auth::user()->store;
         if (!$store) return redirect()->route('tenant.store.index');
 
+        $highlights = $this->cleanArrayItems($request->input('highlights'));
+        $packageIncludes = $this->cleanArrayItems($request->input('package_includes'));
+        $systemRequirements = $this->cleanAssocItems($request->input('system_requirements'));
+        $guarantees = $this->cleanAssocItems($request->input('guarantees'));
+        $faqs = $this->cleanFaqItems($request->input('faqs'));
+
         $product = Product::create([
             'store_id' => $store->id,
             'name' => $validated['name'],
@@ -129,11 +194,20 @@ class ProductController extends Controller
             'description' => $validated['description'],
             'product_category_id' => $validated['product_category_id'] ?? null,
             'product_type_id' => $validated['product_type_id'] ?? null,
+            'help_category_id' => $validated['help_category_id'] ?? null,
             'demo_url' => $validated['demo_url'] ?? null,
             'price' => $validated['price'],
             'discount_price' => $validated['discount_price'] ?? null,
             'download_links' => $validated['download_links'] ?? null,
             'is_active' => $request->has('is_active'),
+            'rating_override' => $validated['rating_override'] ?? null,
+            'reviews_count' => $validated['reviews_count'] ?? null,
+            'sales_count' => $validated['sales_count'] ?? null,
+            'highlights' => $highlights,
+            'package_includes' => $packageIncludes,
+            'system_requirements' => $systemRequirements,
+            'guarantees' => $guarantees,
+            'faqs' => $faqs,
         ]);
 
         if ($request->hasFile('file')) {
@@ -180,11 +254,19 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
-        if ($product->store_id !== Auth::user()->store->id) abort(403);
+        $store = Auth::user()->store;
+        if ($product->store_id !== $store->id) abort(403);
         $product->load('images');
-        $categories = ProductCategory::orderBy('name', 'asc')->get();
-        $types = ProductType::orderBy('name', 'asc')->get();
-        return view('tenant.products.edit', compact('product', 'categories', 'types'));
+        $categories = ProductCategory::whereNull('store_id')
+            ->orWhere('store_id', $store->id)
+            ->orderByRaw('store_id IS NULL DESC, name ASC')
+            ->get();
+        $types = ProductType::whereNull('store_id')
+            ->orWhere('store_id', $store->id)
+            ->orderByRaw('store_id IS NULL DESC, name ASC')
+            ->get();
+        $helpCategories = HelpCategory::orderBy('name', 'asc')->get();
+        return view('tenant.products.edit', compact('product', 'categories', 'types', 'helpCategories'));
     }
 
     public function update(Request $request, Product $product)
@@ -193,6 +275,7 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'product_category_id' => 'nullable|exists:product_categories,id',
             'product_type_id' => 'nullable|exists:product_types,id',
+            'help_category_id' => 'nullable|exists:help_categories,id',
             'description' => 'required|string',
             'demo_url' => 'nullable|url|max:255',
             'price' => 'required|numeric|min:0',
@@ -203,7 +286,15 @@ class ProductController extends Controller
             'download_links.*.url' => 'required|url|max:255',
             'images.*' => 'image|mimes:jpeg,png,jpg,webp,gif|max:2048',
             'images' => 'nullable|array|max:5',
-            'is_active' => 'boolean'
+            'is_active' => 'boolean',
+            'rating_override' => 'nullable|numeric|min:1|max:5',
+            'reviews_count' => 'nullable|integer|min:0',
+            'sales_count' => 'nullable|integer|min:0',
+            'highlights' => 'nullable|array',
+            'package_includes' => 'nullable|array',
+            'system_requirements' => 'nullable|array',
+            'guarantees' => 'nullable|array',
+            'faqs' => 'nullable|array',
         ], [
             'images.*.max' => 'Ukuran setiap gambar produk tidak boleh lebih dari 2 MB.',
             'images.*.image' => 'File harus berupa gambar.',
@@ -214,17 +305,31 @@ class ProductController extends Controller
 
         if ($product->store_id !== Auth::user()->store->id) abort(403);
 
+        $highlights = $this->cleanArrayItems($request->input('highlights'));
+        $packageIncludes = $this->cleanArrayItems($request->input('package_includes'));
+        $systemRequirements = $this->cleanAssocItems($request->input('system_requirements'));
+        $guarantees = $this->cleanAssocItems($request->input('guarantees'));
+        $faqs = $this->cleanFaqItems($request->input('faqs'));
+
         $product->update([
             'name' => $validated['name'],
-            'slug' => Str::slug($validated['name']) . '-' . Str::random(5),
             'description' => $validated['description'],
             'product_category_id' => $validated['product_category_id'] ?? null,
             'product_type_id' => $validated['product_type_id'] ?? null,
+            'help_category_id' => $validated['help_category_id'] ?? null,
             'demo_url' => $validated['demo_url'] ?? null,
             'price' => $validated['price'],
             'discount_price' => $validated['discount_price'] ?? null,
             'download_links' => $validated['download_links'] ?? null,
             'is_active' => $request->has('is_active'),
+            'rating_override' => $validated['rating_override'] ?? null,
+            'reviews_count' => $validated['reviews_count'] ?? null,
+            'sales_count' => $validated['sales_count'] ?? null,
+            'highlights' => $highlights,
+            'package_includes' => $packageIncludes,
+            'system_requirements' => $systemRequirements,
+            'guarantees' => $guarantees,
+            'faqs' => $faqs,
         ]);
 
         if ($request->hasFile('file')) {
@@ -291,5 +396,58 @@ class ProductController extends Controller
         // Set this image to main
         $image->update(['is_main' => true]);
         return back()->with('success', 'Main image updated.');
+    }
+
+    protected function cleanArrayItems($items)
+    {
+        if (!is_array($items)) return null;
+        $cleaned = [];
+        foreach ($items as $item) {
+            $val = is_string($item) ? trim($item) : $item;
+            if (!empty($val)) {
+                $cleaned[] = $val;
+            }
+        }
+        return count($cleaned) > 0 ? array_values($cleaned) : null;
+    }
+
+    protected function cleanAssocItems($items)
+    {
+        if (!is_array($items)) return null;
+        $cleaned = [];
+        foreach ($items as $item) {
+            if (is_array($item)) {
+                $title = isset($item['title']) ? trim($item['title']) : (isset($item['label']) ? trim($item['label']) : '');
+                $desc = isset($item['description']) ? trim($item['description']) : (isset($item['value']) ? trim($item['value']) : '');
+                $icon = isset($item['icon']) ? trim($item['icon']) : null;
+                if ($title !== '' || $desc !== '') {
+                    $cleaned[] = [
+                        'title' => $title,
+                        'description' => $desc,
+                        'icon' => $icon,
+                    ];
+                }
+            }
+        }
+        return count($cleaned) > 0 ? array_values($cleaned) : null;
+    }
+
+    protected function cleanFaqItems($items)
+    {
+        if (!is_array($items)) return null;
+        $cleaned = [];
+        foreach ($items as $item) {
+            if (is_array($item)) {
+                $q = isset($item['question']) ? trim($item['question']) : '';
+                $a = isset($item['answer']) ? trim($item['answer']) : '';
+                if ($q !== '' && $a !== '') {
+                    $cleaned[] = [
+                        'question' => $q,
+                        'answer' => $a,
+                    ];
+                }
+            }
+        }
+        return count($cleaned) > 0 ? array_values($cleaned) : null;
     }
 }

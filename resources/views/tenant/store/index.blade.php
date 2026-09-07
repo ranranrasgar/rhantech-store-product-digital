@@ -99,6 +99,27 @@
                         @error('name') <span class="text-xs text-rose-500 mt-1 block">{{ $message }}</span> @enderror
                     </div>
 
+                    <!-- Custom URL / Slug Toko -->
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <label for="slug" class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                                Tautan URL / Slug Toko
+                            </label>
+                            <span class="text-[11px] text-slate-400">Bebas ditentukan sendiri (unik)</span>
+                        </div>
+                        <div class="flex items-center rounded-xl bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] overflow-hidden focus-within:ring-2 focus-within:ring-sky-500/20 focus-within:border-sky-500">
+                            <span class="px-3.5 py-2.5 text-xs md:text-sm font-semibold text-slate-400 border-r border-slate-200 dark:border-[#222f49] bg-slate-100/60 dark:bg-[#111726] select-none whitespace-nowrap">
+                                {{ url('/') }}/
+                            </span>
+                            <input type="text" id="slug" name="slug" value="{{ old('slug', $store->slug ?? '') }}" placeholder="gudang-aplikasi"
+                                class="flex-1 px-3.5 py-2.5 text-xs md:text-sm bg-transparent border-0 focus:outline-none text-slate-900 dark:text-white font-mono">
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-1.5">
+                            Gunakan huruf kecil, angka, atau strip (-). Contoh: <strong class="text-sky-600 dark:text-sky-400">gudang-aplikasi</strong> sehingga alamat tokomu menjadi <span class="font-mono text-[11px]">{{ url('/') }}/gudang-aplikasi</span>
+                        </p>
+                        @error('slug') <span class="text-xs text-rose-500 mt-1 block font-semibold">{{ $message }}</span> @enderror
+                    </div>
+
                     <!-- Deskripsi Toko -->
                     <div>
                         <label for="description" class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">

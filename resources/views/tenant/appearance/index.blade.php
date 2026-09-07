@@ -762,7 +762,7 @@
             
             save() {
                 this.isSaving = true;
-                fetch('{{ url('/tenant/appearance') }}', {
+                fetch('{{ route('tenant.appearance.update') }}', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

@@ -289,7 +289,7 @@
              x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" 
              class="inline-block align-bottom bg-white dark:bg-[#111726] rounded-2xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg w-full border border-slate-200 dark:border-[#222f49]">
             
-            <form :action="`/tenant/orders/${orderId}`" method="POST">
+            <form :action="`/dashboard/orders/${orderId}`" method="POST">
                 @csrf
                 @method('PUT')
                 

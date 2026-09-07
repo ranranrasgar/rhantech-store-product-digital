@@ -28,26 +28,165 @@
                 @error('name')<span class="text-error text-xs">{{ $message }}</span>@enderror
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-md" x-data="{
+                showAddCategoryModal: false,
+                showAddTypeModal: false,
+                newCategoryName: '',
+                newTypeName: '',
+                loadingCat: false,
+                loadingType: false,
+
+                async addCategory() {
+                    if (!this.newCategoryName.trim()) return;
+                    this.loadingCat = true;
+                    try {
+                        const res = await fetch('{{ route('tenant.categories.quick-store') }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'Accept': 'application/json'
+                            },
+                            body: JSON.stringify({ name: this.newCategoryName })
+                        });
+                        const data = await res.json();
+                        if (data.success) {
+                            const sel = document.getElementById('category-select');
+                            const opt = document.createElement('option');
+                            opt.value = data.category.id;
+                            opt.text = data.category.name + ' (Toko Anda)';
+                            opt.selected = true;
+                            sel.appendChild(opt);
+                            this.newCategoryName = '';
+                            this.showAddCategoryModal = false;
+                        } else {
+                            alert(data.message || 'Gagal menambahkan kategori');
+                        }
+                    } catch (e) {
+                        alert('Terjadi kesalahan');
+                    } finally {
+                        this.loadingCat = false;
+                    }
+                },
+
+                async addType() {
+                    if (!this.newTypeName.trim()) return;
+                    this.loadingType = true;
+                    try {
+                        const res = await fetch('{{ route('tenant.types.quick-store') }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'Accept': 'application/json'
+                            },
+                            body: JSON.stringify({ name: this.newTypeName })
+                        });
+                        const data = await res.json();
+                        if (data.success) {
+                            const sel = document.getElementById('type-select');
+                            const opt = document.createElement('option');
+                            opt.value = data.type.id;
+                            opt.text = data.type.name + ' (Toko Anda)';
+                            opt.selected = true;
+                            sel.appendChild(opt);
+                            this.newTypeName = '';
+                            this.showAddTypeModal = false;
+                        } else {
+                            alert(data.message || 'Gagal menambahkan tipe');
+                        }
+                    } catch (e) {
+                        alert('Terjadi kesalahan');
+                    } finally {
+                        this.loadingType = false;
+                    }
+                }
+            }">
                 <div>
-                    <label class="block font-label-md text-on-surface mb-xs">Kategori</label>
-                    <select name="product_category_id" class="w-full pl-4 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-secondary focus:ring-1 focus:ring-secondary/20">
+                    <div class="flex items-center justify-between mb-xs">
+                        <label class="block font-label-md text-on-surface">Kategori</label>
+                        <button type="button" @click="showAddCategoryModal = true" class="text-xs font-semibold text-primary hover:underline flex items-center gap-0.5">
+                            <span class="material-symbols-outlined text-sm">add_circle</span> Buat Kategori Toko
+                        </button>
+                    </div>
+                    <select id="category-select" name="product_category_id" class="w-full pl-4 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-secondary focus:ring-1 focus:ring-secondary/20">
                         <option value="">-- Tanpa Kategori --</option>
-                        @foreach($categories as $cat)
-                        <option value="{{ $cat->id }}" {{ old('product_category_id', $sourceProduct->product_category_id ?? '') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
-                        @endforeach
+                        <optgroup label="🌐 Kategori Platform">
+                            @foreach($categories->whereNull('store_id') as $cat)
+                            <option value="{{ $cat->id }}" {{ old('product_category_id', $sourceProduct->product_category_id ?? '') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
+                            @endforeach
+                        </optgroup>
+                        @if($categories->whereNotNull('store_id')->count() > 0)
+                        <optgroup label="🏪 Kategori Toko Anda">
+                            @foreach($categories->whereNotNull('store_id') as $cat)
+                            <option value="{{ $cat->id }}" {{ old('product_category_id', $sourceProduct->product_category_id ?? '') == $cat->id ? 'selected' : '' }}>{{ $cat->name }} (Toko Anda)</option>
+                            @endforeach
+                        </optgroup>
+                        @endif
                     </select>
                     @error('product_category_id')<span class="text-error text-xs">{{ $message }}</span>@enderror
                 </div>
                 <div>
-                    <label class="block font-label-md text-on-surface mb-xs">Tipe Produk</label>
-                    <select name="product_type_id" class="w-full pl-4 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-secondary focus:ring-1 focus:ring-secondary/20">
+                    <div class="flex items-center justify-between mb-xs">
+                        <label class="block font-label-md text-on-surface">Tipe Produk</label>
+                        <button type="button" @click="showAddTypeModal = true" class="text-xs font-semibold text-primary hover:underline flex items-center gap-0.5">
+                            <span class="material-symbols-outlined text-sm">add_circle</span> Buat Tipe Toko
+                        </button>
+                    </div>
+                    <select id="type-select" name="product_type_id" class="w-full pl-4 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-secondary focus:ring-1 focus:ring-secondary/20">
                         <option value="">-- Tanpa Tipe --</option>
-                        @foreach($types as $type)
-                        <option value="{{ $type->id }}" {{ old('product_type_id', $sourceProduct->product_type_id ?? '') == $type->id ? 'selected' : '' }}>{{ $type->name }}</option>
-                        @endforeach
+                        <optgroup label="🌐 Tipe Platform">
+                            @foreach($types->whereNull('store_id') as $type)
+                            <option value="{{ $type->id }}" {{ old('product_type_id', $sourceProduct->product_type_id ?? '') == $type->id ? 'selected' : '' }}>{{ $type->name }}</option>
+                            @endforeach
+                        </optgroup>
+                        @if($types->whereNotNull('store_id')->count() > 0)
+                        <optgroup label="🏪 Tipe Toko Anda">
+                            @foreach($types->whereNotNull('store_id') as $type)
+                            <option value="{{ $type->id }}" {{ old('product_type_id', $sourceProduct->product_type_id ?? '') == $type->id ? 'selected' : '' }}>{{ $type->name }} (Toko Anda)</option>
+                            @endforeach
+                        </optgroup>
+                        @endif
                     </select>
                     @error('product_type_id')<span class="text-error text-xs">{{ $message }}</span>@enderror
+                </div>
+
+                <!-- Modal Buat Kategori Toko -->
+                <div x-show="showAddCategoryModal" x-cloak class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+                    <div class="bg-surface rounded-xl border border-outline-variant p-5 w-full max-w-sm shadow-xl" @click.away="showAddCategoryModal = false">
+                        <h3 class="text-sm font-bold text-on-surface mb-2 flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-primary text-lg">folder_open</span>
+                            Tambah Kategori Toko Anda
+                        </h3>
+                        <p class="text-xs text-on-surface-variant mb-3">Kategori ini khusus dibuat untuk toko Anda dan akan muncul di filter katalog.</p>
+                        <input type="text" x-model="newCategoryName" placeholder="Nama kategori baru..." class="w-full px-3 py-2 text-sm bg-surface-container-lowest border border-outline-variant rounded-lg mb-3 focus:outline-none focus:border-primary">
+                        <div class="flex justify-end gap-2">
+                            <button type="button" @click="showAddCategoryModal = false" class="px-3 py-1.5 text-xs text-on-surface-variant hover:bg-surface-container rounded-lg">Batal</button>
+                            <button type="button" @click="addCategory()" :disabled="loadingCat" class="px-3.5 py-1.5 text-xs font-bold bg-primary text-white rounded-lg hover:opacity-90 flex items-center gap-1">
+                                <span x-show="loadingCat" class="material-symbols-outlined animate-spin text-xs">progress_activity</span>
+                                Simpan Kategori
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Buat Tipe Toko -->
+                <div x-show="showAddTypeModal" x-cloak class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+                    <div class="bg-surface rounded-xl border border-outline-variant p-5 w-full max-w-sm shadow-xl" @click.away="showAddTypeModal = false">
+                        <h3 class="text-sm font-bold text-on-surface mb-2 flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-primary text-lg">devices</span>
+                            Tambah Tipe Toko Anda
+                        </h3>
+                        <p class="text-xs text-on-surface-variant mb-3">Tipe/platform ini khusus dibuat untuk produk toko Anda.</p>
+                        <input type="text" x-model="newTypeName" placeholder="Nama tipe/platform baru..." class="w-full px-3 py-2 text-sm bg-surface-container-lowest border border-outline-variant rounded-lg mb-3 focus:outline-none focus:border-primary">
+                        <div class="flex justify-end gap-2">
+                            <button type="button" @click="showAddTypeModal = false" class="px-3 py-1.5 text-xs text-on-surface-variant hover:bg-surface-container rounded-lg">Batal</button>
+                            <button type="button" @click="addType()" :disabled="loadingType" class="px-3.5 py-1.5 text-xs font-bold bg-primary text-white rounded-lg hover:opacity-90 flex items-center gap-1">
+                                <span x-show="loadingType" class="material-symbols-outlined animate-spin text-xs">progress_activity</span>
+                                Simpan Tipe
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -76,18 +215,6 @@
                 @error('demo_url')<span class="text-error text-xs">{{ $message }}</span>@enderror
             </div>
 
-            <div class="p-md bg-secondary-container/20 border border-secondary-container rounded-lg">
-                <label class="block font-label-md text-on-surface mb-xs">File Digital (ZIP/RAR) (Opsional)</label>
-                <p class="text-xs text-on-surface-variant mb-2">
-                    @if(isset($sourceProduct) && $sourceProduct->file_path)
-                        <span class="text-secondary font-semibold">✓ File bawaan produk asal sudah otomatis disalin.</span> Kosongkan jika tidak ingin mengganti file.
-                    @else
-                        Unggah file langsung. Maksimal 100MB.
-                    @endif
-                </p>
-                <input type="file" name="file" class="w-full pl-4 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-secondary focus:ring-1 focus:ring-secondary/20">
-                @error('file')<span class="text-error text-xs">{{ $message }}</span>@enderror
-            </div>
 
             <div class="p-md bg-surface-container-low border border-outline-variant rounded-lg">
                 <div class="flex justify-between items-center mb-xs">
@@ -147,6 +274,8 @@
                 @error('images')<span class="text-error text-xs">{{ $message }}</span>@enderror
                 @error('images.*')<span class="text-error text-xs">{{ $message }}</span>@enderror
             </div>
+
+            @include('products._custom_fields', ['productItem' => $sourceProduct ?? null])
 
             <div>
                 <label class="flex items-center gap-2 cursor-pointer">
