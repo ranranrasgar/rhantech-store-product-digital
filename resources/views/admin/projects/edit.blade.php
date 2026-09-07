@@ -228,22 +228,8 @@
                         <input type="date" name="completed_at" value="{{ old('completed_at', $project->completed_at ? $project->completed_at->format('Y-m-d') : '') }}" class="w-full bg-surface-container-low border border-[#CBD5E1] rounded-lg py-2 px-4 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all">
                         @error('completed_at')<span class="text-error text-xs">{{ $message }}</span>@enderror
                     </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-md items-end">
-                    <div>
-                        <label class="block font-label-md text-on-surface mb-xs">Thumbnail Image</label>
-                        @if($project->thumbnail)
-                            <div class="mb-2">
-                                <img src="{{ asset('storage/' . $project->thumbnail) }}" alt="Thumbnail" class="w-32 h-auto rounded border border-outline-variant ">
-                            </div>
-                        @endif
-                        <input type="file" name="thumbnail" accept="image/*" class="w-full bg-surface-container-low border border-[#CBD5E1] rounded-lg py-2 px-4 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all">
-                        <p class="text-xs text-on-surface-variant mt-1">Leave blank to keep current thumbnail.</p>
-                        @error('thumbnail')<span class="text-error text-xs">{{ $message }}</span>@enderror
-                    </div>
-                    <div class="flex gap-4">
-                        <div class="flex-1">
+                    <div class="grid grid-cols-2 gap-md items-end">
+                        <div>
                             <label class="block font-label-md text-on-surface mb-xs">Status</label>
                             <select name="status" class="w-full bg-surface-container-low border border-[#CBD5E1] rounded-lg py-2 px-4 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all">
                                 <option value="draft" {{ old('status', $project->status) == 'draft' ? 'selected' : '' }}>Draft</option>
@@ -252,15 +238,27 @@
                             </select>
                             @error('status')<span class="text-error text-xs">{{ $message }}</span>@enderror
                         </div>
-                        <div class="flex-1">
+                        <div class="pb-2">
                             <label class="block font-label-md text-on-surface mb-xs">Featured</label>
-                            <label class="flex items-center gap-2 mt-2 cursor-pointer">
+                            <label class="flex items-center gap-2 mt-1 cursor-pointer">
                                 <input type="hidden" name="is_featured" value="0">
                                 <input type="checkbox" name="is_featured" value="1" {{ old('is_featured', $project->is_featured) ? 'checked' : '' }} class="w-5 h-5 rounded border-[#CBD5E1] text-primary focus:ring-primary">
-                                <span class="font-body-md text-on-surface">Yes</span>
+                                <span class="font-body-md text-on-surface text-sm">Ya (Featured)</span>
                             </label>
                         </div>
                     </div>
+                </div>
+
+                <div>
+                    <label class="block font-label-md text-on-surface mb-xs">Thumbnail Image</label>
+                    @if($project->thumbnail)
+                        <div class="mb-2">
+                            <img src="{{ media_url($project->thumbnail) }}" alt="Thumbnail" class="w-32 h-auto rounded border border-outline-variant shadow-xs">
+                        </div>
+                    @endif
+                    <input type="file" name="thumbnail" accept="image/*" class="w-full bg-surface-container-low border border-[#CBD5E1] rounded-lg py-2 px-4 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all">
+                    <p class="text-xs text-on-surface-variant mt-1">Kosongkan jika tidak ingin mengubah thumbnail.</p>
+                    @error('thumbnail')<span class="text-error text-xs">{{ $message }}</span>@enderror
                 </div>
 
                 <div class="flex justify-end gap-sm mt-lg pt-md border-t border-outline-variant">
