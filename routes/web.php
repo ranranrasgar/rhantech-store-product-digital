@@ -135,6 +135,10 @@ Route::middleware(['auth', 'is_admin'])->prefix('admin')->name('admin.')->group(
     Route::get('company/backup/download/{filename}', [CompanyProfileController::class, 'downloadBackup'])->name('company.backup.download')->where('filename', '.*');
     Route::delete('company/backup/{filename}', [CompanyProfileController::class, 'deleteBackup'])->name('company.backup.delete')->where('filename', '.*');
     Route::post('company/restore', [CompanyProfileController::class, 'restoreDatabase'])->name('company.restore');
+    Route::post('company/backup-media', [CompanyProfileController::class, 'backupMedia'])->name('company.backup_media');
+    Route::get('company/backup-media/download/{filename}', [CompanyProfileController::class, 'downloadMediaBackup'])->name('company.backup_media.download')->where('filename', '.*');
+    Route::delete('company/backup-media/{filename}', [CompanyProfileController::class, 'deleteMediaBackup'])->name('company.backup_media.delete')->where('filename', '.*');
+    Route::post('company/restore-media', [CompanyProfileController::class, 'restoreMedia'])->name('company.restore_media');
     Route::resource('company', CompanyProfileController::class);
     Route::resource('services', ServiceController::class);
     Route::resource('clients', ClientController::class);

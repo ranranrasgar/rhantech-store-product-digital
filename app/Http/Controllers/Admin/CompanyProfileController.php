@@ -63,7 +63,7 @@ class CompanyProfileController extends Controller
             ];
         }
 
-        // List existing backups
+        // List existing database backups
         $backups = [];
         $backupDir = storage_path('app/backups');
         if (!file_exists($backupDir)) {
@@ -81,7 +81,23 @@ class CompanyProfileController extends Controller
         }
         usort($backups, fn($a, $b) => strcmp($b['filename'], $a['filename']));
 
-        return view('admin.company.index', compact('profile', 'activeTab', 'dbStats', 'dbTables', 'backups'));
+        // List existing media backups (.zip)
+        $mediaBackups = [];
+        $mediaBackupFiles = glob($backupDir . DIRECTORY_SEPARATOR . '*.zip') ?: [];
+        foreach ($mediaBackupFiles as $filePath) {
+            $filename = basename($filePath);
+            $mediaBackups[] = [
+                'filename'   => $filename,
+                'size'       => $this->formatBytes(filesize($filePath)),
+                'created_at' => date('d M Y H:i', filemtime($filePath)),
+            ];
+        }
+        usort($mediaBackups, fn($a, $b) => strcmp($b['filename'], $a['filename']));
+
+        // Media Storage Stats
+        $mediaStats = $this->getMediaStorageStats();
+
+        return view('admin.company.index', compact('profile', 'activeTab', 'dbStats', 'dbTables', 'backups', 'mediaBackups', 'mediaStats'));
     }
 
     public function store(Request $request)
@@ -319,6 +335,210 @@ class CompanyProfileController extends Controller
             return redirect()->route('admin.company.index', ['tab' => 'backup'])
                 ->with('error', 'Restore gagal: ' . $e->getMessage());
         }
+    }
+
+    // ===================== MEDIA BACKUP & RESTORE =====================
+
+    /**
+     * Backup seluruh file media/upload di storage/app/public menjadi file .zip
+     */
+    public function backupMedia()
+    {
+        if (!class_exists(\ZipArchive::class)) {
+            return redirect()->route('admin.company.index', ['tab' => 'backup'])
+                ->with('error', 'Ekstensi PHP ZipArchive tidak terinstall/aktif di server PHP Anda.');
+        }
+
+        $mediaSource = storage_path('app/public');
+        if (!file_exists($mediaSource)) {
+            return redirect()->route('admin.company.index', ['tab' => 'backup'])
+                ->with('error', 'Direktori media (storage/app/public) tidak ditemukan.');
+        }
+
+        $dir = storage_path('app/backups');
+        if (!file_exists($dir)) {
+            mkdir($dir, 0755, true);
+        }
+
+        $filename = 'backup_media_' . now()->format('Ymd_His') . '.zip';
+        $zipPath  = $dir . DIRECTORY_SEPARATOR . $filename;
+
+        @set_time_limit(300);
+        @ini_set('memory_limit', '512M');
+
+        $zip = new \ZipArchive();
+        if ($zip->open($zipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
+            return redirect()->route('admin.company.index', ['tab' => 'backup'])
+                ->with('error', 'Gagal membuat file arsip ZIP.');
+        }
+
+        $files = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($mediaSource, \FilesystemIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::SELF_FIRST
+        );
+
+        $fileCount = 0;
+        foreach ($files as $file) {
+            $filePath = $file->getRealPath();
+            $relativePath = substr($filePath, strlen($mediaSource) + 1);
+
+            // Normalisasi separator path untuk ZIP
+            $relativePath = str_replace('\\', '/', $relativePath);
+
+            if ($file->isDir()) {
+                $zip->addEmptyDir($relativePath);
+            } elseif ($file->isFile()) {
+                $zip->addFile($filePath, $relativePath);
+                $fileCount++;
+            }
+        }
+
+        $zip->close();
+
+        if (!file_exists($zipPath) || filesize($zipPath) === 0) {
+            if (file_exists($zipPath)) unlink($zipPath);
+            return redirect()->route('admin.company.index', ['tab' => 'backup'])
+                ->with('error', 'Media backup gagal atau kosong.');
+        }
+
+        $fileSizeStr = $this->formatBytes(filesize($zipPath));
+
+        return redirect()->route('admin.company.index', ['tab' => 'backup'])
+            ->with('success', "Backup media berhasil dibuat: {$filename} ({$fileSizeStr}, {$fileCount} file).");
+    }
+
+    public function downloadMediaBackup(string $filename)
+    {
+        if (!preg_match('/^[\w\-\.]+\.zip$/', $filename)) {
+            abort(400, 'Nama file media tidak valid.');
+        }
+
+        $path = storage_path('app/backups/' . $filename);
+
+        if (!file_exists($path)) {
+            abort(404, 'File backup media tidak ditemukan.');
+        }
+
+        return response()->download($path, $filename);
+    }
+
+    public function deleteMediaBackup(string $filename)
+    {
+        if (!preg_match('/^[\w\-\.]+\.zip$/', $filename)) {
+            abort(400, 'Nama file tidak valid.');
+        }
+
+        $path = storage_path('app/backups/' . $filename);
+        if (file_exists($path)) {
+            unlink($path);
+        }
+
+        return redirect()->route('admin.company.index', ['tab' => 'backup'])
+            ->with('success', "Backup media '{$filename}' berhasil dihapus.");
+    }
+
+    public function restoreMedia(Request $request)
+    {
+        $request->validate([
+            'media_zip' => 'required|file|mimes:zip|max:512000', // max 500MB
+        ]);
+
+        if (!class_exists(\ZipArchive::class)) {
+            return redirect()->route('admin.company.index', ['tab' => 'backup'])
+                ->with('error', 'Ekstensi PHP ZipArchive tidak terinstall/aktif di server.');
+        }
+
+        $file = $request->file('media_zip');
+        $zip = new \ZipArchive();
+
+        if ($zip->open($file->getRealPath()) !== true) {
+            return redirect()->route('admin.company.index', ['tab' => 'backup'])
+                ->with('error', 'Gagal membuka file ZIP media.');
+        }
+
+        $destination = storage_path('app/public');
+        if (!file_exists($destination)) {
+            mkdir($destination, 0755, true);
+        }
+
+        @set_time_limit(300);
+        @ini_set('memory_limit', '512M');
+
+        // Ekstrak file zip ke storage/app/public
+        $zip->extractTo($destination);
+        $totalFiles = $zip->numFiles;
+        $zip->close();
+
+        // Pastikan symlink storage terhubung
+        try {
+            Artisan::call('storage:link');
+        } catch (\Throwable $e) {
+            // Abaikan jika sudah ada symlink
+        }
+
+        return redirect()->route('admin.company.index', ['tab' => 'backup'])
+            ->with('success', "Media berhasil direstore ({$totalFiles} file/folder diekstrak) ke storage publik.");
+    }
+
+    /**
+     * Hitung informasi statistik file media di storage/app/public
+     */
+    private function getMediaStorageStats(): array
+    {
+        $mediaPath = storage_path('app/public');
+        if (!file_exists($mediaPath)) {
+            return [
+                'total_size' => '0 B',
+                'file_count' => 0,
+                'folders'    => [],
+            ];
+        }
+
+        $totalBytes = 0;
+        $fileCount = 0;
+        $folders = [];
+
+        try {
+            $iterator = new \RecursiveIteratorIterator(
+                new \RecursiveDirectoryIterator($mediaPath, \FilesystemIterator::SKIP_DOTS),
+                \RecursiveIteratorIterator::SELF_FIRST
+            );
+
+            foreach ($iterator as $item) {
+                if ($item->isFile()) {
+                    $size = $item->getSize();
+                    $totalBytes += $size;
+                    $fileCount++;
+
+                    $rel = substr($item->getPath(), strlen($mediaPath) + 1);
+                    $firstFolder = explode(DIRECTORY_SEPARATOR, $rel)[0] ?: 'root';
+
+                    if (!isset($folders[$firstFolder])) {
+                        $folders[$firstFolder] = ['count' => 0, 'bytes' => 0];
+                    }
+                    $folders[$firstFolder]['count']++;
+                    $folders[$firstFolder]['bytes'] += $size;
+                }
+            }
+        } catch (\Throwable $e) {
+            // handle error gracefully
+        }
+
+        $formattedFolders = [];
+        foreach ($folders as $folderName => $data) {
+            $formattedFolders[] = [
+                'name'  => $folderName,
+                'count' => $data['count'],
+                'size'  => $this->formatBytes($data['bytes']),
+            ];
+        }
+
+        return [
+            'total_size' => $this->formatBytes($totalBytes),
+            'total_bytes'=> $totalBytes,
+            'file_count' => $fileCount,
+            'folders'    => $formattedFolders,
+        ];
     }
 
     private function formatBytes(int $bytes): string

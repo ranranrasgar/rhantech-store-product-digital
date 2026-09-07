@@ -480,31 +480,175 @@
                 </table>
             </div>
         </div>
+
+        <!-- Media Storage Breakdown Card -->
+        <div class="bg-surface rounded-2xl border border-outline-variant overflow-hidden shadow-xs">
+            <div class="p-6 border-b border-outline-variant flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h3 class="text-base font-bold text-on-surface flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary text-[20px]">folder_special</span>
+                        Penggunaan Media Storage (storage/app/public)
+                    </h3>
+                    <p class="text-xs text-on-surface-variant mt-1">
+                        Total pemakaian: <strong>{{ $mediaStats['total_size'] ?? '0 B' }}</strong> ({{ number_format($mediaStats['file_count'] ?? 0) }} file)
+                    </p>
+                </div>
+                <button type="button" @click="currentTab = 'backup'" class="px-4 py-2 bg-primary/10 border border-primary/20 text-primary rounded-xl text-xs font-bold hover:bg-primary/20 transition-all flex items-center gap-1.5 w-fit">
+                    <span class="material-symbols-outlined text-[16px]">cloud_sync</span>
+                    Kelola Backup Media
+                </button>
+            </div>
+            <div class="p-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+                @forelse($mediaStats['folders'] ?? [] as $folder)
+                <div class="p-3 bg-surface-container-low rounded-xl border border-outline-variant/60 flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined text-[18px]">folder</span>
+                    </div>
+                    <div class="min-w-0">
+                        <div class="text-xs font-bold text-on-surface truncate capitalize">{{ $folder['name'] }}</div>
+                        <div class="text-[11px] text-on-surface-variant">{{ $folder['count'] }} file &bull; {{ $folder['size'] }}</div>
+                    </div>
+                </div>
+                @empty
+                <div class="col-span-full text-center py-4 text-xs text-on-surface-variant">Belum ada file media yang tersimpan.</div>
+                @endforelse
+            </div>
+        </div>
     </div>
 
     <!-- ==================== TAB BACKUP & RESTORE ==================== -->
     <div x-show="currentTab === 'backup'" x-transition style="display: none;" class="space-y-6">
 
+        <!-- SECTION 1: BACKUP MEDIA & ASSET STORAGE -->
+        <div class="bg-surface rounded-2xl border border-outline-variant overflow-hidden shadow-xs">
+            <div class="p-6 border-b border-outline-variant flex flex-col md:flex-row md:items-center justify-between gap-4 bg-primary/[0.02]">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">Media Storage</span>
+                        <h3 class="text-base font-bold text-on-surface flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary text-[22px]">perm_media</span>
+                            Backup Media &amp; Gambar
+                        </h3>
+                    </div>
+                    <p class="text-xs text-on-surface-variant mt-1.5">
+                        Mengarsipkan seluruh file upload gambar &amp; dokumen terkait data (produk, avatar, banner, logo, klien, ads) dalam format arsip <strong>.zip</strong>.
+                    </p>
+                    <div class="flex items-center gap-3 mt-2 text-xs text-on-surface-variant font-medium">
+                        <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px] text-primary">data_usage</span> Pemakaian: <strong class="text-on-surface ml-0.5">{{ $mediaStats['total_size'] ?? '0 B' }}</strong></span>
+                        <span>&bull;</span>
+                        <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px] text-primary">image</span> Total File: <strong class="text-on-surface ml-0.5">{{ number_format($mediaStats['file_count'] ?? 0) }} file</strong></span>
+                    </div>
+                </div>
+                <form action="{{ route('admin.company.backup_media') }}" method="POST">
+                    @csrf
+                    <button type="submit" onclick="this.disabled=true; this.innerHTML='<span class=\'material-symbols-outlined text-[16px] animate-spin\'>sync</span> Mengompres media...'; this.form.submit();"
+                            class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-sm whitespace-nowrap cursor-pointer">
+                        <span class="material-symbols-outlined text-[18px]">archive</span>
+                        Buat Backup Media (.zip)
+                    </button>
+                </form>
+            </div>
+
+            {{-- Daftar Backup Media --}}
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                    <thead class="bg-surface-container-low text-on-surface-variant uppercase font-bold">
+                        <tr>
+                            <th class="px-6 py-3">Nama Arsip Media</th>
+                            <th class="px-6 py-3">Ukuran Arsip</th>
+                            <th class="px-6 py-3">Tanggal Dibuat</th>
+                            <th class="px-6 py-3 text-right">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-outline-variant">
+                        @forelse($mediaBackups as $mBackup)
+                        <tr class="hover:bg-surface-container-low/50 transition-colors">
+                            <td class="px-6 py-3 font-mono text-on-surface flex items-center gap-2">
+                                <span class="material-symbols-outlined text-[17px] text-emerald-500">folder_zip</span>
+                                <span class="font-bold">{{ $mBackup['filename'] }}</span>
+                            </td>
+                            <td class="px-6 py-3 text-on-surface-variant font-mono">{{ $mBackup['size'] }}</td>
+                            <td class="px-6 py-3 text-on-surface-variant">{{ $mBackup['created_at'] }}</td>
+                            <td class="px-6 py-3 text-right">
+                                <div class="flex items-center justify-end gap-2">
+                                    <a href="{{ route('admin.company.backup_media.download', $mBackup['filename']) }}"
+                                       class="px-3 py-1.5 bg-surface-container border border-outline-variant text-on-surface rounded-lg text-[11px] font-bold hover:bg-surface-container-high transition-all flex items-center gap-1 shadow-2xs">
+                                        <span class="material-symbols-outlined text-[13px] text-emerald-500">download</span> Unduh ZIP
+                                    </a>
+                                    <form action="{{ route('admin.company.backup_media.delete', $mBackup['filename']) }}" method="POST"
+                                          onsubmit="return confirm('Hapus file backup media ini?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit"
+                                                class="px-3 py-1.5 bg-error/10 border border-error/30 text-error rounded-lg text-[11px] font-bold hover:bg-error/20 transition-all flex items-center gap-1 cursor-pointer">
+                                            <span class="material-symbols-outlined text-[13px]">delete</span> Hapus
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="4" class="px-6 py-8 text-center text-on-surface-variant">
+                                <div class="flex flex-col items-center justify-center gap-2">
+                                    <span class="material-symbols-outlined text-[32px] text-on-surface-variant/40">perm_media</span>
+                                    <span>Belum ada backup media. Klik <strong>"Buat Backup Media (.zip)"</strong> di atas untuk mengarsipkan semua media upload.</span>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+            {{-- Restore Media --}}
+            <div class="p-6 border-t border-outline-variant bg-surface-container-lowest">
+                <h4 class="text-xs font-bold text-on-surface uppercase tracking-wider mb-1 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[16px] text-emerald-600">unarchive</span>
+                    Restore Media &amp; Gambar dari File ZIP
+                </h4>
+                <p class="text-xs text-on-surface-variant mb-4">
+                    Unggah file backup media <strong>.zip</strong> untuk mengekstrak ulang file gambar &amp; asset ke direktori media publik. File dengan nama sama akan diperbarui otomatis.
+                </p>
+                <form action="{{ route('admin.company.restore_media') }}" method="POST" enctype="multipart/form-data"
+                      onsubmit="return confirm('Restore media akan mengekstrak file ke storage publik. Lanjutkan?');"
+                      class="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+                    @csrf
+                    <input type="file" name="media_zip" accept=".zip" required
+                           class="block text-xs text-on-surface-variant file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-surface-container file:text-on-surface hover:file:bg-surface-container-high transition-all cursor-pointer">
+                    <button type="submit"
+                            class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-sm whitespace-nowrap cursor-pointer">
+                        <span class="material-symbols-outlined text-[16px]">unarchive</span>
+                        Restore Media
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- SECTION 2: BACKUP DATABASE -->
         <div class="bg-surface rounded-2xl border border-outline-variant overflow-hidden shadow-xs">
             <div class="p-6 border-b border-outline-variant flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h3 class="text-base font-bold text-on-surface flex items-center gap-2">
-                        <span class="material-symbols-outlined text-primary text-[20px]">backup</span>
-                        Backup & Restore Database
-                    </h3>
-                    <p class="text-xs text-on-surface-variant mt-1">Buat backup database ke server dan unduh kapan saja dari daftar di bawah.</p>
+                    <div class="flex items-center gap-2">
+                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-sky-500/10 text-sky-600 border border-sky-500/20">SQL Data</span>
+                        <h3 class="text-base font-bold text-on-surface flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary text-[20px]">database</span>
+                            Backup &amp; Restore Database (SQL)
+                        </h3>
+                    </div>
+                    <p class="text-xs text-on-surface-variant mt-1.5">Buat backup database MySQL ke server dan unduh kapan saja dalam format <strong>.sql</strong>.</p>
                 </div>
                 <form action="{{ route('admin.company.backup') }}" method="POST">
                     @csrf
-                    <button type="submit" onclick="this.disabled=true; this.innerText='Membuat backup...'; this.form.submit();"
-                            class="px-5 py-2.5 bg-primary text-on-primary rounded-xl text-xs font-bold hover:brightness-110 transition-all flex items-center gap-2 shadow-sm whitespace-nowrap">
+                    <button type="submit" onclick="this.disabled=true; this.innerHTML='<span class=\'material-symbols-outlined text-[16px] animate-spin\'>sync</span> Membuat backup...'; this.form.submit();"
+                            class="px-5 py-2.5 bg-primary text-on-primary rounded-xl text-xs font-bold hover:brightness-110 transition-all flex items-center gap-2 shadow-sm whitespace-nowrap cursor-pointer">
                         <span class="material-symbols-outlined text-[16px]">add_circle</span>
                         Buat Backup Database
                     </button>
                 </form>
             </div>
 
-            {{-- Daftar Backup --}}
+            {{-- Daftar Backup Database --}}
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-xs">
                     <thead class="bg-surface-container-low text-on-surface-variant uppercase font-bold">
@@ -545,7 +689,7 @@
                         @empty
                         <tr>
                             <td colspan="4" class="px-6 py-8 text-center text-on-surface-variant">
-                                Belum ada backup. Klik "Buat & Unduh Backup" untuk membuat backup pertama.
+                                Belum ada backup. Klik "Buat Backup Database" untuk membuat backup pertama.
                             </td>
                         </tr>
                         @endforelse
@@ -553,7 +697,7 @@
                 </table>
             </div>
 
-            {{-- Restore --}}
+            {{-- Restore Database --}}
             <div class="p-6 border-t border-outline-variant bg-surface-container-lowest">
                 <h4 class="text-xs font-bold text-on-surface uppercase tracking-wider mb-1 flex items-center gap-2">
                     <span class="material-symbols-outlined text-[16px] text-amber-500">restore</span>
