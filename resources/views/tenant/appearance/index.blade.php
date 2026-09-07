@@ -151,14 +151,14 @@
 
                 <!-- Desktop Store Header Banner -->
                 <div class="w-full h-[220px] bg-slate-900 text-white relative overflow-hidden flex items-end p-6 border-b border-slate-200 dark:border-[#222f49] group/header">
-                    <div class="absolute inset-0 bg-cover bg-center opacity-40 mix-blend-overlay transition-all" :style="headerBanner ? `background-image: url('${headerBanner}')` : ''"></div>
-                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/80 to-transparent pointer-events-none"></div>
+                    <div class="absolute inset-0 bg-cover bg-center transition-all duration-300" :style="headerBanner ? `background-image: url('${headerBanner}')` : ''" :class="headerBanner ? 'opacity-85' : 'opacity-20'"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent pointer-events-none"></div>
                     
                     <!-- Upload Header Banner Button -->
-                    <div class="absolute top-4 right-4 z-20 opacity-0 group-hover/header:opacity-100 transition-opacity">
-                        <label class="cursor-pointer bg-white/20 hover:bg-white/30 backdrop-blur-md text-white px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 border border-white/30 transition-colors shadow-lg">
-                            <span class="material-symbols-outlined text-[18px]">photo_camera</span>
-                            Ganti Background
+                    <div class="absolute top-4 right-4 z-20">
+                        <label class="cursor-pointer bg-black/50 hover:bg-black/70 backdrop-blur-md text-white px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 border border-white/20 transition-all shadow-lg hover:scale-105">
+                            <span class="material-symbols-outlined text-[16px]">photo_camera</span>
+                            <span x-text="headerBanner ? 'Ganti Banner Toko' : 'Upload Banner Toko'"></span>
                             <input type="file" class="hidden" accept="image/*" @change="uploadHeaderBanner($event)">
                         </label>
                     </div>
@@ -322,12 +322,12 @@
 
                 <!-- Mobile Header -->
                 <div class="h-32 bg-slate-900 text-white p-4 flex items-end relative overflow-hidden group/mheader">
-                    <div class="absolute inset-0 bg-cover bg-center opacity-40 mix-blend-overlay transition-all" :style="headerBanner ? `background-image: url('${headerBanner}')` : ''"></div>
-                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent pointer-events-none"></div>
+                    <div class="absolute inset-0 bg-cover bg-center transition-all duration-300" :style="headerBanner ? `background-image: url('${headerBanner}')` : ''" :class="headerBanner ? 'opacity-85' : 'opacity-20'"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent pointer-events-none"></div>
                     
                     <!-- Mobile Upload Header Banner Button -->
-                    <div class="absolute top-3 right-3 z-20 opacity-0 group-hover/mheader:opacity-100 transition-opacity">
-                        <label class="cursor-pointer bg-white/20 hover:bg-white/30 backdrop-blur-md text-white p-1.5 rounded-lg flex items-center justify-center border border-white/30 transition-colors shadow-lg" title="Ganti Background">
+                    <div class="absolute top-3 right-3 z-20">
+                        <label class="cursor-pointer bg-black/50 hover:bg-black/70 backdrop-blur-md text-white p-1.5 rounded-lg flex items-center justify-center border border-white/20 transition-all shadow-lg hover:scale-105" title="Ganti Banner Toko">
                             <span class="material-symbols-outlined text-[16px]">photo_camera</span>
                             <input type="file" class="hidden" accept="image/*" @change="uploadHeaderBanner($event)">
                         </label>
@@ -765,10 +765,18 @@
             },
             
             addComponent(type) {
-                this.activeComponents.push({ id: this.generateId(), type: type, data: this.getDefaultData(type) });
+                const newComp = { id: this.generateId(), type: type, data: this.getDefaultData(type) };
+                this.activeComponents.push(newComp);
+                const newIndex = this.activeComponents.length - 1;
+                
                 this.$nextTick(() => {
                     const canvas = this.device === 'mobile' ? document.getElementById('mobile-canvas') : document.getElementById('desktop-canvas');
                     if(canvas) canvas.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                    
+                    // Auto-open settings for banner, single_image, text, etc.
+                    if (['banner', 'single_image', 'text'].includes(type)) {
+                        this.openSettings(newIndex);
+                    }
                 });
             },
             
