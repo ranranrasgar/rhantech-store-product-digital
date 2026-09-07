@@ -10,7 +10,7 @@
     </div>
 
     <div class="bg-surface rounded-md border border-outline-variant  p-lg">
-        <form action="{{ route('tenant.products.update', $product) }}" method="POST" enctype="multipart/form-data" class="flex flex-col gap-lg">
+        <form action="{{ route('tenant.products.update', $product) }}" method="POST" enctype="multipart/form-data" class="flex flex-col gap-lg" x-data="{ submitting: false }" @submit="submitting = true">
             @csrf @method('PUT')
 
             <div>
@@ -295,8 +295,8 @@
                 </label>
             </div>
             
-            <div class="flex justify-end pt-md border-t border-outline-variant" x-data="{ submitting: false }">
-                <button type="submit" @click="submitting = true" :disabled="submitting" class="px-md py-2 bg-primary text-white rounded-lg font-label-md font-bold hover:brightness-110 transition shadow flex items-center gap-2 disabled:opacity-75 disabled:cursor-not-allowed">
+            <div class="flex justify-end pt-md border-t border-outline-variant">
+                <button type="submit" :disabled="submitting" class="px-md py-2 bg-primary text-white rounded-lg font-label-md font-bold hover:brightness-110 transition shadow flex items-center gap-2 disabled:opacity-75 disabled:cursor-not-allowed">
                     <span x-show="submitting" x-cloak class="material-symbols-outlined animate-spin text-sm">progress_activity</span>
                     <span x-text="submitting ? 'Memperbarui Produk...' : 'Update Product'">Update Product</span>
                 </button>
