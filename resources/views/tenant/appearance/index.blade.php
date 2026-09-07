@@ -198,13 +198,18 @@
 
                             <!-- BANNER HERO -->
                             <template x-if="comp.type === 'banner'">
-                                <div class="relative bg-slate-50 dark:bg-[#111726] border-2 border-dashed border-slate-200 dark:border-[#222f49] hover:border-sky-500 dark:hover:border-sky-500 rounded-2xl flex flex-col items-center justify-center text-center shadow-xs transition-colors h-48 overflow-hidden group/banner">
+                                <div @click="openSettings(index)" class="relative bg-slate-50 dark:bg-[#111726] border-2 border-dashed border-slate-200 dark:border-[#222f49] hover:border-sky-500 dark:hover:border-sky-500 rounded-2xl flex flex-col items-center justify-center text-center shadow-xs transition-all h-48 overflow-hidden group/banner cursor-pointer">
                                     <template x-if="comp.data?.images && comp.data.images.length > 0 && comp.data.images[0].image_url">
                                         <div class="absolute inset-0 w-full h-full">
                                             <img :src="comp.data.images[0].image_url" class="w-full h-full object-cover opacity-90 group-hover/banner:opacity-40 transition-opacity">
                                             <div class="absolute inset-0 flex flex-col items-center justify-center bg-black/40 text-white opacity-0 group-hover/banner:opacity-100 transition-opacity">
-                                                <span class="material-symbols-outlined text-3xl mb-1">view_carousel</span>
-                                                <span class="text-sm font-bold" x-text="comp.data.images.length + ' Slide Gambar'"></span>
+                                                <span class="material-symbols-outlined text-3xl mb-1">edit</span>
+                                                <span class="text-sm font-bold" x-text="comp.data.images.length + ' Slide Gambar (Klik untuk Edit)'"></span>
+                                            </div>
+                                            <!-- Badge Link Info -->
+                                            <div class="absolute bottom-2 left-2 z-10 flex items-center gap-1.5 bg-black/60 backdrop-blur-md text-white px-2.5 py-1 rounded-lg text-[11px]">
+                                                <span class="material-symbols-outlined text-[14px] text-sky-400">link</span>
+                                                <span class="font-mono truncate max-w-[200px]" x-text="comp.data.images[0].link ? comp.data.images[0].link : 'Belum ada link'"></span>
                                             </div>
                                         </div>
                                     </template>
@@ -212,7 +217,7 @@
                                         <div class="p-8 flex flex-col items-center justify-center w-full h-full">
                                             <span class="material-symbols-outlined text-3xl text-sky-500 mb-1">view_carousel</span>
                                             <span class="text-sm font-bold text-slate-800 dark:text-white">Blok Banner Slide Utama</span>
-                                            <span class="text-xs text-slate-400 mt-0.5">Menampilkan gambar sorotan campaign toko</span>
+                                            <span class="text-xs text-slate-400 mt-0.5">Klik untuk upload gambar dan atur link tujuan banner</span>
                                         </div>
                                     </template>
                                 </div>
@@ -220,13 +225,18 @@
 
                             <!-- SINGLE IMAGE -->
                             <template x-if="comp.type === 'single_image'">
-                                <div class="relative bg-slate-50 dark:bg-[#111726] border-2 border-dashed border-slate-200 dark:border-[#222f49] hover:border-sky-500 dark:hover:border-sky-500 rounded-2xl flex flex-col items-center justify-center text-center shadow-xs transition-colors h-56 overflow-hidden group/single">
+                                <div @click="openSettings(index)" class="relative bg-slate-50 dark:bg-[#111726] border-2 border-dashed border-slate-200 dark:border-[#222f49] hover:border-sky-500 dark:hover:border-sky-500 rounded-2xl flex flex-col items-center justify-center text-center shadow-xs transition-all h-56 overflow-hidden group/single cursor-pointer">
                                     <template x-if="comp.data?.image_url">
                                         <div class="absolute inset-0 w-full h-full">
                                             <img :src="comp.data.image_url" class="w-full h-full object-cover opacity-90 group-hover/single:opacity-40 transition-opacity">
                                             <div class="absolute inset-0 flex flex-col items-center justify-center bg-black/40 text-white opacity-0 group-hover/single:opacity-100 transition-opacity">
-                                                <span class="material-symbols-outlined text-3xl mb-1">image</span>
-                                                <span class="text-sm font-bold">Preview Banner</span>
+                                                <span class="material-symbols-outlined text-3xl mb-1">edit</span>
+                                                <span class="text-sm font-bold">Klik untuk Edit Gambar & Link</span>
+                                            </div>
+                                            <!-- Badge Link Info -->
+                                            <div class="absolute bottom-2 left-2 z-10 flex items-center gap-1.5 bg-black/60 backdrop-blur-md text-white px-2.5 py-1 rounded-lg text-[11px]">
+                                                <span class="material-symbols-outlined text-[14px] text-emerald-400">link</span>
+                                                <span class="font-mono truncate max-w-[200px]" x-text="comp.data.link ? comp.data.link : 'Belum ada link'"></span>
                                             </div>
                                         </div>
                                     </template>
@@ -234,7 +244,7 @@
                                         <div class="p-8 flex flex-col items-center justify-center w-full h-full">
                                             <span class="material-symbols-outlined text-3xl text-emerald-500 mb-1">image</span>
                                             <span class="text-sm font-bold text-slate-800 dark:text-white">Blok Banner Gambar Penuh</span>
-                                            <span class="text-xs text-slate-400 mt-0.5">Gambar promo spesial etalase toko</span>
+                                            <span class="text-xs text-slate-400 mt-0.5">Klik untuk upload gambar dan atur link tujuan banner</span>
                                         </div>
                                     </template>
                                 </div>
@@ -355,14 +365,48 @@
                             </div>
 
                             <template x-if="comp.type === 'banner'">
-                                <div class="bg-slate-50 dark:bg-[#111726] border border-slate-200 dark:border-[#222f49] rounded-xl p-4 text-center h-28 flex flex-col items-center justify-center">
-                                    <span class="text-xs font-bold text-slate-800 dark:text-white">Banner Slide</span>
+                                <div @click="openSettings(index)" class="relative bg-slate-50 dark:bg-[#111726] border border-slate-200 dark:border-[#222f49] rounded-xl overflow-hidden text-center h-28 flex flex-col items-center justify-center cursor-pointer group/mbanner">
+                                    <template x-if="comp.data?.images && comp.data.images.length > 0 && comp.data.images[0].image_url">
+                                        <div class="absolute inset-0 w-full h-full">
+                                            <img :src="comp.data.images[0].image_url" class="w-full h-full object-cover">
+                                            <div class="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover/mbanner:opacity-100 transition-opacity">
+                                                <span class="text-[11px] font-bold text-white flex items-center gap-1">
+                                                    <span class="material-symbols-outlined text-[14px]">edit</span> Edit Slide
+                                                </span>
+                                            </div>
+                                            <div class="absolute bottom-1 left-1 bg-black/60 text-[9px] text-white px-1.5 py-0.5 rounded font-mono truncate max-w-[140px]" x-text="comp.data.images[0].link ? comp.data.images[0].link : 'Belum ada link'"></div>
+                                        </div>
+                                    </template>
+                                    <template x-if="!comp.data?.images || comp.data.images.length === 0 || !comp.data.images[0].image_url">
+                                        <div class="p-2">
+                                            <span class="material-symbols-outlined text-sky-500 text-[20px] mb-0.5">view_carousel</span>
+                                            <span class="text-xs font-bold text-slate-800 dark:text-white block">Banner Slide</span>
+                                            <span class="text-[9px] text-slate-400">Klik untuk upload & atur link</span>
+                                        </div>
+                                    </template>
                                 </div>
                             </template>
 
                             <template x-if="comp.type === 'single_image'">
-                                <div class="bg-slate-50 dark:bg-[#111726] border border-slate-200 dark:border-[#222f49] rounded-xl p-4 text-center h-36 flex flex-col items-center justify-center">
-                                    <span class="text-xs font-bold text-slate-800 dark:text-white">Banner Gambar</span>
+                                <div @click="openSettings(index)" class="relative bg-slate-50 dark:bg-[#111726] border border-slate-200 dark:border-[#222f49] rounded-xl overflow-hidden text-center h-36 flex flex-col items-center justify-center cursor-pointer group/msingle">
+                                    <template x-if="comp.data?.image_url">
+                                        <div class="absolute inset-0 w-full h-full">
+                                            <img :src="comp.data.image_url" class="w-full h-full object-cover">
+                                            <div class="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover/msingle:opacity-100 transition-opacity">
+                                                <span class="text-[11px] font-bold text-white flex items-center gap-1">
+                                                    <span class="material-symbols-outlined text-[14px]">edit</span> Edit Banner
+                                                </span>
+                                            </div>
+                                            <div class="absolute bottom-1 left-1 bg-black/60 text-[9px] text-white px-1.5 py-0.5 rounded font-mono truncate max-w-[140px]" x-text="comp.data.link ? comp.data.link : 'Belum ada link'"></div>
+                                        </div>
+                                    </template>
+                                    <template x-if="!comp.data?.image_url">
+                                        <div class="p-2">
+                                            <span class="material-symbols-outlined text-emerald-500 text-[20px] mb-0.5">image</span>
+                                            <span class="text-xs font-bold text-slate-800 dark:text-white block">Banner Gambar</span>
+                                            <span class="text-[9px] text-slate-400">Klik untuk upload & atur link</span>
+                                        </div>
+                                    </template>
                                 </div>
                             </template>
 
@@ -499,7 +543,7 @@
                         <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Gambar Banner</label>
                         <div class="flex gap-2">
                             <input type="text" x-model="editingData?.data?.image_url" class="flex-1 bg-slate-50 dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] rounded-xl px-4 py-2.5 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:border-sky-500" placeholder="https://contoh.com/gambar.jpg">
-                            <label class="cursor-pointer bg-sky-100 hover:bg-sky-200 text-sky-600 px-4 py-2.5 rounded-xl text-sm font-bold flex items-center justify-center transition-colors">
+                            <label class="cursor-pointer bg-sky-100 hover:bg-sky-200 text-sky-600 px-4 py-2.5 rounded-xl text-sm font-bold flex items-center justify-center transition-colors" title="Upload Gambar dari Komputer">
                                 <span class="material-symbols-outlined text-[18px]">upload</span>
                                 <input type="file" class="hidden" accept="image/*" @change="openCropper($event, editingData.data, 'image_url', false, 0)">
                             </label>
@@ -507,8 +551,17 @@
                         <p class="text-[10px] text-slate-500 mt-1">Masukkan URL gambar atau upload dari perangkat Anda (Maks 2MB).</p>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Link Tujuan (Opsional)</label>
-                        <input type="text" x-model="editingData?.data?.link" class="w-full bg-slate-50 dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] rounded-xl px-4 py-2.5 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:border-sky-500" placeholder="https://...">
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center justify-between">
+                            <span>Link Tujuan Ketika Gambar Diklik</span>
+                            <span class="text-[10px] text-slate-400 font-normal">Opsional</span>
+                        </label>
+                        <div class="relative">
+                            <input type="text" x-model="editingData?.data?.link" class="w-full bg-slate-50 dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] rounded-xl pl-9 pr-4 py-2.5 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:border-sky-500" placeholder="https://... atau /products/nama-produk">
+                            <span class="material-symbols-outlined absolute left-2.5 top-3 text-[18px] text-slate-400">link</span>
+                        </div>
+                        <p class="text-[10px] text-slate-500 mt-1">
+                            Bisa berupa link eksternal (misal: <code class="text-sky-600 font-mono">https://wa.me/...</code>) atau link halaman produk toko.
+                        </p>
                     </div>
                 </div>
                 
@@ -542,36 +595,45 @@
                 <!-- Banner Settings -->
                 <div x-show="editingData && editingData.type === 'banner'" class="space-y-4">
                     <div class="flex items-center justify-between mb-2">
-                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">Daftar Gambar Slide</label>
-                        <button type="button" @click="if(!editingData.data.images) editingData.data.images = []; editingData.data.images.push({image_url: '', link: ''})" class="text-[10px] bg-sky-100 text-sky-600 hover:bg-sky-200 px-2 py-1 rounded font-bold flex items-center gap-1 transition-colors">
-                            <span class="material-symbols-outlined text-[12px]">add</span> Tambah Slide
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">Daftar Gambar Slide Banner</label>
+                            <p class="text-[10px] text-slate-500">Tambahkan gambar slide dan link tujuannya</p>
+                        </div>
+                        <button type="button" @click="if(!editingData.data.images) editingData.data.images = []; editingData.data.images.push({image_url: '', link: ''})" class="text-[11px] bg-sky-100 text-sky-600 hover:bg-sky-200 px-2.5 py-1.5 rounded-lg font-bold flex items-center gap-1 transition-colors">
+                            <span class="material-symbols-outlined text-[14px]">add</span> Tambah Slide
                         </button>
                     </div>
                     
                     <template x-if="!editingData?.data?.images || editingData.data.images.length === 0">
-                        <div class="p-4 bg-slate-50 dark:bg-[#0d1117] rounded-xl border border-dashed border-slate-200 dark:border-[#222f49] text-center text-xs text-slate-400">Belum ada slide gambar.</div>
+                        <div class="p-6 bg-slate-50 dark:bg-[#0d1117] rounded-xl border border-dashed border-slate-200 dark:border-[#222f49] text-center text-xs text-slate-400">
+                            <span class="material-symbols-outlined text-2xl text-slate-300 block mb-1">collections</span>
+                            Belum ada slide gambar. Klik tombol <b>Tambah Slide</b> di atas.
+                        </div>
                     </template>
                     
-                    <div class="space-y-3 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
+                    <div class="space-y-3 max-h-72 overflow-y-auto pr-2 custom-scrollbar">
                         <template x-for="(img, imgIdx) in editingData?.data?.images" :key="imgIdx">
                             <div class="p-3 bg-slate-50 dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] rounded-xl relative group">
-                                <button type="button" @click="editingData.data.images.splice(imgIdx, 1)" class="absolute top-2 right-2 text-rose-500 hover:bg-rose-100 dark:hover:bg-rose-900/30 p-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <span class="material-symbols-outlined text-[14px]">delete</span>
+                                <button type="button" @click="editingData.data.images.splice(imgIdx, 1)" class="absolute top-2 right-2 text-rose-500 hover:bg-rose-100 dark:hover:bg-rose-900/30 p-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity" title="Hapus Slide">
+                                    <span class="material-symbols-outlined text-[16px]">delete</span>
                                 </button>
-                                <div class="space-y-3 pr-6">
+                                <div class="space-y-2.5 pr-6">
                                     <div>
-                                        <label class="block text-[10px] font-bold text-slate-500 mb-1">Gambar Slide</label>
+                                        <label class="block text-[10px] font-bold text-slate-500 mb-1" x-text="'Slide #' + (imgIdx + 1) + ' Gambar'"></label>
                                         <div class="flex gap-2">
-                                            <input type="text" x-model="img.image_url" class="flex-1 bg-white dark:bg-[#161f33] border border-slate-200 dark:border-[#222f49] rounded-lg px-3 py-1.5 text-xs text-slate-800 dark:text-slate-200 focus:border-sky-500 focus:outline-none" placeholder="https://...">
-                                            <label class="cursor-pointer bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 px-2 rounded-lg flex items-center justify-center transition-colors" title="Upload Gambar">
-                                                <span class="material-symbols-outlined text-[14px]">upload</span>
+                                            <input type="text" x-model="img.image_url" class="flex-1 bg-white dark:bg-[#161f33] border border-slate-200 dark:border-[#222f49] rounded-lg px-3 py-1.5 text-xs text-slate-800 dark:text-slate-200 focus:border-sky-500 focus:outline-none" placeholder="https://contoh.com/gambar.jpg">
+                                            <label class="cursor-pointer bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 px-2.5 rounded-lg flex items-center justify-center transition-colors" title="Upload Gambar Slide">
+                                                <span class="material-symbols-outlined text-[15px]">upload</span>
                                                 <input type="file" class="hidden" accept="image/*" @change="openCropper($event, img, 'image_url', false, 2.5/1)">
                                             </label>
                                         </div>
                                     </div>
                                     <div>
-                                        <label class="block text-[10px] font-bold text-slate-500 mb-1">Link Tujuan (Opsional)</label>
-                                        <input type="text" x-model="img.link" class="w-full bg-white dark:bg-[#161f33] border border-slate-200 dark:border-[#222f49] rounded-lg px-3 py-1.5 text-xs text-slate-800 dark:text-slate-200 focus:border-sky-500 focus:outline-none" placeholder="https://...">
+                                        <label class="block text-[10px] font-bold text-slate-500 mb-1">Link Tujuan Ketika Slide Ini Diklik (Opsional)</label>
+                                        <div class="relative">
+                                            <input type="text" x-model="img.link" class="w-full bg-white dark:bg-[#161f33] border border-slate-200 dark:border-[#222f49] rounded-lg pl-7 pr-3 py-1.5 text-xs text-slate-800 dark:text-slate-200 focus:border-sky-500 focus:outline-none" placeholder="https://... atau /products/nama-produk">
+                                            <span class="material-symbols-outlined absolute left-2 top-2 text-[14px] text-slate-400">link</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

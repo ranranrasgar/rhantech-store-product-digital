@@ -188,8 +188,12 @@
                             <div class="relative w-full h-48 md:h-80 flex transition-transform duration-500 ease-in-out" :style="`transform: translateX(-${activeSlide * 100}%)`">
                                 @foreach($images as $img)
                                     <div class="w-full h-full flex-shrink-0 relative">
-                                        @if(!empty($img['link']))
-                                            <a href="{{ $img['link'] }}" class="block w-full h-full">
+                                        @php
+                                            $link = trim($img['link'] ?? '');
+                                            $isExternal = !empty($link) && (str_starts_with($link, 'http://') || str_starts_with($link, 'https://'));
+                                        @endphp
+                                        @if(!empty($link))
+                                            <a href="{{ $link }}" @if($isExternal) target="_blank" rel="noopener noreferrer" @endif class="block w-full h-full">
                                                 <img src="{{ $img['image_url'] ?? '' }}" class="w-full h-full object-cover" alt="Banner Slide">
                                             </a>
                                         @else
@@ -226,10 +230,20 @@
                     @endif
 
                 @elseif($block['type'] === 'single_image')
+                    @php
+                        $singleLink = trim($data['link'] ?? '');
+                        $isSingleExternal = !empty($singleLink) && (str_starts_with($singleLink, 'http://') || str_starts_with($singleLink, 'https://'));
+                    @endphp
                     @if(!empty($data['image_url']))
-                        <a href="{{ $data['link'] ?? '#' }}" class="block w-full rounded-2xl overflow-hidden shadow-sm hover:opacity-95 transition-opacity">
-                            <img src="{{ $data['image_url'] }}" alt="Promo Banner" class="w-full h-auto object-cover max-h-[400px]">
-                        </a>
+                        @if(!empty($singleLink))
+                            <a href="{{ $singleLink }}" @if($isSingleExternal) target="_blank" rel="noopener noreferrer" @endif class="block w-full rounded-2xl overflow-hidden shadow-sm hover:opacity-95 transition-opacity">
+                                <img src="{{ $data['image_url'] }}" alt="Promo Banner" class="w-full h-auto object-cover max-h-[400px]">
+                            </a>
+                        @else
+                            <div class="w-full rounded-2xl overflow-hidden shadow-sm">
+                                <img src="{{ $data['image_url'] }}" alt="Promo Banner" class="w-full h-auto object-cover max-h-[400px]">
+                            </div>
+                        @endif
                     @else
                         <div class="w-full h-40 bg-slate-50 rounded-2xl flex flex-col gap-2 items-center justify-center border border-dashed border-slate-300">
                             <span class="material-symbols-outlined text-3xl text-slate-300">image</span>
