@@ -37,7 +37,7 @@ class BannerController extends Controller
                         $base64Image = base64_decode(str_replace(' ', '+', $base64Image));
                         
                         if ($base64Image !== false) {
-                            if ($banner->image_path && Storage::disk('public')->exists($banner->image_path)) {
+                            if ($banner->image_path) {
                                 Storage::disk('public')->delete($banner->image_path);
                             }
                             
@@ -51,7 +51,7 @@ class BannerController extends Controller
 
             // Fallback for standard file upload if JS fails
             if ($request->hasFile("banners.{$position}.image")) {
-                if ($banner->image_path && Storage::disk('public')->exists($banner->image_path)) {
+                if ($banner->image_path) {
                     Storage::disk('public')->delete($banner->image_path);
                 }
                 $path = $request->file("banners.{$position}.image")->store('banners', 'public');

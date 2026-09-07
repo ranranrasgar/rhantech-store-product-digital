@@ -166,6 +166,16 @@ class ProjectController extends Controller
         if ($project->thumbnail) {
             Storage::disk('public')->delete($project->thumbnail);
         }
+
+        // Hapus juga file gambar gallery terkait di R2/storage jika ada
+        if ($project->images) {
+            foreach ($project->images as $img) {
+                if ($img->image) {
+                    Storage::disk('public')->delete($img->image);
+                }
+            }
+        }
+
         $project->deleteOrFail();
 
         return redirect()->route('admin.projects.index')->with('success', 'Project deleted successfully.');
