@@ -5,13 +5,94 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Order;
+use App\Models\Store;
+use App\Models\Product;
+use Carbon\Carbon;
 
 class OrderController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $orders = Order::with(['product', 'orderItems.product.store'])->latest()->paginate(20);
-        return view('admin.orders.index', compact('orders'));
+        $query = Order::with(['product.store', 'orderItems.product.store']);
+
+        // 1. Filter Customer (Name, Email, Phone)
+        if ($request->filled('customer')) {
+            $customerSearch = trim($request->input('customer'));
+            $query->where(function ($q) use ($customerSearch) {
+                $q->where('customer_name', 'like', "%{$customerSearch}%")
+                    ->orWhere('customer_email', 'like', "%{$customerSearch}%")
+                    ->orWhere('customer_phone', 'like', "%{$customerSearch}%")
+                    ->orWhere('invoice_number', 'like', "%{$customerSearch}%");
+            });
+        }
+
+        // 2. Filter Store
+        if ($request->filled('store_id')) {
+            $storeId = $request->input('store_id');
+            $query->where(function ($q) use ($storeId) {
+                $q->whereHas('orderItems.product', function ($sub) use ($storeId) {
+                    $sub->where('store_id', $storeId);
+                })->orWhereHas('product', function ($sub) use ($storeId) {
+                    $sub->where('store_id', $storeId);
+                });
+            });
+        }
+
+        // 3. Filter Product
+        if ($request->filled('product_id')) {
+            $productId = $request->input('product_id');
+            $query->where(function ($q) use ($productId) {
+                $q->whereHas('orderItems', function ($sub) use ($productId) {
+                    $sub->where('product_id', $productId);
+                })->orWhere('product_id', $productId);
+            });
+        }
+
+        // 4. Filter Status
+        if ($request->filled('status')) {
+            $status = $request->input('status');
+            if ($status === 'completed') {
+                $query->whereIn('status', ['paid', 'downloaded']);
+            } elseif ($status === 'pending') {
+                $query->where('status', 'pending');
+            } elseif ($status === 'failed') {
+                $query->where('status', 'failed');
+            }
+        }
+
+        // 5. Filter Periode
+        $period = $request->input('period', '');
+        if ($period === 'today') {
+            $query->whereDate('created_at', Carbon::today());
+        } elseif ($period === '7_days') {
+            $query->where('created_at', '>=', Carbon::now()->subDays(7));
+        } elseif ($period === '28_days') {
+            $query->where('created_at', '>=', Carbon::now()->subDays(28));
+        } elseif ($period === '30_days') {
+            $query->where('created_at', '>=', Carbon::now()->subDays(30));
+        } elseif ($period === 'this_month') {
+            $query->whereMonth('created_at', Carbon::now()->month)
+                  ->whereYear('created_at', Carbon::now()->year);
+        } elseif ($period === 'custom') {
+            if ($request->filled('start_date')) {
+                $query->whereDate('created_at', '>=', $request->input('start_date'));
+            }
+            if ($request->filled('end_date')) {
+                $query->whereDate('created_at', '<=', $request->input('end_date'));
+            }
+        }
+
+        $orders = $query->latest()->paginate(20)->withQueryString();
+
+        // Get stores and products list for dropdown filters
+        $stores = Store::orderBy('name')->get();
+        $productsQuery = Product::query();
+        if ($request->filled('store_id')) {
+            $productsQuery->where('store_id', $request->input('store_id'));
+        }
+        $products = $productsQuery->orderBy('name')->get();
+
+        return view('admin.orders.index', compact('orders', 'stores', 'products'));
     }
 
     public function approve(Order $order)
