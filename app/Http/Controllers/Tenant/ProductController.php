@@ -22,7 +22,9 @@ class ProductController extends Controller
 
         // Get total counts for the tabs
         $allCount = $store->products()->count();
-        $activeCount = $store->products()->where('is_active', true)->count();
+        $activeCount = $store->products()->where('is_active', true)->where('approval_status', 'approved')->count();
+        $pendingCount = $store->products()->where('approval_status', 'pending')->count();
+        $rejectedCount = $store->products()->where('approval_status', 'rejected')->count();
         $inactiveCount = $store->products()->where('is_active', false)->count();
 
         // Query builder for products
@@ -31,7 +33,11 @@ class ProductController extends Controller
         // 1. Tab filter
         $tab = $request->input('tab', 'all');
         if ($tab === 'active') {
-            $query->where('is_active', true);
+            $query->where('is_active', true)->where('approval_status', 'approved');
+        } elseif ($tab === 'pending') {
+            $query->where('approval_status', 'pending');
+        } elseif ($tab === 'rejected') {
+            $query->where('approval_status', 'rejected');
         } elseif ($tab === 'inactive') {
             $query->where('is_active', false);
         }
@@ -66,7 +72,7 @@ class ProductController extends Controller
         $products = $query->paginate(20)->withQueryString();
         $categories = ProductCategory::orderBy('name', 'asc')->get();
 
-        return view('tenant.products.index', compact('products', 'allCount', 'activeCount', 'inactiveCount', 'categories', 'tab'));
+        return view('tenant.products.index', compact('products', 'allCount', 'activeCount', 'pendingCount', 'rejectedCount', 'inactiveCount', 'categories', 'tab'));
     }
 
     public function create(Request $request)
@@ -197,9 +203,11 @@ class ProductController extends Controller
             'help_category_id' => $validated['help_category_id'] ?? null,
             'demo_url' => $validated['demo_url'] ?? null,
             'price' => $validated['price'],
-            'discount_price' => $validated['discount_price'] ?? null,
+            'discount_price' => (!empty($validated['discount_price']) && (float)$validated['discount_price'] > 0) ? $validated['discount_price'] : null,
             'download_links' => $validated['download_links'] ?? null,
             'is_active' => $request->has('is_active'),
+            'approval_status' => 'pending',
+            'rejection_reason' => null,
             'rating_override' => $validated['rating_override'] ?? null,
             'reviews_count' => $validated['reviews_count'] ?? null,
             'sales_count' => $validated['sales_count'] ?? null,
@@ -319,9 +327,11 @@ class ProductController extends Controller
             'help_category_id' => $validated['help_category_id'] ?? null,
             'demo_url' => $validated['demo_url'] ?? null,
             'price' => $validated['price'],
-            'discount_price' => $validated['discount_price'] ?? null,
+            'discount_price' => (!empty($validated['discount_price']) && (float)$validated['discount_price'] > 0) ? $validated['discount_price'] : null,
             'download_links' => $validated['download_links'] ?? null,
             'is_active' => $request->has('is_active'),
+            'approval_status' => $product->approval_status === 'rejected' ? 'pending' : $product->approval_status,
+            'rejection_reason' => $product->approval_status === 'rejected' ? null : $product->rejection_reason,
             'rating_override' => $validated['rating_override'] ?? null,
             'reviews_count' => $validated['reviews_count'] ?? null,
             'sales_count' => $validated['sales_count'] ?? null,

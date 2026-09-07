@@ -9,15 +9,72 @@ use App\Models\ProductImage;
 use App\Models\ProductCategory;
 use App\Models\ProductType;
 use App\Models\HelpCategory;
+use App\Models\Store;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::latest()->get();
-        return view('admin.products.index', compact('products'));
+        $query = Product::with(['store', 'images', 'category', 'type'])->latest();
+
+        // 1. Filter store / origin: 'internal' (platform), or specific store_id
+        if ($request->filled('origin')) {
+            if ($request->origin === 'internal') {
+                $query->whereNull('store_id');
+            } elseif ($request->origin === 'tenant') {
+                $query->whereNotNull('store_id');
+            }
+        }
+
+        if ($request->filled('store_id')) {
+            $query->where('store_id', $request->store_id);
+        }
+
+        // 2. Filter approval status: 'all', 'pending', 'approved', 'rejected'
+        if ($request->filled('approval_status') && in_array($request->approval_status, ['pending', 'approved', 'rejected'])) {
+            $query->where('approval_status', $request->approval_status);
+        }
+
+        // 3. Filter active status
+        if ($request->filled('is_active')) {
+            $query->where('is_active', $request->is_active == '1');
+        }
+
+        // 4. Search by keyword
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('slug', 'like', "%{$search}%")
+                  ->orWhereHas('store', function ($sq) use ($search) {
+                      $sq->where('name', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        // Counts for quick badges
+        $totalCount = Product::count();
+        $pendingCount = Product::whereNotNull('store_id')->where('approval_status', 'pending')->count();
+        $approvedCount = Product::where('approval_status', 'approved')->count();
+        $rejectedCount = Product::where('approval_status', 'rejected')->count();
+        $internalCount = Product::whereNull('store_id')->count();
+        $tenantCount = Product::whereNotNull('store_id')->count();
+
+        $products = $query->paginate(20)->withQueryString();
+        $stores = Store::orderBy('name', 'asc')->get();
+
+        return view('admin.products.index', compact(
+            'products', 
+            'stores', 
+            'totalCount', 
+            'pendingCount', 
+            'approvedCount', 
+            'rejectedCount', 
+            'internalCount', 
+            'tenantCount'
+        ));
     }
 
     public function create()
@@ -72,7 +129,7 @@ class ProductController extends Controller
             'help_category_id' => $validated['help_category_id'] ?? null,
             'demo_url' => $validated['demo_url'] ?? null,
             'price' => $validated['price'],
-            'discount_price' => $validated['discount_price'] ?? null,
+            'discount_price' => (!empty($validated['discount_price']) && (float)$validated['discount_price'] > 0) ? $validated['discount_price'] : null,
             'download_links' => $validated['download_links'] ?? null,
             'is_active' => $request->has('is_active'),
             'rating_override' => $validated['rating_override'] ?? null,
@@ -154,7 +211,7 @@ class ProductController extends Controller
             'help_category_id' => $validated['help_category_id'] ?? null,
             'demo_url' => $validated['demo_url'] ?? null,
             'price' => $validated['price'],
-            'discount_price' => $validated['discount_price'] ?? null,
+            'discount_price' => (!empty($validated['discount_price']) && (float)$validated['discount_price'] > 0) ? $validated['discount_price'] : null,
             'download_links' => $validated['download_links'] ?? null,
             'is_active' => $request->has('is_active'),
             'rating_override' => $validated['rating_override'] ?? null,
@@ -227,6 +284,40 @@ class ProductController extends Controller
         // Set this image to main
         $image->update(['is_main' => true]);
         return back()->with('success', 'Main image updated.');
+    }
+
+    public function approve(Product $product)
+    {
+        $product->update([
+            'approval_status' => 'approved',
+            'rejection_reason' => null,
+            'is_active' => true, // Automatically activate upon approval
+        ]);
+
+        return back()->with('success', "Produk \"{$product->name}\" berhasil disetujui (Approved) dan sudah tayang di website!");
+    }
+
+    public function reject(Request $request, Product $product)
+    {
+        $validated = $request->validate([
+            'reason_type' => 'required|string',
+            'custom_reason' => 'nullable|string|max:500',
+        ]);
+
+        $reason = $validated['reason_type'];
+        if ($reason === 'other' && !empty($validated['custom_reason'])) {
+            $reason = $validated['custom_reason'];
+        } elseif (!empty($validated['custom_reason'])) {
+            $reason .= ' - Catatan: ' . $validated['custom_reason'];
+        }
+
+        $product->update([
+            'approval_status' => 'rejected',
+            'rejection_reason' => $reason,
+            'is_active' => false,
+        ]);
+
+        return back()->with('info', "Produk \"{$product->name}\" telah ditolak dengan alasan yang disimpan.");
     }
 
     protected function cleanArrayItems($items)

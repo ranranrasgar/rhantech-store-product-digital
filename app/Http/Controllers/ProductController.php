@@ -11,10 +11,10 @@ class ProductController extends Controller
     {
         $categories = \App\Models\ProductCategory::select(['id', 'store_id', 'name'])
             ->whereHas('products', function ($q) {
-                $q->where('is_active', true);
+                $q->published();
             })
             ->withCount(['products' => function ($q) {
-                $q->where('is_active', true);
+                $q->published();
             }])
             ->with('store:id,name')
             ->orderByRaw('store_id IS NULL DESC, name ASC')
@@ -22,10 +22,10 @@ class ProductController extends Controller
 
         $types = \App\Models\ProductType::select(['id', 'store_id', 'name'])
             ->whereHas('products', function ($q) {
-                $q->where('is_active', true);
+                $q->published();
             })
             ->withCount(['products' => function ($q) {
-                $q->where('is_active', true);
+                $q->published();
             }])
             ->with('store:id,name')
             ->orderByRaw('store_id IS NULL DESC, name ASC')
@@ -36,14 +36,14 @@ class ProductController extends Controller
 
         // Produk unggulan yang paling banyak diklik / dilihat + relasi store dan image
         $topProducts = Product::with(['store:id,name,slug', 'images'])
-            ->where('is_active', true)
+            ->published()
             ->orderBy('views', 'desc')
             ->orderBy('sales_count', 'desc')
             ->limit(5)
             ->get();
 
         $query = Product::with(['store:id,name,slug', 'images', 'category:id,name', 'type:id,name'])
-            ->where('is_active', true);
+            ->published();
 
         if ($request->filled('category')) {
             $catVal = $request->category;
@@ -124,7 +124,7 @@ class ProductController extends Controller
                 $q->where('is_published', true);
             },
             'reviews.user'
-        ])->where('slug', $slug)->where('is_active', true)->firstOrFail();
+        ])->where('slug', $slug)->published()->firstOrFail();
 
         // Increment views count saat produk dibuka
         $product->increment('views');
@@ -158,7 +158,7 @@ class ProductController extends Controller
     {
         $product = Product::with(['category', 'type', 'images', 'store'])
             ->where('slug', $slug)
-            ->where('is_active', true)
+            ->published()
             ->firstOrFail();
 
         $company = \App\Models\CompanyProfile::first(['*']);

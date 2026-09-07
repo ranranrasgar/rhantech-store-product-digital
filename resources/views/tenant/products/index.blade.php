@@ -29,15 +29,21 @@
         <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl shadow-sm overflow-hidden">
             
             <!-- Filter Tabs -->
-            <div class="border-b border-slate-100 dark:border-[#222f49] px-6 flex items-center gap-8 overflow-x-auto hide-scrollbar bg-slate-50/50 dark:bg-[#0c1220]/50">
+            <div class="border-b border-slate-100 dark:border-[#222f49] px-6 flex items-center gap-6 overflow-x-auto hide-scrollbar bg-slate-50/50 dark:bg-[#0c1220]/50">
                 <a href="{{ route('tenant.products.index', array_merge(request()->query(), ['tab' => 'all', 'page' => null])) }}" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 {{ $tab === 'all' ? 'text-sky-600 dark:text-sky-400 border-sky-600 dark:border-sky-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200' }}">
                     Semua Produk <span class="ml-1.5 px-2 py-0.5 rounded-full text-[11px] {{ $tab === 'all' ? 'bg-sky-100 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300' : 'bg-slate-200/60 dark:bg-slate-800 text-slate-600 dark:text-slate-400' }}">{{ $allCount }}</span>
                 </a>
                 <a href="{{ route('tenant.products.index', array_merge(request()->query(), ['tab' => 'active', 'page' => null])) }}" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 {{ $tab === 'active' ? 'text-sky-600 dark:text-sky-400 border-sky-600 dark:border-sky-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200' }}">
                     Aktif / Tayang <span class="ml-1.5 px-2 py-0.5 rounded-full text-[11px] {{ $tab === 'active' ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300' : 'bg-slate-200/60 dark:bg-slate-800 text-slate-600 dark:text-slate-400' }}">{{ $activeCount }}</span>
                 </a>
-                <a href="{{ route('tenant.products.index', array_merge(request()->query(), ['tab' => 'inactive', 'page' => null])) }}" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 {{ $tab === 'inactive' ? 'text-sky-600 dark:text-sky-400 border-sky-600 dark:border-sky-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200' }}">
-                    Non-Aktif / Draft <span class="ml-1.5 px-2 py-0.5 rounded-full text-[11px] {{ $tab === 'inactive' ? 'bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300' : 'bg-slate-200/60 dark:bg-slate-800 text-slate-600 dark:text-slate-400' }}">{{ $inactiveCount }}</span>
+                <a href="{{ route('tenant.products.index', array_merge(request()->query(), ['tab' => 'pending', 'page' => null])) }}" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 {{ $tab === 'pending' ? 'text-amber-600 dark:text-amber-400 border-amber-600 dark:border-amber-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200' }}">
+                    Menunggu Review <span class="ml-1.5 px-2 py-0.5 rounded-full text-[11px] {{ $tab === 'pending' ? 'bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300' : 'bg-slate-200/60 dark:bg-slate-800 text-slate-600 dark:text-slate-400' }}">{{ $pendingCount }}</span>
+                </a>
+                <a href="{{ route('tenant.products.index', array_merge(request()->query(), ['tab' => 'rejected', 'page' => null])) }}" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 {{ $tab === 'rejected' ? 'text-rose-600 dark:text-rose-400 border-rose-600 dark:border-rose-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200' }}">
+                    Perlu Revisi (Ditolak) <span class="ml-1.5 px-2 py-0.5 rounded-full text-[11px] {{ $tab === 'rejected' ? 'bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300' : 'bg-slate-200/60 dark:bg-slate-800 text-slate-600 dark:text-slate-400' }}">{{ $rejectedCount }}</span>
+                </a>
+                <a href="{{ route('tenant.products.index', array_merge(request()->query(), ['tab' => 'inactive', 'page' => null])) }}" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 {{ $tab === 'inactive' ? 'text-slate-700 dark:text-slate-200 border-slate-700 dark:border-slate-200' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200' }}">
+                    Non-Aktif / Draft <span class="ml-1.5 px-2 py-0.5 rounded-full text-[11px] bg-slate-200/60 dark:bg-slate-800 text-slate-600 dark:text-slate-400">{{ $inactiveCount }}</span>
                 </a>
             </div>
 
@@ -149,7 +155,22 @@
 
                             <!-- Status Badge -->
                             <td class="p-4 md:px-6 text-center">
-                                @if($product->is_active)
+                                @if($product->approval_status === 'pending')
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-300 dark:border-amber-800 animate-pulse">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> In Review
+                                    </span>
+                                @elseif($product->approval_status === 'rejected')
+                                    <div class="inline-flex flex-col items-center">
+                                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-100 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 border border-rose-300 dark:border-rose-800">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Ditolak
+                                        </span>
+                                        @if($product->rejection_reason)
+                                            <span class="text-[11px] text-rose-600 dark:text-rose-400 font-medium max-w-[170px] truncate mt-1 cursor-help" title="{{ $product->rejection_reason }}">
+                                                ⚠️ {{ $product->rejection_reason }}
+                                            </span>
+                                        @endif
+                                    </div>
+                                @elseif($product->is_active)
                                     <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50">
                                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Tayang
                                     </span>

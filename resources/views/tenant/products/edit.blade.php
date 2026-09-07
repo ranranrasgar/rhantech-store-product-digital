@@ -9,6 +9,35 @@
         <h2 class="font-headline-md font-bold text-on-surface">Edit Digital Product</h2>
     </div>
 
+    @if($product->approval_status === 'rejected')
+    <div class="mb-4 p-4 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-300 dark:border-rose-900 text-rose-800 dark:text-rose-200">
+        <div class="flex items-start gap-2.5">
+            <span class="material-symbols-outlined text-rose-600 dark:text-rose-400 text-2xl shrink-0 mt-0.5">error</span>
+            <div>
+                <h4 class="font-bold text-sm">Produk ini sebelumnya Ditolak oleh Platform</h4>
+                <p class="text-xs mt-1 text-rose-700 dark:text-rose-300">
+                    <strong>Alasan penolakan:</strong> {{ $product->rejection_reason ?? 'Mohon periksa kesesuaian deskripsi, gambar, atau tautan unduhan.' }}
+                </p>
+                <p class="text-[11px] mt-1.5 text-rose-600 dark:text-rose-400">
+                    💡 <em>Silakan perbaiki data yang belum sesuai lalu klik "Update Product". Status produk akan otomatis diajukan kembali untuk ditinjau oleh Admin Platform.</em>
+                </p>
+            </div>
+        </div>
+    </div>
+    @elseif($product->approval_status === 'pending')
+    <div class="mb-4 p-4 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-900 text-amber-800 dark:text-amber-200">
+        <div class="flex items-start gap-2.5">
+            <span class="material-symbols-outlined text-amber-600 dark:text-amber-400 text-2xl shrink-0 mt-0.5">hourglass_empty</span>
+            <div>
+                <h4 class="font-bold text-sm">Produk Sedang Dalam Peninjauan (In Review)</h4>
+                <p class="text-xs mt-1 text-amber-700 dark:text-amber-300">
+                    Tim platform sedang memverifikasi tautan unduhan, deskripsi, dan foto produk ini agar terjamin keaslian dan keamanannya sebelum tayang di publik.
+                </p>
+            </div>
+        </div>
+    </div>
+    @endif
+
     <div class="bg-surface rounded-md border border-outline-variant  p-lg">
         <form action="{{ route('tenant.products.update', $product) }}" method="POST" enctype="multipart/form-data" class="flex flex-col gap-lg" x-data="{ submitting: false }" @submit="submitting = true">
             @csrf @method('PUT')
@@ -189,7 +218,8 @@
                 </div>
                 <div>
                     <label class="block font-label-md text-on-surface mb-xs">Discount Price (Rp) - Optional</label>
-                    <input type="number" name="discount_price" min="0" value="{{ old('discount_price', (int)$product->discount_price) }}" class="w-full pl-4 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-secondary focus:ring-1 focus:ring-secondary/20">
+                    <input type="number" name="discount_price" min="0" value="{{ old('discount_price', ($product->discount_price && $product->discount_price > 0) ? (int)$product->discount_price : '') }}" placeholder="Kosongkan jika tidak ada diskon" class="w-full pl-4 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-secondary focus:ring-1 focus:ring-secondary/20">
+                    <p class="text-[11px] text-on-surface-variant mt-1">Kosongkan atau isi 0 jika tidak ada harga diskon (promo).</p>
                     @error('discount_price')<span class="text-error text-xs">{{ $message }}</span>@enderror
                 </div>
             </div>
@@ -278,6 +308,40 @@
                     </div>
                 </div>
 
+                <!-- List Foto Produk yang Sudah Tersimpan -->
+                @if($product->images->count() > 0)
+                <div class="mt-3 p-4 bg-surface-container-lowest border border-outline-variant rounded-lg">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-primary text-base">photo_library</span>
+                            <span class="text-xs font-bold text-on-surface">Foto Tersimpan Sekarang ({{ $product->images->count() }}/5)</span>
+                        </div>
+                        <span class="text-[11px] text-on-surface-variant">Hover foto untuk jadikan foto utama atau hapus</span>
+                    </div>
+                    <div class="flex flex-wrap gap-3">
+                        @foreach($product->images as $img)
+                        <div class="relative group w-24 h-24 rounded-lg overflow-hidden border {{ $img->is_main ? 'border-primary border-2 shadow-sm' : 'border-outline-variant' }}">
+                            <img src="{{ asset('storage/' . $img->image_path) }}" class="w-full h-full object-cover">
+                            
+                            <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1.5 p-1">
+                                @if(!$img->is_main)
+                                <button type="button" onclick="setMainImage({{ $img->id }})" class="w-full py-1 bg-white text-black text-[10px] font-bold rounded shadow hover:bg-gray-100 transition">
+                                    Set Utama
+                                </button>
+                                @endif
+                                <button type="button" onclick="deleteImage({{ $img->id }})" class="w-full py-1 bg-error text-white text-[10px] font-bold rounded shadow hover:bg-red-700 transition">
+                                    Hapus
+                                </button>
+                            </div>
+                            @if($img->is_main)
+                                <div class="absolute top-0 left-0 bg-primary text-white text-[9px] font-bold px-1.5 py-0.5 rounded-br">UTAMA</div>
+                            @endif
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+
                 <p class="text-xs text-on-surface-variant mt-1.5 flex items-center gap-1">
                     <span class="material-symbols-outlined text-xs">info</span>
                     Tipe file dan ukuran dicek secara langsung sebelum diupload untuk mencegah upload lemot atau file berbahaya.
@@ -303,38 +367,13 @@
             </div>
         </form>
 
-        @if($product->images->count() > 0)
-        <div class="mt-lg pt-lg border-t border-outline-variant">
-            <h3 class="font-headline-sm font-bold text-on-surface mb-md">Current Images</h3>
-            <div class="flex flex-wrap gap-md">
-                @foreach($product->images as $img)
-                <div class="relative group">
-                    <img src="{{ asset('storage/' . $img->image_path) }}" class="w-32 h-32 object-cover rounded-lg border {{ $img->is_main ? 'border-primary border-4' : 'border-outline-variant' }}">
-                    
-                    <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex flex-col items-center justify-center gap-2">
-                        @if(!$img->is_main)
-                        <form action="{{ route('tenant.products.image.set_main', $img) }}" method="POST">
-                            @csrf @method('PATCH')
-                            <button type="submit" class="px-3 py-1 bg-white text-black text-xs font-bold rounded shadow hover:bg-gray-200">
-                                Set Main
-                            </button>
-                        </form>
-                        @endif
-                        <form action="{{ route('tenant.products.image.destroy', $img) }}" method="POST" onsubmit="return confirm('Delete this image?');">
-                            @csrf @method('DELETE')
-                            <button type="submit" class="px-3 py-1 bg-error text-white text-xs font-bold rounded shadow hover:bg-red-600">
-                                Delete
-                            </button>
-                        </form>
-                    </div>
-                    @if($img->is_main)
-                        <div class="absolute top-0 left-0 bg-primary text-white text-[10px] font-bold px-2 py-1 rounded-tl-lg rounded-br-lg">MAIN</div>
-                    @endif
-                </div>
-                @endforeach
-            </div>
-        </div>
-        @endif
+        <!-- Hidden forms for image actions outside main form -->
+        <form id="set-main-form" method="POST" style="display: none;">
+            @csrf @method('PATCH')
+        </form>
+        <form id="delete-image-form" method="POST" style="display: none;">
+            @csrf @method('DELETE')
+        </form>
     </div>
 </div>
 
@@ -407,6 +446,20 @@
             </button>
         `;
         container.appendChild(row);
+    }
+
+    function setMainImage(imageId) {
+        const form = document.getElementById('set-main-form');
+        form.action = `/dashboard/products/image/${imageId}/set-main`;
+        form.submit();
+    }
+
+    function deleteImage(imageId) {
+        if (confirm('Hapus foto ini?')) {
+            const form = document.getElementById('delete-image-form');
+            form.action = `/dashboard/products/image/${imageId}`;
+            form.submit();
+        }
     }
 </script>
 @endsection

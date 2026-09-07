@@ -9,6 +9,55 @@
         <h2 class="font-headline-md font-bold text-on-surface">Edit Digital Product</h2>
     </div>
 
+    <!-- Store Origin & Verification Banner -->
+    <div class="mb-4 p-4 rounded-xl border {{ $product->approval_status === 'pending' ? 'bg-amber-500/10 border-amber-500/30' : ($product->approval_status === 'rejected' ? 'bg-rose-500/10 border-rose-500/30' : 'bg-surface border-outline-variant') }} flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-3xl {{ $product->approval_status === 'pending' ? 'text-amber-500' : ($product->approval_status === 'rejected' ? 'text-rose-500' : 'text-emerald-500') }}">
+                {{ $product->approval_status === 'pending' ? 'pending_actions' : ($product->approval_status === 'rejected' ? 'cancel' : 'verified') }}
+            </span>
+            <div>
+                <div class="flex items-center gap-2">
+                    <span class="font-bold text-sm text-on-surface">
+                        Status Verifikasi:
+                        @if($product->approval_status === 'approved')
+                            <span class="text-emerald-600 dark:text-emerald-400">Disetujui (Approved)</span>
+                        @elseif($product->approval_status === 'pending')
+                            <span class="text-amber-600 dark:text-amber-400">Menunggu Review Platform</span>
+                        @else
+                            <span class="text-rose-600 dark:text-rose-400">Ditolak (Rejected)</span>
+                        @endif
+                    </span>
+                    @if($product->store)
+                        <span class="text-xs px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 font-semibold border border-indigo-500/20">
+                            Toko: {{ $product->store->name }}
+                        </span>
+                    @else
+                        <span class="text-xs px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-700 dark:text-sky-300 font-semibold border border-sky-500/20">
+                            Platform Official
+                        </span>
+                    @endif
+                </div>
+                @if($product->rejection_reason)
+                    <p class="text-xs text-rose-600 dark:text-rose-400 mt-1">
+                        <strong>Alasan Penolakan:</strong> {{ $product->rejection_reason }}
+                    </p>
+                @endif
+            </div>
+        </div>
+
+        <!-- Quick Action Buttons for Admin -->
+        <div class="flex items-center gap-2 shrink-0">
+            @if($product->approval_status !== 'approved')
+            <form action="{{ route('admin.products.approve', $product) }}" method="POST" onsubmit="return confirm('Setujui produk ini agar dapat tayang di platform?');">
+                @csrf @method('PATCH')
+                <button type="submit" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition flex items-center gap-1 shadow-xs">
+                    <span class="material-symbols-outlined text-[15px]">verified</span> Approve Produk
+                </button>
+            </form>
+            @endif
+        </div>
+    </div>
+
     <div class="bg-surface rounded-md border border-outline-variant  p-lg">
         <form action="{{ route('admin.products.update', $product) }}" method="POST" enctype="multipart/form-data" class="flex flex-col gap-lg">
             @csrf @method('PUT')

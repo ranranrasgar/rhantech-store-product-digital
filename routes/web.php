@@ -160,6 +160,8 @@ Route::middleware(['auth', 'is_admin'])->prefix('admin')->name('admin.')->group(
     Route::resource('project_categories', ProjectCategoryController::class)->except(['create', 'edit', 'show']);
     Route::resource('project_types', ProjectTypeController::class)->except(['create', 'edit', 'show']);
     Route::resource('products', ProductController::class);
+    Route::patch('products/{product}/approve', [ProductController::class, 'approve'])->name('products.approve');
+    Route::patch('products/{product}/reject', [ProductController::class, 'reject'])->name('products.reject');
     Route::delete('products/image/{image}', [ProductController::class, 'destroyImage'])->name('products.image.destroy');
     Route::patch('products/{product}/toggle-active', [ProductController::class, 'toggleActive'])->name('products.toggle_active');
     Route::patch('products/image/{image}/set-main', [ProductController::class, 'setMainImage'])->name('products.image.set_main');

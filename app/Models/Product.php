@@ -54,4 +54,36 @@ class Product extends Model
     {
         return $this->hasMany(ProductReview::class)->where('is_visible', true)->latest();
     }
+
+    public function scopeApproved($query)
+    {
+        return $query->where(function ($q) {
+            $q->whereNull('store_id')
+              ->orWhere('approval_status', 'approved');
+        });
+    }
+
+    public function scopePublished($query)
+    {
+        return $query->where('is_active', true)
+            ->where(function ($q) {
+                $q->whereNull('store_id')
+                  ->orWhere('approval_status', 'approved');
+            });
+    }
+
+    public function isApproved(): bool
+    {
+        return empty($this->store_id) || $this->approval_status === 'approved';
+    }
+
+    public function isPending(): bool
+    {
+        return !empty($this->store_id) && $this->approval_status === 'pending';
+    }
+
+    public function isRejected(): bool
+    {
+        return !empty($this->store_id) && $this->approval_status === 'rejected';
+    }
 }

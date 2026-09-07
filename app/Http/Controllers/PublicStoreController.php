@@ -15,8 +15,8 @@ class PublicStoreController extends Controller
     {
         $store = Store::where('slug', $slug)->firstOrFail();
         
-        // Assuming products relationship exists and we only want active ones
-        $products = $store->products()->where('is_active', true)->paginate(12);
+        // Only show active & approved products for store page
+        $products = $store->products()->published()->paginate(12);
 
         // Fetch appearance settings
         $appearance = is_string($store->appearance_data) ? json_decode($store->appearance_data, true) : $store->appearance_data;
@@ -31,7 +31,7 @@ class PublicStoreController extends Controller
         
         // Fetch categories from products
         $categories = \App\Models\ProductCategory::whereHas('products', function($q) use ($store) {
-            $q->where('store_id', $store->id)->where('is_active', true);
+            $q->where('store_id', $store->id)->published();
         })->get();
         
         return view('store.show', compact('store', 'products', 'appearance', 'isFollowing', 'categories'));
