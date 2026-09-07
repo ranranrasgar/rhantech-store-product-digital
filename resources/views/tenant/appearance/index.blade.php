@@ -6,36 +6,48 @@
 <div class="flex flex-col h-full bg-[#f8fafc] dark:bg-[#090d16] text-[#0f172a] dark:text-[#f1f5f9] transition-colors duration-200" x-data="appearanceEditor()">
     
     <!-- Top Action Header -->
-    <div class="bg-white dark:bg-[#111726] border-b border-slate-200/80 dark:border-[#222f49] px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm z-20 shrink-0">
-        <div>
-            <h1 class="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
+    <div class="bg-white dark:bg-[#111726] border-b border-slate-200/80 dark:border-[#222f49] px-4 sm:px-6 py-3 sm:py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 shadow-sm z-20 shrink-0">
+        <div class="min-w-0">
+            <h1 class="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
                 Dekorasi Etalase Toko
             </h1>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                 Kustomisasi susunan visual dan tata letak halaman toko digital Anda.
             </p>
         </div>
 
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2 sm:gap-3 flex-wrap sm:flex-nowrap shrink-0">
             @if($store && $store->slug)
-            <a href="{{ route('store.show', $store->slug) }}" target="_blank" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm">
-                <span class="material-symbols-outlined text-[16px]">visibility</span> Preview Web
+            <a href="{{ route('store.show', $store->slug) }}" target="_blank" class="flex-1 sm:flex-initial justify-center px-3 sm:px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm">
+                <span class="material-symbols-outlined text-[16px]">visibility</span> <span>Preview Web</span>
             </a>
             @endif
-            <button @click="save()" :disabled="isSaving" class="px-5 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs font-bold shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 transition-all flex items-center gap-1.5 disabled:opacity-60 cursor-pointer">
+            <button @click="save()" :disabled="isSaving" class="flex-1 sm:flex-initial justify-center px-4 sm:px-5 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs font-bold shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 transition-all flex items-center gap-1.5 disabled:opacity-60 cursor-pointer whitespace-nowrap">
                 <span class="material-symbols-outlined text-[16px]" x-text="isSaving ? 'hourglass_empty' : 'save'">save</span>
                 <span x-text="isSaving ? 'Menyimpan...' : 'Simpan Perubahan'">Simpan Perubahan</span>
             </button>
         </div>
     </div>
 
+    <!-- Mobile Tab Switcher (Visible only on screens < lg) -->
+    <div class="lg:hidden bg-white dark:bg-[#111726] border-b border-slate-200/80 dark:border-[#222f49] px-4 py-2 flex items-center justify-center gap-2 shrink-0 z-20">
+        <button type="button" @click="mobileTab = 'palette'" :class="mobileTab === 'palette' ? 'bg-sky-500 text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'" class="flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+            <span class="material-symbols-outlined text-[16px]">widgets</span>
+            <span>Pilihan Widget</span>
+        </button>
+        <button type="button" @click="mobileTab = 'canvas'" :class="mobileTab === 'canvas' ? 'bg-sky-500 text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'" class="flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+            <span class="material-symbols-outlined text-[16px]">devices</span>
+            <span>Kanvas Preview</span>
+        </button>
+    </div>
+
     <!-- Workspace Container (Sidebar + Interactive Canvas) -->
-    <div class="flex-1 flex overflow-hidden h-[calc(100vh-130px)]">
+    <div class="flex-1 flex flex-col lg:flex-row overflow-hidden min-h-0 relative">
         
         <!-- LEFT SIDEBAR: WIDGET COMPONENT PALETTE -->
-        <div class="w-[300px] border-r border-slate-200/80 dark:border-[#222f49] bg-white dark:bg-[#111726] flex flex-col h-full z-10 shrink-0 shadow-sm overflow-hidden">
+        <div :class="mobileTab === 'palette' ? 'flex' : 'hidden lg:flex'" class="w-full lg:w-[300px] border-b lg:border-b-0 lg:border-r border-slate-200/80 dark:border-[#222f49] bg-white dark:bg-[#111726] flex-col h-full z-10 shrink-0 shadow-sm overflow-hidden">
             
-            <div class="p-4 border-b border-slate-100 dark:border-[#222f49]">
+            <div class="p-3.5 sm:p-4 border-b border-slate-100 dark:border-[#222f49]">
                 <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                     Pilihan Blok Widget
                 </h2>
@@ -119,20 +131,20 @@
         </div>
 
         <!-- CENTER CANVAS: LIVE INTERACTIVE STORE BUILDER -->
-        <div class="flex-1 bg-slate-100/60 dark:bg-[#070a12] flex flex-col items-center py-6 overflow-auto relative custom-scrollbar">
+        <div :class="mobileTab === 'canvas' ? 'flex' : 'hidden lg:flex'" class="flex-1 bg-slate-100/60 dark:bg-[#070a12] flex-col items-center py-4 sm:py-6 px-2 sm:px-4 overflow-auto relative custom-scrollbar w-full min-w-0">
             
             <!-- Viewport Switcher (Desktop / Mobile) -->
-            <div class="flex items-center gap-1.5 mb-6 bg-white dark:bg-[#111726] p-1.5 rounded-2xl border border-slate-200/80 dark:border-[#222f49] shrink-0 shadow-sm">
-                <button @click="device = 'desktop'" :class="device === 'desktop' ? 'bg-sky-500 text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'" class="px-4 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
+            <div class="flex items-center gap-1.5 mb-4 sm:mb-6 bg-white dark:bg-[#111726] p-1.5 rounded-2xl border border-slate-200/80 dark:border-[#222f49] shrink-0 shadow-sm">
+                <button @click="device = 'desktop'" :class="device === 'desktop' ? 'bg-sky-500 text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'" class="px-3.5 sm:px-4 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer">
                     <span class="material-symbols-outlined text-[16px]">desktop_windows</span> Desktop
                 </button>
-                <button @click="device = 'mobile'" :class="device === 'mobile' ? 'bg-sky-500 text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'" class="px-4 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
+                <button @click="device = 'mobile'" :class="device === 'mobile' ? 'bg-sky-500 text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'" class="px-3.5 sm:px-4 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer">
                     <span class="material-symbols-outlined text-[16px]">smartphone</span> Mobile
                 </button>
             </div>
 
             <!-- DESKTOP CANVAS VIEWPORT -->
-            <div x-show="device === 'desktop'" class="w-[960px] bg-white dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] shadow-2xl rounded-2xl overflow-hidden flex flex-col relative min-h-[600px] shrink-0 mb-12">
+            <div x-show="device === 'desktop'" class="w-full max-w-[960px] bg-white dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] shadow-2xl rounded-2xl overflow-hidden flex flex-col relative min-h-[600px] shrink-0 mb-12">
                 
                 <!-- Browser Bar -->
                 <div class="h-9 bg-slate-100 dark:bg-[#161f33] border-b border-slate-200 dark:border-[#222f49] flex items-center px-4 gap-3 shrink-0">
@@ -308,7 +320,7 @@
             </div>
 
             <!-- MOBILE CANVAS VIEWPORT -->
-            <div x-show="device === 'mobile'" style="display: none;" class="w-[375px] bg-white dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] shadow-2xl rounded-[2.5rem] overflow-hidden flex flex-col relative min-h-[750px] shrink-0 mb-12 outline outline-8 outline-slate-200/60 dark:outline-slate-800">
+            <div x-show="device === 'mobile'" style="display: none;" class="w-full max-w-[375px] bg-white dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] shadow-2xl rounded-3xl sm:rounded-[2.5rem] overflow-hidden flex flex-col relative min-h-[650px] sm:min-h-[750px] shrink-0 mb-12 outline sm:outline-8 outline-slate-200/60 dark:outline-slate-800">
                 
                 <!-- Mobile Status Bar -->
                 <div class="h-7 bg-slate-900 text-white text-[10px] flex justify-between items-center px-5 shrink-0">
@@ -701,7 +713,8 @@
 <script>
     document.addEventListener('alpine:init', () => {
         Alpine.data('appearanceEditor', () => ({
-            device: 'desktop',
+            device: window.innerWidth < 768 ? 'mobile' : 'desktop',
+            mobileTab: window.innerWidth < 1024 ? 'canvas' : 'palette',
             activeComponents: {!! json_encode($store->appearance_data ?? []) !!},
             headerBanner: '{{ $store->banner }}' || '',
             isSaving: false,
@@ -721,6 +734,10 @@
             editingData: null,
             
             init() {
+                if (window.innerWidth < 768) {
+                    this.device = 'mobile';
+                }
+                
                 if (!Array.isArray(this.activeComponents) || this.activeComponents.length === 0) {
                     this.activeComponents = [
                         { id: this.generateId(), type: 'banner', data: this.getDefaultData('banner') },
@@ -768,6 +785,11 @@
                 const newComp = { id: this.generateId(), type: type, data: this.getDefaultData(type) };
                 this.activeComponents.push(newComp);
                 const newIndex = this.activeComponents.length - 1;
+                
+                // If on mobile/tablet view, automatically switch to canvas tab to see the newly added widget
+                if (window.innerWidth < 1024) {
+                    this.mobileTab = 'canvas';
+                }
                 
                 this.$nextTick(() => {
                     const canvas = this.device === 'mobile' ? document.getElementById('mobile-canvas') : document.getElementById('desktop-canvas');
