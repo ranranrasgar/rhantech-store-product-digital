@@ -250,7 +250,7 @@
                 </div>
 
                 <div>
-                    <label class="block font-label-md text-on-surface mb-xs">Thumbnail Image</label>
+                    <label class="block font-label-md text-on-surface mb-xs">Thumbnail Utama</label>
                     @if($project->thumbnail)
                         <div class="mb-2">
                             <img src="{{ media_url($project->thumbnail) }}" alt="Thumbnail" class="w-32 h-auto rounded border border-outline-variant shadow-xs">
@@ -261,11 +261,122 @@
                     @error('thumbnail')<span class="text-error text-xs">{{ $message }}</span>@enderror
                 </div>
 
+                <!-- Existing Gallery Images (Foto Saat Ini) -->
+                @if($project->images && $project->images->count() > 0)
+                <div class="p-4 rounded-xl bg-surface-container-low border border-outline-variant/60">
+                    <div class="flex items-center justify-between mb-3">
+                        <div>
+                            <h4 class="font-label-md text-on-surface font-bold text-sm">Foto Galeri Saat Ini</h4>
+                            <p class="text-xs text-on-surface-variant">Terdapat {{ $project->images->count() }} foto galeri tersimpan untuk portfolio ini.</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                        @foreach($project->images as $img)
+                        <div class="relative group rounded-lg overflow-hidden border border-outline-variant bg-surface shadow-xs">
+                            <div class="aspect-video w-full bg-surface-container flex items-center justify-center overflow-hidden">
+                                <img src="{{ media_url($img->image) }}" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105">
+                            </div>
+                            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-2">
+                                <button type="button" 
+                                        onclick="if(confirm('Hapus foto ini dari galeri? File di cloud akan langsung dibersihkan.')) document.getElementById('delete-img-{{ $img->id }}').submit();"
+                                        class="px-2.5 py-1 bg-error hover:bg-red-700 text-white rounded text-xs font-bold shadow-md flex items-center gap-1 transition-all">
+                                    <span class="material-symbols-outlined text-[15px]">delete</span>
+                                    <span>Hapus</span>
+                                </button>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+
+                <!-- Upload Foto Galeri Baru (+ Image Tidak Terbatas) -->
+                <div class="p-4 rounded-xl bg-surface-container-low border border-outline-variant/60" 
+                     x-data="{
+                         imageSlots: [1],
+                         previews: {},
+                         addImageSlot() {
+                             this.imageSlots.push(Date.now());
+                         },
+                         removeSlot(id) {
+                             if (this.imageSlots.length > 1) {
+                                 this.imageSlots = this.imageSlots.filter(s => s !== id);
+                                 delete this.previews[id];
+                             }
+                         },
+                         handleFileChange(event, id) {
+                             const file = event.target.files[0];
+                             if (file) {
+                                 const reader = new FileReader();
+                                 reader.onload = (e) => {
+                                     this.previews[id] = e.target.result;
+                                 };
+                                 reader.readAsDataURL(file);
+                             } else {
+                                 delete this.previews[id];
+                             }
+                         }
+                     }">
+                    <div class="flex items-center justify-between mb-3">
+                        <div>
+                            <label class="block font-label-md text-on-surface font-bold text-sm">
+                                Tambah Foto Galeri Baru (+ Foto Tidak Terbatas)
+                            </label>
+                            <p class="text-xs text-on-surface-variant">Tambahkan foto baru untuk dimasukkan ke galeri screenshot portfolio.</p>
+                        </div>
+                        <button type="button" 
+                                @click="addImageSlot()" 
+                                class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-lg text-xs font-bold transition-all shadow-xs">
+                            <span class="material-symbols-outlined text-sm font-bold">add_photo_alternate</span>
+                            <span>+ Tambah Gambar</span>
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <template x-for="(slotId, index) in imageSlots" :key="slotId">
+                            <div class="p-3 bg-surface rounded-lg border border-outline-variant/60 flex items-start gap-3 relative animate-fadeIn group">
+                                <div class="w-16 h-16 rounded-md bg-surface-container border border-outline-variant flex items-center justify-center overflow-hidden shrink-0">
+                                    <template x-if="previews[slotId]">
+                                        <img :src="previews[slotId]" class="w-full h-full object-cover">
+                                    </template>
+                                    <template x-if="!previews[slotId]">
+                                        <span class="material-symbols-outlined text-outline-variant text-2xl">image</span>
+                                    </template>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <span class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider block mb-1" x-text="'Foto Baru #' + (index + 1)"></span>
+                                    <input type="file" 
+                                           name="images[]" 
+                                           accept="image/*" 
+                                           @change="handleFileChange($event, slotId)"
+                                           class="w-full text-xs text-on-surface file:mr-2 file:py-1 file:px-2.5 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer">
+                                </div>
+                                <button type="button" 
+                                        x-show="imageSlots.length > 1" 
+                                        @click="removeSlot(slotId)" 
+                                        class="text-on-surface-variant hover:text-error p-1 rounded-md transition-colors" 
+                                        title="Hapus baris ini">
+                                    <span class="material-symbols-outlined text-sm">close</span>
+                                </button>
+                            </div>
+                        </template>
+                    </div>
+                    @error('images.*')<span class="text-error text-xs block mt-2">{{ $message }}</span>@enderror
+                </div>
+
                 <div class="flex justify-end gap-sm mt-lg pt-md border-t border-outline-variant">
                     <a href="{{ route('admin.projects.index') }}" class="px-6 py-2 border border-outline-variant rounded-lg font-label-md font-bold text-on-surface hover:bg-surface-variant transition" wire:navigate>Cancel</a>
                     <button type="submit" class="px-6 py-2 bg-primary text-white rounded-lg font-label-md font-bold hover:bg-primary/90 transition shadow-[0px_4px_6px_-1px_rgba(15,23,42,0.03),0px_2px_4px_-2px_rgba(15,23,42,0.03)]">Update Project</button>
-                </div>
             </form>
+
+            @if($project->images && $project->images->count() > 0)
+                @foreach($project->images as $img)
+                    <form id="delete-img-{{ $img->id }}" action="{{ route('admin.projects.image.destroy', $img) }}" method="POST" class="hidden">
+                        @csrf
+                        @method('DELETE')
+                    </form>
+                @endforeach
+            @endif
         </div>
     </div>
 </div>

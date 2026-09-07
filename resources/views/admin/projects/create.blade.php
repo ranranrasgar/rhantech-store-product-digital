@@ -266,7 +266,7 @@
                 </div>
 
                 <div>
-                    <label class="block font-label-md text-on-surface mb-xs">Thumbnail Image</label>
+                    <label class="block font-label-md text-on-surface mb-xs">Thumbnail Utama</label>
                     @if($duplicateProject && $duplicateProject->thumbnail)
                     <div class="mb-2 flex items-center gap-2">
                         <img src="{{ media_url($duplicateProject->thumbnail) }}" alt="Thumbnail" class="w-20 h-12 object-cover rounded border border-outline-variant shadow-xs">
@@ -276,6 +276,80 @@
                     @endif
                     <input type="file" name="thumbnail" accept="image/*" class="w-full bg-surface-container-low border border-[#CBD5E1] rounded-lg py-2 px-4 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all">
                     @error('thumbnail')<span class="text-error text-xs">{{ $message }}</span>@enderror
+                </div>
+
+                <!-- Gallery Images Section (+ Image Tidak Terbatas) -->
+                <div class="p-4 rounded-xl bg-surface-container-low border border-outline-variant/60" 
+                     x-data="{
+                         imageSlots: [1],
+                         previews: {},
+                         addImageSlot() {
+                             this.imageSlots.push(Date.now());
+                         },
+                         removeSlot(id) {
+                             if (this.imageSlots.length > 1) {
+                                 this.imageSlots = this.imageSlots.filter(s => s !== id);
+                                 delete this.previews[id];
+                             }
+                         },
+                         handleFileChange(event, id) {
+                             const file = event.target.files[0];
+                             if (file) {
+                                 const reader = new FileReader();
+                                 reader.onload = (e) => {
+                                     this.previews[id] = e.target.result;
+                                 };
+                                 reader.readAsDataURL(file);
+                             } else {
+                                 delete this.previews[id];
+                             }
+                         }
+                     }">
+                    <div class="flex items-center justify-between mb-3">
+                        <div>
+                            <label class="block font-label-md text-on-surface font-bold text-sm">
+                                Galeri Gambar Portfolio (+ Foto Tidak Terbatas)
+                            </label>
+                            <p class="text-xs text-on-surface-variant">Tambahkan screenshot, foto mockup, atau gambar fitur lainnya sebanyak yang Anda butuhkan.</p>
+                        </div>
+                        <button type="button" 
+                                @click="addImageSlot()" 
+                                class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-lg text-xs font-bold transition-all shadow-xs">
+                            <span class="material-symbols-outlined text-sm font-bold">add_photo_alternate</span>
+                            <span>+ Tambah Gambar</span>
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <template x-for="(slotId, index) in imageSlots" :key="slotId">
+                            <div class="p-3 bg-surface rounded-lg border border-outline-variant/60 flex items-start gap-3 relative animate-fadeIn group">
+                                <div class="w-16 h-16 rounded-md bg-surface-container border border-outline-variant flex items-center justify-center overflow-hidden shrink-0">
+                                    <template x-if="previews[slotId]">
+                                        <img :src="previews[slotId]" class="w-full h-full object-cover">
+                                    </template>
+                                    <template x-if="!previews[slotId]">
+                                        <span class="material-symbols-outlined text-outline-variant text-2xl">image</span>
+                                    </template>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <span class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider block mb-1" x-text="'Foto Galeri #' + (index + 1)"></span>
+                                    <input type="file" 
+                                           name="images[]" 
+                                           accept="image/*" 
+                                           @change="handleFileChange($event, slotId)"
+                                           class="w-full text-xs text-on-surface file:mr-2 file:py-1 file:px-2.5 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer">
+                                </div>
+                                <button type="button" 
+                                        x-show="imageSlots.length > 1" 
+                                        @click="removeSlot(slotId)" 
+                                        class="text-on-surface-variant hover:text-error p-1 rounded-md transition-colors" 
+                                        title="Hapus baris ini">
+                                    <span class="material-symbols-outlined text-sm">close</span>
+                                </button>
+                            </div>
+                        </template>
+                    </div>
+                    @error('images.*')<span class="text-error text-xs block mt-2">{{ $message }}</span>@enderror
                 </div>
 
                 <div class="flex justify-end gap-sm mt-lg pt-md border-t border-outline-variant">

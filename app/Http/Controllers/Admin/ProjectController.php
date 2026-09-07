@@ -63,7 +63,9 @@ class ProjectController extends Controller
             'completed_at' => 'nullable|date',
             'status' => 'required|string|in:draft,published,archived',
             'is_featured' => 'boolean',
-            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,ico|max:2048'
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,ico|max:2048',
+            'images' => 'nullable|array',
+            'images.*' => 'image|mimes:jpeg,png,jpg,webp,gif,ico|max:3072',
         ]);
 
         if (empty($validated['slug'])) {
@@ -86,10 +88,25 @@ class ProjectController extends Controller
             $clientIds[] = $validated['client_id'];
         }
 
-        unset($validated['client_ids']);
+        unset($validated['client_ids'], $validated['images']);
 
         $project = Project::create($validated);
         $project->clients()->sync($clientIds);
+
+        // Upload multiple gallery images jika ada
+        if ($request->hasFile('images')) {
+            $currentOrder = 0;
+            foreach ($request->file('images') as $imageFile) {
+                if ($imageFile) {
+                    $path = $imageFile->store('projects', 'public');
+                    \App\Models\ProjectImage::create([
+                        'project_id' => $project->id,
+                        'image' => $path,
+                        'sort_order' => ++$currentOrder,
+                    ]);
+                }
+            }
+        }
 
         return redirect()->route('admin.projects.index')->with('success', 'Portfolio created successfully.');
     }
@@ -99,7 +116,7 @@ class ProjectController extends Controller
      */
     public function edit(Project $project)
     {
-        $project->load('clients');
+        $project->load(['clients', 'images']);
         $clients = Client::query()->orderBy('name', 'asc')->get();
         $categories = ProjectCategory::orderBy('name', 'asc')->get();
         $types = ProjectType::orderBy('name', 'asc')->get();
@@ -126,7 +143,9 @@ class ProjectController extends Controller
             'completed_at' => 'nullable|date',
             'status' => 'required|string|in:draft,published,archived',
             'is_featured' => 'boolean',
-            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,ico|max:2048'
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,ico|max:2048',
+            'images' => 'nullable|array',
+            'images.*' => 'image|mimes:jpeg,png,jpg,webp,gif,ico|max:3072',
         ]);
 
         if (empty($validated['slug'])) {
@@ -152,10 +171,25 @@ class ProjectController extends Controller
             $clientIds[] = $validated['client_id'];
         }
 
-        unset($validated['client_ids']);
+        unset($validated['client_ids'], $validated['images']);
 
         $project->update($validated);
         $project->clients()->sync($clientIds);
+
+        // Upload multiple gallery images baru jika ada
+        if ($request->hasFile('images')) {
+            $lastOrder = $project->images()->max('sort_order') ?? 0;
+            foreach ($request->file('images') as $imageFile) {
+                if ($imageFile) {
+                    $path = $imageFile->store('projects', 'public');
+                    \App\Models\ProjectImage::create([
+                        'project_id' => $project->id,
+                        'image' => $path,
+                        'sort_order' => ++$lastOrder,
+                    ]);
+                }
+            }
+        }
 
         return redirect()->route('admin.projects.index')->with('success', 'Portfolio updated successfully.');
     }
@@ -209,5 +243,18 @@ class ProjectController extends Controller
             'slug' => $slug,
             'is_duplicate' => $slug !== $baseSlug
         ]);
+    }
+
+    /**
+     * Remove a single gallery image from project.
+     */
+    public function destroyImage(\App\Models\ProjectImage $image)
+    {
+        if ($image->image) {
+            Storage::disk('public')->delete($image->image);
+        }
+        $image->delete();
+
+        return back()->with('success', 'Foto galeri berhasil dihapus.');
     }
 }

@@ -156,6 +156,7 @@ Route::middleware(['auth', 'is_admin'])->prefix('admin')->name('admin.')->group(
     Route::post('orders/{order}/sync-status', [OrderController::class, 'syncStatus'])->name('orders.sync_status');
     Route::delete('orders/{order}', [OrderController::class, 'destroy'])->name('orders.destroy');
     Route::get('projects/check-slug', [ProjectController::class, 'checkSlug'])->name('projects.check_slug');
+    Route::delete('projects/image/{image}', [ProjectController::class, 'destroyImage'])->name('projects.image.destroy');
     Route::resource('projects', ProjectController::class);
     Route::resource('testimonials', TestimonialController::class);
     Route::resource('messages', ContactMessageController::class);
