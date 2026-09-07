@@ -226,10 +226,19 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
                     <div>
-                        <label class="block font-label-md text-on-surface mb-xs">Project URL</label>
-                        <input type="url" name="project_url" value="{{ old('project_url', $duplicateProject?->project_url) }}" class="w-full bg-surface-container-low border border-[#CBD5E1] rounded-lg py-2 px-4 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all">
+                        <label class="block font-label-md text-on-surface mb-xs">Project URL (Live Demo / Website)</label>
+                        <input type="url" name="project_url" value="{{ old('project_url', $duplicateProject?->project_url) }}" placeholder="https://..." class="w-full bg-surface-container-low border border-[#CBD5E1] rounded-lg py-2 px-4 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all">
                         @error('project_url')<span class="text-error text-xs">{{ $message }}</span>@enderror
                     </div>
+                    <div>
+                        <label class="block font-label-md text-on-surface mb-xs">Order URL (Tautan Pembelian / Halaman Produk)</label>
+                        <input type="url" name="order_url" value="{{ old('order_url', $duplicateProject?->order_url) }}" placeholder="https://rhantech.com/products/..." class="w-full bg-surface-container-low border border-[#CBD5E1] rounded-lg py-2 px-4 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all">
+                        <p class="text-[11px] text-on-surface-variant mt-1">Opsional: Isi link produk jika project ini dijual atau dapat diorder langsung.</p>
+                        @error('order_url')<span class="text-error text-xs">{{ $message }}</span>@enderror
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
                     <div>
                         <label class="block font-label-md text-on-surface mb-xs">Completed Date</label>
                         <input type="date" name="completed_at" value="{{ old('completed_at', $duplicateProject?->completed_at ? $duplicateProject->completed_at->format('Y-m-d') : '') }}" class="w-full bg-surface-container-low border border-[#CBD5E1] rounded-lg py-2 px-4 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all">
