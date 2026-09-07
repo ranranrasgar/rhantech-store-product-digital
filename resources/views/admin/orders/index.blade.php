@@ -153,9 +153,8 @@
                 <thead class="bg-surface-container-lowest border-b border-outline-variant text-on-surface-variant font-label-md">
                     <tr>
                         <th class="p-4 font-medium">Invoice & Tanggal</th>
-                        <th class="p-4 font-medium">Toko Penjual</th>
                         <th class="p-4 font-medium">Customer</th>
-                        <th class="p-4 font-medium">Produk</th>
+                        <th class="p-4 font-medium min-w-[280px]">Produk & Toko Penjual</th>
                         <th class="p-4 font-medium">Total Nominal</th>
                         <th class="p-4 font-medium text-center">Status</th>
                         <th class="p-4 font-medium text-right pr-6">Aksi</th>
@@ -163,23 +162,9 @@
                 </thead>
                 <tbody class="divide-y divide-outline-variant">
                     @forelse($orders as $order)
-                    @php
-                        // Collect unique stores involved in this order
-                        $orderStores = collect();
-                        if ($order->orderItems && $order->orderItems->count() > 0) {
-                            foreach($order->orderItems as $item) {
-                                if ($item->product && $item->product->store) {
-                                    $orderStores->push($item->product->store);
-                                }
-                            }
-                        } elseif ($order->product && $order->product->store) {
-                            $orderStores->push($order->product->store);
-                        }
-                        $orderStores = $orderStores->unique('id');
-                    @endphp
                     <tr class="hover:bg-surface-container-lowest/50 transition-colors">
                         <!-- Invoice & Date -->
-                        <td class="p-4">
+                        <td class="p-4 align-top">
                             <div class="font-bold text-on-surface font-mono text-sm">{{ $order->invoice_number }}</div>
                             <div class="text-[11px] text-on-surface-variant flex items-center gap-1 mt-0.5">
                                 <span class="material-symbols-outlined text-[13px]">schedule</span>
@@ -187,72 +172,81 @@
                             </div>
                         </td>
 
-                        <!-- Toko Penjualan -->
-                        <td class="p-4">
-                            @if($orderStores->count() > 0)
-                                <div class="flex flex-col gap-1.5">
-                                    @foreach($orderStores as $ostore)
-                                        <div class="flex items-center gap-2">
-                                            <div class="w-7 h-7 rounded-lg bg-surface-container border border-outline-variant flex items-center justify-center overflow-hidden shrink-0 text-xs font-bold text-primary">
-                                                @if($ostore->logo)
-                                                    <img src="{{ asset('storage/' . $ostore->logo) }}" class="w-full h-full object-cover">
-                                                @else
-                                                    {{ strtoupper(substr($ostore->name, 0, 2)) }}
-                                                @endif
-                                            </div>
-                                            <div class="min-w-0">
-                                                <a href="{{ route('admin.stores.index', ['search' => $ostore->name]) }}" class="text-xs font-bold text-on-surface hover:text-primary transition-colors block truncate max-w-[150px]" title="{{ $ostore->name }}">
-                                                    {{ $ostore->name }}
-                                                </a>
-                                                <a href="{{ route('store.show', $ostore->slug) }}" target="_blank" class="text-[10px] text-primary hover:underline flex items-center gap-0.5">
-                                                    Lihat Toko <span class="material-symbols-outlined text-[10px]">open_in_new</span>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            @else
-                                <span class="inline-flex items-center gap-1 text-xs text-on-surface-variant/80 italic">
-                                    <span class="material-symbols-outlined text-[14px]">store</span> Toko Utama (Pusat)
-                                </span>
-                            @endif
-                        </td>
-
                         <!-- Customer -->
-                        <td class="p-4">
+                        <td class="p-4 align-top">
                             <div class="font-bold text-on-surface text-sm">{{ $order->customer_name }}</div>
                             <div class="text-xs text-on-surface-variant">{{ $order->customer_email }}</div>
                             @if($order->customer_phone)
-                            <div class="text-[11px] text-on-surface-variant font-mono">{{ $order->customer_phone }}</div>
+                            <div class="text-[11px] text-on-surface-variant font-mono mt-0.5">{{ $order->customer_phone }}</div>
                             @endif
                         </td>
 
-                        <!-- Product List -->
-                        <td class="p-4">
+                        <!-- Product List with Store info underneath -->
+                        <td class="p-4 align-top">
                             @if($order->orderItems && $order->orderItems->count() > 0)
-                                <div class="flex flex-col gap-1 max-w-[240px]">
+                                <div class="flex flex-col gap-2.5 max-w-[320px]">
                                     @foreach($order->orderItems as $item)
-                                        <div class="text-xs font-semibold text-on-surface truncate flex items-center gap-1.5" title="{{ $item->product->name ?? 'Produk' }}">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-primary shrink-0"></span>
-                                            <span class="truncate">{{ $item->product->name ?? 'Produk Dihapus' }}</span>
-                                            <span class="text-[11px] text-on-surface-variant font-mono shrink-0">(x{{ $item->quantity }})</span>
+                                        @php
+                                            $itemStore = $item->product ? $item->product->store : null;
+                                        @endphp
+                                        <div class="space-y-0.5">
+                                            <div class="text-xs font-bold text-on-surface truncate flex items-center gap-1.5" title="{{ $item->product->name ?? 'Produk' }}">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-primary shrink-0"></span>
+                                                <span class="truncate">{{ $item->product->name ?? 'Produk Dihapus' }}</span>
+                                                <span class="text-[11px] text-on-surface-variant font-mono shrink-0">(x{{ $item->quantity }})</span>
+                                            </div>
+                                            
+                                            <!-- Store info under product -->
+                                            <div class="pl-3 flex items-center gap-1.5 text-[11px] text-on-surface-variant">
+                                                <span class="material-symbols-outlined text-[13px] text-primary">storefront</span>
+                                                @if($itemStore)
+                                                    <a href="{{ route('store.show', $itemStore->slug) }}" target="_blank" class="font-semibold text-primary hover:underline truncate max-w-[180px]" title="{{ $itemStore->name }}">
+                                                        {{ $itemStore->name }}
+                                                    </a>
+                                                    <span class="text-[10px] text-on-surface-variant/60">•</span>
+                                                    <a href="{{ route('admin.stores.index', ['search' => $itemStore->name]) }}" class="text-[10px] hover:text-primary transition-colors">
+                                                        Kelola
+                                                    </a>
+                                                @else
+                                                    <span class="italic text-on-surface-variant/80">Toko Utama (Pusat)</span>
+                                                @endif
+                                            </div>
                                         </div>
                                     @endforeach
                                 </div>
                             @else
-                                <div class="text-xs font-semibold text-on-surface truncate max-w-[220px]" title="{{ $order->product->name ?? 'Deleted Product' }}">
-                                    {{ $order->product->name ?? 'Deleted Product' }}
+                                @php
+                                    $singleStore = $order->product ? $order->product->store : null;
+                                @endphp
+                                <div class="space-y-0.5 max-w-[320px]">
+                                    <div class="text-xs font-bold text-on-surface truncate" title="{{ $order->product->name ?? 'Deleted Product' }}">
+                                        {{ $order->product->name ?? 'Deleted Product' }}
+                                    </div>
+                                    <div class="flex items-center gap-1.5 text-[11px] text-on-surface-variant">
+                                        <span class="material-symbols-outlined text-[13px] text-primary">storefront</span>
+                                        @if($singleStore)
+                                            <a href="{{ route('store.show', $singleStore->slug) }}" target="_blank" class="font-semibold text-primary hover:underline truncate max-w-[180px]" title="{{ $singleStore->name }}">
+                                                {{ $singleStore->name }}
+                                            </a>
+                                            <span class="text-[10px] text-on-surface-variant/60">•</span>
+                                            <a href="{{ route('admin.stores.index', ['search' => $singleStore->name]) }}" class="text-[10px] hover:text-primary transition-colors">
+                                                Kelola
+                                            </a>
+                                        @else
+                                            <span class="italic text-on-surface-variant/80">Toko Utama (Pusat)</span>
+                                        @endif
+                                    </div>
                                 </div>
                             @endif
                         </td>
 
                         <!-- Amount -->
-                        <td class="p-4 font-bold text-on-surface text-sm">
+                        <td class="p-4 align-top font-bold text-on-surface text-sm">
                             Rp {{ number_format($order->amount, 0, ',', '.') }}
                         </td>
 
                         <!-- Status -->
-                        <td class="p-4 text-center">
+                        <td class="p-4 align-top text-center">
                             @if($order->status === 'paid')
                                 <span class="px-2.5 py-1 rounded-full bg-green-100 dark:bg-green-950/40 text-green-700 dark:text-green-400 text-xs font-bold inline-flex items-center gap-1">
                                     <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Paid
@@ -273,7 +267,7 @@
                         </td>
 
                         <!-- Actions -->
-                        <td class="p-4 text-right pr-6">
+                        <td class="p-4 align-top text-right pr-6">
                             <div class="flex items-center justify-end gap-1.5">
                                 @if($order->status !== 'paid' && $order->status !== 'downloaded')
                                 <form action="{{ route('admin.orders.sync_status', $order) }}" method="POST">
