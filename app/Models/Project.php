@@ -44,4 +44,9 @@ class Project extends Model
     {
         return $this->hasMany(ProjectImage::class)->orderBy('sort_order');
     }
+
+    public function getThumbnailUrlAttribute(): string
+    {
+        return $this->thumbnail ? media_url($this->thumbnail) : '';
+    }
 }

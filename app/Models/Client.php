@@ -33,4 +33,9 @@ class Client extends Model
     {
         $this->attributes['website'] = $value;
     }
+
+    public function getLogoUrlAttribute(): string
+    {
+        return $this->logo ? media_url($this->logo) : '';
+    }
 }

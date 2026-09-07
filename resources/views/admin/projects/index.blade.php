@@ -68,7 +68,7 @@
                                 <div class="flex items-center gap-md">
                                     <div class="w-16 h-12 rounded-lg bg-surface-container-high border border-outline-variant flex items-center justify-center overflow-hidden flex-shrink-0">
                                         @if($project->thumbnail)
-                                            <img class="w-full h-full object-cover" src="{{ asset('storage/' . $project->thumbnail) }}" alt="{{ $project->title }}"/>
+                                            <img class="w-full h-full object-cover" src="{{ media_url($project->thumbnail) }}" alt="{{ $project->title }}"/>
                                         @else
                                             <span class="material-symbols-outlined text-outline-variant">image</span>
                                         @endif

@@ -5,11 +5,11 @@
 @php
     $galleryUrls = [];
     if($project->thumbnail) {
-        $galleryUrls[] = asset('storage/' . $project->thumbnail);
+        $galleryUrls[] = media_url($project->thumbnail);
     }
     if($project->images) {
         foreach($project->images as $img) {
-            $galleryUrls[] = asset('storage/' . $img->image);
+            $galleryUrls[] = media_url($img->image);
         }
     }
     $allImagesJson = json_encode(array_values($galleryUrls));
@@ -47,8 +47,8 @@
             <!-- Thumbnail with Zoom Click -->
             @if($project->thumbnail)
             <div class="relative group cursor-zoom-in rounded-lg overflow-hidden border border-outline-variant/30 bg-surface-container-low"
-                 @click="openLightbox('{{ asset('storage/' . $project->thumbnail) }}')">
-                <img src="{{ asset('storage/' . $project->thumbnail) }}" alt="{{ $project->title }}" class="w-full object-cover aspect-video transition-transform duration-300 group-hover:scale-[1.02]"/>
+                 @click="openLightbox('{{ media_url($project->thumbnail) }}')">
+                <img src="{{ media_url($project->thumbnail) }}" alt="{{ $project->title }}" class="w-full object-cover aspect-video transition-transform duration-300 group-hover:scale-[1.02]"/>
                 <div class="absolute bottom-3 right-3 bg-surface/85 dark:bg-black/70 backdrop-blur-md px-3 py-1.5 rounded-md text-xs font-semibold text-on-surface flex items-center gap-1.5 shadow-md opacity-0 group-hover:opacity-100 transition-opacity">
                     <span class="material-symbols-outlined text-[16px] text-primary">zoom_in</span>
                     <span>Klik untuk memperbesar</span>
@@ -76,8 +76,8 @@
             <div class="grid grid-cols-2 md:grid-cols-3 gap-md">
                 @foreach($project->images as $img)
                 <div class="relative group cursor-zoom-in rounded-md overflow-hidden border border-outline-variant/30 bg-surface-container-low h-40"
-                     @click="openLightbox('{{ asset('storage/' . $img->image) }}')">
-                    <img src="{{ asset('storage/' . $img->image) }}" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105">
+                     @click="openLightbox('{{ media_url($img->image) }}')">
+                    <img src="{{ media_url($img->image) }}" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105">
                     <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                         <span class="material-symbols-outlined text-white text-[24px] drop-shadow-md">zoom_in</span>
                     </div>
@@ -106,7 +106,7 @@
                         @foreach($detailClients as $cl)
                         <div class="flex items-center gap-2 p-2 rounded-lg bg-surface-container-low border border-outline-variant/50">
                             @if($cl->logo)
-                                <img src="{{ asset('storage/' . $cl->logo) }}" alt="{{ $cl->name }}" class="w-7 h-7 object-contain rounded bg-white p-0.5 border border-outline-variant/30 flex-shrink-0">
+                                <img src="{{ media_url($cl->logo) }}" alt="{{ $cl->name }}" class="w-7 h-7 object-contain rounded bg-white p-0.5 border border-outline-variant/30 flex-shrink-0">
                             @else
                                 <div class="w-7 h-7 rounded bg-secondary-container/40 text-secondary flex items-center justify-center flex-shrink-0">
                                     <span class="material-symbols-outlined text-[16px]">business</span>

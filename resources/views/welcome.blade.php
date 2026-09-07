@@ -114,7 +114,7 @@
             <div class="bg-surface rounded-xl border border-outline-variant overflow-hidden hover:shadow-lg transition-shadow duration-300 group">
                 <div class="relative h-48 overflow-hidden">
                     @if($project->thumbnail)
-                    <img loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="{{ asset('storage/' . $project->thumbnail) }}" alt="{{ $project->title }}"/>
+                    <img loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="{{ media_url($project->thumbnail) }}" alt="{{ $project->title }}"/>
                     @else
                     <div class="w-full h-full bg-surface-container flex items-center justify-center text-outline-variant">
                         <span class="material-symbols-outlined text-4xl">image</span>

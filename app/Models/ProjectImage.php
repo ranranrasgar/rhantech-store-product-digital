@@ -17,4 +17,9 @@ class ProjectImage extends Model
     {
         return $this->belongsTo(Project::class);
     }
+
+    public function getImageUrlAttribute(): string
+    {
+        return $this->image ? media_url($this->image) : '';
+    }
 }
