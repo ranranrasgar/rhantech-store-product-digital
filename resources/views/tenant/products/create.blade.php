@@ -257,52 +257,7 @@
                 </div>
             </div>
 
-            <div x-data="{
-                files: [],
-                errorMessage: '',
-                validateFiles(event) {
-                    const input = event.target;
-                    const selectedFiles = Array.from(input.files);
-                    this.errorMessage = '';
-                    this.files = [];
-
-                    if (selectedFiles.length > 5) {
-                        this.errorMessage = 'Maksimal hanya boleh memilih 5 foto produk.';
-                        input.value = '';
-                        return;
-                    }
-
-                    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp', 'image/gif'];
-                    const allowedExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
-                    const maxSize = 2 * 1024 * 1024; // 2MB
-
-                    for (let file of selectedFiles) {
-                        const ext = '.' + file.name.split('.').pop().toLowerCase();
-                        
-                        // Cek apakah bukan gambar (mencegah .php, video, script, dll)
-                        if (!file.type.startsWith('image/') || !allowedTypes.includes(file.type) || !allowedExtensions.includes(ext)) {
-                            this.errorMessage = `File \"${file.name}\" bukan file gambar yang valid! Hanya format JPG, JPEG, PNG, WEBP, dan GIF yang diperbolehkan. File selain gambar (.php, video, dll) dilarang.`;
-                            input.value = '';
-                            this.files = [];
-                            return;
-                        }
-
-                        // Cek ukuran file
-                        if (file.size > maxSize) {
-                            this.errorMessage = `Ukuran file \"${file.name}\" (${(file.size / (1024 * 1024)).toFixed(2)} MB) terlalu besar! Maksimal 2 MB per foto agar proses upload cepat.`;
-                            input.value = '';
-                            this.files = [];
-                            return;
-                        }
-
-                        this.files.push({
-                            name: file.name,
-                            size: (file.size / 1024).toFixed(1) + ' KB',
-                            previewUrl: URL.createObjectURL(file)
-                        });
-                    }
-                }
-            }">
+            <div x-data="productImageValidator()">
                 <div class="flex items-center justify-between mb-xs">
                     <label class="block font-label-md text-on-surface">Foto Produk (Maks 5) {{ isset($sourceProduct) && $sourceProduct->images->count() > 0 ? '(Opsional)' : '*' }}</label>
                     <span class="text-[11px] text-on-surface-variant">Maks. 2 MB per foto (JPG, PNG, WEBP)</span>
@@ -373,6 +328,53 @@
 </div>
 
 <script>
+    function productImageValidator() {
+        return {
+            files: [],
+            errorMessage: '',
+            validateFiles(event) {
+                const input = event.target;
+                const selectedFiles = Array.from(input.files);
+                this.errorMessage = '';
+                this.files = [];
+
+                if (selectedFiles.length > 5) {
+                    this.errorMessage = 'Maksimal hanya boleh memilih 5 foto produk.';
+                    input.value = '';
+                    return;
+                }
+
+                const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp', 'image/gif'];
+                const allowedExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
+                const maxSize = 2 * 1024 * 1024; // 2MB
+
+                for (let file of selectedFiles) {
+                    const ext = '.' + file.name.split('.').pop().toLowerCase();
+                    
+                    if (!file.type.startsWith('image/') || !allowedTypes.includes(file.type) || !allowedExtensions.includes(ext)) {
+                        this.errorMessage = `File "${file.name}" bukan file gambar yang valid! Hanya format JPG, JPEG, PNG, WEBP, dan GIF yang diperbolehkan. File selain gambar (.php, video, dll) dilarang.`;
+                        input.value = '';
+                        this.files = [];
+                        return;
+                    }
+
+                    if (file.size > maxSize) {
+                        this.errorMessage = `Ukuran file "${file.name}" (${(file.size / (1024 * 1024)).toFixed(2)} MB) terlalu besar! Maksimal 2 MB per foto agar proses upload cepat.`;
+                        input.value = '';
+                        this.files = [];
+                        return;
+                    }
+
+                    this.files.push({
+                        name: file.name,
+                        size: (file.size / 1024).toFixed(1) + ' KB',
+                        previewUrl: URL.createObjectURL(file)
+                    });
+                }
+            }
+        };
+    }
+
     function addLink() {
         const container = document.getElementById('links-container');
         const index = container.children.length;
