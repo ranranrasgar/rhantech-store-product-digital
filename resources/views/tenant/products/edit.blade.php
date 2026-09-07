@@ -246,11 +246,92 @@
                 </div>
             </div>
 
-            <div>
-                <label class="block font-label-md text-on-surface mb-xs">Add More Images</label>
-                <input type="file" name="images[]" multiple accept="image/*" class="w-full pl-4 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-secondary focus:ring-1 focus:ring-secondary/20">
-                <p class="text-xs text-on-surface-variant mt-1">Maximum 5 images total.</p>
-                @error('images')<span class="text-error text-xs">{{ $message }}</span>@enderror
+            <div x-data="{
+                files: [],
+                errorMessage: '',
+                currentImagesCount: {{ $product->images->count() }},
+                validateFiles(event) {
+                    const input = event.target;
+                    const selectedFiles = Array.from(input.files);
+                    this.errorMessage = '';
+                    this.files = [];
+
+                    const totalCount = this.currentImagesCount + selectedFiles.length;
+                    if (totalCount > 5) {
+                        const remainingSlot = Math.max(0, 5 - this.currentImagesCount);
+                        this.errorMessage = `Total foto produk tidak boleh lebih dari 5! Produk ini sudah memiliki ${this.currentImagesCount} foto, Anda hanya dapat menambah maksimal ${remainingSlot} foto lagi.`;
+                        input.value = '';
+                        return;
+                    }
+
+                    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp', 'image/gif'];
+                    const allowedExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
+                    const maxSize = 2 * 1024 * 1024; // 2MB
+
+                    for (let file of selectedFiles) {
+                        const ext = '.' + file.name.split('.').pop().toLowerCase();
+                        
+                        // Cek apakah bukan gambar (mencegah .php, video, script, dll)
+                        if (!file.type.startsWith('image/') || !allowedTypes.includes(file.type) || !allowedExtensions.includes(ext)) {
+                            this.errorMessage = `File \"${file.name}\" bukan file gambar yang valid! Hanya format JPG, JPEG, PNG, WEBP, dan GIF yang diperbolehkan. File selain gambar (.php, video, dll) dilarang.`;
+                            input.value = '';
+                            this.files = [];
+                            return;
+                        }
+
+                        // Cek ukuran file
+                        if (file.size > maxSize) {
+                            this.errorMessage = `Ukuran file \"${file.name}\" (${(file.size / (1024 * 1024)).toFixed(2)} MB) terlalu besar! Maksimal 2 MB per foto agar proses upload cepat.`;
+                            input.value = '';
+                            this.files = [];
+                            return;
+                        }
+
+                        this.files.push({
+                            name: file.name,
+                            size: (file.size / 1024).toFixed(1) + ' KB',
+                            previewUrl: URL.createObjectURL(file)
+                        });
+                    }
+                }
+            }">
+                <div class="flex items-center justify-between mb-xs">
+                    <label class="block font-label-md text-on-surface">Tambah Foto Produk Baru</label>
+                    <span class="text-[11px] text-on-surface-variant">Maks. 2 MB per foto (Total maksimal 5 foto)</span>
+                </div>
+                
+                <div class="relative">
+                    <input type="file" name="images[]" multiple accept=".jpg,.jpeg,.png,.webp,.gif,image/jpeg,image/png,image/webp,image/gif" @change="validateFiles($event)" class="w-full pl-4 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-secondary focus:ring-1 focus:ring-secondary/20 file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer">
+                </div>
+
+                <!-- Alert Error Validasi File -->
+                <div x-show="errorMessage" x-cloak class="mt-2 p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 rounded-lg flex items-start gap-2 text-rose-700 dark:text-rose-300 text-xs">
+                    <span class="material-symbols-outlined text-[18px] shrink-0 text-rose-600">error</span>
+                    <span x-text="errorMessage"></span>
+                </div>
+
+                <!-- Pratinjau Gambar Tambahan Terpilih -->
+                <div x-show="files.length > 0" x-cloak class="mt-3 p-3 bg-surface-container-low border border-outline-variant rounded-lg">
+                    <p class="text-xs font-semibold text-on-surface mb-2 flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-sm text-emerald-600">check_circle</span>
+                        <span x-text="files.length + ' foto baru siap diunggah:'"></span>
+                    </p>
+                    <div class="flex flex-wrap gap-3">
+                        <template x-for="(f, i) in files" :key="i">
+                            <div class="relative group border border-outline-variant rounded-lg overflow-hidden w-20 bg-surface-container-lowest shadow-sm">
+                                <img :src="f.previewUrl" class="w-20 h-20 object-cover">
+                                <div class="p-1 text-[10px] text-on-surface truncate text-center font-mono" x-text="f.size"></div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <p class="text-xs text-on-surface-variant mt-1.5 flex items-center gap-1">
+                    <span class="material-symbols-outlined text-xs">info</span>
+                    Tipe file dan ukuran dicek secara langsung sebelum diupload untuk mencegah upload lemot atau file berbahaya.
+                </p>
+                @error('images')<span class="text-error text-xs block mt-1">{{ $message }}</span>@enderror
+                @error('images.*')<span class="text-error text-xs block mt-1">{{ $message }}</span>@enderror
             </div>
 
             @include('products._custom_fields', ['productItem' => $product])
@@ -262,8 +343,11 @@
                 </label>
             </div>
             
-            <div class="flex justify-end pt-md border-t border-outline-variant">
-                <button type="submit" class="px-md py-2 bg-primary text-white rounded-lg font-label-md font-bold hover:brightness-110 transition shadow">Update Product</button>
+            <div class="flex justify-end pt-md border-t border-outline-variant" x-data="{ submitting: false }">
+                <button type="submit" @click="submitting = true" :disabled="submitting" class="px-md py-2 bg-primary text-white rounded-lg font-label-md font-bold hover:brightness-110 transition shadow flex items-center gap-2 disabled:opacity-75 disabled:cursor-not-allowed">
+                    <span x-show="submitting" x-cloak class="material-symbols-outlined animate-spin text-sm">progress_activity</span>
+                    <span x-text="submitting ? 'Memperbarui Produk...' : 'Update Product'">Update Product</span>
+                </button>
             </div>
         </form>
 
