@@ -146,11 +146,15 @@
                 </a>
 <a class="font-label-md text-label-md {{ request()->routeIs('admin.projects.*') ? 'bg-surface-variant font-semibold before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[3px] before:bg-[#58a6ff] before:rounded-r-md relative' : 'text-on-surface hover:bg-surface-variant/50 hover:underline' }} px-3 py-1.5 flex items-center gap-2 transition-all rounded-md" href="{{ route('admin.projects.index') }}" wire:navigate>
 <span class="material-symbols-outlined text-[1rem]">folder</span>
-                    Projects
+                    Portfolio
                 </a>
 <a class="font-label-md text-label-md {{ request()->routeIs('admin.project_categories.*') ? 'bg-surface-variant font-semibold before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[3px] before:bg-[#58a6ff] before:rounded-r-md relative' : 'text-on-surface hover:bg-surface-variant/50 hover:underline' }} pl-9 pr-3 py-1.5 flex items-center gap-2 transition-all rounded-md text-sm" href="{{ route('admin.project_categories.index') }}" wire:navigate>
 <span class="material-symbols-outlined text-[1rem]">category</span>
                     Categories
+                </a>
+<a class="font-label-md text-label-md {{ request()->routeIs('admin.project_types.*') ? 'bg-surface-variant font-semibold before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[3px] before:bg-[#58a6ff] before:rounded-r-md relative' : 'text-on-surface hover:bg-surface-variant/50 hover:underline' }} pl-9 pr-3 py-1.5 flex items-center gap-2 transition-all rounded-md text-sm" href="{{ route('admin.project_types.index') }}" wire:navigate>
+<span class="material-symbols-outlined text-[1rem]">devices</span>
+                    Types
                 </a>
 <a class="font-label-md text-label-md {{ request()->routeIs('admin.clients.*') ? 'bg-surface-variant font-semibold before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[3px] before:bg-[#58a6ff] before:rounded-r-md relative' : 'text-on-surface hover:bg-surface-variant/50 hover:underline' }} px-3 py-1.5 flex items-center gap-2 transition-all rounded-md" href="{{ route('admin.clients.index') }}" wire:navigate>
 <span class="material-symbols-outlined text-[1rem]">groups</span>

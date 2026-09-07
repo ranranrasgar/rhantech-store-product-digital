@@ -75,7 +75,14 @@
                                     </div>
                                     <div>
                                         <p class="font-label-md text-label-md font-bold text-on-surface group-hover:text-primary transition-colors">{{ $client->name }}</p>
-                                        <p class="font-code-sm text-code-sm text-on-surface-variant">{{ $client->url ?? $client->website ?? '-' }}</p>
+                                        @if($client->url ?? $client->website)
+                                            <a href="{{ $client->url ?? $client->website }}" target="_blank" class="font-code-sm text-code-sm text-primary hover:underline flex items-center gap-1">
+                                                <span>{{ $client->url ?? $client->website }}</span>
+                                                <span class="material-symbols-outlined text-[12px]">open_in_new</span>
+                                            </a>
+                                        @else
+                                            <p class="font-code-sm text-code-sm text-on-surface-variant">-</p>
+                                        @endif
                                     </div>
                                 </div>
                             </td>

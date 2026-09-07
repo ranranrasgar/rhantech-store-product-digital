@@ -22,15 +22,82 @@ class PublicController extends Controller
         return view('welcome', compact('services', 'projects', 'clients', 'testimonials', 'popupAd'));
     }
 
-    public function projects()
+    public function projects(Request $request)
     {
-        $projects = Project::query()->where('status', 'published')->latest()->paginate(9);
-        return view('projects.index', compact('projects'));
+        $query = Project::query()
+            ->with(['clients', 'client', 'projectCategory', 'projectType'])
+            ->where('status', 'published');
+
+        // Filter kategori project (berdasarkan slug atau id)
+        if ($request->filled('category')) {
+            $categoryParam = $request->query('category');
+            $query->whereHas('projectCategory', function ($q) use ($categoryParam) {
+                $q->where('slug', $categoryParam)->orWhere('id', $categoryParam);
+            });
+        }
+
+        // Filter tipe project (berdasarkan slug atau id)
+        if ($request->filled('type')) {
+            $typeParam = $request->query('type');
+            $query->whereHas('projectType', function ($q) use ($typeParam) {
+                $q->where('slug', $typeParam)->orWhere('id', $typeParam);
+            });
+        }
+
+        // Pencarian nama project atau nama client
+        if ($request->filled('search')) {
+            $search = trim($request->query('search'));
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('short_description', 'like', "%{$search}%")
+                  ->orWhereHas('client', function ($cq) use ($search) {
+                      $cq->where('name', 'like', "%{$search}%");
+                  })
+                  ->orWhereHas('clients', function ($cq) use ($search) {
+                      $cq->where('name', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        $projects = $query->select([
+                'id', 'client_id', 'project_category_id', 'project_type_id', 'title', 
+                'slug', 'short_description', 'description', 'thumbnail'
+            ])
+            ->latest()
+            ->paginate(9)
+            ->withQueryString();
+
+        // Jika request AJAX (fetch), hanya kembalikan partial HTML project grid
+        if ($request->ajax() || $request->header('X-Requested-With') === 'XMLHttpRequest' || $request->boolean('ajax')) {
+            return view('projects._list', compact('projects'))->render();
+        }
+
+        $categories = \App\Models\ProjectCategory::select(['id', 'name', 'slug'])
+            ->whereHas('projects', function ($q) {
+                $q->where('status', 'published');
+            })
+            ->withCount(['projects' => function ($q) {
+                $q->where('status', 'published');
+            }])
+            ->orderBy('name', 'asc')
+            ->get();
+
+        $types = \App\Models\ProjectType::select(['id', 'name', 'slug'])
+            ->whereHas('projects', function ($q) {
+                $q->where('status', 'published');
+            })
+            ->withCount(['projects' => function ($q) {
+                $q->where('status', 'published');
+            }])
+            ->orderBy('name', 'asc')
+            ->get();
+
+        return view('projects.index', compact('projects', 'categories', 'types'));
     }
 
-    public function projectDetail($slug)
+    public function projectDetail(string $slug)
     {
-        $project = Project::query()->with(['client', 'images'])->where('slug', $slug)->where('status', 'published')->firstOrFail();
+        $project = Project::query()->with(['clients', 'client', 'projectCategory', 'projectType', 'images'])->where('slug', $slug)->where('status', 'published')->firstOrFail();
         return view('projects.show', compact('project'));
     }
 

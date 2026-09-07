@@ -11,6 +11,7 @@
         "laravel/framework": "^13.8",
         "laravel/socialite": "^5.29",
         "laravel/tinker": "^3.0",
+        "league/flysystem-aws-s3-v3": "^3.35",
         "livewire/livewire": "^4.3",
         "midtrans/midtrans-php": "^2.6",
         "paragonie/sodium_compat": "^2.5"
@@ -32,7 +33,10 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        }
+        },
+        "files": [
+            "app/helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

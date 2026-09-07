@@ -147,7 +147,7 @@
                 <a class="nav-link {{ request()->is('/') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-secondary transition-colors duration-200" href="{{ url('/#home') }}">Home</a>
                 <a class="nav-link text-on-surface-variant dark:text-on-surface-variant/80 hover:text-secondary transition-colors duration-200" href="{{ url('/#about') }}">About</a>
                 <a class="nav-link text-on-surface-variant dark:text-on-surface-variant/80 hover:text-secondary transition-colors duration-200" href="{{ url('/#services') }}">Services</a>
-                <a class="nav-link {{ request()->routeIs('projects.*') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-secondary transition-colors duration-200" href="{{ route('projects.index') }}" wire:navigate>Projects</a>
+                <a class="nav-link {{ request()->routeIs('projects.*') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-secondary transition-colors duration-200" href="{{ route('projects.index') }}" wire:navigate>Portfolio</a>
                 <a class="nav-link {{ request()->routeIs('products.*') || request()->routeIs('checkout.*') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-secondary transition-colors duration-200" href="{{ route('products.index') }}" wire:navigate>Store</a>
                 <a class="nav-link {{ request()->routeIs('clients.*') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-secondary transition-colors duration-200" href="{{ route('clients.index') }}" wire:navigate>Clients</a>
                 <a class="nav-link {{ request()->routeIs('contact') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-secondary transition-colors duration-200" href="{{ url('/contact') }}" wire:navigate>Contact</a>
@@ -215,7 +215,7 @@
             <a class="nav-link {{ request()->is('/') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }}" href="{{ url('/#home') }}">Home</a>
             <a class="nav-link text-on-surface-variant dark:text-on-surface-variant/80" href="{{ url('/#about') }}">About</a>
             <a class="nav-link text-on-surface-variant dark:text-on-surface-variant/80" href="{{ url('/#services') }}">Services</a>
-            <a class="nav-link {{ request()->routeIs('projects.*') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }}" href="{{ route('projects.index') }}" wire:navigate>Projects</a>
+            <a class="nav-link {{ request()->routeIs('projects.*') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }}" href="{{ route('projects.index') }}" wire:navigate>Portfolio</a>
             <a class="nav-link {{ request()->routeIs('products.*') || request()->routeIs('checkout.*') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }}" href="{{ route('products.index') }}" wire:navigate>Store</a>
             <a class="nav-link {{ request()->routeIs('clients.*') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }}" href="{{ route('clients.index') }}" wire:navigate>Clients</a>
             <a class="nav-link {{ request()->routeIs('contact') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }}" href="{{ url('/contact') }}" wire:navigate>Contact</a>
@@ -250,7 +250,7 @@
                 <ul class="flex flex-col gap-3">
                     <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/#about') }}">About Us</a></li>
                     <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/#services') }}">Services</a></li>
-                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/projects') }}" wire:navigate>Projects</a></li>
+                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/projects') }}" wire:navigate>Portfolio</a></li>
                 </ul>
             </div>
             <div>

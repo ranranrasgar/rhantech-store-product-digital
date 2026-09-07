@@ -16,11 +16,21 @@ class Client extends Model
 
     public function projects()
     {
-        return $this->hasMany(Project::class);
+        return $this->belongsToMany(Project::class, 'client_project')->withTimestamps();
     }
 
     public function testimonials()
     {
         return $this->hasMany(Testimonial::class);
+    }
+
+    public function getUrlAttribute()
+    {
+        return $this->website;
+    }
+
+    public function setUrlAttribute($value)
+    {
+        $this->attributes['website'] = $value;
     }
 }

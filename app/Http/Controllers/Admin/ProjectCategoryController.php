@@ -11,7 +11,7 @@ class ProjectCategoryController extends Controller
 {
     public function index()
     {
-        $categories = ProjectCategory::orderBy('name', 'asc')->get();
+        $categories = ProjectCategory::withCount('projects')->orderBy('name', 'asc')->get();
         return view('admin.project_categories.index', compact('categories'));
     }
 

@@ -36,6 +36,10 @@ class ClientController extends Controller
             'is_active' => 'boolean'
         ]);
 
+        if (array_key_exists('url', $validated)) {
+            $validated['website'] = $validated['url'];
+        }
+
         if ($request->hasFile('logo')) {
             $validated['logo'] = $request->file('logo')->store('clients', 'public');
         }
@@ -59,6 +63,10 @@ class ClientController extends Controller
             'phone' => 'nullable|string|max:20',
             'is_active' => 'boolean'
         ]);
+
+        if (array_key_exists('url', $validated)) {
+            $validated['website'] = $validated['url'];
+        }
 
         if ($request->hasFile('logo')) {
             if ($client->logo) Storage::disk('public')->delete($client->logo);

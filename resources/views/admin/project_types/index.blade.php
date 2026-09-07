@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('title', 'Project Categories')
+@section('title', 'Project Types')
 @section('content')
 <div class="p-lg md:p-xl flex-1 max-w-5xl mx-auto w-full" x-data="{ 
     editModalOpen: false, 
@@ -16,12 +16,12 @@
     <!-- Header -->
     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-lg">
         <div>
-            <h1 class="font-headline-sm font-bold text-on-surface">Project Categories</h1>
-            <p class="font-body-md text-on-surface-variant text-sm mt-0.5">Kelola kategori untuk pengelompokan portofolio dan proyek.</p>
+            <h1 class="font-headline-sm font-bold text-on-surface">Project Types / Platforms</h1>
+            <p class="font-body-md text-on-surface-variant text-sm mt-0.5">Kelola tipe dan platform proyek (misal: Web Application, Desktop, Mobile, dll).</p>
         </div>
-        <form action="{{ route('admin.project_categories.store') }}" method="POST" class="flex gap-2 w-full sm:w-auto">
+        <form action="{{ route('admin.project_types.store') }}" method="POST" class="flex gap-2 w-full sm:w-auto">
             @csrf
-            <input type="text" name="name" required placeholder="Nama Kategori Baru" class="px-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary/20 text-sm flex-1 sm:w-64">
+            <input type="text" name="name" required placeholder="Nama Tipe Baru (cth: Mobile App)" class="px-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary/20 text-sm flex-1 sm:w-64">
             <button type="submit" class="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg font-bold transition flex items-center gap-1.5 text-sm shrink-0 shadow-sm">
                 <span class="material-symbols-outlined text-[18px]">add</span> Tambah
             </button>
@@ -41,44 +41,44 @@
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="bg-surface-container-low border-b border-outline-variant">
-                        <th class="p-4 font-label-md font-bold text-on-surface-variant text-xs uppercase tracking-wider">Nama Kategori</th>
+                        <th class="p-4 font-label-md font-bold text-on-surface-variant text-xs uppercase tracking-wider">Nama Tipe / Platform</th>
                         <th class="p-4 font-label-md font-bold text-on-surface-variant text-xs uppercase tracking-wider">Slug</th>
                         <th class="p-4 font-label-md font-bold text-on-surface-variant text-xs uppercase tracking-wider text-center">Jumlah Proyek</th>
                         <th class="p-4 font-label-md font-bold text-on-surface-variant text-xs uppercase tracking-wider text-right">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-outline-variant bg-surface">
-                    @forelse($categories as $category)
+                    @forelse($types as $type)
                     <tr class="hover:bg-surface-container-low/50 transition-colors group">
                         <td class="p-4 font-medium text-on-surface">
                             <div class="flex items-center gap-2">
-                                <span class="material-symbols-outlined text-primary text-[20px]">folder</span>
-                                <span>{{ $category->name }}</span>
+                                <span class="material-symbols-outlined text-primary text-[20px]">devices</span>
+                                <span>{{ $type->name }}</span>
                             </div>
                         </td>
                         <td class="p-4 font-code-sm text-xs text-on-surface-variant">
-                            <span class="bg-surface-container-low px-2 py-1 rounded border border-outline-variant/50">{{ $category->slug }}</span>
+                            <span class="bg-surface-container-low px-2 py-1 rounded border border-outline-variant/50">{{ $type->slug }}</span>
                         </td>
                         <td class="p-4 text-center">
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-secondary-container/30 text-secondary">
-                                {{ $category->projects_count ?? $category->projects()->count() }}
+                                {{ $type->projects_count ?? $type->projects()->count() }}
                             </span>
                         </td>
                         <td class="p-4 text-right">
                             <div class="flex items-center justify-end gap-1">
-                                <!-- Tombol Edit (Aksi Update) -->
+                                <!-- Tombol Edit -->
                                 <button type="button" 
-                                    @click="openEditModal({{ $category->id }}, '{{ addslashes($category->name) }}', '{{ route('admin.project_categories.update', $category) }}')" 
+                                    @click="openEditModal({{ $type->id }}, '{{ addslashes($type->name) }}', '{{ route('admin.project_types.update', $type) }}')" 
                                     class="p-2 text-primary hover:bg-primary/10 rounded-lg transition-colors" 
-                                    title="Edit Kategori">
+                                    title="Edit Tipe">
                                     <span class="material-symbols-outlined text-[20px]">edit</span>
                                 </button>
 
                                 <!-- Tombol Hapus -->
-                                <form action="{{ route('admin.project_categories.destroy', $category) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus kategori ini? Proyek yang menggunakan kategori ini akan menjadi tidak berkategori.');" class="inline">
+                                <form action="{{ route('admin.project_types.destroy', $type) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus tipe proyek ini?');" class="inline">
                                     @csrf 
                                     @method('DELETE')
-                                    <button type="submit" class="p-2 text-error hover:bg-error/10 rounded-lg transition-colors" title="Hapus Kategori">
+                                    <button type="submit" class="p-2 text-error hover:bg-error/10 rounded-lg transition-colors" title="Hapus Tipe">
                                         <span class="material-symbols-outlined text-[20px]">delete</span>
                                     </button>
                                 </form>
@@ -88,8 +88,8 @@
                     @empty
                     <tr>
                         <td colspan="4" class="p-8 text-center text-on-surface-variant">
-                            <span class="material-symbols-outlined text-[48px] text-outline-variant block mx-auto mb-2">folder_off</span>
-                            Tidak ada kategori proyek ditemukan.
+                            <span class="material-symbols-outlined text-[48px] text-outline-variant block mx-auto mb-2">devices_off</span>
+                            Tidak ada tipe proyek ditemukan.
                         </td>
                     </tr>
                     @endforelse
@@ -98,7 +98,7 @@
         </div>
     </div>
 
-    <!-- Modal Edit Kategori -->
+    <!-- Modal Edit Tipe -->
     <div x-show="editModalOpen" 
          x-transition:enter="transition ease-out duration-200"
          x-transition:enter-start="opacity-0"
@@ -114,7 +114,7 @@
             <div class="px-6 py-4 border-b border-outline-variant flex items-center justify-between">
                 <h3 class="font-headline-sm text-base font-bold text-on-surface flex items-center gap-2">
                     <span class="material-symbols-outlined text-primary text-[20px]">edit</span>
-                    Edit Kategori Proyek
+                    Edit Tipe Proyek
                 </h3>
                 <button type="button" @click="editModalOpen = false" class="text-on-surface-variant hover:text-on-surface rounded p-1">
                     <span class="material-symbols-outlined text-[20px]">close</span>
@@ -126,7 +126,7 @@
                 <div class="p-6 space-y-4">
                     <div>
                         <label class="block font-label-md text-xs font-semibold text-on-surface-variant uppercase tracking-wider mb-2">
-                            Nama Kategori
+                            Nama Tipe / Platform
                         </label>
                         <input type="text" 
                                name="name" 

@@ -1,82 +1,238 @@
 @extends('layouts.admin')
-@section('title', 'Add New Project')
+@section('title', 'Tambah Portfolio Baru')
 @section('content')
 <div class="flex-1 overflow-y-auto p-lg bg-background">
     <div class="max-w-4xl mx-auto space-y-lg">
         <!-- Page Header -->
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-md">
             <div>
-                <h2 class="font-headline-lg text-headline-lg text-on-surface">Add New Project</h2>
-                <p class="font-body-md text-body-md text-on-surface-variant mt-1">Create a new corporate project record.</p>
+                <h2 class="font-headline-lg text-headline-lg text-on-surface">Tambah Portfolio Baru</h2>
+                <p class="font-body-md text-body-md text-on-surface-variant mt-1">Buat catatan portofolio dan proyek baru untuk perusahaan.</p>
             </div>
-            <a href="{{ route('admin.projects.index') }}" class="text-on-surface-variant hover:bg-surface-container-high p-2 rounded-full transition-colors flex items-center justify-center" title="Back to Projects" wire:navigate>
+            <a href="{{ route('admin.projects.index') }}" class="text-on-surface-variant hover:bg-surface-container-high p-2 rounded-full transition-colors flex items-center justify-center" title="Kembali ke Portfolio" wire:navigate>
                 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0; font-size: 24px;">arrow_back</span>
             </a>
         </div>
 
+        @if(isset($duplicateProject) && $duplicateProject)
+        <div class="bg-primary/10 border border-primary/20 rounded-xl p-4 flex items-center justify-between gap-3 text-xs md:text-sm text-primary">
+            <div class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-[20px]">content_copy</span>
+                <span>Menduplikat dari project: <strong>{{ $duplicateProject->title }}</strong>. Silakan sesuaikan data dan pilih klien yang berbeda.</span>
+            </div>
+            <a href="{{ route('admin.projects.create') }}" class="text-xs font-bold underline hover:opacity-80 whitespace-nowrap" wire:navigate>Form Baru Kosong</a>
+        </div>
+        @endif
+
         <!-- Form Card -->
         <div class="bg-surface rounded-md border border-outline-variant shadow-[0px_4px_6px_-1px_rgba(15,23,42,0.03),0px_2px_4px_-2px_rgba(15,23,42,0.03)] p-lg">
-            <form action="{{ route('admin.projects.store') }}" method="POST" enctype="multipart/form-data" class="flex flex-col gap-lg">
+            <form id="project-create-form" action="{{ route('admin.projects.store') }}" method="POST" enctype="multipart/form-data" class="flex flex-col gap-lg">
                 @csrf
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
-                    <div>
-                        <label class="block font-label-md text-on-surface mb-xs">Project Title <span class="text-error">*</span></label>
-                        <input type="text" name="title" required value="{{ old('title') }}" class="w-full bg-surface-container-low border border-[#CBD5E1] rounded-lg py-2 px-4 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all">
-                        @error('title')<span class="text-error text-xs">{{ $message }}</span>@enderror
+                <div>
+                    <label class="block font-label-md text-on-surface mb-xs">Project Title <span class="text-error">*</span></label>
+                    <input type="text" name="title" id="title" required value="{{ old('title', $duplicateProject ? $duplicateProject->title : '') }}" class="w-full bg-surface-container-low border border-[#CBD5E1] rounded-lg py-2 px-4 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all">
+                    @error('title')<span class="text-error text-xs">{{ $message }}</span>@enderror
+                </div>
+
+                <!-- Multi-Client Combobox with Search & Tags -->
+                <div class="space-y-2" x-data="{
+                    open: false,
+                    search: '',
+                    clients: {{ json_encode($clients->map(fn($c) => ['id' => $c->id, 'name' => $c->name, 'company' => $c->company ?? ''])) }},
+                    selectedClients: {{ json_encode(old('client_ids', isset($duplicateProject) && $duplicateProject->clients ? $duplicateProject->clients->pluck('id')->toArray() : ($duplicateProject?->client_id ? [$duplicateProject->client_id] : []))) }},
+                    get filteredClients() {
+                        if (!this.search.trim()) return this.clients;
+                        const term = this.search.toLowerCase();
+                        return this.clients.filter(c => 
+                            c.name.toLowerCase().includes(term) || 
+                            (c.company && c.company.toLowerCase().includes(term))
+                        );
+                    },
+                    isSelected(id) {
+                        return this.selectedClients.includes(id);
+                    },
+                    toggleClient(id) {
+                        if (this.isSelected(id)) {
+                            this.selectedClients = this.selectedClients.filter(c => c !== id);
+                        } else {
+                            this.selectedClients.push(id);
+                        }
+                    },
+                    removeClient(id) {
+                        this.selectedClients = this.selectedClients.filter(c => c !== id);
+                    },
+                    getClientName(id) {
+                        const found = this.clients.find(c => c.id === id);
+                        return found ? found.name : id;
+                    }
+                }" @click.away="open = false">
+                    <div class="flex items-center justify-between">
+                        <label class="block font-label-md text-on-surface">
+                            Client Pengguna / Dipercaya Oleh (Multi-Client)
+                        </label>
+                        <span class="text-xs text-on-surface-variant font-semibold" x-text="selectedClients.length + ' klien dipilih'"></span>
                     </div>
-                    <div>
-                        <label class="block font-label-md text-on-surface mb-xs">Client</label>
-                        <select name="client_id" class="w-full bg-surface-container-low border border-[#CBD5E1] rounded-lg py-2 px-4 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all">
-                            <option value="">Select Client (Internal)</option>
-                            @foreach($clients as $client)
-                                <option value="{{ $client->id }}" {{ old('client_id') == $client->id ? 'selected' : '' }}>{{ $client->name }}</option>
-                            @endforeach
-                        </select>
-                        @error('client_id')<span class="text-error text-xs">{{ $message }}</span>@enderror
+                    <p class="text-[11px] text-on-surface-variant">Cari dan pilih satu atau beberapa klien yang telah menggunakan portfolio ini:</p>
+
+                    <!-- Hidden Inputs for Form Submission -->
+                    <template x-for="id in selectedClients" :key="id">
+                        <input type="hidden" name="client_ids[]" :value="id">
+                    </template>
+
+                    <!-- Combobox Box Container -->
+                    <div class="relative">
+                        <!-- Display Input / Tag Container -->
+                        <div class="min-h-[46px] w-full bg-surface-container-low border border-[#CBD5E1] rounded-lg p-2 flex flex-wrap items-center gap-1.5 focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10 transition-all cursor-text"
+                             @click="$refs.searchInput.focus(); open = true">
+                            
+                            <!-- Selected Client Tags -->
+                            <template x-for="id in selectedClients" :key="id">
+                                <span class="inline-flex items-center gap-1.5 bg-primary/10 border border-primary/20 text-primary text-xs font-semibold px-2.5 py-1 rounded-md shadow-xs animate-fadeIn">
+                                    <span class="material-symbols-outlined text-[14px]">apartment</span>
+                                    <span x-text="getClientName(id)"></span>
+                                    <button type="button" 
+                                            @click.stop="removeClient(id)" 
+                                            class="text-primary hover:text-error hover:bg-white/60 rounded-full p-0.5 transition-colors flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-[13px]">close</span>
+                                    </button>
+                                </span>
+                            </template>
+
+                            <!-- Live Search Input -->
+                            <input x-ref="searchInput"
+                                   type="text" 
+                                   x-model="search" 
+                                   @focus="open = true"
+                                   @keydown.escape="open = false"
+                                   placeholder="Ketik untuk mencari klien..." 
+                                   class="flex-1 min-w-[140px] bg-transparent border-0 p-1 text-xs text-on-surface focus:outline-none focus:ring-0 placeholder:text-outline/70">
+
+                            <!-- Dropdown Trigger / Clear Buttons -->
+                            <div class="flex items-center gap-1 ml-auto">
+                                <button type="button" 
+                                        x-show="selectedClients.length > 0" 
+                                        @click.stop="selectedClients = []" 
+                                        title="Hapus semua pilihan"
+                                        class="text-[11px] text-on-surface-variant hover:text-error px-1.5 py-0.5 rounded transition-colors font-medium">
+                                    Reset
+                                </button>
+                                <button type="button" 
+                                        @click.stop="open = !open" 
+                                        class="text-outline hover:text-on-surface p-1 rounded transition-colors">
+                                    <span class="material-symbols-outlined text-[18px] transition-transform duration-200" :class="open ? 'rotate-180' : ''">expand_more</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Dropdown Options Menu -->
+                        <div x-show="open" 
+                             x-transition:enter="transition ease-out duration-150"
+                             x-transition:enter-start="opacity-0 translate-y-1"
+                             x-transition:enter-end="opacity-100 translate-y-0"
+                             x-transition:leave="transition ease-in duration-100"
+                             x-transition:leave-start="opacity-100 translate-y-0"
+                             x-transition:leave-end="opacity-0 translate-y-1"
+                             class="absolute left-0 right-0 top-full mt-1 bg-surface border border-outline-variant rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto p-1.5 divide-y divide-outline-variant/30"
+                             style="display: none;">
+                            
+                            <!-- Search status header -->
+                            <div class="px-2 py-1.5 text-[11px] text-on-surface-variant flex justify-between items-center bg-surface-container-low/50 rounded">
+                                <span x-text="filteredClients.length + ' klien ditemukan'"></span>
+                                <span class="text-[10px] text-outline">Klik untuk memilih/membatalkan</span>
+                            </div>
+
+                            <div class="pt-1">
+                                <template x-for="client in filteredClients" :key="client.id">
+                                    <div @click="toggleClient(client.id)"
+                                         class="flex items-center justify-between px-3 py-2 rounded-md text-xs cursor-pointer transition-colors"
+                                         :class="isSelected(client.id) ? 'bg-primary/10 text-primary font-bold' : 'hover:bg-surface-container-high text-on-surface'">
+                                        <div class="flex items-center gap-2">
+                                            <span class="material-symbols-outlined text-[16px]" :class="isSelected(client.id) ? 'text-primary' : 'text-outline'">
+                                                domain
+                                            </span>
+                                            <div>
+                                                <div x-text="client.name"></div>
+                                                <div x-show="client.company" class="text-[10px] text-on-surface-variant font-normal" x-text="client.company"></div>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <span x-show="isSelected(client.id)" class="material-symbols-outlined text-[16px] text-primary">
+                                                check
+                                            </span>
+                                        </div>
+                                    </div>
+                                </template>
+
+                                <!-- No results state -->
+                                <div x-show="filteredClients.length === 0" class="p-4 text-center text-xs text-on-surface-variant">
+                                    <span class="material-symbols-outlined text-[24px] text-outline block mb-1">search_off</span>
+                                    Tidak ada klien dengan nama "<span class="font-semibold text-on-surface" x-text="search"></span>"
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                    @error('client_ids')<span class="text-error text-xs">{{ $message }}</span>@enderror
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
                     <div>
-                        <label class="block font-label-md text-on-surface mb-xs">Slug (Optional)</label>
-                        <input type="text" name="slug" value="{{ old('slug') }}" class="w-full bg-surface-container-low border border-[#CBD5E1] rounded-lg py-2 px-4 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all">
-                        @error('slug')<span class="text-error text-xs">{{ $message }}</span>@enderror
-                    </div>
-                    <div>
-                        <label class="block font-label-md text-on-surface mb-xs">Category</label>
+                        <label class="block font-label-md text-on-surface mb-xs">Category (Bidang/Industri)</label>
                         <select name="project_category_id" class="w-full bg-surface-container-low border border-[#CBD5E1] rounded-lg py-2 px-4 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all">
-                            <option value="">Select Category</option>
+                            <option value="">Pilih Kategori</option>
                             @foreach($categories as $category)
-                                <option value="{{ $category->id }}" {{ old('project_category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                                <option value="{{ $category->id }}" {{ old('project_category_id', $duplicateProject?->project_category_id) == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
                             @endforeach
                         </select>
                         @error('project_category_id')<span class="text-error text-xs">{{ $message }}</span>@enderror
                     </div>
+                    <div>
+                        <label class="block font-label-md text-on-surface mb-xs">Type / Platform</label>
+                        <select name="project_type_id" class="w-full bg-surface-container-low border border-[#CBD5E1] rounded-lg py-2 px-4 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all">
+                            <option value="">Pilih Tipe / Platform</option>
+                            @foreach($types as $type)
+                                <option value="{{ $type->id }}" {{ old('project_type_id', $duplicateProject?->project_type_id) == $type->id ? 'selected' : '' }}>{{ $type->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('project_type_id')<span class="text-error text-xs">{{ $message }}</span>@enderror
+                    </div>
+                </div>
+
+                <div>
+                    <div class="flex items-center justify-between mb-xs">
+                        <label class="block font-label-md text-on-surface">Slug (Otomatis)</label>
+                        <span id="slug-status" class="text-[11px] text-emerald-600 font-semibold hidden flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[14px]">check_circle</span>
+                            <span>Tersedia</span>
+                        </span>
+                    </div>
+                    <input type="text" name="slug" id="slug" placeholder="Otomatis dibuat dari Judul + Klien" value="{{ old('slug') }}" class="w-full bg-surface-container-low border border-[#CBD5E1] rounded-lg py-2 px-4 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all font-mono text-sm">
+                    <p class="text-[11px] text-on-surface-variant mt-1" id="slug-hint">Otomatis terisi unik ketika memilih Client agar tidak duplikat dengan project lain.</p>
+                    @error('slug')<span class="text-error text-xs">{{ $message }}</span>@enderror
                 </div>
 
                 <div>
                     <label class="block font-label-md text-on-surface mb-xs">Short Description</label>
-                    <textarea name="short_description" rows="2" class="w-full bg-surface-container-low border border-[#CBD5E1] rounded-lg py-2 px-4 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all">{{ old('short_description') }}</textarea>
+                    <textarea name="short_description" rows="2" class="w-full bg-surface-container-low border border-[#CBD5E1] rounded-lg py-2 px-4 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all">{{ old('short_description', $duplicateProject?->short_description) }}</textarea>
                     @error('short_description')<span class="text-error text-xs">{{ $message }}</span>@enderror
                 </div>
 
                 <div>
                     <label class="block font-label-md text-on-surface mb-xs">Full Description</label>
                     <div id="editor-container" class="w-full bg-surface-container-low border border-[#CBD5E1] rounded-b-lg font-body-md text-body-md text-on-surface" style="min-height: 250px;"></div>
-                    <input type="hidden" name="description" id="description" value="{{ old('description') }}">
+                    <input type="hidden" name="description" id="description" value="{{ old('description', $duplicateProject?->description) }}">
                     @error('description')<span class="text-error text-xs">{{ $message }}</span>@enderror
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
                     <div>
                         <label class="block font-label-md text-on-surface mb-xs">Project URL</label>
-                        <input type="url" name="project_url" value="{{ old('project_url') }}" class="w-full bg-surface-container-low border border-[#CBD5E1] rounded-lg py-2 px-4 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all">
+                        <input type="url" name="project_url" value="{{ old('project_url', $duplicateProject?->project_url) }}" class="w-full bg-surface-container-low border border-[#CBD5E1] rounded-lg py-2 px-4 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all">
                         @error('project_url')<span class="text-error text-xs">{{ $message }}</span>@enderror
                     </div>
                     <div>
                         <label class="block font-label-md text-on-surface mb-xs">Completed Date</label>
-                        <input type="date" name="completed_at" value="{{ old('completed_at') }}" class="w-full bg-surface-container-low border border-[#CBD5E1] rounded-lg py-2 px-4 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all">
+                        <input type="date" name="completed_at" value="{{ old('completed_at', $duplicateProject?->completed_at ? $duplicateProject->completed_at->format('Y-m-d') : '') }}" class="w-full bg-surface-container-low border border-[#CBD5E1] rounded-lg py-2 px-4 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all">
                         @error('completed_at')<span class="text-error text-xs">{{ $message }}</span>@enderror
                     </div>
                 </div>
@@ -84,6 +240,13 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-md items-end">
                     <div>
                         <label class="block font-label-md text-on-surface mb-xs">Thumbnail Image</label>
+                        @if($duplicateProject && $duplicateProject->thumbnail)
+                        <div class="mb-2 flex items-center gap-2">
+                            <img src="{{ asset('storage/' . $duplicateProject->thumbnail) }}" alt="Thumbnail" class="w-20 h-12 object-cover rounded border border-outline-variant">
+                            <span class="text-xs text-on-surface-variant">Thumbnail dari project asli akan dipakai jika Anda tidak mengunggah baru.</span>
+                            <input type="hidden" name="existing_thumbnail" value="{{ $duplicateProject->thumbnail }}">
+                        </div>
+                        @endif
                         <input type="file" name="thumbnail" accept="image/*" class="w-full bg-surface-container-low border border-[#CBD5E1] rounded-lg py-2 px-4 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all">
                         @error('thumbnail')<span class="text-error text-xs">{{ $message }}</span>@enderror
                     </div>
@@ -91,9 +254,9 @@
                         <div class="flex-1">
                             <label class="block font-label-md text-on-surface mb-xs">Status</label>
                             <select name="status" class="w-full bg-surface-container-low border border-[#CBD5E1] rounded-lg py-2 px-4 font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all">
-                                <option value="draft" {{ old('status') == 'draft' ? 'selected' : '' }}>Draft</option>
-                                <option value="published" {{ old('status') == 'published' ? 'selected' : '' }}>Published</option>
-                                <option value="archived" {{ old('status') == 'archived' ? 'selected' : '' }}>Archived</option>
+                                <option value="draft" {{ old('status', $duplicateProject?->status ?? 'draft') == 'draft' ? 'selected' : '' }}>Draft</option>
+                                <option value="published" {{ old('status', $duplicateProject?->status) == 'published' ? 'selected' : '' }}>Published</option>
+                                <option value="archived" {{ old('status', $duplicateProject?->status) == 'archived' ? 'selected' : '' }}>Archived</option>
                             </select>
                             @error('status')<span class="text-error text-xs">{{ $message }}</span>@enderror
                         </div>
@@ -101,7 +264,7 @@
                             <label class="block font-label-md text-on-surface mb-xs">Featured</label>
                             <label class="flex items-center gap-2 mt-2 cursor-pointer">
                                 <input type="hidden" name="is_featured" value="0">
-                                <input type="checkbox" name="is_featured" value="1" {{ old('is_featured') ? 'checked' : '' }} class="w-5 h-5 rounded border-[#CBD5E1] text-primary focus:ring-primary">
+                                <input type="checkbox" name="is_featured" value="1" {{ old('is_featured', $duplicateProject?->is_featured) ? 'checked' : '' }} class="w-5 h-5 rounded border-[#CBD5E1] text-primary focus:ring-primary">
                                 <span class="font-body-md text-on-surface">Yes</span>
                             </label>
                         </div>
@@ -121,7 +284,17 @@
 <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
 <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    function initQuillProjectCreate() {
+        var editorElem = document.getElementById('editor-container');
+        if (!editorElem || editorElem.__quill_initialized) return;
+
+        // Clear existing toolbar/editor if re-initialized
+        editorElem.innerHTML = '';
+        var prevToolbar = editorElem.previousElementSibling;
+        if (prevToolbar && prevToolbar.classList.contains('ql-toolbar')) {
+            prevToolbar.remove();
+        }
+
         var quill = new Quill('#editor-container', {
             theme: 'snow',
             placeholder: 'Write the full description here...',
@@ -136,24 +309,112 @@
                 ]
             }
         });
-        
-        const oldDesc = document.getElementById('description').value;
-        if (oldDesc) {
-            quill.root.innerHTML = oldDesc;
+        editorElem.__quill_initialized = true;
+
+        var descriptionInput = document.getElementById('description');
+        if (descriptionInput && descriptionInput.value) {
+            quill.root.innerHTML = descriptionInput.value;
         }
 
-        // Add custom styles to match theme
-        document.querySelector('.ql-toolbar').classList.add('bg-surface-container', 'border-[#CBD5E1]', 'rounded-t-lg');
-        document.querySelector('.ql-container').classList.add('border-t-0', 'border-[#CBD5E1]', 'rounded-b-lg', 'bg-surface-container-low');
-
-        document.querySelector('form').addEventListener('submit', function(e) {
-            const descriptionInput = document.getElementById('description');
-            if (quill.root.innerHTML === '<p><br></p>') {
-                descriptionInput.value = '';
-            } else {
-                descriptionInput.value = quill.root.innerHTML;
-            }
+        // Realtime sync to hidden input on every change
+        quill.on('text-change', function() {
+            var html = quill.root.innerHTML;
+            descriptionInput.value = (html === '<p><br></p>' || quill.getText().trim().length === 0) ? '' : html;
         });
+
+        // Add custom styles to match theme
+        var toolbar = editorElem.previousElementSibling;
+        if (toolbar && toolbar.classList.contains('ql-toolbar')) {
+            toolbar.classList.add('bg-surface-container', 'border-[#CBD5E1]', 'rounded-t-lg');
+        }
+        editorElem.classList.add('border-t-0', 'border-[#CBD5E1]', 'rounded-b-lg', 'bg-surface-container-low');
+
+        var projectForm = document.getElementById('project-create-form') || editorElem.closest('form');
+        if (projectForm) {
+            projectForm.addEventListener('submit', function(e) {
+                var html = quill.root.innerHTML;
+                descriptionInput.value = (html === '<p><br></p>' || quill.getText().trim().length === 0) ? '' : html;
+            });
+        }
+    }
+
+    // Auto Slug Generation & Verification when Client or Title is selected
+    function initAutoSlugGenerator() {
+        var titleInput = document.getElementById('title');
+        var clientSelect = document.getElementById('client_id');
+        var slugInput = document.getElementById('slug');
+        var statusBadge = document.getElementById('slug-status');
+        var slugHint = document.getElementById('slug-hint');
+
+        if (!titleInput || !clientSelect || !slugInput) return;
+
+        var debounceTimer;
+
+        function fetchUniqueSlug() {
+            var title = titleInput.value.trim();
+            if (!title) return;
+
+            var selectedOption = clientSelect.options[clientSelect.selectedIndex];
+            var clientName = (selectedOption && selectedOption.value) ? (selectedOption.getAttribute('data-name') || selectedOption.text) : '';
+
+            var url = '{{ route("admin.projects.check_slug") }}?title=' + encodeURIComponent(title) + '&client_name=' + encodeURIComponent(clientName);
+
+            fetch(url, {
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+                if (data.slug) {
+                    slugInput.value = data.slug;
+                    if (statusBadge) {
+                        statusBadge.classList.remove('hidden');
+                        if (data.is_duplicate) {
+                            statusBadge.className = 'text-[11px] text-amber-600 font-semibold flex items-center gap-1';
+                            statusBadge.innerHTML = '<span class="material-symbols-outlined text-[14px]">auto_fix_high</span><span>Disesuaikan Otomatis</span>';
+                        } else {
+                            statusBadge.className = 'text-[11px] text-emerald-600 font-semibold flex items-center gap-1';
+                            statusBadge.innerHTML = '<span class="material-symbols-outlined text-[14px]">check_circle</span><span>Tersedia</span>';
+                        }
+                    }
+                    if (slugHint) {
+                        slugHint.textContent = 'Slug berhasil diverifikasi unik: ' + data.slug;
+                    }
+                }
+            })
+            .catch(function(err) {
+                console.error('Failed to check slug', err);
+            });
+        }
+
+        // Trigger on client change if element exists
+        if (clientSelect) {
+            clientSelect.addEventListener('change', function() {
+                fetchUniqueSlug();
+            });
+        }
+
+        // Trigger on title change with debounce if slug not manually edited
+        titleInput.addEventListener('input', function() {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(fetchUniqueSlug, 500);
+        });
+
+        @if(isset($duplicateProject) && $duplicateProject)
+        // If duplicating, generate unique slug on page load immediately
+        fetchUniqueSlug();
+        @endif
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        initQuillProjectCreate();
+        initAutoSlugGenerator();
+    });
+    document.addEventListener('livewire:navigated', function() {
+        initQuillProjectCreate();
+        initAutoSlugGenerator();
     });
 </script>
 @endsection

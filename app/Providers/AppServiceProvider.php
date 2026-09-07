@@ -68,5 +68,10 @@ class AppServiceProvider extends ServiceProvider
                     'verificationUrl' => $url,
                 ]);
         });
+
+        // Blade helper for R2 / Local media fallback
+        \Illuminate\Support\Facades\Blade::directive('mediaUrl', function ($expression) {
+            return "<?php echo media_url($expression); ?>";
+        });
     }
 }

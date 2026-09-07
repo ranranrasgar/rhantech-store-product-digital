@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\ProductCategoryController;
 use App\Http\Controllers\Admin\ProjectCategoryController;
+use App\Http\Controllers\Admin\ProjectTypeController;
 use App\Http\Controllers\Admin\ProductTypeController;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Admin\ContactMessageController;
@@ -145,6 +146,7 @@ Route::middleware(['auth', 'is_admin'])->prefix('admin')->name('admin.')->group(
     Route::resource('product_categories', ProductCategoryController::class)->except(['create', 'edit', 'show']);
     Route::resource('product_types', ProductTypeController::class)->except(['create', 'edit', 'show']);
     Route::resource('project_categories', ProjectCategoryController::class)->except(['create', 'edit', 'show']);
+    Route::resource('project_types', ProjectTypeController::class)->except(['create', 'edit', 'show']);
     Route::resource('products', ProductController::class);
     Route::delete('products/image/{image}', [ProductController::class, 'destroyImage'])->name('products.image.destroy');
     Route::patch('products/{product}/toggle-active', [ProductController::class, 'toggleActive'])->name('products.toggle_active');
@@ -153,6 +155,7 @@ Route::middleware(['auth', 'is_admin'])->prefix('admin')->name('admin.')->group(
     Route::patch('orders/{order}/approve', [OrderController::class, 'approve'])->name('orders.approve');
     Route::post('orders/{order}/sync-status', [OrderController::class, 'syncStatus'])->name('orders.sync_status');
     Route::delete('orders/{order}', [OrderController::class, 'destroy'])->name('orders.destroy');
+    Route::get('projects/check-slug', [ProjectController::class, 'checkSlug'])->name('projects.check_slug');
     Route::resource('projects', ProjectController::class);
     Route::resource('testimonials', TestimonialController::class);
     Route::resource('messages', ContactMessageController::class);
@@ -172,3 +175,16 @@ Route::middleware(['auth', 'is_admin'])->prefix('admin')->name('admin.')->group(
     Route::get('payouts', [\App\Http\Controllers\Admin\PayoutController::class, 'index'])->name('payouts.index');
     Route::patch('payouts/{payout}', [\App\Http\Controllers\Admin\PayoutController::class, 'update'])->name('payouts.update');
 });
+
+// Cloudflare R2 Media Proxy / Redirect Fallback for local /storage/{path} requests
+Route::get('/storage/{path}', function (string $path) {
+    // If local file exists, serve it directly
+    $localFilePath = storage_path('app/public/' . $path);
+    if (file_exists($localFilePath)) {
+        return response()->file($localFilePath);
+    }
+
+    // Otherwise redirect to Cloudflare R2 CDN
+    $r2Url = rtrim(config('filesystems.disks.r2.url', 'https://cdn.rhantech.com'), '/') . '/' . ltrim($path, '/');
+    return redirect()->away($r2Url, 302);
+})->where('path', '.*');
