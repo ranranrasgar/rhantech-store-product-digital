@@ -131,11 +131,10 @@
             <table class="w-full text-left font-body-md text-xs md:text-sm">
                 <thead class="bg-surface-container-lowest border-b border-outline-variant text-on-surface-variant font-label-md">
                     <tr>
-                        <th class="p-4 font-semibold min-w-[280px]">Produk & Sumber</th>
+                        <th class="p-4 font-semibold min-w-[300px]">Produk & Sumber</th>
                         <th class="p-4 font-semibold">Kategori / Tipe</th>
                         <th class="p-4 font-semibold">Harga Jual</th>
-                        <th class="p-4 font-semibold text-center">Verifikasi Platform</th>
-                        <th class="p-4 font-semibold text-center">Status Tayang</th>
+                        <th class="p-4 font-semibold text-center">Status & Verifikasi</th>
                         <th class="p-4 font-semibold text-right pr-6">Aksi & Review</th>
                     </tr>
                 </thead>
@@ -154,7 +153,7 @@
                                     </div>
                                 @endif
                                 <div class="min-w-0">
-                                    <a href="{{ route('admin.products.edit', $product) }}" class="font-bold text-on-surface hover:text-primary transition line-clamp-1">
+                                    <a href="{{ route('admin.products.edit', $product) }}" class="font-bold text-on-surface hover:text-primary transition line-clamp-1 text-sm">
                                         {{ $product->name }}
                                     </a>
                                     <div class="text-on-surface-variant text-[11px] font-mono mt-0.5 truncate max-w-xs">
@@ -164,12 +163,12 @@
                                     <!-- Store Origin Badge -->
                                     <div class="mt-1.5 flex flex-wrap items-center gap-1.5">
                                         @if($product->store)
-                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border border-indigo-500/20">
+                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-500/10 text-indigo-700 dark:text-indigo-400 border border-indigo-500/20">
                                                 <span class="material-symbols-outlined text-[12px]">storefront</span>
                                                 {{ $product->store->name }}
                                             </span>
                                         @else
-                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-sky-500/10 text-sky-700 dark:text-sky-400 border border-sky-500/20">
+                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-sky-500/10 text-sky-700 dark:text-sky-400 border border-sky-500/20">
                                                 <span class="material-symbols-outlined text-[12px]">verified</span>
                                                 Platform Official
                                             </span>
@@ -198,93 +197,103 @@
                         <!-- Price -->
                         <td class="p-4">
                             @if($product->discount_price && $product->discount_price > 0 && $product->discount_price < $product->price)
-                                <div class="font-extrabold text-primary">Rp {{ number_format($product->discount_price, 0, ',', '.') }}</div>
+                                <div class="font-bold text-primary">Rp {{ number_format($product->discount_price, 0, ',', '.') }}</div>
                                 <div class="text-[11px] text-on-surface-variant line-through">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
                             @else
-                                <div class="font-extrabold text-on-surface">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
+                                <div class="font-bold text-on-surface">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
                             @endif
                         </td>
 
-                        <!-- Approval Status Badge -->
+                        <!-- Unified Status & Verification Column -->
                         <td class="p-4 text-center">
-                            @if($product->approval_status === 'approved')
-                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800">
-                                    <span class="material-symbols-outlined text-[14px]">check_circle</span> Approved
-                                </span>
-                            @elseif($product->approval_status === 'pending')
-                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 dark:bg-amber-950/50 text-amber-700 dark:text-amber-400 border border-amber-300 dark:border-amber-800 animate-pulse">
-                                    <span class="material-symbols-outlined text-[14px]">hourglass_empty</span> In Review
-                                </span>
-                            @elseif($product->approval_status === 'rejected')
-                                <div class="inline-flex flex-col items-center">
-                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-100 dark:bg-rose-950/50 text-rose-700 dark:text-rose-400 border border-rose-300 dark:border-rose-800">
+                            <div class="inline-flex flex-col items-center gap-1">
+                                <!-- Status Verifikasi -->
+                                @if($product->approval_status === 'approved')
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800">
+                                        <span class="material-symbols-outlined text-[14px]">check_circle</span> Approved
+                                    </span>
+                                @elseif($product->approval_status === 'pending')
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 dark:bg-amber-950/50 text-amber-700 dark:text-amber-400 border border-amber-300 dark:border-amber-800 animate-pulse">
+                                        <span class="material-symbols-outlined text-[14px]">hourglass_empty</span> In Review
+                                    </span>
+                                @elseif($product->approval_status === 'rejected')
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-100 dark:bg-rose-950/50 text-rose-700 dark:text-rose-400 border border-rose-300 dark:border-rose-800">
                                         <span class="material-symbols-outlined text-[14px]">cancel</span> Ditolak
                                     </span>
-                                    @if($product->rejection_reason)
-                                        <span class="text-[10px] text-rose-600 dark:text-rose-400 max-w-[150px] truncate mt-1" title="{{ $product->rejection_reason }}">
-                                            Alasan: {{ $product->rejection_reason }}
+                                @endif
+
+                                <!-- Status Publikasi / Tayang -->
+                                <div class="flex items-center gap-1 text-[11px] font-medium">
+                                    @if($product->is_active && $product->approval_status === 'approved')
+                                        <span class="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Tayang
+                                        </span>
+                                    @elseif(!$product->is_active)
+                                        <span class="inline-flex items-center gap-1 text-slate-400">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span> Non-Aktif
+                                        </span>
+                                    @else
+                                        <span class="inline-flex items-center gap-1 text-amber-500">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span> Ditahan
                                         </span>
                                     @endif
                                 </div>
-                            @endif
+
+                                @if($product->approval_status === 'rejected' && $product->rejection_reason)
+                                    <span class="text-[10px] text-rose-600 dark:text-rose-400 max-w-[170px] truncate cursor-help mt-0.5" title="{{ $product->rejection_reason }}">
+                                        Alasan: {{ $product->rejection_reason }}
+                                    </span>
+                                @endif
+                            </div>
                         </td>
 
-                        <!-- Active / Toggle Status -->
-                        <td class="p-4 text-center">
-                            @if($product->is_active && $product->approval_status === 'approved')
-                                <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300 text-xs font-bold">
-                                    Tayang
-                                </span>
-                            @elseif(!$product->is_active)
-                                <span class="px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 text-xs font-bold">
-                                    Non-Aktif
-                                </span>
-                            @else
-                                <span class="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300 text-xs font-bold">
-                                    Ditahan (Review)
-                                </span>
-                            @endif
-                        </td>
-
-                        <!-- Actions & Verification -->
+                        <!-- Actions & Review -->
                         <td class="p-4 text-right pr-6">
-                            <div class="flex items-center justify-end gap-1.5 flex-wrap">
-                                
-                                <!-- APPROVE BUTTON -->
-                                @if($product->approval_status !== 'approved')
-                                <form action="{{ route('admin.products.approve', $product) }}" method="POST" class="inline" onsubmit="return confirm('Setujui produk ini agar dapat tayang di platform? Pastikan file, deskripsi, dan link sudah Anda verifikasi.');">
-                                    @csrf @method('PATCH')
-                                    <button type="submit" class="px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition flex items-center gap-1 shadow-xs" title="Setujui Produk">
-                                        <span class="material-symbols-outlined text-[15px]">verified</span> Approve
+                            <div class="inline-flex items-center gap-1.5">
+                                <!-- Action Buttons: Approve / Tolak -->
+                                @if($product->approval_status === 'pending')
+                                    <form action="{{ route('admin.products.approve', $product) }}" method="POST" class="inline" onsubmit="return confirm('Setujui produk ini agar dapat tayang di platform?');">
+                                        @csrf @method('PATCH')
+                                        <button type="submit" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition flex items-center gap-1 shadow-xs" title="Setujui Produk">
+                                            <span class="material-symbols-outlined text-[15px]">check</span> Approve
+                                        </button>
+                                    </form>
+                                    <button type="button" @click="openRejectModal({{ $product->id }}, '{{ addslashes($product->name) }}')" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 text-rose-600 dark:text-rose-300 text-xs font-bold transition flex items-center gap-1 border border-rose-200 dark:border-rose-900" title="Tolak Produk">
+                                        <span class="material-symbols-outlined text-[15px]">close</span> Tolak
                                     </button>
-                                </form>
+                                @elseif($product->approval_status === 'approved')
+                                    <button type="button" @click="openRejectModal({{ $product->id }}, '{{ addslashes($product->name) }}')" class="px-2 py-1 rounded-lg text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 text-xs font-semibold transition border border-rose-200 dark:border-rose-900/60" title="Batalkan Persetujuan (Tolak)">
+                                        Tolak
+                                    </button>
+                                @elseif($product->approval_status === 'rejected')
+                                    <form action="{{ route('admin.products.approve', $product) }}" method="POST" class="inline" onsubmit="return confirm('Ubah status jadi Approve dan tayangkan?');">
+                                        @csrf @method('PATCH')
+                                        <button type="submit" class="px-2 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition shadow-xs">
+                                            Approve
+                                        </button>
+                                    </form>
                                 @endif
 
-                                <!-- REJECT BUTTON (Triggers Modal) -->
-                                @if($product->approval_status !== 'rejected')
-                                <button type="button" @click="openRejectModal({{ $product->id }}, '{{ addslashes($product->name) }}')" class="px-2.5 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 text-rose-600 dark:text-rose-300 text-xs font-bold transition flex items-center gap-1 border border-rose-200 dark:border-rose-900" title="Tolak Produk">
-                                    <span class="material-symbols-outlined text-[15px]">block</span> Tolak
-                                </button>
-                                @endif
+                                <div class="h-4 w-px bg-outline-variant mx-1"></div>
 
-                                <!-- TOGGLE ACTIVE -->
+                                <!-- Toggle Active Switch -->
                                 <form action="{{ route('admin.products.toggle_active', $product) }}" method="POST" class="inline">
                                     @csrf @method('PATCH')
-                                    <button type="submit" class="p-1.5 {{ $product->is_active ? 'text-emerald-600 hover:bg-emerald-50' : 'text-slate-400 hover:bg-slate-100' }} rounded-lg transition" title="Saklar On/Off Tayang">
-                                        <span class="material-symbols-outlined text-[1.25rem]">{{ $product->is_active ? 'toggle_on' : 'toggle_off' }}</span>
+                                    <button type="submit" class="p-1.5 {{ $product->is_active ? 'text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/30' : 'text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800' }} rounded-lg transition" title="Saklar On/Off Tayang">
+                                        <span class="material-symbols-outlined text-[20px]">{{ $product->is_active ? 'toggle_on' : 'toggle_off' }}</span>
                                     </button>
                                 </form>
 
-                                <!-- EDIT -->
+                                <!-- Edit -->
                                 <a href="{{ route('admin.products.edit', $product) }}" class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-surface-container-high rounded-lg transition" title="Edit Rincian">
-                                    <span class="material-symbols-outlined text-[1.25rem]">edit</span>
+                                    <span class="material-symbols-outlined text-[18px]">edit</span>
                                 </a>
 
-                                <!-- DELETE -->
-                                <form action="{{ route('admin.products.destroy', $product) }}" method="POST" onsubmit="return confirm('Hapus produk ini secara permanen dari sistem?');" class="inline">
+                                <!-- Delete -->
+                                <form action="{{ route('admin.products.destroy', $product) }}" method="POST" onsubmit="return confirm('Hapus produk ini secara permanen?');" class="inline">
                                     @csrf @method('DELETE')
                                     <button type="submit" class="p-1.5 text-on-surface-variant hover:text-error hover:bg-error-container rounded-lg transition" title="Hapus Produk">
-                                        <span class="material-symbols-outlined text-[1.25rem]">delete</span>
+                                        <span class="material-symbols-outlined text-[18px]">delete</span>
                                     </button>
                                 </form>
                             </div>
@@ -292,7 +301,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" class="p-12 text-center text-on-surface-variant">
+                        <td colspan="5" class="p-12 text-center text-on-surface-variant">
                             <span class="material-symbols-outlined text-4xl mb-2 opacity-50">inventory_2</span>
                             <p class="font-semibold">Tidak ada produk yang cocok dengan filter saat ini.</p>
                             <a href="{{ route('admin.products.index') }}" class="text-xs text-primary font-bold hover:underline mt-2 inline-block">Reset Filter</a>
