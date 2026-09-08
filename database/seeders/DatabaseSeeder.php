@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             CompanyProfileSeeder::class,
             MasterDataSeeder::class,
+            ProductCategoryAndTypeSeeder::class,
             ProductSeeder::class,
             GatewayAppSeeder::class,
             HelpCenterSeeder::class,
