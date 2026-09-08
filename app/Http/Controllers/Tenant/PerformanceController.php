@@ -46,6 +46,11 @@ class PerformanceController extends Controller
             ->take(5)
             ->get();
 
+        // Total Pengunjung / Visitor (Toko + Produk)
+        $storeViews = (int) ($store->views ?? 0);
+        $productViews = (int) $store->products()->sum('views');
+        $totalVisitors = $storeViews + $productViews;
+
         // Conversion calculation (mock calculation based on actual paid vs total)
         $conversionRate = $allOrdersCount > 0 ? round(($totalOrders / $allOrdersCount) * 100, 1) : 0;
         $averageOrderValue = $totalOrders > 0 ? round($totalSales / $totalOrders) : 0;
@@ -54,6 +59,9 @@ class PerformanceController extends Controller
             'store',
             'totalSales',
             'totalOrders',
+            'totalVisitors',
+            'storeViews',
+            'productViews',
             'pendingOrders',
             'allOrdersCount',
             'totalProducts',

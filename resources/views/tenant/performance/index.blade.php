@@ -30,8 +30,8 @@
             </div>
         </div>
 
-        <!-- 4 Key Performance Metrics Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <!-- 5 Key Performance Metrics Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 md:gap-5">
             <!-- Total Omset / Penjualan -->
             <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
                 <div class="flex items-center justify-between">
@@ -45,10 +45,29 @@
                         Rp {{ number_format($totalSales, 0, ',', '.') }}
                     </div>
                     <div class="mt-2 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-                        <span>Total saldo perolehan</span>
+                        <span>Total saldo toko</span>
                         <span class="font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-0.5">
                             <span class="material-symbols-outlined text-[14px]">trending_up</span> Aktif
                         </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Pengunjung / Visitor -->
+            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Pengunjung</span>
+                    <div class="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-[22px]">visibility</span>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                        {{ number_format($totalVisitors ?? 0) }}
+                    </div>
+                    <div class="mt-2 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                        <span>{{ number_format($productViews ?? 0) }} view produk</span>
+                        <span class="font-semibold text-purple-600 dark:text-purple-400">Visitor</span>
                     </div>
                 </div>
             </div>
@@ -63,7 +82,7 @@
                 </div>
                 <div class="mt-4">
                     <div class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-                        {{ number_format($totalOrders) }} <span class="text-xs font-normal text-slate-400">transaksi</span>
+                        {{ number_format($totalOrders) }} <span class="text-xs font-normal text-slate-400">order</span>
                     </div>
                     <div class="mt-2 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
                         <span>Dari {{ $allOrdersCount }} checkout</span>
@@ -77,7 +96,7 @@
             <!-- Rata-rata Nilai Pesanan (AOV) -->
             <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
                 <div class="flex items-center justify-between">
-                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Rata-rata Order (AOV)</span>
+                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Rata-rata Order</span>
                     <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
                         <span class="material-symbols-outlined text-[22px]">calculate</span>
                     </div>
@@ -87,8 +106,8 @@
                         Rp {{ number_format($averageOrderValue, 0, ',', '.') }}
                     </div>
                     <div class="mt-2 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-                        <span>Rata-rata per transaksi</span>
-                        <span class="font-medium text-slate-400">Nilai Keranjang</span>
+                        <span>Per transaksi</span>
+                        <span class="font-medium text-slate-400">Nilai AOV</span>
                     </div>
                 </div>
             </div>
@@ -106,7 +125,7 @@
                         {{ number_format($activeProducts) }} <span class="text-xs font-semibold text-slate-400">/ {{ number_format($totalProducts) }}</span>
                     </div>
                     <div class="mt-2 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-                        <span>Katalog digital aktif</span>
+                        <span>Katalog digital</span>
                         <a href="{{ route('tenant.products.index') }}" class="font-bold text-sky-600 dark:text-sky-400 hover:underline">
                             Kelola
                         </a>

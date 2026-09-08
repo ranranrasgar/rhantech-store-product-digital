@@ -38,6 +38,11 @@ class DashboardController extends Controller
         // Total penghasilan toko
         $totalSales = $store->balance;
 
+        // Total Pengunjung / Visitor (Kunjungan profil toko + seluruh view katalog produk)
+        $storeViews = (int) ($store->views ?? 0);
+        $productViews = (int) $store->products()->sum('views');
+        $totalVisitors = $storeViews + $productViews;
+
         // 5 Pesanan Terbaru
         $recentOrders = (clone $ordersQuery)->with(['orderItems.product', 'product'])->latest()->take(5)->get();
 
@@ -49,6 +54,9 @@ class DashboardController extends Controller
             'totalProducts',
             'activeProducts',
             'totalSales',
+            'totalVisitors',
+            'storeViews',
+            'productViews',
             'totalOrdersCount',
             'pendingOrdersCount',
             'completedOrdersCount',

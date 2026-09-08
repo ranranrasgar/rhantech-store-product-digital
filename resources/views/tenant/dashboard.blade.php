@@ -266,12 +266,12 @@
         </div>
         @endif
 
-        <!-- 4 Essential Metrics Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <!-- 5 Essential Metrics Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 md:gap-5">
             <!-- Metric 1: Total Revenue -->
             <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5">
                 <div class="flex items-center justify-between">
-                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Saldo Penjual</span>
+                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Saldo</span>
                     <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
                         <span class="material-symbols-outlined text-[22px]">account_balance_wallet</span>
                     </div>
@@ -289,7 +289,28 @@
                 </div>
             </div>
 
-            <!-- Metric 2: Completed Orders -->
+            <!-- Metric 2: Total Pengunjung / Visitor -->
+            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Pengunjung</span>
+                    <div class="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-[22px]">visibility</span>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                        {{ number_format($totalVisitors ?? 0) }}
+                    </div>
+                    <div class="mt-2 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                        <span>{{ number_format($productViews ?? 0) }} view produk</span>
+                        <a href="{{ route('tenant.performance.index') }}" class="font-bold text-purple-600 dark:text-purple-400 hover:underline">
+                            Statistik
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Metric 3: Completed Orders -->
             <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5">
                 <div class="flex items-center justify-between">
                     <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Pesanan Berhasil</span>
@@ -302,7 +323,7 @@
                         {{ number_format($completedOrdersCount ?? 0) }}
                     </div>
                     <div class="mt-2 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-                        <span>Dari {{ number_format($totalOrdersCount ?? 0) }} total order</span>
+                        <span>Dari {{ number_format($totalOrdersCount ?? 0) }} order</span>
                         <span class="font-semibold text-emerald-600 dark:text-emerald-400">
                             {{ $totalOrdersCount > 0 ? round(($completedOrdersCount / $totalOrdersCount) * 100) : 100 }}% Sukses
                         </span>
@@ -310,10 +331,10 @@
                 </div>
             </div>
 
-            <!-- Metric 3: Pending Orders -->
+            <!-- Metric 4: Pending Orders -->
             <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5">
                 <div class="flex items-center justify-between">
-                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Menunggu Pembayaran</span>
+                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Menunggu Bayar</span>
                     <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center">
                         <span class="material-symbols-outlined text-[22px]">schedule</span>
                     </div>
@@ -331,7 +352,7 @@
                 </div>
             </div>
 
-            <!-- Metric 4: Active Products -->
+            <!-- Metric 5: Active Products -->
             <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5">
                 <div class="flex items-center justify-between">
                     <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Katalog Produk</span>
@@ -344,7 +365,7 @@
                         {{ number_format($activeProducts ?? 0) }} <span class="text-xs font-semibold text-slate-400">/ {{ number_format($totalProducts ?? 0) }}</span>
                     </div>
                     <div class="mt-2 flex items-center justify-between text-xs">
-                        <span class="text-slate-400">Produk berstatus aktif</span>
+                        <span class="text-slate-400">Produk aktif</span>
                         <a href="{{ route('tenant.products.index') }}" class="font-bold text-indigo-600 dark:text-indigo-400 hover:underline">
                             Kelola Produk
                         </a>

@@ -15,6 +15,13 @@ class PublicStoreController extends Controller
     {
         $store = Store::where('slug', $slug)->firstOrFail();
 
+        // Increment visitor / view count untuk toko
+        $storeSessionKey = 'viewed_store_' . $store->id;
+        if (!session()->has($storeSessionKey)) {
+            $store->increment('views');
+            session([$storeSessionKey => true]);
+        }
+
         // Check affiliate referral tracking
         if ($request->filled('ref')) {
             $refCode = $request->query('ref');
