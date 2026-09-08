@@ -127,7 +127,7 @@
                                 <div class="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant mb-2">Katalog Populer Toko Ini:</div>
                                 <div class="flex flex-wrap gap-2">
                                     @foreach($store->products->take(3) as $sp)
-                                        <a href="{{ route('store.product.show', [$store->slug, $sp->slug]) }}" class="px-3 py-1.5 rounded-lg bg-surface border border-outline-variant hover:border-primary text-xs font-semibold text-on-surface flex items-center gap-2 transition-all">
+                                        <a href="{{ route('products.show', $sp->slug) }}" class="px-3 py-1.5 rounded-lg bg-surface border border-outline-variant hover:border-primary text-xs font-semibold text-on-surface flex items-center gap-2 transition-all">
                                             <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
                                             <span class="truncate max-w-[180px]">{{ $sp->name }}</span>
                                             <span class="text-primary font-bold">Rp{{ number_format($sp->price, 0, ',', '.') }}</span>
