@@ -86,7 +86,7 @@
                     <tbody class="divide-y divide-slate-100 dark:divide-[#1d273d]">
                         @forelse($affiliates as $aff)
                         @php
-                            $refLink = route('public.store.show', $store->slug ?? 'store') . '?ref=' . ($aff->referral_code ?? $aff->id);
+                            $refLink = route('store.show', $store->slug ?? 'store') . '?ref=' . ($aff->referral_code ?? $aff->id);
                         @endphp
                         <tr class="hover:bg-slate-50/60 dark:hover:bg-[#151e30]/50 transition-colors">
                             
