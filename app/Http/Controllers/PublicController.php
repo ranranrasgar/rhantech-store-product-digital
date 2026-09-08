@@ -63,26 +63,33 @@ class PublicController extends Controller
 
         // 10 Toko Terfavorit & Terlaris (Berdasarkan total penjualan berhasil / produk)
         $topStores = \App\Models\Store::query()
-            ->with(['products' => function ($q) {
-                $q->published()
-                  ->with('images')
-                  ->orderByDesc('sales_count')
-                  ->orderByDesc('views');
-            }])
             ->withCount(['products' => function ($q) {
                 $q->published();
             }])
-            ->leftJoin('products', 'stores.id', '=', 'products.store_id')
-            ->leftJoin('orders', function ($join) {
-                $join->on('products.id', '=', 'orders.product_id')
-                     ->whereIn('orders.status', ['paid', 'downloaded']);
+            ->with(['products' => function ($q) {
+                $q->published()->with('images');
+            }])
+            ->get()
+            ->map(function ($store) {
+                $productIds = $store->products->pluck('id');
+                
+                // Total order berhasil untuk toko ini
+                $store->sales_count = \App\Models\Order::whereIn('product_id', $productIds)
+                    ->whereIn('status', ['paid', 'downloaded'])
+                    ->count();
+
+                // Rating toko
+                $avgRating = \App\Models\ProductReview::whereIn('product_id', $productIds)
+                    ->where('is_visible', true)
+                    ->avg('rating');
+
+                $store->rating = $avgRating ? round((float)$avgRating, 1) : 4.9;
+
+                return $store;
             })
-            ->select('stores.*', \Illuminate\Support\Facades\DB::raw('COUNT(orders.id) as sales_count'))
-            ->groupBy('stores.id')
-            ->orderByDesc('sales_count')
-            ->orderByDesc('stores.id')
-            ->take(10)
-            ->get();
+            ->sortByDesc('sales_count')
+            ->values()
+            ->take(10);
 
         return view('welcome', compact('services', 'projects', 'clients', 'testimonials', 'popupAd', 'popularProducts', 'topStores'));
     }

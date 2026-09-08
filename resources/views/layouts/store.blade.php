@@ -4,6 +4,7 @@
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     @include('components.theme-init')
+    @include('components.pwa-head')
     <title>@yield('title', $store->name ?? 'Toko Digital')</title>
     <meta name="description" content="@yield('meta_description', $store->description ?? 'Toko digital resmi penyedia produk dan template terpercaya.')"/>
     <meta property="og:title" content="@yield('title', $store->name ?? 'Toko Digital')"/>
@@ -209,6 +210,8 @@
         <div x-data="firebaseManager" x-init="initFirebase()" style="display:none;"></div>
     @endauth
     @include('components.chat-widget')
+    @include('components.new-member-bonus-bubble')
+    @include('components.pwa-install-prompt')
     @livewireScripts
 </body>
 </html>

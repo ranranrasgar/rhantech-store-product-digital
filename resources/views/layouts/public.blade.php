@@ -4,6 +4,7 @@
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     @include('components.theme-init')
+    @include('components.pwa-head')
     <title>@yield('title', ($company->company_name ?? 'rhantech') . ' - We Build Digital Experiences')</title>
     <meta name="description" content="@yield('meta_description', $company->about_text ?? 'We build scalable, modern, and impactful digital solutions for businesses worldwide.')"/>
     <meta name="keywords" content="digital agency, web development, mobile app development, UI/UX design, cloud infrastructure"/>
@@ -138,171 +139,278 @@
 <body class="bg-background text-on-background font-body-md text-body-md antialiased overflow-x-hidden selection:bg-secondary-container selection:text-on-secondary-container flex flex-col min-h-screen">
 
 <style>
-/* ── Simplified Search-Focused Navbar ── */
-.pub-header {
+/* ── Modern Tech Header (Synchronized with Products / Marketplace) ── */
+.site-header {
     background: linear-gradient(135deg, #0a1628 0%, #0d2240 60%, #0a3352 100%);
     position: fixed; top: 0; left: 0; right: 0;
     z-index: 50;
     box-shadow: 0 2px 20px rgba(0,0,0,0.3);
 }
-.pub-header::after {
+.site-header::after {
     content: '';
     position: absolute; bottom: 0; left: 0; right: 0;
     height: 2px;
     background: linear-gradient(90deg, transparent, #00d4ff, #00b3cc, transparent);
 }
-.pub-logo {
-    font-size: 20px; font-weight: 900; letter-spacing: -0.5px;
+.header-logo {
+    font-size: 22px; font-weight: 900;
+    letter-spacing: -0.5px;
     background: linear-gradient(135deg, #ffffff, #a8e6f0);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     background-clip: text;
     text-decoration: none;
     display: flex; align-items: center; gap: 8px;
+    transition: opacity 0.2s;
 }
-.pub-logo .logo-dot {
-    width: 7px; height: 7px;
-    background: #00d4ff; border-radius: 50%;
+.header-logo:hover { opacity: 0.85; }
+.header-logo .logo-dot {
+    width: 8px; height: 8px;
+    background: #00d4ff;
+    border-radius: 50%;
     box-shadow: 0 0 10px #00d4ff;
-    animation: pubDotPulse 2s infinite;
-    flex-shrink: 0;
+    animation: pulse-dot 2s infinite;
 }
-@keyframes pubDotPulse {
-    0%,100% { box-shadow: 0 0 8px #00d4ff; }
-    50% { box-shadow: 0 0 18px #00d4ff, 0 0 30px rgba(0,212,255,0.4); }
+@keyframes pulse-dot {
+    0%, 100% { box-shadow: 0 0 8px #00d4ff; }
+    50%       { box-shadow: 0 0 18px #00d4ff, 0 0 30px rgba(0,212,255,0.4); }
 }
-.pub-search-wrap {
+.search-bar-wrap {
     display: flex; align-items: center;
-    background: rgba(255,255,255,0.09);
+    background: rgba(255,255,255,0.08);
     border: 1.5px solid rgba(255,255,255,0.15);
-    border-radius: 12px; overflow: hidden;
+    border-radius: 12px;
+    overflow: hidden;
     transition: border-color 0.2s, background 0.2s;
-    flex: 1;
 }
-.pub-search-wrap:focus-within {
+.search-bar-wrap:focus-within {
     border-color: #00d4ff;
-    background: rgba(255,255,255,0.13);
+    background: rgba(255,255,255,0.12);
     box-shadow: 0 0 0 3px rgba(0,212,255,0.15);
 }
-.pub-search-wrap input {
-    background: transparent; border: none !important;
-    outline: none !important; box-shadow: none !important;
-    color: #fff; font-size: 14px;
-    padding: 10px 14px; flex: 1; min-width: 0;
+.search-bar-wrap input {
+    background: transparent;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    color: #fff;
+    font-size: 14px;
+    padding: 10px 16px;
+    flex: 1;
 }
-.pub-search-wrap input::placeholder { color: rgba(255,255,255,0.4); }
-.pub-search-wrap button {
+.search-bar-wrap input::placeholder { color: rgba(255,255,255,0.45); }
+.search-bar-wrap button {
     background: linear-gradient(135deg, #00b3cc, #0077a8);
     border: none; color: #fff;
-    padding: 10px 16px;
+    padding: 10px 18px;
     cursor: pointer; transition: opacity 0.2s;
     display: flex; align-items: center;
-    flex-shrink: 0;
 }
-.pub-search-wrap button:hover { opacity: 0.85; }
-.pub-cta-buy {
-    display: inline-flex; align-items: center; gap: 5px;
-    padding: 8px 14px;
+.search-bar-wrap button:hover { opacity: 0.85; }
+.header-action-btn {
+    display: flex; align-items: center; gap: 6px;
+    color: rgba(255,255,255,0.75);
+    font-size: 13px; font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 8px;
+    transition: all 0.18s;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.header-action-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+.header-action-btn.primary {
     background: linear-gradient(135deg, #00b3cc, #0077a8);
-    color: #fff; font-size: 13px; font-weight: 700;
-    border-radius: 10px; text-decoration: none;
-    transition: all 0.2s; white-space: nowrap;
-    box-shadow: 0 2px 12px rgba(0,179,204,0.35);
+    color: #fff;
+    font-weight: 700;
+    box-shadow: 0 2px 10px rgba(0,179,204,0.35);
 }
-.pub-cta-buy:hover { opacity: 0.9; transform: translateY(-1px); }
-.pub-cta-sell {
-    display: inline-flex; align-items: center; gap: 5px;
-    padding: 8px 14px;
-    background: rgba(255,255,255,0.1);
-    border: 1.5px solid rgba(255,255,255,0.25);
-    color: rgba(255,255,255,0.9); font-size: 13px; font-weight: 700;
-    border-radius: 10px; text-decoration: none;
-    transition: all 0.2s; white-space: nowrap;
+.header-action-btn.primary:hover { opacity: 0.9; background: linear-gradient(135deg, #00b3cc, #0077a8); }
+.search-tag {
+    color: rgba(255,255,255,0.55); font-size: 11.5px;
+    transition: color 0.15s;
+    cursor: pointer; text-decoration: none;
 }
-.pub-cta-sell:hover { background: rgba(255,255,255,0.18); color: #fff; }
+.search-tag:hover { color: #00d4ff; }
+.search-tag-sep { color: rgba(255,255,255,0.2); margin: 0 2px; }
 </style>
 
-    <!-- Simplified Search-Focused Header -->
-    <header class="pub-header">
-        <div class="max-w-[1280px] mx-auto px-4 md:px-6 py-3 flex items-center gap-3 md:gap-4">
-            {{-- Logo --}}
-            <a href="{{ url('/') }}" class="pub-logo shrink-0" wire:navigate>
-                <span class="logo-dot"></span>
-                <span class="hidden sm:inline">{{ $company->company_name ?? 'rhantech' }}</span>
-                <span class="sm:hidden text-sm">{{ Str::limit($company->company_name ?? 'rhantech', 8) }}</span>
+    <!-- Desktop TopNavBar -->
+    <nav x-data="{ mobileMenuOpen: false }" aria-label="Main Navigation" class="hidden md:block bg-surface/80 dark:bg-surface-container-lowest/80 backdrop-blur-md text-primary dark:text-on-surface font-headline-lg text-headline-lg font-body-md text-body-md font-label-md text-label-md fixed top-0 w-full z-50 border-b border-outline-variant/30">
+        <div class="flex justify-between items-center px-lg py-md max-w-container-max mx-auto">
+            <a aria-label="{{ $company->company_name ?? 'rhantech' }} Home" class="flex items-center gap-2 text-body-lg font-headline-xl font-bold text-on-background dark:text-white" href="{{ url('/') }}" wire:navigate>
+                <img src="{{ isset($company) && $company->logo ? asset('storage/' . $company->logo) : asset('logo.png') }}" alt="{{ $company->company_name ?? 'rhantech' }}" class="h-8 w-auto">
+                {{ $company->company_name ?? 'rhantech' }}
             </a>
-
-            {{-- Search Bar (center, largest element) --}}
-            <form action="{{ route('products.index') }}" method="GET" class="pub-search-wrap">
-                <input type="text" name="search" value="{{ request('search') }}"
-                    placeholder="Cari produk digital, aplikasi, source code..."
-                    autocomplete="off">
-                <button type="submit" aria-label="Cari">
-                    <span class="material-symbols-outlined text-[20px]">search</span>
-                </button>
-            </form>
-
-            {{-- CTAs --}}
-            <div class="flex items-center gap-2 shrink-0">
-                {{-- Buy Products --}}
-                <a href="{{ route('products.index') }}" class="pub-cta-buy" wire:navigate>
-                    <span class="material-symbols-outlined text-[16px]">shopping_bag</span>
-                    <span class="hidden md:inline">Beli Produk</span>
-                </a>
-
-                {{-- Open Store / Dashboard --}}
-                @guest
-                <a href="{{ route('register') }}" class="pub-cta-sell" wire:navigate>
-                    <span class="material-symbols-outlined text-[16px]">storefront</span>
-                    <span class="hidden md:inline">Buka Toko</span>
-                </a>
-                @else
-                <div class="relative" x-data="{ open: false }">
-                    <button @click="open = !open" @click.outside="open = false"
-                        class="flex items-center gap-2 rounded-full ring-2 ring-transparent hover:ring-white/20 transition-all focus:outline-none">
-                        <img src="{{ auth()->user()->avatar ? (Str::startsWith(auth()->user()->avatar, 'http') ? auth()->user()->avatar : asset('storage/' . auth()->user()->avatar)) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=0d2240&color=00d4ff' }}"
-                            alt="Avatar" class="w-9 h-9 rounded-full object-cover border-2 border-white/20">
-                    </button>
-                    <div x-show="open" style="display:none;"
-                        x-transition:enter="transition ease-out duration-100"
-                        x-transition:enter-start="transform opacity-0 scale-95"
-                        x-transition:enter-end="transform opacity-100 scale-100"
-                        x-transition:leave="transition ease-in duration-75"
-                        x-transition:leave-start="transform opacity-100 scale-100"
-                        x-transition:leave-end="transform opacity-0 scale-95"
-                        class="absolute right-0 mt-2 w-52 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl py-2 z-50">
-                        <div class="px-4 py-2 border-b border-gray-100 dark:border-gray-800">
-                            <p class="text-sm font-bold text-gray-800 dark:text-white truncate">{{ auth()->user()->name }}</p>
-                            <p class="text-xs text-gray-400 truncate">{{ auth()->user()->email }}</p>
-                        </div>
-                        @if(auth()->user()->role === 'admin')
-                        <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800">
-                            <span class="material-symbols-outlined text-[18px]">admin_panel_settings</span> Admin
-                        </a>
-                        @endif
-                        <a href="{{ route('tenant.dashboard') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800">
-                            <span class="material-symbols-outlined text-[18px]">storefront</span> Dashboard Toko
-                        </a>
-                        <form method="POST" action="{{ route('logout') }}" class="border-t border-gray-100 dark:border-gray-800 mt-1 pt-1">
-                            @csrf
-                            <button type="submit" class="w-full text-left flex items-center gap-2 px-4 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20">
-                                <span class="material-symbols-outlined text-[18px]">logout</span> Keluar
-                            </button>
-                        </form>
-                    </div>
-                </div>
-                @endguest
-
-                {{-- Theme toggle --}}
+            <div class="hidden md:flex items-center gap-lg nav-links">
+                <a class="nav-link {{ request()->is('/') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-secondary transition-colors duration-200" href="{{ url('/#home') }}">Home</a>
+                <a class="nav-link {{ request()->routeIs('about') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-secondary transition-colors duration-200" href="{{ route('about') }}" wire:navigate>About</a>
+                <a class="nav-link text-on-surface-variant dark:text-on-surface-variant/80 hover:text-secondary transition-colors duration-200" href="{{ url('/#services') }}">Services</a>
+                <a class="nav-link {{ request()->routeIs('projects.*') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-secondary transition-colors duration-200" href="{{ route('projects.index') }}" wire:navigate>Portfolio</a>
+                <a class="nav-link {{ request()->routeIs('products.*') || request()->routeIs('checkout.*') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-secondary transition-colors duration-200" href="{{ route('products.index') }}" wire:navigate>Store</a>
+                <a class="nav-link {{ request()->routeIs('clients.*') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-secondary transition-colors duration-200" href="{{ route('clients.index') }}" wire:navigate>Clients</a>
+                <a class="nav-link {{ request()->routeIs('contact') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-secondary transition-colors duration-200" href="{{ url('/contact') }}" wire:navigate>Contact</a>
+            </div>
+            <div class="flex items-center gap-sm">
                 <x-theme-toggle />
+                
+                @guest
+                    <a class="hidden md:inline-flex items-center justify-center px-5 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-lg font-label-md text-label-md font-bold shadow-md hover:shadow-lg transition-all hover:scale-105" href="{{ route('register') }}" wire:navigate>
+                        <span class="material-symbols-outlined text-[1rem] mr-1">storefront</span> Jualan Sekarang!
+                    </a>
+                @else
+                    <div class="flex items-center gap-3 ml-2">
+                        <!-- Notification Bell -->
+                        <button class="relative p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors">
+                            <span class="material-symbols-outlined">notifications</span>
+                            <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-error rounded-full border border-surface"></span>
+                        </button>
+
+                        <!-- User Avatar Dropdown -->
+                        <div class="relative" x-data="{ open: false }">
+                            <button @click="open = !open" @click.outside="open = false" class="flex items-center gap-2 focus:outline-none rounded-full ring-2 ring-transparent hover:ring-primary/20 transition-all">
+                                <img src="{{ auth()->user()->avatar ? (Str::startsWith(auth()->user()->avatar, 'http') ? auth()->user()->avatar : asset('storage/' . auth()->user()->avatar)) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=0284c7&color=fff' }}" alt="Avatar" referrerpolicy="no-referrer" class="w-9 h-9 rounded-full object-cover">
+                            </button>
+                            
+                            <!-- Dropdown Menu -->
+                            <div x-show="open" style="display: none;" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95" class="absolute right-0 mt-2 w-56 bg-surface-container-lowest border border-outline-variant rounded-md shadow-xl py-2 z-50">
+                                <a href="{{ route('tenant.profile.index') }}" class="block px-4 py-3 border-b border-outline-variant/50 mb-1 hover:bg-surface-container-low transition-colors">
+                                    <p class="text-sm font-bold text-on-surface truncate">{{ auth()->user()->name }}</p>
+                                    <p class="text-xs text-on-surface-variant truncate mb-1">{{ auth()->user()->email }}</p>
+                                    <div class="flex items-center gap-1 text-[11px] text-primary font-semibold">
+                                        <span class="material-symbols-outlined text-[12px]">edit</span> Edit Profil
+                                    </div>
+                                </a>
+                                
+                                @if(auth()->user()->role === 'admin')
+                                <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-on-surface hover:bg-surface-container-low transition-colors">
+                                    <span class="material-symbols-outlined text-[1.1rem]">admin_panel_settings</span> Dashboard Admin
+                                </a>
+                                @endif
+                                
+                                <a href="{{ route('tenant.dashboard') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-on-surface hover:bg-surface-container-low transition-colors">
+                                    <span class="material-symbols-outlined text-[1.1rem]">storefront</span> Dashboard Toko
+                                </a>
+
+                                <a href="{{ route('tenant.purchases.index') }}" class="flex items-center gap-2 px-4 py-2 text-sm text-on-surface hover:bg-surface-container-low transition-colors">
+                                    <span class="material-symbols-outlined text-[1.1rem]">receipt_long</span> Riwayat Pembelian
+                                </a>
+                                
+                                <form method="POST" action="{{ route('logout') }}" class="mt-1 border-t border-outline-variant/50 pt-1">
+                                    @csrf
+                                    <button type="submit" class="w-full text-left flex items-center gap-2 px-4 py-2 text-sm text-error hover:bg-error/10 transition-colors">
+                                        <span class="material-symbols-outlined text-[1.1rem]">logout</span> Keluar
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                @endguest
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Header (2-Row, block md:hidden) -->
+    <header class="block md:hidden site-header fixed top-0 left-0 right-0 z-50">
+        <div class="px-4 py-2 flex flex-col gap-2">
+            <!-- Row 1: Logo, Cart, Masuk/User -->
+            <div class="flex items-center justify-between">
+                <a href="{{ url('/') }}" class="header-logo shrink-0" wire:navigate>
+                    <span class="logo-dot"></span>
+                    {{ $company->company_name ?? 'rhantech' }}
+                </a>
+                
+                <div class="flex items-center gap-2 shrink-0">
+                    @php $cartCount = count(session('cart', [])); @endphp
+                    <a href="{{ route('cart.index') }}" class="header-action-btn relative p-1.5" title="Keranjang" wire:navigate>
+                        <span class="material-symbols-outlined text-[20px]">shopping_cart</span>
+                        <span data-cart-count
+                            class="absolute -top-1 -right-1 bg-[#00d4ff] text-[#0a1628] text-[9px] font-black px-1.5 py-0.5 rounded-full min-w-[16px] text-center leading-none"
+                            style="{{ $cartCount > 0 ? '' : 'display:none' }}">{{ $cartCount }}</span>
+                    </a>
+
+                    @guest
+                        <a href="{{ route('login') }}" class="header-action-btn primary text-xs !py-1 !px-3" wire:navigate>Masuk</a>
+                    @else
+                        <div class="relative" x-data="{ open: false }">
+                            <button @click="open = !open" @click.outside="open = false" class="flex items-center focus:outline-none">
+                                <img src="{{ auth()->user()->avatar ? (Str::startsWith(auth()->user()->avatar, 'http') ? auth()->user()->avatar : asset('storage/' . auth()->user()->avatar)) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=0d2240&color=00d4ff' }}" class="w-7 h-7 rounded-full border border-white/30 object-cover">
+                            </button>
+                            <div x-show="open" style="display: none;" class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl py-2 z-50 text-xs">
+                                <div class="px-3 py-1.5 border-b border-gray-100 dark:border-gray-800">
+                                    <p class="font-bold text-gray-800 dark:text-white truncate">{{ auth()->user()->name }}</p>
+                                </div>
+                                @if(auth()->user()->role === 'admin')
+                                <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2 px-3 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800" wire:navigate>
+                                    <span class="material-symbols-outlined text-[16px]">admin_panel_settings</span> Admin
+                                </a>
+                                @endif
+                                <a href="{{ route('tenant.dashboard') }}" class="flex items-center gap-2 px-3 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800" wire:navigate>
+                                    <span class="material-symbols-outlined text-[16px]">storefront</span> Dashboard Toko
+                                </a>
+                                <a href="{{ route('tenant.purchases.index') }}" class="flex items-center gap-2 px-3 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800" wire:navigate>
+                                    <span class="material-symbols-outlined text-[16px]">receipt_long</span> Riwayat Belanja
+                                </a>
+                                <form method="POST" action="{{ route('logout') }}" class="border-t border-gray-100 dark:border-gray-800 mt-1 pt-1">
+                                    @csrf
+                                    <button type="submit" class="w-full text-left flex items-center gap-2 px-3 py-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20">
+                                        <span class="material-symbols-outlined text-[16px]">logout</span> Keluar
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    @endguest
+                </div>
+            </div>
+
+            <!-- Row 2: Search Input -->
+            <div class="w-full">
+                <form action="{{ route('products.index') }}" method="GET">
+                    <div class="search-bar-wrap">
+                        <input type="text" name="search" value="{{ request('search') }}"
+                            placeholder="Cari produk digital, source code, aplikasi..."
+                            autocomplete="off">
+                        <button type="submit" aria-label="Cari">
+                            <span class="material-symbols-outlined text-[18px]">search</span>
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </header>
 
-    <main class="flex-1 mt-16 md:mt-[62px]">
+    <main class="flex-1 mt-[95px] md:mt-20">
         @yield('content')
     </main>
 
-    {{-- Footer: fully hidden (mobile-app experience) --}}
+    <!-- Footer (Desktop Only) -->
+    <footer aria-label="Footer" class="hidden md:block bg-surface-container dark:bg-surface-container-lowest text-on-surface dark:text-on-surface-variant font-body-md text-body-md font-label-md text-label-md w-full border-t border-outline-variant mt-auto">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-lg px-lg py-2xl max-w-container-max mx-auto">
+            <div class="col-span-1 md:col-span-2">
+                <a class="font-headline-lg text-headline-lg font-black text-primary dark:text-on-primary-container flex items-center gap-2 mb-4" href="{{ url('/') }}" wire:navigate>
+                    <img src="{{ isset($company) && $company->logo ? asset('storage/' . $company->logo) : asset('logo.png') }}" alt="{{ $company->company_name ?? 'rhantech' }}" class="h-8 w-auto">
+                    {{ $company->company_name ?? 'rhantech' }}
+                </a>
+                <p class="text-on-surface-variant max-w-sm mb-6">Building scalable, modern, and impactful digital solutions for businesses worldwide. Precision engineering meets elegant design.</p>
+                <div class="font-label-md text-label-md text-on-surface-variant/60">
+                    © {{ date('Y') }} {{ $company->company_name ?? 'rhantech' }}. All rights reserved.
+                </div>
+            </div>
+            <div>
+                <h4 class="font-label-md text-label-md text-on-background dark:text-white font-bold mb-4 uppercase tracking-wider">Company</h4>
+                <ul class="flex flex-col gap-3">
+                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ route('about') }}" wire:navigate>About Us</a></li>
+                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/#services') }}">Services</a></li>
+                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/projects') }}" wire:navigate>Portfolio</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-label-md text-label-md text-on-background dark:text-white font-bold mb-4 uppercase tracking-wider">Support</h4>
+                <ul class="flex flex-col gap-3">
+                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/contact') }}" wire:navigate>Contact Us</a></li>
+                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ route('login') }}" wire:navigate>Admin Login</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
 
     <!-- Global Testimonial Toast -->
     @php
@@ -435,6 +543,8 @@
         <div x-data="firebaseManager" x-init="initFirebase()" style="display:none;"></div>
     @endauth
     @include('components.chat-widget')
+    @include('components.new-member-bonus-bubble')
+    @include('components.pwa-install-prompt')
     @livewireScripts
 </body>
 </html>

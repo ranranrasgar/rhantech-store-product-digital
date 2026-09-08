@@ -16,11 +16,15 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-    protected function validateTurnstile($token)
+    protected function validateTurnstile(?string $token): bool
     {
         // Bypass CAPTCHA di local environment (development)
         if (app()->environment('local')) {
             return true;
+        }
+
+        if (empty($token)) {
+            return false;
         }
 
         $secretKey = config('services.turnstile.secret_key', env('TURNSTILE_SECRET_KEY'));
@@ -93,6 +97,9 @@ class AuthController extends Controller
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
             'role' => 'User', // Default role for new registrations
+            'credit_balance' => 25000,
+            'credit_expires_at' => now()->addDays(30),
+            'is_new_member_credit_claimed' => true,
         ]);
 
         event(new Registered($user));

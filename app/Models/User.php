@@ -14,8 +14,8 @@ use Illuminate\Notifications\Notifiable;
  * @method static \Illuminate\Database\Eloquent\Builder query()
  * @method static \Illuminate\Database\Eloquent\Builder where($column, $operator = null, $value = null, $boolean = 'and')
  * @method static \App\Models\User create(array $attributes = [])
- * @method static \App\Models\User|null find($id, $columns = ['*'])
- * @method static \App\Models\User findOrFail($id, $columns = ['*'])
+ * @method static \App\Models\User|null find($id, array $columns = [])
+ * @method static \App\Models\User findOrFail($id, array $columns = [])
  * @method bool|null delete()
  */
 class User extends Authenticatable implements MustVerifyEmail
@@ -38,6 +38,9 @@ class User extends Authenticatable implements MustVerifyEmail
         'provider_id',
         'avatar',
         'email_verified_at',
+        'credit_balance',
+        'credit_expires_at',
+        'is_new_member_credit_claimed',
     ];
 
     /**
@@ -60,6 +63,9 @@ class User extends Authenticatable implements MustVerifyEmail
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'credit_expires_at' => 'datetime',
+            'is_new_member_credit_claimed' => 'boolean',
+            'credit_balance' => 'decimal:2',
         ];
     }
 

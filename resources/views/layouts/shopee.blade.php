@@ -4,6 +4,7 @@
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     @include('components.theme-init')
+    @include('components.pwa-head')
     <title>@yield('title', ($company->company_name ?? 'rhantech') . ' - We Build Digital Experiences')</title>
     <meta name="description" content="@yield('meta_description', $company->about_text ?? 'We build scalable, modern, and impactful digital solutions for businesses worldwide.')"/>
     <meta name="keywords" content="digital agency, web development, mobile app development, UI/UX design, cloud infrastructure"/>
@@ -483,6 +484,8 @@
     @include('components.theme-manager')
     
     @include('components.chat-widget')
+    @include('components.new-member-bonus-bubble')
+    @include('components.pwa-install-prompt')
 
     @livewireScripts
 </body>

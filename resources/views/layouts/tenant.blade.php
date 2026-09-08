@@ -3,6 +3,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 @include('components.theme-init')
+@include('components.pwa-head')
 <title>@yield('title', 'Admin Panel') - {{ $company->company_name ?? 'Admin' }}</title>
 <link rel="icon" type="image/png" href="{{ isset($company) && $company->favicon ? '/storage/'.$company->favicon : '/favicon.ico' }}" />
     <link rel="shortcut icon" type="image/png" href="{{ isset($company) && $company->favicon ? '/storage/'.$company->favicon : '/favicon.ico' }}" />
@@ -448,5 +449,6 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
 @include('components.firebase-init')
 <div x-data="firebaseManager" x-init="initFirebase()" style="display:none;"></div>
 @include('components.theme-manager')
+@include('components.pwa-install-prompt')
 @livewireScripts
 </body></html>

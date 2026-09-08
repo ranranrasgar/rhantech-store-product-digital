@@ -63,6 +63,9 @@ class SocialiteController extends Controller
                     'avatar' => $socialUser->getAvatar(),
                     'email_verified_at' => now(),
                     'role' => 'User',
+                    'credit_balance' => 25000,
+                    'credit_expires_at' => now()->addDays(30),
+                    'is_new_member_credit_claimed' => true,
                 ]);
             }
 
