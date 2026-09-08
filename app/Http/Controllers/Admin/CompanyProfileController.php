@@ -121,6 +121,17 @@ class CompanyProfileController extends Controller
             'youtube'           => 'nullable|url',
             'logo'              => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,ico|max:2048',
             'favicon'           => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,ico|max:1024',
+            'hero_mode'         => 'nullable|string|in:custom,top_stores,both',
+            'hero_badge'        => 'nullable|string|max:255',
+            'hero_title'        => 'nullable|string|max:255',
+            'hero_subtitle'     => 'nullable|string',
+            'hero_image'        => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:3072',
+            'hero_btn_primary_text'   => 'nullable|string|max:100',
+            'hero_btn_primary_url'    => 'nullable|string|max:255',
+            'hero_btn_secondary_text' => 'nullable|string|max:100',
+            'hero_btn_secondary_url'  => 'nullable|string|max:255',
+            'hero_stats_val'    => 'nullable|string|max:50',
+            'hero_stats_label'  => 'nullable|string|max:100',
         ]);
 
         $profile = CompanyProfile::query()->first();
@@ -139,13 +150,20 @@ class CompanyProfileController extends Controller
             $validated['favicon'] = $request->file('favicon')->store('company', 'public');
         }
 
+        if ($request->hasFile('hero_image')) {
+            if ($profile->hero_image) Storage::disk('public')->delete($profile->hero_image);
+            $validated['hero_image'] = $request->file('hero_image')->store('company/hero', 'public');
+        }
+
         if ($profile->exists) {
             $profile->update($validated);
         } else {
             CompanyProfile::create($validated);
         }
 
-        return redirect()->route('admin.company.index', ['tab' => 'profile'])->with('success', 'Profil perusahaan berhasil disimpan.');
+        $activeTab = $request->input('redirect_tab', 'profile');
+
+        return redirect()->route('admin.company.index', ['tab' => $activeTab])->with('success', 'Pengaturan berhasil disimpan.');
     }
 
     public function optimizeDatabase(Request $request)

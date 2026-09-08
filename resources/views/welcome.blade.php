@@ -8,47 +8,305 @@
     <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-secondary-container/20 rounded-full blur-[100px] -z-10"></div>
     <div class="absolute bottom-20 left-10 w-[300px] h-[300px] bg-primary/5 rounded-full blur-[80px] -z-10"></div>
     
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-lg items-center">
-        <div class="md:col-span-7 flex flex-col items-start z-10">
-            <span class="inline-block py-1 px-3 rounded-full bg-surface-container text-on-surface font-label-md text-label-md mb-6 border border-outline-variant/30">
-                Innovative Digital Solutions
-            </span>
-            <h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-background dark:text-white mb-6 text-balance">
-                We Build <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#06B6D4] to-blue-500">Digital</span> Experiences
-            </h1>
-            <p class="font-body-lg text-body-lg text-on-surface-variant mb-xl max-w-2xl text-balance">
-                Helping businesses build scalable, modern, and impactful digital solutions. We combine engineering excellence with compelling design to propel your brand forward.
-            </p>
-            <div class="flex flex-wrap items-center gap-4 w-full sm:w-auto">
-                <a class="w-full sm:w-auto text-center px-8 py-4 bg-gradient-to-r from-[#06B6D4] to-blue-500 text-white rounded-lg font-label-md text-label-md hover:opacity-90 transition-all shadow-lg hover:-translate-y-1 border-0" href="{{ url('/projects') }}" wire:navigate>
-                    View Our Work
-                </a>
-                <a class="w-full sm:w-auto text-center px-8 py-4 bg-transparent text-on-background dark:text-white border border-outline-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low transition-all" href="{{ url('/contact') }}" wire:navigate>
-                    Let's Talk
-                </a>
-            </div>
-        </div>
-        
-        <div class="md:col-span-5 relative mt-12 md:mt-0 z-10">
-            <div class="relative rounded-2xl overflow-hidden shadow-[0px_20px_25px_-5px_rgba(15,23,42,0.1),0px_8px_10px_-6px_rgba(15,23,42,0.1)] border border-outline-variant/50 group">
-                <div class="absolute inset-0 bg-primary/10 group-hover:bg-transparent transition-colors duration-500 z-10"></div>
-                <img fetchpriority="high" alt="Tech workspace" class="w-full h-[600px] object-cover transition-transform duration-700 group-hover:scale-105" src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"/>
-            </div>
-            
-            <!-- Floating Stats Card -->
-            <div class="absolute -bottom-8 -left-8 bg-surface p-6 rounded-xl border border-outline-variant shadow-[0px_20px_25px_-5px_rgba(15,23,42,0.1)] z-20 animate-[bounce_3s_ease-in-out_infinite]">
-                <div class="flex items-center gap-4">
-                    <div class="p-3 bg-[#06B6D4]/10 rounded-full text-[#06B6D4]">
-                        <span class="material-symbols-outlined" data-icon="rocket_launch">rocket_launch</span>
+    @php
+        $heroMode = $company->hero_mode ?? 'custom';
+        $heroBadge = $company->hero_badge ?? 'Innovative Digital Solutions';
+        $heroTitle = $company->hero_title ?? 'We Build Digital Experiences';
+        $heroSubtitle = $company->hero_subtitle ?? 'Helping businesses build scalable, modern, and impactful digital solutions. We combine engineering excellence with compelling design to propel your brand forward.';
+        $heroBtnPrimaryText = $company->hero_btn_primary_text ?? 'View Our Work';
+        $heroBtnPrimaryUrl = $company->hero_btn_primary_url ?? url('/projects');
+        $heroBtnSecondaryText = $company->hero_btn_secondary_text ?? "Let's Talk";
+        $heroBtnSecondaryUrl = $company->hero_btn_secondary_url ?? url('/contact');
+        $heroStatsVal = $company->hero_stats_val ?? '99%';
+        $heroStatsLabel = $company->hero_stats_label ?? 'Project Success Rate';
+        $heroImageUrl = !empty($company->hero_image) 
+            ? asset('storage/' . $company->hero_image) 
+            : 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80';
+    @endphp
+
+    @if($heroMode === 'top_stores' && isset($topStores) && $topStores->count() > 0)
+        {{-- MODE 1: FULL HERO SHOWCASE 10 TOKO TERFAVORIT / TERLARIS --}}
+        <div class="z-10 pt-4" x-data="{
+            activeStore: 0,
+            storesCount: {{ $topStores->count() }},
+            timer: null,
+            init() {
+                this.timer = setInterval(() => {
+                    this.activeStore = (this.activeStore + 1) % this.storesCount;
+                }, 4500);
+            },
+            next() {
+                this.activeStore = (this.activeStore + 1) % this.storesCount;
+            },
+            prev() {
+                this.activeStore = (this.activeStore - 1 + this.storesCount) % this.storesCount;
+            }
+        }">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+                <div>
+                    <span class="inline-flex items-center gap-1.5 py-1 px-3.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-label-md text-xs mb-3 border border-emerald-500/30">
+                        <span class="material-symbols-outlined text-[16px]">verified</span>
+                        {{ $heroBadge ?: 'Pilihan Komunitas & Platform' }}
+                    </span>
+                    <h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-background dark:text-white text-balance">
+                        Top 10 Toko <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-[#06B6D4]">Terfavorit &amp; Terlaris</span>
+                    </h1>
+                    <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mt-2 text-balance">
+                        {{ $heroSubtitle ?: 'Jelajahi kreator, developer, dan vendor digital terpercaya dengan reputasi dan penjualan tertinggi.' }}
+                    </p>
+                </div>
+                
+                <!-- Controls Nav Slider -->
+                <div class="flex items-center gap-3 shrink-0">
+                    <button @click="prev()" class="w-10 h-10 rounded-xl bg-surface border border-outline-variant hover:bg-surface-container flex items-center justify-center text-on-surface shadow-xs transition-all cursor-pointer">
+                        <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+                    </button>
+                    <div class="text-xs font-bold text-on-surface-variant">
+                        <span x-text="activeStore + 1" class="text-primary font-black text-sm"></span> / {{ $topStores->count() }}
                     </div>
-                    <div>
-                        <div class="font-headline-lg text-headline-lg text-primary">99%</div>
-                        <div class="font-label-md text-label-md text-on-surface-variant">Project Success Rate</div>
-                    </div>
+                    <button @click="next()" class="w-10 h-10 rounded-xl bg-surface border border-outline-variant hover:bg-surface-container flex items-center justify-center text-on-surface shadow-xs transition-all cursor-pointer">
+                        <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+                    </button>
                 </div>
             </div>
+
+            <!-- Carousel Display Cards -->
+            <div class="relative overflow-hidden rounded-3xl bg-surface-container-low border border-outline-variant p-6 md:p-8 shadow-sm">
+                @foreach($topStores as $index => $store)
+                    <div x-show="activeStore === {{ $index }}" 
+                         x-transition:enter="transition ease-out duration-500"
+                         x-transition:enter-start="opacity-0 translate-x-12"
+                         x-transition:enter-end="opacity-100 translate-x-0"
+                         x-transition:leave="transition ease-in duration-300 absolute inset-0"
+                         x-transition:leave-start="opacity-100 translate-x-0"
+                         x-transition:leave-end="opacity-0 -translate-x-12"
+                         class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+                        
+                        <!-- Left Info -->
+                        <div class="md:col-span-7 flex flex-col items-start">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="px-3 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-lg text-xs font-black border border-amber-500/20 flex items-center gap-1.5">
+                                    <span class="material-symbols-outlined text-[16px]">military_tech</span>
+                                    Peringkat #{{ $index + 1 }}
+                                </span>
+                                <span class="text-xs font-medium text-on-surface-variant flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-[15px] text-emerald-500">shopping_bag</span>
+                                    {{ $store->sales_count ?? 0 }} Penjualan Berhasil
+                                </span>
+                                <span class="text-xs font-medium text-on-surface-variant flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-[15px] text-sky-500">inventory_2</span>
+                                    {{ $store->products_count ?? 0 }} Produk
+                                </span>
+                            </div>
+
+                            <div class="flex items-center gap-4 mb-4">
+                                @if($store->logo)
+                                    <img src="{{ asset('storage/' . $store->logo) }}" alt="{{ $store->name }}" class="w-16 h-16 rounded-2xl object-cover border-2 border-primary/30 shadow-md">
+                                @else
+                                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-primary to-[#06B6D4] text-white flex items-center justify-center font-black text-2xl shadow-md">
+                                        {{ strtoupper(substr($store->name, 0, 1)) }}
+                                    </div>
+                                @endif
+                                <div>
+                                    <h2 class="text-2xl md:text-3xl font-black text-on-surface hover:text-primary transition-colors">
+                                        <a href="{{ route('store.show', $store->slug) }}">{{ $store->name }}</a>
+                                    </h2>
+                                    <p class="text-xs text-on-surface-variant flex items-center gap-1 mt-0.5">
+                                        <span class="material-symbols-outlined text-[14px] text-primary">verified</span> Official Partner Store
+                                    </p>
+                                </div>
+                            </div>
+
+                            <p class="text-sm text-on-surface-variant mb-6 line-clamp-3 leading-relaxed">
+                                {{ $store->description ?: 'Toko resmi vendor penyedia template aplikasi, source code, dan sistem digital berkualitas tinggi dengan garansi dan dukungan penuh.' }}
+                            </p>
+
+                            <!-- Showcase Produk Unggulan Toko Ini -->
+                            @if($store->products && $store->products->count() > 0)
+                            <div class="w-full mb-6">
+                                <div class="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant mb-2">Katalog Populer Toko Ini:</div>
+                                <div class="flex flex-wrap gap-2">
+                                    @foreach($store->products->take(3) as $sp)
+                                        <a href="{{ route('store.product.show', [$store->slug, $sp->slug]) }}" class="px-3 py-1.5 rounded-lg bg-surface border border-outline-variant hover:border-primary text-xs font-semibold text-on-surface flex items-center gap-2 transition-all">
+                                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                            <span class="truncate max-w-[180px]">{{ $sp->name }}</span>
+                                            <span class="text-primary font-bold">Rp{{ number_format($sp->price, 0, ',', '.') }}</span>
+                                        </a>
+                                    @endforeach
+                                </div>
+                            </div>
+                            @endif
+
+                            <div class="flex flex-wrap items-center gap-3">
+                                <a href="{{ route('store.show', $store->slug) }}" class="px-6 py-3 bg-gradient-to-r from-emerald-500 to-[#06B6D4] text-white rounded-xl font-label-md text-sm hover:opacity-90 transition-all shadow-md flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-[18px]">storefront</span>
+                                    Kunjungi Toko
+                                </a>
+                                <a href="{{ url('/products') }}" class="px-5 py-3 bg-surface border border-outline-variant text-on-surface rounded-xl font-label-md text-sm hover:bg-surface-container transition-all">
+                                    Lihat Semua Vendor
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Right Banner / Image Preview -->
+                        <div class="md:col-span-5 relative">
+                            <div class="relative rounded-2xl overflow-hidden border border-outline-variant/60 shadow-lg aspect-4/3 group">
+                                @if($store->banner)
+                                    <img src="{{ asset('storage/' . $store->banner) }}" alt="{{ $store->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                                @elseif($store->products && $store->products->first() && $store->products->first()->primary_image_url)
+                                    <img src="{{ $store->products->first()->primary_image_url }}" alt="{{ $store->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                                @else
+                                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Vendor Store" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                                @endif
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
+                                <div class="absolute bottom-4 left-4 right-4 text-white">
+                                    <div class="text-xs font-bold uppercase tracking-wider text-emerald-300">Rekomendasi Terbaik</div>
+                                    <div class="text-base font-black truncate">{{ $store->name }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+            <!-- Dots Indicator -->
+            <div class="flex items-center justify-center gap-2 mt-6">
+                @foreach($topStores as $index => $store)
+                    <button @click="activeStore = {{ $index }}" 
+                            :class="activeStore === {{ $index }} ? 'w-8 bg-primary' : 'w-2.5 bg-outline-variant hover:bg-on-surface-variant'" 
+                            class="h-2.5 rounded-full transition-all cursor-pointer"
+                            title="{{ $store->name }}"></button>
+                @endforeach
+            </div>
         </div>
-    </div>
+
+    @else
+        {{-- MODE 2 & 3: CUSTOM BANNER / DUAL SHOWCASE (KATA-KATA & GAMBAR ATAU MINI SLIDER TOKO) --}}
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-lg items-center">
+            <div class="md:col-span-7 flex flex-col items-start z-10">
+                @if($heroBadge)
+                <span class="inline-block py-1 px-3 rounded-full bg-surface-container text-on-surface font-label-md text-label-md mb-6 border border-outline-variant/30">
+                    {{ $heroBadge }}
+                </span>
+                @endif
+
+                <h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-background dark:text-white mb-6 text-balance">
+                    @if(Str::contains($heroTitle, 'Digital'))
+                        {!! Str::replace('Digital', '<span class="text-transparent bg-clip-text bg-gradient-to-r from-[#06B6D4] to-blue-500">Digital</span>', e($heroTitle)) !!}
+                    @else
+                        {{ $heroTitle }}
+                    @endif
+                </h1>
+
+                <p class="font-body-lg text-body-lg text-on-surface-variant mb-xl max-w-2xl text-balance">
+                    {{ $heroSubtitle }}
+                </p>
+
+                <div class="flex flex-wrap items-center gap-4 w-full sm:w-auto">
+                    @if($heroBtnPrimaryText)
+                    <a class="w-full sm:w-auto text-center px-8 py-4 bg-gradient-to-r from-[#06B6D4] to-blue-500 text-white rounded-lg font-label-md text-label-md hover:opacity-90 transition-all shadow-lg hover:-translate-y-1 border-0" href="{{ $heroBtnPrimaryUrl }}" wire:navigate>
+                        {{ $heroBtnPrimaryText }}
+                    </a>
+                    @endif
+
+                    @if($heroBtnSecondaryText)
+                    <a class="w-full sm:w-auto text-center px-8 py-4 bg-transparent text-on-background dark:text-white border border-outline-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low transition-all" href="{{ $heroBtnSecondaryUrl }}" wire:navigate>
+                        {{ $heroBtnSecondaryText }}
+                    </a>
+                    @endif
+                </div>
+            </div>
+            
+            <div class="md:col-span-5 relative mt-12 md:mt-0 z-10">
+                @if($heroMode === 'both' && isset($topStores) && $topStores->count() > 0)
+                    {{-- DUAL MODE: MINI ROTATING TOP STORES SLIDER ON THE RIGHT --}}
+                    <div class="relative rounded-2xl overflow-hidden shadow-[0px_20px_25px_-5px_rgba(15,23,42,0.1),0px_8px_10px_-6px_rgba(15,23,42,0.1)] border border-outline-variant bg-surface p-6"
+                         x-data="{
+                            currentStore: 0,
+                            total: {{ $topStores->count() }},
+                            init() {
+                                setInterval(() => {
+                                    this.currentStore = (this.currentStore + 1) % this.total;
+                                }, 4000);
+                            }
+                         }">
+                        <div class="flex items-center justify-between pb-3 mb-4 border-b border-outline-variant">
+                            <span class="text-xs font-black uppercase tracking-wider text-emerald-500 flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-[16px]">stars</span> Top 10 Toko Terfavorit
+                            </span>
+                            <span class="text-[11px] font-bold text-on-surface-variant">Bergantian Otomatis</span>
+                        </div>
+
+                        @foreach($topStores as $sIndex => $tStore)
+                            <div x-show="currentStore === {{ $sIndex }}" 
+                                 x-transition:enter="transition ease-out duration-300"
+                                 x-transition:enter-start="opacity-0 scale-95"
+                                 x-transition:enter-end="opacity-100 scale-100"
+                                 class="space-y-4">
+                                <div class="flex items-center gap-3">
+                                    @if($tStore->logo)
+                                        <img src="{{ asset('storage/' . $tStore->logo) }}" class="w-14 h-14 rounded-xl object-cover border border-outline-variant shadow-xs">
+                                    @else
+                                        <div class="w-14 h-14 rounded-xl bg-primary text-white flex items-center justify-center font-black text-xl shadow-xs">
+                                            {{ strtoupper(substr($tStore->name, 0, 1)) }}
+                                        </div>
+                                    @endif
+                                    <div>
+                                        <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-amber-500/10 text-amber-600 border border-amber-500/20">Top #{{ $sIndex + 1 }}</span>
+                                        <h3 class="font-black text-lg text-on-surface mt-0.5">{{ $tStore->name }}</h3>
+                                        <p class="text-xs text-on-surface-variant">{{ $tStore->sales_count ?? 0 }} Penjualan • {{ $tStore->products_count ?? 0 }} Produk</p>
+                                    </div>
+                                </div>
+
+                                <div class="rounded-xl overflow-hidden h-48 border border-outline-variant relative">
+                                    @if($tStore->banner)
+                                        <img src="{{ asset('storage/' . $tStore->banner) }}" class="w-full h-full object-cover">
+                                    @elseif($tStore->products->first() && $tStore->products->first()->primary_image_url)
+                                        <img src="{{ $tStore->products->first()->primary_image_url }}" class="w-full h-full object-cover">
+                                    @else
+                                        <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover">
+                                    @endif
+                                </div>
+
+                                <div class="flex items-center justify-between pt-2">
+                                    <div class="flex gap-1">
+                                        @foreach($topStores as $dotIdx => $d)
+                                            <span class="w-2 h-2 rounded-full" :class="currentStore === {{ $dotIdx }} ? 'bg-primary' : 'bg-outline-variant'"></span>
+                                        @endforeach
+                                    </div>
+                                    <a href="{{ route('store.show', $tStore->slug) }}" class="px-4 py-2 bg-primary text-white rounded-lg text-xs font-bold hover:brightness-110 transition-all flex items-center gap-1.5">
+                                        Kunjungi Toko <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                                    </a>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    {{-- SINGLE IMAGE MODE --}}
+                    <div class="relative rounded-2xl overflow-hidden shadow-[0px_20px_25px_-5px_rgba(15,23,42,0.1),0px_8px_10px_-6px_rgba(15,23,42,0.1)] border border-outline-variant/50 group">
+                        <div class="absolute inset-0 bg-primary/10 group-hover:bg-transparent transition-colors duration-500 z-10"></div>
+                        <img fetchpriority="high" alt="{{ $heroTitle }}" class="w-full h-[600px] object-cover transition-transform duration-700 group-hover:scale-105" src="{{ $heroImageUrl }}"/>
+                    </div>
+                @endif
+                
+                <!-- Floating Stats Card -->
+                @if($heroStatsVal || $heroStatsLabel)
+                <div class="absolute -bottom-8 -left-8 bg-surface p-6 rounded-xl border border-outline-variant shadow-[0px_20px_25px_-5px_rgba(15,23,42,0.1)] z-20 animate-[bounce_3s_ease-in-out_infinite]">
+                    <div class="flex items-center gap-4">
+                        <div class="p-3 bg-[#06B6D4]/10 rounded-full text-[#06B6D4]">
+                            <span class="material-symbols-outlined" data-icon="rocket_launch">rocket_launch</span>
+                        </div>
+                        <div>
+                            <div class="font-headline-lg text-headline-lg text-primary">{{ $heroStatsVal }}</div>
+                            <div class="font-label-md text-label-md text-on-surface-variant">{{ $heroStatsLabel }}</div>
+                        </div>
+                    </div>
+                </div>
+                @endif
+            </div>
+        </div>
+    @endif
+</section>
 
     {{-- Aplikasi Yang Sering Dilihat Calon Pembeli --}}
     @if(isset($popularProducts) && $popularProducts->count() > 0)

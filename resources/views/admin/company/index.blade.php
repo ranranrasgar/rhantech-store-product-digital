@@ -47,6 +47,13 @@
             Profil Perusahaan
         </button>
 
+        <button @click="currentTab = 'hero'" 
+                :class="currentTab === 'hero' ? 'border-primary text-primary font-bold bg-primary/5' : 'border-transparent text-on-surface-variant hover:text-on-surface hover:border-outline-variant'"
+                class="px-5 py-3 border-b-2 text-sm transition-all flex items-center gap-2 whitespace-nowrap rounded-t-xl cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">view_headline</span>
+            Hero Beranda &amp; Toko
+        </button>
+
         <button @click="currentTab = 'theme'" 
                 :class="currentTab === 'theme' ? 'border-primary text-primary font-bold bg-primary/5' : 'border-transparent text-on-surface-variant hover:text-on-surface hover:border-outline-variant'"
                 class="px-5 py-3 border-b-2 text-sm transition-all flex items-center gap-2 whitespace-nowrap rounded-t-xl cursor-pointer">
@@ -280,6 +287,232 @@
                 <button type="submit" class="px-6 py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:brightness-110 transition-all shadow-md flex items-center gap-2">
                     <span class="material-symbols-outlined text-[18px]">save</span>
                     Simpan Profil Perusahaan
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- ==================== TAB: HERO BERANDA & TOKO ==================== -->
+    <div x-show="currentTab === 'hero'" x-transition style="display: none;" class="space-y-6">
+        <form action="{{ route('admin.company.store') }}" method="POST" enctype="multipart/form-data" class="bg-surface rounded-2xl border border-outline-variant p-6 md:p-8 shadow-xs">
+            @csrf
+            <input type="hidden" name="redirect_tab" value="hero">
+            <!-- Menjaga field wajib info dasar -->
+            <input type="hidden" name="company_name" value="{{ $profile->company_name ?? 'Rhantech' }}">
+            <input type="hidden" name="email" value="{{ $profile->email ?? 'admin@rhantech.com' }}">
+            <input type="hidden" name="phone" value="{{ $profile->phone ?? '08123456789' }}">
+            <input type="hidden" name="tagline" value="{{ $profile->tagline ?? '' }}">
+            <input type="hidden" name="whatsapp" value="{{ $profile->whatsapp ?? '' }}">
+            <input type="hidden" name="address" value="{{ $profile->address ?? '' }}">
+            <input type="hidden" name="short_description" value="{{ $profile->short_description ?? '' }}">
+            <input type="hidden" name="description" value="{{ $profile->description ?? '' }}">
+            <input type="hidden" name="vision" value="{{ $profile->vision ?? '' }}">
+            <input type="hidden" name="mission" value="{{ $profile->mission ?? '' }}">
+            <input type="hidden" name="founded_year" value="{{ $profile->founded_year ?? '' }}">
+            <input type="hidden" name="facebook" value="{{ $profile->facebook ?? '' }}">
+            <input type="hidden" name="instagram" value="{{ $profile->instagram ?? '' }}">
+            <input type="hidden" name="linkedin" value="{{ $profile->linkedin ?? '' }}">
+            <input type="hidden" name="website" value="{{ $profile->website ?? '' }}">
+            <input type="hidden" name="youtube" value="{{ $profile->youtube ?? '' }}">
+
+            <!-- Header Section Hero Tab -->
+            <div class="flex items-center justify-between pb-4 mb-6 border-b border-outline-variant">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary text-[24px]">view_headline</span>
+                    <div>
+                        <h3 class="text-base font-bold text-on-surface">Kustomisasi Hero Beranda &amp; Showcase Toko</h3>
+                        <p class="text-xs text-on-surface-variant">Atur kata-kata, gambar banner hero, atau tampilkan 10 Toko Terfavorit (terlaris) bergantian.</p>
+                    </div>
+                </div>
+                <a href="{{ route('home') }}" target="_blank" class="text-xs font-bold text-primary hover:underline flex items-center gap-1">
+                    Preview di Home <span class="material-symbols-outlined text-[14px]">open_in_new</span>
+                </a>
+            </div>
+
+            <!-- Pilih Mode Tampilan Hero -->
+            <div class="mb-8 p-5 bg-surface-container-low rounded-2xl border border-outline-variant">
+                <label class="block text-xs font-bold text-on-surface uppercase tracking-wider mb-2">
+                    <span class="material-symbols-outlined text-[16px] align-middle text-primary mr-1">dashboard_customize</span>
+                    Mode Tampilan Utama Hero Section
+                </label>
+                <p class="text-xs text-on-surface-variant mb-4">
+                    Pilih apa yang ingin ditampilkan di area hero paling atas halaman depan (Home):
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4" x-data="{ selectedMode: '{{ old('hero_mode', $profile->hero_mode ?? 'custom') }}' }">
+                    <label :class="selectedMode === 'custom' ? 'border-primary ring-2 ring-primary/20 bg-surface' : 'border-outline-variant bg-surface-container-lowest'" 
+                           class="p-4 rounded-xl border cursor-pointer flex flex-col justify-between transition-all hover:border-primary/50">
+                        <div class="flex items-start gap-3">
+                            <input type="radio" name="hero_mode" value="custom" x-model="selectedMode" class="mt-1 text-primary focus:ring-primary">
+                            <div>
+                                <span class="font-bold text-sm text-on-surface block">1. Banner &amp; Teks Kustom</span>
+                                <span class="text-xs text-on-surface-variant block mt-1">Menampilkan kata-kata promosi, tombol CTA, dan foto/gambar pilihan admin.</span>
+                            </div>
+                        </div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-primary mt-3 inline-block">Default Platform</span>
+                    </label>
+
+                    <label :class="selectedMode === 'top_stores' ? 'border-primary ring-2 ring-primary/20 bg-surface' : 'border-outline-variant bg-surface-container-lowest'" 
+                           class="p-4 rounded-xl border cursor-pointer flex flex-col justify-between transition-all hover:border-primary/50">
+                        <div class="flex items-start gap-3">
+                            <input type="radio" name="hero_mode" value="top_stores" x-model="selectedMode" class="mt-1 text-primary focus:ring-primary">
+                            <div>
+                                <span class="font-bold text-sm text-on-surface block">2. 10 Toko Terfavorit</span>
+                                <span class="text-xs text-on-surface-variant block mt-1">Area hero langsung menampilkan Carousel bergantian 10 Toko Terfavorit &amp; Terlaris.</span>
+                            </div>
+                        </div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mt-3 inline-block">Showcase Tenant</span>
+                    </label>
+
+                    <label :class="selectedMode === 'both' ? 'border-primary ring-2 ring-primary/20 bg-surface' : 'border-outline-variant bg-surface-container-lowest'" 
+                           class="p-4 rounded-xl border cursor-pointer flex flex-col justify-between transition-all hover:border-primary/50">
+                        <div class="flex items-start gap-3">
+                            <input type="radio" name="hero_mode" value="both" x-model="selectedMode" class="mt-1 text-primary focus:ring-primary">
+                            <div>
+                                <span class="font-bold text-sm text-on-surface block">3. Keduanya (Banner + Toko)</span>
+                                <span class="text-xs text-on-surface-variant block mt-1">Hero teks di sisi kiri, dan slider 10 Toko Terfavorit di sisi kanan menggantikan foto biasa.</span>
+                            </div>
+                        </div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 mt-3 inline-block">Kombinasi Interaktif</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Teks & Kata-kata Hero -->
+            <div class="mb-8">
+                <div class="flex items-center gap-2 pb-3 mb-6 border-b border-outline-variant">
+                    <span class="material-symbols-outlined text-primary text-[20px]">edit_note</span>
+                    <h4 class="text-sm font-bold text-on-surface">Teks &amp; Kata-kata Promosi Hero</h4>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs font-bold text-on-surface uppercase tracking-wider mb-2">Badge Text (Label Kecil Di Atas Judul)</label>
+                        <input type="text" name="hero_badge" value="{{ old('hero_badge', $profile->hero_badge ?? 'Innovative Digital Solutions') }}" 
+                               class="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline-variant rounded-xl text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                               placeholder="Contoh: Innovative Digital Solutions atau Pusat Produk Digital Terlengkap">
+                        <p class="text-[11px] text-on-surface-variant mt-1">Muncul sebagai kapsul kecil tepat di atas judul besar.</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-on-surface uppercase tracking-wider mb-2">Judul Utama (Headline)</label>
+                        <input type="text" name="hero_title" value="{{ old('hero_title', $profile->hero_title ?? 'We Build Digital Experiences') }}" 
+                               class="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline-variant rounded-xl text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                               placeholder="Contoh: We Build Digital Experiences">
+                        <p class="text-[11px] text-on-surface-variant mt-1">Kata 'Digital' otomatis diberi warna gradient highlight.</p>
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-bold text-on-surface uppercase tracking-wider mb-2">Deskripsi / Sub-judul Hero</label>
+                        <textarea name="hero_subtitle" rows="3" 
+                                  class="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline-variant rounded-xl text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                                  placeholder="Tuliskan ringkasan solusi atau nilai lebih platform...">{{ old('hero_subtitle', $profile->hero_subtitle ?? 'Helping businesses build scalable, modern, and impactful digital solutions. We combine engineering excellence with compelling design to propel your brand forward.') }}</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tombol CTA & Floating Stats -->
+            <div class="mb-8">
+                <div class="flex items-center gap-2 pb-3 mb-6 border-b border-outline-variant">
+                    <span class="material-symbols-outlined text-primary text-[20px]">smart_button</span>
+                    <h4 class="text-sm font-bold text-on-surface">Tombol Aksi (Call To Action) &amp; Floating Badge</h4>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="p-4 rounded-xl bg-surface-container-low border border-outline-variant">
+                        <span class="font-bold text-xs text-primary uppercase tracking-wider block mb-3">Tombol Utama (Gradient Button)</span>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-[11px] font-bold text-on-surface mb-1">Teks Tombol</label>
+                                <input type="text" name="hero_btn_primary_text" value="{{ old('hero_btn_primary_text', $profile->hero_btn_primary_text ?? 'View Our Work') }}" 
+                                       class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-xl text-xs focus:ring-2 focus:ring-primary/20"
+                                       placeholder="Contoh: View Our Work atau Lihat Semua Produk">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-on-surface mb-1">URL / Link Tujuan</label>
+                                <input type="text" name="hero_btn_primary_url" value="{{ old('hero_btn_primary_url', $profile->hero_btn_primary_url ?? '/projects') }}" 
+                                       class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-xl text-xs focus:ring-2 focus:ring-primary/20"
+                                       placeholder="Contoh: /projects atau /katalog">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-surface-container-low border border-outline-variant">
+                        <span class="font-bold text-xs text-on-surface uppercase tracking-wider block mb-3">Tombol Kedua (Outline Button)</span>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-[11px] font-bold text-on-surface mb-1">Teks Tombol</label>
+                                <input type="text" name="hero_btn_secondary_text" value="{{ old('hero_btn_secondary_text', $profile->hero_btn_secondary_text ?? "Let's Talk") }}" 
+                                       class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-xl text-xs focus:ring-2 focus:ring-primary/20"
+                                       placeholder="Contoh: Let's Talk atau Hubungi Kami">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-on-surface mb-1">URL / Link Tujuan</label>
+                                <input type="text" name="hero_btn_secondary_url" value="{{ old('hero_btn_secondary_url', $profile->hero_btn_secondary_url ?? '/contact') }}" 
+                                       class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-xl text-xs focus:ring-2 focus:ring-primary/20"
+                                       placeholder="Contoh: /contact atau /store">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-on-surface uppercase tracking-wider mb-2">Nilai Statistik Mengambang (Floating Stats)</label>
+                        <input type="text" name="hero_stats_val" value="{{ old('hero_stats_val', $profile->hero_stats_val ?? '99%') }}" 
+                               class="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline-variant rounded-xl text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                               placeholder="Contoh: 99% atau 10k+">
+                        <p class="text-[11px] text-on-surface-variant mt-1">Angka atau nilai utama yang muncul di kartu badge animasi.</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-on-surface uppercase tracking-wider mb-2">Label Statistik Mengambang</label>
+                        <input type="text" name="hero_stats_label" value="{{ old('hero_stats_label', $profile->hero_stats_label ?? 'Project Success Rate') }}" 
+                               class="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline-variant rounded-xl text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                               placeholder="Contoh: Project Success Rate atau Transaksi Sukses">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upload Gambar Hero -->
+            <div class="mb-8">
+                <div class="flex items-center gap-2 pb-3 mb-6 border-b border-outline-variant">
+                    <span class="material-symbols-outlined text-primary text-[20px]">add_photo_alternate</span>
+                    <h4 class="text-sm font-bold text-on-surface">Gambar Hero Banner</h4>
+                </div>
+
+                <div class="p-5 rounded-2xl bg-surface-container-low border border-outline-variant">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                        <div>
+                            <label class="block text-xs font-bold text-on-surface uppercase tracking-wider mb-2">Upload Foto / Banner Hero Baru</label>
+                            <input type="file" name="hero_image" accept="image/*" class="w-full px-3 py-2 bg-surface border border-outline-variant rounded-xl text-xs">
+                            <p class="text-[11px] text-on-surface-variant mt-2">
+                                Format: JPG, PNG, WEBP (Maksimal 3MB). Disarankan foto vertikal/portrait atau rasio 4:5 berkualitas tinggi.
+                            </p>
+                            @error('hero_image')<span class="text-error text-xs mt-1 block">{{ $message }}</span>@enderror
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-on-surface uppercase tracking-wider mb-2">Preview Gambar Saat Ini:</label>
+                            @if(isset($profile) && $profile->hero_image)
+                                <div class="relative w-40 h-48 rounded-xl overflow-hidden border border-outline-variant shadow-sm">
+                                    <img src="{{ asset('storage/' . $profile->hero_image) }}" class="w-full h-full object-cover">
+                                    <span class="absolute bottom-1 right-1 px-2 py-0.5 rounded bg-black/70 text-[10px] text-white font-bold">Kustom</span>
+                                </div>
+                            @else
+                                <div class="relative w-40 h-48 rounded-xl overflow-hidden border border-outline-variant shadow-sm">
+                                    <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover">
+                                    <span class="absolute bottom-1 right-1 px-2 py-0.5 rounded bg-black/70 text-[10px] text-white font-bold">Default</span>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Button Hero -->
+            <div class="flex justify-end pt-4 border-t border-outline-variant">
+                <button type="submit" class="px-6 py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:brightness-110 transition-all shadow-md flex items-center gap-2 cursor-pointer">
+                    <span class="material-symbols-outlined text-[18px]">save</span>
+                    Simpan Pengaturan Hero &amp; Toko
                 </button>
             </div>
         </form>

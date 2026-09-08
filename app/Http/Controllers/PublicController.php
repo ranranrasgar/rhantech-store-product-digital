@@ -21,16 +21,27 @@ class PublicController extends Controller
         $testimonials = Testimonial::query()->with('client')->where('is_active', true)->latest()->get();
         $popupAd = \App\Models\PopupAd::query()->where('is_active', true)->latest()->first();
 
-        // Aplikasi / produk digital yang sering dilihat calon pembeli
-        $popularProducts = Product::query()
-            ->with(['images', 'category', 'type', 'store', 'reviews'])
-            ->published()
-            ->orderByDesc('views')
+        // 10 Toko Terfavorit & Terlaris (Berdasarkan total penjualan berhasil / produk)
+        $topStores = \App\Models\Store::query()
+            ->with(['products' => function ($q) {
+                $q->published()->with('images');
+            }])
+            ->withCount(['products' => function ($q) {
+                $q->published();
+            }])
+            ->leftJoin('products', 'stores.id', '=', 'products.store_id')
+            ->leftJoin('orders', function ($join) {
+                $join->on('products.id', '=', 'orders.product_id')
+                     ->whereIn('orders.status', ['paid', 'downloaded']);
+            })
+            ->select('stores.*', \Illuminate\Support\Facades\DB::raw('COUNT(orders.id) as sales_count'))
+            ->groupBy('stores.id')
             ->orderByDesc('sales_count')
-            ->take(4)
+            ->orderByDesc('stores.id')
+            ->take(10)
             ->get();
 
-        return view('welcome', compact('services', 'projects', 'clients', 'testimonials', 'popupAd', 'popularProducts'));
+        return view('welcome', compact('services', 'projects', 'clients', 'testimonials', 'popupAd', 'popularProducts', 'topStores'));
     }
 
     public function projects(Request $request)
