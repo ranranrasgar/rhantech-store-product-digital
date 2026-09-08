@@ -11,6 +11,8 @@ class Affiliate extends Model
 
     protected $fillable = [
         'store_id',
+        'user_id',
+        'affiliate_store_id',
         'name',
         'handle',
         'whatsapp',
@@ -40,5 +42,15 @@ class Affiliate extends Model
     public function store()
     {
         return $this->belongsTo(Store::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function affiliateStore()
+    {
+        return $this->belongsTo(Store::class, 'affiliate_store_id');
     }
 }

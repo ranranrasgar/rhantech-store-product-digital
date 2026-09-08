@@ -36,7 +36,7 @@ class AffiliateController extends Controller
             $query->where('platform', strtolower($request->platform));
         }
 
-        $affiliates = $query->latest()->paginate(20)->withQueryString();
+        $affiliates = $query->with('affiliateStore')->latest()->paginate(20)->withQueryString();
         $categories = \App\Models\ProductCategory::pluck('name');
 
         return view('tenant.affiliates.index', compact('store', 'affiliates', 'categories'));
@@ -44,92 +44,79 @@ class AffiliateController extends Controller
 
     public function create()
     {
-        $categories = \App\Models\ProductCategory::pluck('name');
-        return view('tenant.affiliates.create', compact('categories'));
+        $currentUserId = Auth::id();
+        
+        // Ambil semua akun pengguna terdaftar di platform (selain akun sendiri)
+        $users = \App\Models\User::where('id', '!=', $currentUserId)
+            ->with('store')
+            ->orderBy('name')
+            ->get();
+
+        return view('tenant.affiliates.create', compact('users'));
     }
 
     public function store(Request $request)
     {
-        $store = Store::where('user_id', Auth::id())->first();
+        $currentStore = Store::where('user_id', Auth::id())->first();
 
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'handle' => 'nullable|string|max:255',
-            'whatsapp' => 'nullable|string|max:30',
-            'referral_code' => 'nullable|string|max:50|unique:affiliates,referral_code',
+            'user_id' => 'required|exists:users,id',
             'commission_rate' => 'required|numeric|min:0|max:100',
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
-            'platform' => 'nullable|string|max:50',
-            'followers_count' => 'nullable|string|max:255',
-            'categories' => 'nullable|array',
-            'is_golden_tick' => 'nullable|boolean',
+            'referral_code' => 'nullable|string|max:50|unique:affiliates,referral_code',
         ]);
 
-        // Upload avatar jika ada
-        if ($request->hasFile('avatar')) {
-            $path = $request->file('avatar')->store('affiliates/avatars', 'public');
-            $validated['avatar_url'] = '/storage/' . $path;
-        }
+        $targetUser = \App\Models\User::with('store')->findOrFail($validated['user_id']);
+        $hasStore = $targetUser->store;
 
-        // Generate referral code jika kosong
+        // Generate referral code jika kosong berdasarkan nama user atau slug toko
         if (empty($validated['referral_code'])) {
-            $base = !empty($validated['handle']) ? preg_replace('/[^A-Za-z0-9]/', '', $validated['handle']) : preg_replace('/[^A-Za-z0-9]/', '', $validated['name']);
-            $base = strtoupper(substr($base, 0, 6));
+            $rawBase = $hasStore ? $hasStore->slug : $targetUser->name;
+            $base = strtoupper(preg_replace('/[^A-Za-z0-9]/', '', $rawBase));
+            $base = substr($base, 0, 8);
             if (empty($base)) $base = 'AFF';
-            $validated['referral_code'] = $base . rand(100, 999);
+            $validated['referral_code'] = $base . rand(10, 99);
         } else {
             $validated['referral_code'] = strtoupper(preg_replace('/[^A-Za-z0-9_-]/', '', $validated['referral_code']));
         }
 
-        $validated['store_id'] = $store ? $store->id : null;
-        $validated['handle'] = $validated['handle'] ?? ('@' . \Illuminate\Support\Str::slug($validated['name']));
-        $validated['followers_count'] = $validated['followers_count'] ?? '-';
+        $validated['store_id'] = $currentStore ? $currentStore->id : null;
+        $validated['affiliate_store_id'] = $hasStore ? $hasStore->id : null;
+        $validated['name'] = $targetUser->name . ($hasStore ? ' (' . $hasStore->name . ')' : '');
+        $validated['handle'] = $hasStore ? ('@' . $hasStore->slug) : ('@' . \Illuminate\Support\Str::slug($targetUser->name));
+        $validated['whatsapp'] = $targetUser->phone ?? ($hasStore ? $hasStore->phone : null);
+        $validated['avatar_url'] = $targetUser->avatar ?? ($hasStore ? $hasStore->logo : null);
+        $validated['platform'] = $hasStore ? 'Toko & Akun Terdaftar' : 'Akun Terdaftar';
+        $validated['followers_count'] = '-';
         $validated['clicks_count'] = '0';
         $validated['orders_count'] = '0';
         $validated['sales_range'] = 'Rp 0';
-        $validated['is_golden_tick'] = $request->has('is_golden_tick');
+        $validated['is_golden_tick'] = true;
         $validated['is_active'] = true;
 
         \App\Models\Affiliate::create($validated);
 
-        return redirect()->route('tenant.affiliates.index')->with('success', 'Mitra affiliate berhasil ditambahkan.');
+        return redirect()->route('tenant.affiliates.index')->with('success', 'Akun ' . $targetUser->name . ' berhasil dihubungkan sebagai affiliate!');
     }
 
     public function edit(\App\Models\Affiliate $affiliate)
     {
-        $categories = \App\Models\ProductCategory::pluck('name');
-        return view('tenant.affiliates.edit', compact('affiliate', 'categories'));
+        return view('tenant.affiliates.edit', compact('affiliate'));
     }
 
     public function update(Request $request, \App\Models\Affiliate $affiliate)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'handle' => 'nullable|string|max:255',
-            'whatsapp' => 'nullable|string|max:30',
-            'referral_code' => 'nullable|string|max:50|unique:affiliates,referral_code,' . $affiliate->id,
+            'referral_code' => 'required|string|max:50|unique:affiliates,referral_code,' . $affiliate->id,
             'commission_rate' => 'required|numeric|min:0|max:100',
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
-            'platform' => 'nullable|string|max:50',
-            'followers_count' => 'nullable|string|max:255',
-            'categories' => 'nullable|array',
-            'is_golden_tick' => 'nullable|boolean',
+            'is_active' => 'nullable|boolean',
         ]);
 
-        if ($request->hasFile('avatar')) {
-            $path = $request->file('avatar')->store('affiliates/avatars', 'public');
-            $validated['avatar_url'] = '/storage/' . $path;
-        }
-
-        if (!empty($validated['referral_code'])) {
-            $validated['referral_code'] = strtoupper(preg_replace('/[^A-Za-z0-9_-]/', '', $validated['referral_code']));
-        }
-
-        $validated['is_golden_tick'] = $request->has('is_golden_tick');
+        $validated['referral_code'] = strtoupper(preg_replace('/[^A-Za-z0-9_-]/', '', $validated['referral_code']));
+        $validated['is_active'] = $request->has('is_active');
 
         $affiliate->update($validated);
 
-        return redirect()->route('tenant.affiliates.index')->with('success', 'Data affiliate berhasil diperbarui.');
+        return redirect()->route('tenant.affiliates.index')->with('success', 'Data komisi & kode referral berhasil diperbarui.');
     }
 
     public function destroy(\App\Models\Affiliate $affiliate)
