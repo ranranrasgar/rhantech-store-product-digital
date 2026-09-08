@@ -23,7 +23,7 @@ class PublicController extends Controller
 
         // Aplikasi / produk digital yang sering dilihat calon pembeli
         $popularProducts = Product::query()
-            ->with(['images', 'category', 'type', 'store'])
+            ->with(['images', 'category', 'type', 'store', 'reviews'])
             ->published()
             ->orderByDesc('views')
             ->orderByDesc('sales_count')

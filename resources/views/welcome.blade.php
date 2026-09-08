@@ -83,6 +83,17 @@
                 } else {
                     $displaySold = $soldCount > 0 ? $soldCount : 12;
                 }
+
+                // Rating & Reviews count
+                $realRevCount = $prod->reviews ? $prod->reviews->count() : 0;
+                $realRevAvg = $realRevCount > 0 ? round($prod->reviews->avg('rating'), 1) : 0;
+                $ratingDisplay = $prod->rating_override ?: ($realRevCount > 0 ? $realRevAvg : 4.9);
+                $reviewsDisplayCount = $prod->reviews_count ?: $realRevCount;
+
+                // Sort description (full text agar bisa dibaca calon pembeli)
+                $descText = !empty($prod->short_description) 
+                    ? trim($prod->short_description) 
+                    : trim(strip_tags($prod->description ?? ''));
             @endphp
             <a href="{{ route('products.show', $prod->slug) }}" class="group bg-surface dark:bg-surface-container-low rounded-xl border border-outline-variant/60 hover:border-primary/50 overflow-hidden shadow-xs hover:shadow-md transition-all duration-200 flex flex-col hover:-translate-y-1" wire:navigate>
                 <div class="relative aspect-4/3 w-full bg-surface-container overflow-hidden">
@@ -106,23 +117,42 @@
                     </div>
                 </div>
 
-                <div class="p-3 flex flex-col flex-1">
-                    <span class="text-[10px] font-semibold text-primary uppercase tracking-wider line-clamp-1 mb-0.5">
-                        {{ $prod->category->name ?? ($prod->type->name ?? 'Aplikasi') }}
-                    </span>
-                    <h3 class="text-xs md:text-sm font-bold text-on-background dark:text-white line-clamp-2 leading-snug group-hover:text-primary transition-colors flex-1 mb-1.5">
+                <div class="p-3.5 flex flex-col flex-1">
+                    <div class="flex items-center justify-between gap-1 mb-1">
+                        <span class="text-[10px] font-bold text-primary uppercase tracking-wider line-clamp-1">
+                            {{ $prod->category->name ?? ($prod->type->name ?? 'Aplikasi') }}
+                        </span>
+                        {{-- Rating badge --}}
+                        <span class="inline-flex items-center gap-0.5 text-[11px] font-bold text-amber-500 shrink-0">
+                            <span class="material-symbols-outlined text-[12px] fill-current text-amber-500">star</span>
+                            <span>{{ number_format((float)$ratingDisplay, 1) }}</span>
+                            @if($reviewsDisplayCount > 0)
+                                <span class="text-[9px] font-normal text-on-surface-variant">({{ $reviewsDisplayCount }})</span>
+                            @endif
+                        </span>
+                    </div>
+
+                    <h3 class="text-xs md:text-sm font-bold text-on-background dark:text-white line-clamp-2 leading-snug group-hover:text-primary transition-colors mb-1.5">
                         {{ $prod->name }}
                     </h3>
 
+                    {{-- Toko --}}
                     <div class="flex items-center gap-1 text-[10px] text-on-surface-variant mb-2">
                         <span class="material-symbols-outlined text-[12px] text-primary">storefront</span>
-                        <span class="truncate">{{ $prod->store ? $prod->store->name : ($company->company_name ?? 'Official Store') }}</span>
+                        <span class="truncate font-medium">{{ $prod->store ? $prod->store->name : ($company->company_name ?? 'Official Store') }}</span>
                     </div>
 
-                    <div class="pt-1.5 border-t border-outline-variant/40 flex items-center justify-between mt-auto">
+                    {{-- Sort Deskripsi Full agar calon pembeli bisa membaca --}}
+                    @if(!empty($descText))
+                        <div class="mb-3 p-2 rounded-lg bg-surface-container/60 border border-outline-variant/30 text-[11px] text-on-surface-variant leading-relaxed">
+                            <p class="font-normal whitespace-pre-line break-words">{{ $descText }}</p>
+                        </div>
+                    @endif
+
+                    <div class="pt-2 border-t border-outline-variant/40 flex items-center justify-between mt-auto">
                         <div>
                             @if($hasDiscount)
-                                <p class="text-[10px] text-on-surface-variant line-through leading-none">
+                                <p class="text-[10px] text-on-surface-variant line-through leading-none mb-0.5">
                                     Rp{{ number_format($prod->price, 0, ',', '.') }}
                                 </p>
                             @endif
@@ -130,7 +160,7 @@
                                 Rp{{ number_format($effectivePrice, 0, ',', '.') }}
                             </p>
                         </div>
-                        <span class="text-[9px] px-1.5 py-0.5 bg-surface-container rounded text-on-surface-variant font-medium">
+                        <span class="text-[9px] px-1.5 py-0.5 bg-surface-container rounded text-on-surface-variant font-medium shrink-0">
                             {{ $displaySold }} Terjual
                         </span>
                     </div>
