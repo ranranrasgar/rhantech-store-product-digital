@@ -1,5 +1,4 @@
-
-
+@auth
 <!-- Floating Chat Widget -->
     <div x-data="buyerChatWidget()" x-init="initWidget()" class="fixed bottom-0 right-0 md:right-4 z-50 items-end flex">
         <!-- Chat Button (Closed State) -->
@@ -186,23 +185,21 @@
             },
 
             initWidget() {
-                @if(Auth::check())
-                    this.fetchConversations();
-                    this.pollTimer = setInterval(() => {
-                        this.fetchConversations(false);
-                        if (this.chatOpen && this.selectedStore) {
-                            this.fetchMessages(this.selectedStore.id, false);
-                        }
-                    }, 4000);
+                this.fetchConversations();
+                this.pollTimer = setInterval(() => {
+                    this.fetchConversations(false);
+                    if (this.chatOpen && this.selectedStore) {
+                        this.fetchMessages(this.selectedStore.id, false);
+                    }
+                }, 4000);
 
-                    // Listen for global FCM messages
-                    window.addEventListener('fcm-message-received', (e) => {
-                        this.fetchConversations(false);
-                        if (this.chatOpen && this.selectedStore) {
-                            this.fetchMessages(this.selectedStore.id, false);
-                        }
-                    });
-                @endif
+                // Listen for global FCM messages
+                window.addEventListener('fcm-message-received', (e) => {
+                    this.fetchConversations(false);
+                    if (this.chatOpen && this.selectedStore) {
+                        this.fetchMessages(this.selectedStore.id, false);
+                    }
+                });
 
                 // Listen for global open chat triggers (from Store profile or Product Detail page)
                 window.addEventListener('open-chat-with-store', (event) => {
@@ -210,13 +207,7 @@
                 });
             },
 
-
-
             toggleChat(state) {
-                @if(!Auth::check())
-                    window.location.href = "{{ route('login') }}";
-                    return;
-                @endif
                 this.chatOpen = state;
                 if (state && !this.selectedStore && this.conversations.length > 0) {
                     this.selectStore(this.conversations[0]);
@@ -224,11 +215,6 @@
             },
 
             openWithStore(detail) {
-                @if(!Auth::check())
-                    window.location.href = "{{ route('login') }}";
-                    return;
-                @endif
-
                 this.chatOpen = true;
                 this.selectedStore = {
                     id: detail.store_id,
@@ -325,3 +311,4 @@
         };
     }
     </script>
+@endauth

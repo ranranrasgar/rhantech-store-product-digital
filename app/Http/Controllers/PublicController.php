@@ -9,7 +9,7 @@ use App\Models\Service;
 use App\Models\Client;
 use App\Models\Project;
 use App\Models\Testimonial;
-use App\Models\ContactMessage;
+use App\Models\Product;
 
 class PublicController extends Controller
 {
@@ -21,7 +21,16 @@ class PublicController extends Controller
         $testimonials = Testimonial::query()->with('client')->where('is_active', true)->latest()->get();
         $popupAd = \App\Models\PopupAd::query()->where('is_active', true)->latest()->first();
 
-        return view('welcome', compact('services', 'projects', 'clients', 'testimonials', 'popupAd'));
+        // Aplikasi / produk digital yang sering dilihat calon pembeli
+        $popularProducts = Product::query()
+            ->with(['images', 'category', 'type', 'store'])
+            ->published()
+            ->orderByDesc('views')
+            ->orderByDesc('sales_count')
+            ->take(4)
+            ->get();
+
+        return view('welcome', compact('services', 'projects', 'clients', 'testimonials', 'popupAd', 'popularProducts'));
     }
 
     public function projects(Request $request)
