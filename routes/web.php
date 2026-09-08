@@ -210,5 +210,5 @@ Route::get('/storage/{path}', function (string $path) {
 // Direct Store URL: http://127.0.0.1:8000/<nama-toko> (e.g., http://127.0.0.1:8000/gudang-aplikasi)
 Route::get('/{slug}', [\App\Http\Controllers\PublicStoreController::class, 'show'])
     ->where('slug', '^(?!admin|tenant|dashboard|projects|products|clients|cart|checkout|payment|download|contact|help|login|register|logout|forgot-password|reset-password|email|storage|chat|toko).*$')
-    ->name('store.show');
+    ->name('store.direct');
 
