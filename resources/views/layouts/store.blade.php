@@ -43,6 +43,7 @@
         };
     </script>
     @include('components.theme-styles')
+    @vite(['resources/css/app.css'])
     <style>
         .material-symbols-outlined {
             font-family: 'Material Symbols Outlined';

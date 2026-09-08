@@ -111,6 +111,7 @@
         }
 </script>
 @include('components.theme-styles')
+@vite(['resources/css/app.css'])
 @livewireStyles
 @stack('styles')
 </head>

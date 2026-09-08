@@ -86,6 +86,7 @@
         }
 </script>
 @include('components.theme-styles')
+@vite(['resources/css/app.css'])
 @livewireStyles
 <style>
 /* ── Light/Dark adaptive sidebar & topbar ── */

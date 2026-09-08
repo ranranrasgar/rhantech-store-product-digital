@@ -894,7 +894,7 @@
             <a href="{{ route('projects.index') }}" wire:navigate>Portfolio</a>
             <a href="{{ route('about') }}" wire:navigate>Tentang Kami</a>
             <a href="{{ url('/contact') }}" wire:navigate>Kontak</a>
-            <a href="{{ route('tenant.dashboard') }}" wire:navigate>Area Mitra</a>
+            <a href="{{ route('tenant.dashboard') }}">Area Mitra</a>
         </div>
         <div class="text-[10px] text-on-surface-variant/60 pt-2 border-t border-outline-variant/30">
             © {{ date('Y') }} {{ $company->company_name ?? 'rhantech' }}. All rights reserved.

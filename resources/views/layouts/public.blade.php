@@ -337,14 +337,14 @@
                                     <p class="font-bold text-gray-800 dark:text-white truncate">{{ auth()->user()->name }}</p>
                                 </div>
                                 @if(auth()->user()->role === 'admin')
-                                <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2 px-3 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800" wire:navigate>
+                                <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2 px-3 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800">
                                     <span class="material-symbols-outlined text-[16px]">admin_panel_settings</span> Admin
                                 </a>
                                 @endif
-                                <a href="{{ route('tenant.dashboard') }}" class="flex items-center gap-2 px-3 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800" wire:navigate>
+                                <a href="{{ route('tenant.dashboard') }}" class="flex items-center gap-2 px-3 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800">
                                     <span class="material-symbols-outlined text-[16px]">storefront</span> Dashboard Toko
                                 </a>
-                                <a href="{{ route('tenant.purchases.index') }}" class="flex items-center gap-2 px-3 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800" wire:navigate>
+                                <a href="{{ route('tenant.purchases.index') }}" class="flex items-center gap-2 px-3 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800">
                                     <span class="material-symbols-outlined text-[16px]">receipt_long</span> Riwayat Belanja
                                 </a>
                                 <form method="POST" action="{{ route('logout') }}" class="border-t border-gray-100 dark:border-gray-800 mt-1 pt-1">
