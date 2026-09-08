@@ -32,8 +32,14 @@ class PublicStoreController extends Controller
             }
         }
         
-        // Only show active & approved products for store page
+        // Only show active & approved products for store page (Produk Milik Sendiri)
         $products = $store->products()->published()->paginate(12);
+
+        // Ambil produk showcase afiliasi yang dipajang oleh toko ini
+        $showcaseProducts = $store->showcaseProducts()
+            ->published()
+            ->with(['store', 'category', 'images'])
+            ->get();
 
         // Fetch appearance settings
         $appearance = is_string($store->appearance_data) ? json_decode($store->appearance_data, true) : $store->appearance_data;
@@ -51,7 +57,7 @@ class PublicStoreController extends Controller
             $q->where('store_id', $store->id)->published();
         })->get();
         
-        return view('store.show', compact('store', 'products', 'appearance', 'isFollowing', 'categories'));
+        return view('store.show', compact('store', 'products', 'showcaseProducts', 'appearance', 'isFollowing', 'categories'));
     }
 
     /**

@@ -30,6 +30,13 @@ class Product extends Model
         return $this->belongsTo(Store::class);
     }
 
+    public function showcases()
+    {
+        return $this->belongsToMany(Store::class, 'store_showcase_products', 'product_id', 'store_id')
+                    ->withPivot('is_active')
+                    ->withTimestamps();
+    }
+
     public function category()
     {
         return $this->belongsTo(ProductCategory::class, 'product_category_id');

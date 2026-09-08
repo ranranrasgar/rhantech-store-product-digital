@@ -31,4 +31,11 @@ class Store extends Model
     {
         return $this->belongsToMany(User::class, 'followers', 'store_id', 'user_id')->withTimestamps();
     }
+
+    public function showcaseProducts()
+    {
+        return $this->belongsToMany(Product::class, 'store_showcase_products', 'store_id', 'product_id')
+                    ->withPivot('is_active')
+                    ->withTimestamps();
+    }
 }

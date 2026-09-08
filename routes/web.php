@@ -117,6 +117,8 @@ Route::middleware(['auth', 'verified', 'is_tenant'])->prefix('dashboard')->name(
 
     // kerja sama
     Route::resource('affiliates', \App\Http\Controllers\Tenant\AffiliateController::class);
+    Route::get('showcase', [\App\Http\Controllers\Tenant\ShowcaseController::class, 'index'])->name('showcase.index');
+    Route::post('showcase/{product}/toggle', [\App\Http\Controllers\Tenant\ShowcaseController::class, 'toggle'])->name('showcase.toggle');
     
     // Kategori & Tipe Custom Toko Tenant
     Route::post('categories/quick-store', [\App\Http\Controllers\Tenant\ProductController::class, 'quickStoreCategory'])->name('categories.quick-store');

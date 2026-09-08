@@ -325,9 +325,12 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
             <span class="material-symbols-outlined">chat</span> Chat Pelanggan
         </a>
 
-        <div class="nav-section-label">Marketing</div>
+        <div class="nav-section-label">Marketing & Afiliasi</div>
+        <a href="{{ route('tenant.showcase.index') }}" class="nav-link {{ request()->routeIs('tenant.showcase.*') ? 'active' : '' }}">
+            <span class="material-symbols-outlined">shopping_basket</span> Etalase Afiliasi
+        </a>
         <a href="{{ route('tenant.affiliates.index') }}" class="nav-link {{ request()->routeIs('tenant.affiliates.*') ? 'active' : '' }}">
-            <span class="material-symbols-outlined">handshake</span> Affiliates
+            <span class="material-symbols-outlined">handshake</span> Mitra Toko Saya
         </a>
         <a href="{{ route('tenant.campaigns.index') }}" class="nav-link {{ request()->routeIs('tenant.campaigns.*') ? 'active' : '' }}">
             <span class="material-symbols-outlined">campaign</span> Campaign & Promo

@@ -93,6 +93,12 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex overflow-x-auto hide-scrollbar">
             <button @click="activeTab = 'beranda'" :class="activeTab === 'beranda' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant hover:text-primary'" class="px-6 py-4 font-bold border-b-2 border-transparent transition-colors whitespace-nowrap">Beranda Toko</button>
             <button @click="activeTab = 'produk'" :class="activeTab === 'produk' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant hover:text-primary'" class="px-6 py-4 font-bold border-b-2 border-transparent transition-colors whitespace-nowrap">Semua Produk</button>
+            @if(isset($showcaseProducts) && $showcaseProducts->count() > 0)
+            <button @click="activeTab = 'afiliasi'" :class="activeTab === 'afiliasi' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant hover:text-primary'" class="px-6 py-4 font-bold border-b-2 border-transparent transition-colors whitespace-nowrap flex items-center gap-1.5">
+                <span>Produk Rekomendasi (Afiliasi)</span>
+                <span class="px-2 py-0.5 rounded-full text-[10px] bg-sky-100 text-sky-700 font-extrabold">{{ $showcaseProducts->count() }}</span>
+            </button>
+            @endif
             <button @click="activeTab = 'kategori'" :class="activeTab === 'kategori' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant hover:text-primary'" class="px-6 py-4 font-bold border-b-2 border-transparent transition-colors whitespace-nowrap">Kategori</button>
             <button @click="activeTab = 'profil'" :class="activeTab === 'profil' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant hover:text-primary'" class="px-6 py-4 font-bold border-b-2 border-transparent transition-colors whitespace-nowrap">Profil Toko</button>
         </div>
@@ -502,6 +508,60 @@
                 {{ $products->links() }}
             </div>
         </div>
+
+        <!-- Tab: Produk Afiliasi / Showcase -->
+        @if(isset($showcaseProducts) && $showcaseProducts->count() > 0)
+        <div x-show="activeTab === 'afiliasi'" x-cloak>
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h2 class="text-xl font-bold text-on-surface border-l-4 border-sky-500 pl-3">Produk Rekomendasi & Afiliasi</h2>
+                    <p class="text-xs text-slate-500 mt-1 pl-4">Produk terpilih dari mitra resmi & platform yang direkomendasikan oleh toko ini.</p>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                @foreach($showcaseProducts as $product)
+                <a href="{{ route('products.show', $product->slug) }}?ref={{ $store->slug }}" class="group bg-white border border-slate-200 hover:border-sky-500 rounded-xl overflow-hidden hover:shadow-lg transition-all flex flex-col relative">
+                    
+                    <div class="aspect-square w-full bg-slate-50 relative overflow-hidden">
+                        @if($product->images->count() > 0)
+                            @php $mainImg = $product->images->where('is_main', true)->first() ?? $product->images->first(); @endphp
+                            <img src="{{ asset('storage/' . $mainImg->image_path) }}" alt="{{ $product->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        @else
+                            <div class="w-full h-full flex items-center justify-center text-slate-300">
+                                <span class="material-symbols-outlined text-4xl">inventory_2</span>
+                            </div>
+                        @endif
+
+                        <!-- Badge Afiliasi -->
+                        <div class="absolute top-2 left-2">
+                            <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-sky-500/90 text-white shadow-xs">
+                                <span class="material-symbols-outlined text-[11px]">verified</span> Mitra
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="p-3 flex flex-col flex-1">
+                        <div class="text-[10px] text-slate-400 mb-1">
+                            {{ $product->store->name ?? 'Platform Official' }}
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-[11px] md:text-sm line-clamp-2 mb-2 group-hover:text-sky-500 transition-colors h-8">
+                            {{ $product->name }}
+                        </h3>
+                        <div class="mt-auto">
+                            @if($product->discount_price && $product->discount_price > 0 && $product->discount_price < $product->price)
+                                <div class="text-[10px] text-slate-400 line-through mb-0.5">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
+                                <div class="font-bold text-sky-600 text-sm md:text-base">Rp {{ number_format($product->discount_price, 0, ',', '.') }}</div>
+                            @else
+                                <div class="font-bold text-sky-600 text-sm md:text-base mt-2">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
+                            @endif
+                        </div>
+                    </div>
+                </a>
+                @endforeach
+            </div>
+        </div>
+        @endif
         
         <!-- Tab 3: Kategori -->
         <div x-show="activeTab === 'kategori'" x-cloak>
