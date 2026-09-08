@@ -43,7 +43,10 @@ class PublicStoreController extends Controller
         // Query semua produk (produk sendiri + produk showcase yang dipajang)
         $productsQuery = \App\Models\Product::whereIn('id', $allProductIds)
             ->published()
-            ->with(['store', 'category', 'images', 'type']);
+            ->with(['store', 'category', 'images', 'type', 'reviews'])
+            ->withCount(['orders' => function($q) {
+                $q->whereIn('status', ['paid', 'downloaded']);
+            }]);
 
         // Filter kategori jika ada query param
         if ($request->filled('category')) {

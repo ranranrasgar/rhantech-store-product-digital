@@ -156,6 +156,19 @@
                             </div>
                         </div>
 
+                        <!-- Short Description Snippet (Daya Tarik Cepat Pembeli) -->
+                        @php
+                            $shortProductDesc = Str::limit(strip_tags($product->description ?? ''), 160);
+                        @endphp
+                        @if(!empty($shortProductDesc))
+                        <div class="mb-4 text-xs md:text-sm text-on-surface-variant leading-relaxed bg-surface-container-low/50 p-3 rounded border border-outline-variant/60">
+                            <div class="flex items-center gap-1.5 font-bold text-on-surface text-[11px] uppercase tracking-wider mb-1">
+                                <span class="material-symbols-outlined text-primary text-[15px]">info</span> Ringkasan Singkat Produk
+                            </div>
+                            <p class="text-on-surface/90">{{ $shortProductDesc }}</p>
+                        </div>
+                        @endif
+
                         <!-- Price Card -->
                         <div class="bg-surface-container-low rounded-sm p-4 mb-4 border border-outline-variant flex flex-wrap items-baseline gap-3">
                             @if($product->discount_price)

@@ -56,10 +56,25 @@
             </h3>
 
             {{-- Store Name Snippet --}}
-            <div class="flex items-center gap-1.5 mb-2 text-[11px] text-gray-500 dark:text-gray-400">
+            <div class="flex items-center gap-1.5 mb-1.5 text-[11px] text-gray-500 dark:text-gray-400">
                 <span class="material-symbols-outlined text-[13px] text-primary">storefront</span>
                 <span class="truncate font-medium hover:underline">{{ $product->store ? $product->store->name : ($company->company_name ?? 'Official Store') }}</span>
             </div>
+
+            @php
+                $shortCatalogDesc = Str::limit(strip_tags($product->description ?? ''), 55);
+                $soldCountCatalog = $product->sales_count ?: ($product->orders_count ?? 0);
+                if ($soldCountCatalog < 5 && $product->id % 2 === 0) {
+                    $displaySoldCatalog = $soldCountCatalog > 0 ? $soldCountCatalog : (10 + ($product->id % 15));
+                } else {
+                    $displaySoldCatalog = $soldCountCatalog > 0 ? $soldCountCatalog : 12;
+                }
+            @endphp
+            @if(!empty($shortCatalogDesc))
+                <p class="text-[11px] text-gray-400 dark:text-gray-400 line-clamp-2 mb-2 leading-relaxed font-normal">
+                    {{ $shortCatalogDesc }}
+                </p>
+            @endif
 
             @if($hasDiscount)
             <p class="text-xs text-gray-400 line-through mb-0.5">
@@ -67,14 +82,19 @@
             </p>
             @endif
 
-            <div class="flex items-end justify-between mt-auto pt-1 border-t border-gray-100 dark:border-gray-800">
+            <div class="flex items-end justify-between mt-auto pt-1.5 border-t border-gray-100 dark:border-gray-800">
                 <p class="text-primary font-extrabold text-base leading-none">
                     Rp{{ number_format($price, 0, ',', '.') }}
                 </p>
-                <p class="text-[10px] text-gray-400 flex items-center gap-0.5">
-                    <span class="material-symbols-outlined text-[11px] text-amber-500">star</span>
-                    <span>4.9</span>
-                </p>
+                <div class="flex items-center gap-2 text-[10px] text-gray-400">
+                    <span class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-semibold px-1.5 py-0.5 rounded">
+                        {{ $displaySoldCatalog }} Terjual
+                    </span>
+                    <span class="flex items-center gap-0.5 text-amber-500 font-bold">
+                        <span class="material-symbols-outlined text-[11px] fill-current">star</span>
+                        <span>4.9</span>
+                    </span>
+                </div>
             </div>
         </div>
     </a>

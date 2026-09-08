@@ -123,7 +123,19 @@
 
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
                     @forelse($products as $product)
-                    <a href="{{ route('products.show', $product->slug) }}" class="group bg-white border border-outline-variant hover:border-primary rounded overflow-hidden hover:shadow-lg transition-all flex flex-col">
+                    @php
+                        $soldCount = $product->sales_count ?? ($product->orders_count ?? 0);
+                        if ($soldCount < 5 && $product->id % 2 === 0) {
+                            // Angka visual daya tarik minimal
+                            $displaySold = $soldCount > 0 ? $soldCount : (10 + ($product->id % 15));
+                        } else {
+                            $displaySold = $soldCount > 0 ? $soldCount : 12;
+                        }
+                        $avgRating = $product->rating_override ?: ($product->reviews->avg('rating') ?: 5.0);
+                        $shortDesc = Str::limit(strip_tags($product->description ?? ''), 55);
+                        $hasDiscount = $product->discount_price && $product->discount_price > 0 && $product->discount_price < $product->price;
+                    @endphp
+                    <a href="{{ route('products.show', $product->slug) }}" class="group bg-white border border-outline-variant hover:border-primary rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col relative">
                         <div class="aspect-square w-full bg-surface-container-high relative overflow-hidden">
                             @if($product->images->count() > 0)
                                 @php $mainImg = $product->images->where('is_main', true)->first() ?? $product->images->first(); @endphp
@@ -134,25 +146,43 @@
                                 </div>
                             @endif
                             
-                            @if($product->discount_price)
-                                <div class="absolute top-0 right-0 bg-error text-white font-bold text-[10px] px-2 py-1 rounded-bl-lg">SALE</div>
+                            @if($hasDiscount)
+                                <div class="absolute top-2 right-2 bg-rose-500 text-white font-black text-[10px] px-2 py-0.5 rounded-md shadow-sm">
+                                    -{{ round((($product->price - $product->discount_price) / $product->price) * 100) }}%
+                                </div>
+                            @endif
+
+                            @if($product->category)
+                                <div class="absolute bottom-2 left-2 bg-black/60 backdrop-blur-xs text-white text-[9px] font-semibold px-2 py-0.5 rounded">
+                                    {{ $product->category->name }}
+                                </div>
                             @endif
                         </div>
-                        <div class="p-3 flex flex-col flex-1">
-                            <h3 class="font-bold text-on-surface text-sm line-clamp-2 mb-2 group-hover:text-primary transition-colors">{{ $product->name }}</h3>
+                        <div class="p-3.5 flex flex-col flex-1">
+                            <h3 class="font-bold text-on-surface text-xs md:text-sm line-clamp-2 mb-1.5 group-hover:text-primary transition-colors leading-snug">{{ $product->name }}</h3>
                             
-                            <div class="mt-auto">
-                                @if($product->discount_price)
-                                    <div class="text-xs text-on-surface-variant line-through mb-0.5">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
-                                    <div class="font-bold text-primary text-base">Rp {{ number_format($product->discount_price, 0, ',', '.') }}</div>
+                            @if(!empty($shortDesc))
+                                <p class="text-[11px] text-slate-500 line-clamp-2 mb-3 leading-relaxed">
+                                    {{ $shortDesc }}
+                                </p>
+                            @endif
+
+                            <div class="mt-auto pt-2 border-t border-slate-100 dark:border-slate-800">
+                                @if($hasDiscount)
+                                    <div class="text-[10px] text-on-surface-variant line-through mb-0.5">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
+                                    <div class="font-black text-primary text-sm md:text-base">Rp {{ number_format($product->discount_price, 0, ',', '.') }}</div>
                                 @else
-                                    <div class="font-bold text-primary text-base">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
+                                    <div class="font-black text-primary text-sm md:text-base">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
                                 @endif
                                 
-                                <div class="flex items-center gap-1 mt-2 text-[10px] text-on-surface-variant">
-                                    <span class="text-yellow-400 material-symbols-outlined text-[12px]">star</span> 5.0
-                                    <span class="mx-1">•</span>
-                                    10 Terjual
+                                <div class="flex items-center justify-between gap-1 mt-2 text-[10px] text-on-surface-variant font-medium">
+                                    <span class="flex items-center gap-0.5 text-amber-500 font-bold">
+                                        <span class="material-symbols-outlined text-[13px] fill-current">star</span>
+                                        {{ number_format($avgRating, 1) }}
+                                    </span>
+                                    <span class="bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded text-[10px] font-bold">
+                                        {{ $displaySold }} Terjual
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -414,6 +444,17 @@
                         </div>
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
                             @forelse($displayProducts as $product)
+                                @php
+                                    $soldCount = $product->sales_count ?? ($product->orders_count ?? 0);
+                                    if ($soldCount < 5 && $product->id % 2 === 0) {
+                                        $displaySold = $soldCount > 0 ? $soldCount : (10 + ($product->id % 15));
+                                    } else {
+                                        $displaySold = $soldCount > 0 ? $soldCount : 12;
+                                    }
+                                    $avgRating = $product->rating_override ?: ($product->reviews->avg('rating') ?: 5.0);
+                                    $shortDesc = Str::limit(strip_tags($product->description ?? ''), 55);
+                                    $hasDiscount = $product->discount_price && $product->discount_price > 0 && $product->discount_price < $product->price;
+                                @endphp
                                 <!-- Product Card -->
                                 <a href="{{ route('products.show', $product->slug) }}" class="group bg-white border border-slate-200 hover:border-sky-500 rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col relative">
                                     <div class="aspect-square w-full bg-slate-50 relative overflow-hidden">
@@ -425,25 +466,43 @@
                                                 <span class="material-symbols-outlined text-4xl">inventory_2</span>
                                             </div>
                                         @endif
-                                        @if($product->discount_price)
-                                            <div class="absolute top-2 right-2 bg-rose-500 text-white font-bold text-[10px] px-2 py-1 rounded-lg shadow-sm">SALE</div>
+                                        @if($hasDiscount)
+                                            <div class="absolute top-2 right-2 bg-rose-500 text-white font-black text-[10px] px-2 py-0.5 rounded-md shadow-sm">
+                                                -{{ round((($product->price - $product->discount_price) / $product->price) * 100) }}%
+                                            </div>
+                                        @endif
+
+                                        @if($product->category)
+                                            <div class="absolute bottom-2 left-2 bg-black/60 backdrop-blur-xs text-white text-[9px] font-semibold px-2 py-0.5 rounded">
+                                                {{ $product->category->name }}
+                                            </div>
                                         @endif
                                     </div>
-                                    <div class="p-4 flex flex-col flex-1">
-                                        <h3 class="font-bold text-slate-800 text-sm line-clamp-2 mb-2 group-hover:text-sky-500 transition-colors">{{ $product->name }}</h3>
-                                        <div class="mt-auto">
-                                            @if($product->discount_price)
-                                                <div class="text-[11px] text-slate-400 line-through mb-0.5">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
-                                                <div class="font-black text-sky-500 text-base">Rp {{ number_format($product->discount_price, 0, ',', '.') }}</div>
+                                    <div class="p-3.5 flex flex-col flex-1">
+                                        <h3 class="font-bold text-slate-800 text-xs md:text-sm line-clamp-2 mb-1.5 group-hover:text-sky-500 transition-colors leading-snug">{{ $product->name }}</h3>
+                                        
+                                        @if(!empty($shortDesc))
+                                            <p class="text-[11px] text-slate-500 line-clamp-2 mb-3 leading-relaxed">
+                                                {{ $shortDesc }}
+                                            </p>
+                                        @endif
+
+                                        <div class="mt-auto pt-2 border-t border-slate-100 dark:border-slate-800">
+                                            @if($hasDiscount)
+                                                <div class="text-[10px] text-slate-400 line-through mb-0.5">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
+                                                <div class="font-black text-sky-500 text-sm md:text-base">Rp {{ number_format($product->discount_price, 0, ',', '.') }}</div>
                                             @else
-                                                <div class="font-black text-sky-500 text-base mt-4">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
+                                                <div class="font-black text-sky-500 text-sm md:text-base">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
                                             @endif
                                             
-                                            <div class="flex items-center justify-between mt-3 pt-3 border-t border-slate-100">
-                                                <div class="flex items-center gap-1 text-[10px] text-slate-500">
-                                                    <span class="text-amber-400 material-symbols-outlined text-[14px]">star</span> 5.0
-                                                </div>
-                                                <div class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-1 rounded-md">Terjual 10+</div>
+                                            <div class="flex items-center justify-between gap-1 mt-2 text-[10px] text-slate-500 font-medium">
+                                                <span class="flex items-center gap-0.5 text-amber-500 font-bold">
+                                                    <span class="material-symbols-outlined text-[13px] fill-current">star</span>
+                                                    {{ number_format($avgRating, 1) }}
+                                                </span>
+                                                <span class="bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded text-[10px] font-bold">
+                                                    {{ $displaySold }} Terjual
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
@@ -470,7 +529,18 @@
             
             <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
                 @forelse($products as $product)
-                <a href="{{ route('products.show', $product->slug) }}" class="group bg-white border border-outline-variant hover:border-primary rounded-xl overflow-hidden hover:shadow-lg transition-all flex flex-col">
+                @php
+                    $soldCount = $product->sales_count ?? ($product->orders_count ?? 0);
+                    if ($soldCount < 5 && $product->id % 2 === 0) {
+                        $displaySold = $soldCount > 0 ? $soldCount : (10 + ($product->id % 15));
+                    } else {
+                        $displaySold = $soldCount > 0 ? $soldCount : 12;
+                    }
+                    $avgRating = $product->rating_override ?: ($product->reviews->avg('rating') ?: 5.0);
+                    $shortDesc = Str::limit(strip_tags($product->description ?? ''), 55);
+                    $hasDiscount = $product->discount_price && $product->discount_price > 0 && $product->discount_price < $product->price;
+                @endphp
+                <a href="{{ route('products.show', $product->slug) }}" class="group bg-white border border-outline-variant hover:border-primary rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col relative">
                     <div class="aspect-square w-full bg-slate-50 relative overflow-hidden">
                         @if($product->images->count() > 0)
                             @php $mainImg = $product->images->where('is_main', true)->first() ?? $product->images->first(); @endphp
@@ -480,16 +550,45 @@
                                 <span class="material-symbols-outlined text-4xl">inventory_2</span>
                             </div>
                         @endif
+                        
+                        @if($hasDiscount)
+                            <div class="absolute top-2 right-2 bg-rose-500 text-white font-black text-[10px] px-2 py-0.5 rounded-md shadow-sm">
+                                -{{ round((($product->price - $product->discount_price) / $product->price) * 100) }}%
+                            </div>
+                        @endif
+
+                        @if($product->category)
+                            <div class="absolute bottom-2 left-2 bg-black/60 backdrop-blur-xs text-white text-[9px] font-semibold px-2 py-0.5 rounded">
+                                {{ $product->category->name }}
+                            </div>
+                        @endif
                     </div>
-                    <div class="p-3 flex flex-col flex-1">
-                        <h3 class="font-bold text-slate-800 text-[11px] md:text-sm line-clamp-2 mb-2 group-hover:text-primary transition-colors h-8">{{ $product->name }}</h3>
-                        <div class="mt-auto">
-                            @if($product->discount_price)
+                    <div class="p-3.5 flex flex-col flex-1">
+                        <h3 class="font-bold text-slate-800 text-xs md:text-sm line-clamp-2 mb-1.5 group-hover:text-primary transition-colors leading-snug">{{ $product->name }}</h3>
+                        
+                        @if(!empty($shortDesc))
+                            <p class="text-[11px] text-slate-500 line-clamp-2 mb-3 leading-relaxed">
+                                {{ $shortDesc }}
+                            </p>
+                        @endif
+
+                        <div class="mt-auto pt-2 border-t border-slate-100 dark:border-slate-800">
+                            @if($hasDiscount)
                                 <div class="text-[10px] text-slate-400 line-through mb-0.5">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
-                                <div class="font-bold text-primary text-sm md:text-base">Rp {{ number_format($product->discount_price, 0, ',', '.') }}</div>
+                                <div class="font-black text-primary text-sm md:text-base">Rp {{ number_format($product->discount_price, 0, ',', '.') }}</div>
                             @else
-                                <div class="font-bold text-primary text-sm md:text-base mt-4">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
+                                <div class="font-black text-primary text-sm md:text-base">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
                             @endif
+                            
+                            <div class="flex items-center justify-between gap-1 mt-2 text-[10px] text-slate-500 font-medium">
+                                <span class="flex items-center gap-0.5 text-amber-500 font-bold">
+                                    <span class="material-symbols-outlined text-[13px] fill-current">star</span>
+                                    {{ number_format($avgRating, 1) }}
+                                </span>
+                                <span class="bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded text-[10px] font-bold">
+                                    {{ $displaySold }} Terjual
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </a>
