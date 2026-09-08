@@ -228,12 +228,12 @@
         </div>
     </nav>
     
-    <main class="flex-1 mt-24">
+    <main class="flex-1 mt-16 md:mt-24">
         @yield('content')
     </main>
 
     <!-- Footer -->
-    <footer aria-label="Footer" class="bg-surface-container dark:bg-surface-container-lowest text-on-surface dark:text-on-surface-variant font-body-md text-body-md font-label-md text-label-md w-full border-t border-outline-variant mt-auto">
+    <footer aria-label="Footer" class="hidden md:block bg-surface-container dark:bg-surface-container-lowest text-on-surface dark:text-on-surface-variant font-body-md text-body-md font-label-md text-label-md w-full border-t border-outline-variant mt-auto">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-lg px-lg py-2xl max-w-container-max mx-auto">
             <div class="col-span-1 md:col-span-2">
                 <a class="font-headline-lg text-headline-lg font-black text-primary dark:text-on-primary-container flex items-center gap-2 mb-4" href="{{ url('/') }}" wire:navigate>
