@@ -158,7 +158,7 @@
 
                         <!-- Short Description Snippet (Daya Tarik Cepat Pembeli) -->
                         @php
-                            $shortProductDesc = Str::limit(strip_tags($product->description ?? ''), 160);
+                            $shortProductDesc = $product->short_description ?: Str::limit(strip_tags($product->description ?? ''), 160);
                         @endphp
                         @if(!empty($shortProductDesc))
                         <div class="mb-4 text-xs md:text-sm text-on-surface-variant leading-relaxed bg-surface-container-low/50 p-3 rounded border border-outline-variant/60">

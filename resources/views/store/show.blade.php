@@ -132,7 +132,7 @@
                             $displaySold = $soldCount > 0 ? $soldCount : 12;
                         }
                         $avgRating = $product->rating_override ?: ($product->reviews->avg('rating') ?: 5.0);
-                        $shortDesc = Str::limit(strip_tags($product->description ?? ''), 55);
+                        $shortDesc = $product->short_description ?: Str::limit(strip_tags($product->description ?? ''), 55);
                         $hasDiscount = $product->discount_price && $product->discount_price > 0 && $product->discount_price < $product->price;
                     @endphp
                     <a href="{{ route('products.show', $product->slug) }}" class="group bg-white border border-outline-variant hover:border-primary rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col relative">

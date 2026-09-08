@@ -56,6 +56,12 @@
             </div>
 
             <div>
+                <label class="block font-label-md text-on-surface mb-xs">Short Description (Ringkasan Singkat)</label>
+                <textarea name="short_description" rows="2" placeholder="Ringkasan singkat produk untuk tampilan kartu katalog & etalase toko..." class="w-full pl-4 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-secondary focus:ring-1 focus:ring-secondary/20">{{ old('short_description') }}</textarea>
+                @error('short_description')<span class="text-error text-xs">{{ $message }}</span>@enderror
+            </div>
+
+            <div>
                 <label class="block font-label-md text-on-surface mb-xs">Description *</label>
                 <textarea name="description" rows="5" required class="w-full pl-4 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-secondary focus:ring-1 focus:ring-secondary/20">{{ old('description') }}</textarea>
                 @error('description')<span class="text-error text-xs">{{ $message }}</span>@enderror

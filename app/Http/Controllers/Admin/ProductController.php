@@ -92,6 +92,7 @@ class ProductController extends Controller
             'product_category_id' => 'nullable|exists:product_categories,id',
             'product_type_id' => 'nullable|exists:product_types,id',
             'help_category_id' => 'nullable|exists:help_categories,id',
+            'short_description' => 'nullable|string|max:500',
             'description' => 'required|string',
             'demo_url' => 'nullable|url|max:255',
             'price' => 'required|numeric|min:0',
@@ -123,6 +124,7 @@ class ProductController extends Controller
         $product = Product::create([
             'name' => $validated['name'],
             'slug' => Str::slug($validated['name']) . '-' . Str::random(5),
+            'short_description' => $validated['short_description'] ?? null,
             'description' => $validated['description'],
             'product_category_id' => $validated['product_category_id'] ?? null,
             'product_type_id' => $validated['product_type_id'] ?? null,
@@ -181,6 +183,7 @@ class ProductController extends Controller
             'product_category_id' => 'nullable|exists:product_categories,id',
             'product_type_id' => 'nullable|exists:product_types,id',
             'help_category_id' => 'nullable|exists:help_categories,id',
+            'short_description' => 'nullable|string|max:500',
             'description' => 'required|string',
             'demo_url' => 'nullable|url|max:255',
             'price' => 'required|numeric|min:0',
@@ -210,6 +213,7 @@ class ProductController extends Controller
 
         $product->update([
             'name' => $validated['name'],
+            'short_description' => $validated['short_description'] ?? null,
             'description' => $validated['description'],
             'product_category_id' => $validated['product_category_id'] ?? null,
             'product_type_id' => $validated['product_type_id'] ?? null,
