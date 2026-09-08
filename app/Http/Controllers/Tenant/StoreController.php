@@ -46,6 +46,7 @@ class StoreController extends Controller
             'address' => 'nullable|string|max:500',
             'maps_location' => 'nullable|string',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'social_links' => 'nullable|array',
         ];
 
         $messages = [
@@ -70,6 +71,33 @@ class StoreController extends Controller
             $mapsLocation = "https://www.google.com/maps/search/?api=1&query={$encodedAddress}";
         }
 
+        // Format and clean social links
+        $socialLinks = [];
+        if ($request->has('social_links') && is_array($request->social_links)) {
+            foreach ($request->social_links as $item) {
+                if (is_array($item) && !empty(trim($item['url'] ?? ''))) {
+                    $platform = trim($item['platform'] ?? 'custom');
+                    $name = !empty(trim($item['name'] ?? '')) ? trim($item['name']) : ucfirst($platform);
+                    $url = trim($item['url']);
+                    if ($platform === 'whatsapp' && !str_starts_with($url, 'http://') && !str_starts_with($url, 'https://')) {
+                        $cleanPhone = preg_replace('/[^0-9]/', '', $url);
+                        if (str_starts_with($cleanPhone, '0')) {
+                            $cleanPhone = '62' . substr($cleanPhone, 1);
+                        }
+                        $url = "https://wa.me/{$cleanPhone}";
+                    } elseif (!str_starts_with($url, 'http://') && !str_starts_with($url, 'https://')) {
+                        $url = 'https://' . $url;
+                    }
+
+                    $socialLinks[] = [
+                        'platform' => $platform,
+                        'name' => $name,
+                        'url' => $url,
+                    ];
+                }
+            }
+        }
+
         $data = [
             'name' => $request->name,
             'slug' => $slug,
@@ -77,6 +105,7 @@ class StoreController extends Controller
             'bank_account_info' => $request->bank_account_info,
             'address' => $request->address,
             'maps_location' => $mapsLocation,
+            'social_links' => $socialLinks,
         ];
 
         if ($request->hasFile('logo')) {

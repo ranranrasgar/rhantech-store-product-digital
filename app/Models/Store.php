@@ -10,6 +10,7 @@ class Store extends Model
 
     protected $casts = [
         'appearance_data' => 'array',
+        'social_links' => 'array',
     ];
 
     public function user()

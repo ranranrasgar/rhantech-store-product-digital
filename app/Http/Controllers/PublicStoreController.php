@@ -48,6 +48,15 @@ class PublicStoreController extends Controller
                 $q->whereIn('status', ['paid', 'downloaded']);
             }]);
 
+        // Filter search jika ada query param
+        if ($request->filled('q') || $request->filled('search')) {
+            $keyword = trim($request->query('q', $request->query('search')));
+            $productsQuery->where(function($q) use ($keyword) {
+                $q->where('name', 'like', "%{$keyword}%")
+                  ->orWhere('description', 'like', "%{$keyword}%");
+            });
+        }
+
         // Filter kategori jika ada query param
         if ($request->filled('category')) {
             $productsQuery->where('product_category_id', $request->query('category'));

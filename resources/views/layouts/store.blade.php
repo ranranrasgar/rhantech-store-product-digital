@@ -70,8 +70,8 @@
     <nav x-data="{ mobileMenuOpen: false }" class="bg-surface/90 dark:bg-slate-900/90 backdrop-blur-md sticky top-0 w-full z-50 border-b border-outline-variant/50 shadow-xs transition-colors">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
             
-            {{-- Left: Store Brand Identity --}}
-            <div class="flex items-center gap-2.5 min-w-0 pr-2">
+            {{-- Left: Store Brand Identity (Hanya Desktop) --}}
+            <div class="hidden md:flex items-center gap-2.5 min-w-0 pr-2">
                 <a href="{{ route('store.show', $store->slug) }}" class="flex items-center gap-2.5 group min-w-0">
                     <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl overflow-hidden bg-surface-container border border-outline-variant shrink-0 shadow-xs flex items-center justify-center">
                         @if(!empty($store->logo))
@@ -94,10 +94,31 @@
                 </a>
             </div>
 
+            {{-- Mobile: Kotak Pencarian Memanjang (Menggantikan identitas toko yang duplikat) --}}
+            <div class="md:hidden flex-1 min-w-0 mr-2">
+                <form action="{{ route('store.show', $store->slug) }}" method="GET" class="relative flex items-center w-full">
+                    <div class="relative w-full flex items-center">
+                        <span class="material-symbols-outlined absolute left-3 text-[18px] text-primary pointer-events-none">search</span>
+                        <input type="text" 
+                               name="q" 
+                               value="{{ request('q', request('search', '')) }}"
+                               placeholder="Cari produk di {{ $store->name }}..." 
+                               class="w-full pl-9 pr-8 py-2 text-xs bg-surface-container/90 dark:bg-slate-800/90 border border-outline-variant rounded-full text-on-surface placeholder:text-on-surface-variant/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-medium shadow-2xs">
+                        @if(request('q') || request('search'))
+                            <a href="{{ route('store.show', $store->slug) }}" class="absolute right-2.5 text-on-surface-variant hover:text-error flex items-center justify-center" title="Hapus">
+                                <span class="material-symbols-outlined text-[16px]">cancel</span>
+                            </a>
+                        @endif
+                    </div>
+                </form>
+            </div>
 
             {{-- Right: Return to Public Store & User Actions --}}
-            <div class="flex items-center gap-2 sm:gap-3 shrink-0">
-                <x-theme-toggle />
+            <div class="flex items-center gap-1.5 sm:gap-3 shrink-0">
+                {{-- Mode switch hanya untuk desktop (disembunyikan di versi mobile) --}}
+                <div class="hidden md:flex items-center">
+                    <x-theme-toggle />
+                </div>
 
                 {{-- Tombol Kembali ke Marketplace / Store Publik --}}
                 <a href="{{ route('products.index') }}" 
@@ -157,8 +178,9 @@
     </main>
 
     {{-- Store Specific Footer --}}
-    <footer class="bg-surface dark:bg-slate-900 border-t border-outline-variant/60 py-12 mt-auto text-on-surface-variant text-xs">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+    <footer class="bg-surface dark:bg-slate-900 border-t border-outline-variant/60 py-8 md:py-12 mt-auto text-on-surface-variant text-xs">
+        <!-- Desktop Footer (Tetap lengkap) -->
+        <div class="hidden md:grid max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid-cols-3 gap-8 items-center">
             
             {{-- Store Info --}}
             <div class="space-y-2">
@@ -181,6 +203,10 @@
                 <h4 class="font-bold text-xs uppercase tracking-wider text-on-surface dark:text-white">Navigasi Toko</h4>
                 <div class="flex flex-col gap-1.5">
                     <a href="{{ route('store.show', $store->slug) }}" class="hover:text-primary transition-colors">Produk &amp; Katalog {{ $store->name }}</a>
+                    <a href="{{ route('help.index') }}" class="hover:text-primary transition-colors flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[14px]">policy</span>
+                        Kebijakan &amp; Ketentuan Platform
+                    </a>
                     <a href="{{ route('products.index') }}" class="hover:text-primary transition-colors flex items-center gap-1">
                         <span class="material-symbols-outlined text-[14px]">arrow_back</span>
                         Cari Produk &amp; Toko Lainnya di Marketplace
@@ -199,6 +225,35 @@
                 </p>
             </div>
 
+        </div>
+
+        <!-- Mobile Footer (Bagian info toko yang berulang dihilangkan, ditambahkan link kebijakan platform) -->
+        <div class="md:hidden max-w-md mx-auto px-4 space-y-3.5 text-center">
+            <div class="bg-surface-container dark:bg-slate-800/50 p-3.5 rounded-2xl border border-outline-variant/50 space-y-1.5 text-left">
+                <div class="flex items-center gap-2 text-on-surface dark:text-white font-bold text-xs">
+                    <span class="material-symbols-outlined text-[18px] text-emerald-500">verified_user</span>
+                    Transaksi &amp; Garansi Aman
+                </div>
+                <p class="text-[11px] leading-relaxed text-on-surface-variant">
+                    Setiap transaksi dilindungi sistem escrow otomatis platform dengan jaminan unduhan instan.
+                </p>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-center gap-2 text-xs pt-0.5">
+                <a href="{{ route('help.index') }}" class="inline-flex items-center gap-1 text-primary hover:underline font-bold">
+                    <span class="material-symbols-outlined text-[16px]">policy</span>
+                    Kebijakan &amp; Ketentuan Platform
+                </a>
+                <span class="text-outline-variant">•</span>
+                <a href="{{ route('products.index') }}" class="inline-flex items-center gap-1 hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined text-[14px]">storefront</span>
+                    Jelajahi Produk Lain
+                </a>
+            </div>
+
+            <div class="text-[11px] text-on-surface-variant/60">
+                © {{ date('Y') }} {{ config('app.name', 'R-Tech') }}. Hak Cipta Dilindungi.
+            </div>
         </div>
     </footer>
 

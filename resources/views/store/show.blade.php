@@ -9,9 +9,11 @@
 @section('content')
 <div class="min-h-screen bg-surface-container-lowest"
     x-data="{ 
-        activeTab: 'beranda',
+        activeTab: '{{ (request('q') || request('search') || request('category')) ? 'produk' : 'beranda' }}',
         isFollowing: {{ $isFollowing ? 'true' : 'false' }},
         followersCount: {{ $store->followers()->count() }},
+        mobileSearchOpen: false,
+        shareCopied: false,
         toggleFollow() {
             @auth
             fetch('{{ route('store.follow', $store->id) }}', {
@@ -31,19 +33,102 @@
             @else
             window.location.href = '{{ route('login') }}';
             @endauth
+        },
+        shareStore() {
+            if (navigator.share) {
+                navigator.share({
+                    title: '{{ addslashes($store->name) }}',
+                    text: 'Kunjungi toko resmi {{ addslashes($store->name) }}',
+                    url: window.location.href
+                }).catch(() => {});
+            } else {
+                navigator.clipboard.writeText(window.location.href);
+                this.shareCopied = true;
+                setTimeout(() => this.shareCopied = false, 2500);
+            }
         }
-    }">
+    }"
+    @toggle-store-search.window="mobileSearchOpen = !mobileSearchOpen; if (mobileSearchOpen) { $nextTick(() => { $refs.mobileSearchInput && $refs.mobileSearchInput.focus() }) }">
     
-    <!-- Store Header Banner -->
-    <div class="relative w-full min-h-[350px] bg-[#1a1a1a]">
-        <!-- Background Image (Mock or real if available) -->
+    <!-- Mobile Interactive Search Modal / Drawer (Muncul ketika tombol cari di klik) -->
+    <div x-show="mobileSearchOpen" 
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0 -translate-y-4"
+         x-transition:enter-end="opacity-100 translate-y-0"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100 translate-y-0"
+         x-transition:leave-end="opacity-0 -translate-y-4"
+         x-cloak
+         class="md:hidden fixed inset-x-0 top-0 z-50 bg-surface/98 dark:bg-slate-900/98 backdrop-blur-xl border-b border-outline-variant p-4 shadow-2xl">
+        <div class="max-w-md mx-auto space-y-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary text-[22px]">search</span>
+                    <h3 class="text-sm font-extrabold text-on-surface">Cari Produk di Toko</h3>
+                </div>
+                <button type="button" @click="mobileSearchOpen = false" class="p-1.5 rounded-lg text-on-surface-variant hover:bg-surface-container text-xs flex items-center justify-center cursor-pointer">
+                    <span class="material-symbols-outlined text-[20px]">close</span>
+                </button>
+            </div>
+            <form action="{{ route('store.show', $store->slug) }}" method="GET" class="relative flex items-center gap-2">
+                @if(request('category'))
+                    <input type="hidden" name="category" value="{{ request('category') }}">
+                @endif
+                <div class="relative flex-1">
+                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[18px] text-on-surface-variant">search</span>
+                    <input type="text" 
+                           name="q" 
+                           x-ref="mobileSearchInput"
+                           value="{{ request('q', request('search', '')) }}"
+                           placeholder="Ketik nama produk yang dicari..." 
+                           class="w-full pl-9 pr-9 py-2.5 text-xs bg-surface-container border border-outline-variant rounded-xl text-on-surface placeholder:text-on-surface-variant/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-medium">
+                    @if(request('q') || request('search'))
+                        <a href="{{ route('store.show', $store->slug) }}" class="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-error" title="Reset pencarian">
+                            <span class="material-symbols-outlined text-[16px]">cancel</span>
+                        </a>
+                    @endif
+                </div>
+                <button type="submit" class="px-4 py-2.5 rounded-xl bg-primary text-white text-xs font-bold shadow-md shadow-primary/25 hover:bg-primary/90 transition-all cursor-pointer">
+                    Cari
+                </button>
+            </form>
+            @if($categories->count() > 0)
+            <div class="pt-1 flex items-center gap-1.5 overflow-x-auto hide-scrollbar text-[11px]">
+                <span class="text-on-surface-variant shrink-0 font-medium">Kategori:</span>
+                @foreach($categories->take(5) as $cat)
+                    <a href="{{ route('store.show', $store->slug) }}?category={{ $cat->id }}" class="shrink-0 px-2.5 py-1 rounded-lg bg-surface-container border border-outline-variant hover:border-primary text-on-surface font-semibold">
+                        {{ $cat->name }}
+                    </a>
+                @endforeach
+            </div>
+            @endif
+        </div>
+    </div>
+
+    <!-- Toast Notifikasi Share -->
+    <div x-show="shareCopied" 
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 translate-y-8"
+         x-transition:enter-end="opacity-100 translate-y-0"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100 translate-y-0"
+         x-transition:leave-end="opacity-0 translate-y-8"
+         x-cloak
+         class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-2xl bg-slate-900/90 text-white text-xs font-bold backdrop-blur-md shadow-2xl border border-white/10 flex items-center gap-2">
+        <span class="material-symbols-outlined text-[18px] text-emerald-400">check_circle</span>
+        <span>Tautan toko berhasil disalin ke clipboard!</span>
+    </div>
+
+    <!-- 1. DESKTOP STORE HEADER BANNER (Layout desktop dipertahankan utuh) -->
+    <div class="hidden md:block relative w-full min-h-[350px] bg-[#1a1a1a]">
+        <!-- Background Image -->
         <div class="absolute inset-0 bg-cover bg-center opacity-80" style="background-image: url('{{ $headerBgUrl }}');"></div>
         <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col justify-end pt-24 pb-8 relative z-10">
-            <div class="flex flex-col md:flex-row md:items-end gap-6">
+            <div class="flex flex-row items-end gap-6">
                 <!-- Avatar -->
-                <div class="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-white shadow-lg overflow-hidden bg-white shrink-0">
+                <div class="w-32 h-32 rounded-full border-4 border-white shadow-lg overflow-hidden bg-white shrink-0">
                     @if($store->logo)
                         <img src="{{ asset('storage/' . $store->logo) }}" alt="{{ $store->name }}" class="w-full h-full object-cover">
                     @else
@@ -61,11 +146,39 @@
                         <span>•</span>
                         <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">group</span> <span x-text="followersCount"></span> Pengikut</span>
                     </div>
+
+                    {{-- Sosmed di Desktop (Icon Only) --}}
+                    @php $socialLinks = is_array($store->social_links) ? $store->social_links : []; @endphp
+                    @if(count($socialLinks) > 0)
+                        <div class="flex items-center gap-2 mt-3 overflow-x-auto hide-scrollbar">
+                            @foreach($socialLinks as $soc)
+                                @php
+                                    $socPlatform = strtolower($soc['platform'] ?? 'custom');
+                                    $socName = $soc['name'] ?? ucfirst($socPlatform);
+                                    $socUrl = $soc['url'] ?? '#';
+                                    $bgClass = match($socPlatform) {
+                                        'instagram' => 'bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888] text-white',
+                                        'tiktok' => 'bg-black text-white border border-white/20',
+                                        'whatsapp' => 'bg-[#25D366] text-white',
+                                        'youtube' => 'bg-[#FF0000] text-white',
+                                        'facebook' => 'bg-[#1877F2] text-white',
+                                        'x', 'twitter' => 'bg-black text-white border border-white/20',
+                                        'telegram' => 'bg-[#229ED9] text-white',
+                                        'github' => 'bg-[#24292e] text-white',
+                                        default => 'bg-white/20 text-white backdrop-blur-sm'
+                                    };
+                                @endphp
+                                <a href="{{ $socUrl }}" target="_blank" rel="noopener noreferrer" class="w-8 h-8 rounded-full flex items-center justify-center shadow-xs hover:scale-110 transition-transform {{ $bgClass }}" title="{{ $socName }}">
+                                    <x-store-social-icon :platform="$socPlatform" class="w-4 h-4" />
+                                </a>
+                            @endforeach
+                        </div>
+                    @endif
                 </div>
 
                 <!-- Actions -->
                 @if(!auth()->check() || auth()->id() !== $store->user_id)
-                <div class="flex items-center gap-3 mt-4 md:mt-0">
+                <div class="flex items-center gap-3">
                     <button @click="@auth window.dispatchEvent(new CustomEvent('open-chat-with-store', { 
                         detail: { 
                             store_id: {{ $store->id }}, 
@@ -78,7 +191,7 @@
                     </button>
                     <button @click="toggleFollow()" 
                         :class="isFollowing ? 'bg-surface-container border-outline text-on-surface hover:bg-surface-container-high' : 'bg-primary border-primary text-white hover:bg-primary/90'"
-                        class="px-6 py-2 border rounded font-bold transition-colors flex items-center gap-2">
+                        class="px-6 py-2 border rounded font-bold transition-colors flex items-center gap-2 cursor-pointer">
                         <span class="material-symbols-outlined text-[18px]" x-text="isFollowing ? 'check' : 'add'">add</span> 
                         <span x-text="isFollowing ? 'Mengikuti' : 'Ikuti'">Ikuti</span>
                     </button>
@@ -88,18 +201,211 @@
         </div>
     </div>
 
-    <!-- Store Navigation -->
-    <div class="bg-surface dark:bg-slate-900 border-b border-outline-variant sticky top-[64px] sm:top-[68px] z-40 shadow-xs">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex overflow-x-auto hide-scrollbar">
-            <button @click="activeTab = 'beranda'" :class="activeTab === 'beranda' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant hover:text-primary'" class="px-6 py-4 font-bold border-b-2 border-transparent transition-colors whitespace-nowrap">Beranda Toko</button>
-            <button @click="activeTab = 'produk'" :class="activeTab === 'produk' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant hover:text-primary'" class="px-6 py-4 font-bold border-b-2 border-transparent transition-colors whitespace-nowrap">Semua Produk</button>
-            <button @click="activeTab = 'kategori'" :class="activeTab === 'kategori' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant hover:text-primary'" class="px-6 py-4 font-bold border-b-2 border-transparent transition-colors whitespace-nowrap">Kategori</button>
-            <button @click="activeTab = 'profil'" :class="activeTab === 'profil' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant hover:text-primary'" class="px-6 py-4 font-bold border-b-2 border-transparent transition-colors whitespace-nowrap">Profil Toko</button>
+    <!-- 2. MOBILE INTERACTIVE STORE HEADER (Khusus Versi Mobile) -->
+    <div class="md:hidden relative w-full bg-[#0d1322] overflow-hidden text-white">
+        <!-- Banner Background with Gradient Overlay -->
+        <div class="absolute inset-0 bg-cover bg-center opacity-65 scale-105" style="background-image: url('{{ $headerBgUrl }}');"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-slate-950/75 to-[#0d1322]"></div>
+        
+        <div class="relative z-10 px-4 pt-5 pb-5 space-y-3">
+            <!-- Top Identity Row -->
+            <div class="flex items-start gap-3.5">
+                <!-- Avatar with Glossy Border -->
+                <div class="relative shrink-0 w-[68px] h-[68px]">
+                    <div class="w-[68px] h-[68px] rounded-2xl border-2 border-white/80 shadow-xl overflow-hidden bg-white p-0.5 flex items-center justify-center">
+                        @if($store->logo)
+                            <img src="{{ asset('storage/' . $store->logo) }}" alt="{{ $store->name }}" class="w-full h-full object-cover rounded-[14px]">
+                        @else
+                            <img src="https://ui-avatars.com/api/?name={{ urlencode($store->name) }}&background=0284c7&color=fff&size=100" alt="{{ $store->name }}" class="w-full h-full object-cover rounded-[14px]">
+                        @endif
+                    </div>
+                    <span class="absolute -bottom-1 -right-1 bg-sky-500 text-white rounded-full p-0.5 shadow-md flex items-center justify-center" title="Verified Store">
+                        <span class="material-symbols-outlined text-[13px]">verified</span>
+                    </span>
+                </div>
+
+                <!-- Info -->
+                <div class="flex-1 min-w-0 pt-0.5">
+                    <h1 class="text-base font-extrabold text-white leading-tight line-clamp-2 drop-shadow-md">
+                        {{ $store->name }}
+                    </h1>
+                    
+                    @if(!empty($store->description))
+                        <p class="text-[11px] text-white/80 line-clamp-1 mt-1 font-medium">
+                            {{ $store->description }}
+                        </p>
+                    @endif
+
+                    <!-- Interactive Stats Pills -->
+                    <div class="flex items-center gap-1.5 mt-2 flex-wrap text-[10px]">
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white/15 backdrop-blur-md border border-white/20 font-bold text-amber-300 shadow-2xs">
+                            <span>★</span> 4.8
+                        </span>
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white/15 backdrop-blur-md border border-white/20 font-semibold text-white/90 shadow-2xs">
+                            <span class="material-symbols-outlined text-[13px]">inventory_2</span>
+                            <span>{{ $products->total() }} Produk</span>
+                        </span>
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white/15 backdrop-blur-md border border-white/20 font-semibold text-white/90 shadow-2xs">
+                            <span class="material-symbols-outlined text-[13px]">group</span>
+                            <span x-text="followersCount + ' Pengikut'"></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Action & Social Row (Sejajar Sebaris: Chat, Ikuti, Share + Icon Sosmed) -->
+            @php $socialLinks = is_array($store->social_links) ? $store->social_links : []; @endphp
+            <div class="flex items-center gap-2 overflow-x-auto hide-scrollbar pt-1 pb-0.5">
+                @if(!auth()->check() || auth()->id() !== $store->user_id)
+                    <!-- Chat Button -->
+                    <button type="button" 
+                            @click="@auth window.dispatchEvent(new CustomEvent('open-chat-with-store', { 
+                                detail: { 
+                                    store_id: {{ $store->id }}, 
+                                    store_name: '{{ addslashes($store->name) }}',
+                                    store_slug: '{{ $store->slug }}',
+                                    store_logo: '{{ $store->logo ? asset('storage/' . $store->logo) : '' }}'
+                                } 
+                            })) @else window.location.href = '{{ route('login') }}' @endauth" 
+                            class="py-1.5 px-3 rounded-xl bg-white/15 hover:bg-white/25 active:scale-95 border border-white/25 backdrop-blur-md text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm shrink-0">
+                        <span class="material-symbols-outlined text-[16px]">chat</span>
+                        <span>Chat</span>
+                    </button>
+
+                    <!-- Follow Button -->
+                    <button type="button" 
+                            @click="toggleFollow()" 
+                            :class="isFollowing 
+                                ? 'bg-white/25 border-white/40 text-white' 
+                                : 'bg-primary hover:bg-primary/90 text-white border-primary shadow-md shadow-primary/30'"
+                            class="py-1.5 px-3 rounded-xl border active:scale-95 text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm shrink-0">
+                        <span class="material-symbols-outlined text-[16px]" x-text="isFollowing ? 'check' : 'person_add'"></span>
+                        <span x-text="isFollowing ? 'Mengikuti' : 'Ikuti'"></span>
+                    </button>
+                @endif
+
+                <!-- Share Store Button -->
+                <button type="button" 
+                        @click="shareStore()" 
+                        class="w-8 h-8 rounded-xl bg-white/15 hover:bg-white/25 active:scale-95 border border-white/25 backdrop-blur-md text-white transition-all flex items-center justify-center cursor-pointer shadow-sm shrink-0"
+                        title="Bagikan Toko">
+                    <span class="material-symbols-outlined text-[17px]">share</span>
+                </button>
+
+                @if(count($socialLinks) > 0)
+                    <!-- Pemisah Vertikal Halus -->
+                    <div class="w-px h-5 bg-white/25 shrink-0 mx-0.5"></div>
+
+                    <!-- Icon Sosmed Toko Sejajar dengan Tombol -->
+                    @foreach($socialLinks as $soc)
+                        @php
+                            $socPlatform = strtolower($soc['platform'] ?? 'custom');
+                            $socName = $soc['name'] ?? ucfirst($socPlatform);
+                            $socUrl = $soc['url'] ?? '#';
+                            $badgeStyle = match($socPlatform) {
+                                'instagram' => 'bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888] text-white shadow-rose-950/40',
+                                'tiktok' => 'bg-[#000000] text-white border border-white/30 shadow-black/60',
+                                'whatsapp' => 'bg-[#25D366] text-white shadow-emerald-950/40',
+                                'youtube' => 'bg-[#FF0000] text-white shadow-red-950/40',
+                                'facebook' => 'bg-[#1877F2] text-white shadow-blue-950/40',
+                                'x', 'twitter' => 'bg-black text-white border border-white/30',
+                                'telegram' => 'bg-[#229ED9] text-white shadow-sky-950/40',
+                                'github' => 'bg-[#24292e] text-white border border-white/20',
+                                default => 'bg-white/20 backdrop-blur-md text-white border border-white/30'
+                            };
+                        @endphp
+                        <a href="{{ $socUrl }}" 
+                           target="_blank" 
+                           rel="noopener noreferrer" 
+                           title="{{ $socName }}"
+                           class="w-8 h-8 rounded-full flex items-center justify-center shadow-md active:scale-90 hover:scale-110 transition-all shrink-0 {{ $badgeStyle }}">
+                            <x-store-social-icon :platform="$socPlatform" class="w-4 h-4 shrink-0" />
+                        </a>
+                    @endforeach
+                @elseif(auth()->check() && auth()->id() === $store->user_id)
+                    <div class="w-px h-5 bg-white/25 shrink-0 mx-0.5"></div>
+                    <a href="{{ route('tenant.store.index') }}" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[11px] font-bold bg-white/15 backdrop-blur-md border border-white/25 text-white hover:bg-white/25 transition-all shrink-0">
+                        <span class="material-symbols-outlined text-[15px]">add_circle</span>
+                        <span>+ Atur Sosmed</span>
+                    </a>
+                @endif
+            </div>
         </div>
     </div>
 
+    <!-- 3. DESKTOP STORE NAVIGATION (Layout desktop dipertahankan utuh) -->
+    <div class="hidden md:block bg-surface dark:bg-slate-900 border-b border-outline-variant sticky top-[64px] sm:top-[68px] z-40 shadow-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex overflow-x-auto hide-scrollbar">
+            <button @click="activeTab = 'beranda'" :class="activeTab === 'beranda' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant hover:text-primary'" class="px-6 py-4 font-bold border-b-2 border-transparent transition-colors whitespace-nowrap cursor-pointer">Beranda Toko</button>
+            <button @click="activeTab = 'produk'" :class="activeTab === 'produk' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant hover:text-primary'" class="px-6 py-4 font-bold border-b-2 border-transparent transition-colors whitespace-nowrap cursor-pointer">Semua Produk</button>
+            <button @click="activeTab = 'kategori'" :class="activeTab === 'kategori' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant hover:text-primary'" class="px-6 py-4 font-bold border-b-2 border-transparent transition-colors whitespace-nowrap cursor-pointer">Kategori</button>
+            <button @click="activeTab = 'profil'" :class="activeTab === 'profil' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant hover:text-primary'" class="px-6 py-4 font-bold border-b-2 border-transparent transition-colors whitespace-nowrap cursor-pointer">Profil Toko</button>
+        </div>
+    </div>
+
+    <!-- 4. MOBILE INTERACTIVE SEGMENTED NAVIGATION (Khusus Versi Mobile) -->
+    <div class="md:hidden sticky top-[64px] z-40 bg-surface/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-outline-variant/70 shadow-xs px-3 py-2 transition-colors">
+        <div class="flex items-center gap-1.5 overflow-x-auto hide-scrollbar">
+            <button @click="activeTab = 'beranda'" 
+                    :class="activeTab === 'beranda' 
+                        ? 'bg-primary text-white shadow-sm shadow-primary/30 font-bold' 
+                        : 'bg-surface-container text-on-surface-variant hover:text-on-surface font-semibold'" 
+                    class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs whitespace-nowrap transition-all active:scale-95 cursor-pointer shrink-0">
+                <span class="material-symbols-outlined text-[16px]">storefront</span>
+                <span>Beranda Toko</span>
+            </button>
+            <button @click="activeTab = 'produk'" 
+                    :class="activeTab === 'produk' 
+                        ? 'bg-primary text-white shadow-sm shadow-primary/30 font-bold' 
+                        : 'bg-surface-container text-on-surface-variant hover:text-on-surface font-semibold'" 
+                    class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs whitespace-nowrap transition-all active:scale-95 cursor-pointer shrink-0">
+                <span class="material-symbols-outlined text-[16px]">grid_view</span>
+                <span>Semua Produk</span>
+                <span class="px-1.5 py-0.2 rounded-full text-[10px] font-bold" 
+                      :class="activeTab === 'produk' ? 'bg-white/25 text-white' : 'bg-surface-container-high text-on-surface-variant'">
+                    {{ $products->total() }}
+                </span>
+            </button>
+            <button @click="activeTab = 'kategori'" 
+                    :class="activeTab === 'kategori' 
+                        ? 'bg-primary text-white shadow-sm shadow-primary/30 font-bold' 
+                        : 'bg-surface-container text-on-surface-variant hover:text-on-surface font-semibold'" 
+                    class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs whitespace-nowrap transition-all active:scale-95 cursor-pointer shrink-0">
+                <span class="material-symbols-outlined text-[16px]">category</span>
+                <span>Kategori</span>
+                <span class="px-1.5 py-0.2 rounded-full text-[10px] font-bold" 
+                      :class="activeTab === 'kategori' ? 'bg-white/25 text-white' : 'bg-surface-container-high text-on-surface-variant'">
+                    {{ $categories->count() }}
+                </span>
+            </button>
+            <button @click="activeTab = 'profil'" 
+                    :class="activeTab === 'profil' 
+                        ? 'bg-primary text-white shadow-sm shadow-primary/30 font-bold' 
+                        : 'bg-surface-container text-on-surface-variant hover:text-on-surface font-semibold'" 
+                    class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs whitespace-nowrap transition-all active:scale-95 cursor-pointer shrink-0">
+                <span class="material-symbols-outlined text-[16px]">info</span>
+                <span>Profil</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Active Search Filter Banner -->
+    @if(request('q') || request('search'))
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
+        <div class="p-3.5 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-between gap-3 text-xs">
+            <div class="flex items-center gap-2 text-on-surface min-w-0">
+                <span class="material-symbols-outlined text-primary text-[18px] shrink-0">filter_alt</span>
+                <span class="truncate">Hasil pencarian: <strong class="text-primary font-bold">"{{ request('q', request('search')) }}"</strong> ({{ $products->total() }} produk)</span>
+            </div>
+            <a href="{{ route('store.show', $store->slug) }}" class="px-3 py-1 rounded-xl bg-surface border border-outline-variant font-bold text-on-surface hover:text-primary transition-all shrink-0">
+                Reset
+            </a>
+        </div>
+    </div>
+    @endif
+
     <!-- Store Content (Dynamic Appearance) -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-5 md:py-8 space-y-6 md:space-y-8">
         
         <!-- Tab 1: Beranda -->
         <div x-show="activeTab === 'beranda'">
@@ -640,6 +946,35 @@
                             <h3 class="font-bold text-slate-700 mb-2 flex items-center gap-2"><span class="material-symbols-outlined text-primary text-xl">policy</span> Kebijakan Toko</h3>
                             <p class="text-slate-600 leading-relaxed">{{ $store->policy ?? 'Tidak ada kebijakan khusus yang ditetapkan.' }}</p>
                         </div>
+
+                        {{-- Tautan Media Sosial Resmi Toko --}}
+                        @php $socialLinks = is_array($store->social_links) ? $store->social_links : []; @endphp
+                        @if(count($socialLinks) > 0)
+                        <div>
+                            <h3 class="font-bold text-slate-700 mb-3 flex items-center gap-2">
+                                <span class="material-symbols-outlined text-primary text-xl">share</span> Media Sosial & Kontak Resmi Toko
+                            </h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                                @foreach($socialLinks as $soc)
+                                    @php
+                                        $socPlatform = strtolower($soc['platform'] ?? 'custom');
+                                        $socName = $soc['name'] ?? ucfirst($socPlatform);
+                                        $socUrl = $soc['url'] ?? '#';
+                                    @endphp
+                                    <a href="{{ $socUrl }}" target="_blank" rel="noopener noreferrer" class="p-3 rounded-xl border border-slate-200 hover:border-primary bg-slate-50/50 hover:bg-white transition-all flex items-center gap-3 group">
+                                        <div class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-primary flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-110 transition-transform">
+                                            <x-store-social-icon :platform="$socPlatform" class="w-4 h-4" />
+                                        </div>
+                                        <div class="min-w-0 flex-1">
+                                            <div class="text-xs font-bold text-slate-800 group-hover:text-primary transition-colors truncate">{{ $socName }}</div>
+                                            <div class="text-[10px] text-slate-400 truncate">{{ $socUrl }}</div>
+                                        </div>
+                                        <span class="material-symbols-outlined text-[16px] text-slate-400 group-hover:text-primary group-hover:translate-x-0.5 transition-all">open_in_new</span>
+                                    </a>
+                                @endforeach
+                            </div>
+                        </div>
+                        @endif
                     </div>
                     
                     <div class="bg-slate-50 p-6 rounded-xl border border-slate-100 h-fit space-y-4">

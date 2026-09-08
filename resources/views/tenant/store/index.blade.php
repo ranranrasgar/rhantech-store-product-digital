@@ -49,6 +49,9 @@
                 <button type="button" @click="tab = 'profil'" :class="tab === 'profil' ? 'text-sky-600 dark:text-sky-400 border-sky-600 dark:border-sky-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200'" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 flex items-center gap-2 cursor-pointer">
                     <span class="material-symbols-outlined text-[18px]">store</span> Profil Toko
                 </button>
+                <button type="button" @click="tab = 'sosmed'" :class="tab === 'sosmed' ? 'text-sky-600 dark:text-sky-400 border-sky-600 dark:border-sky-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200'" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 flex items-center gap-2 cursor-pointer">
+                    <span class="material-symbols-outlined text-[18px]">share</span> Media Sosial
+                </button>
                 <button type="button" @click="tab = 'rekening'" :class="tab === 'rekening' ? 'text-sky-600 dark:text-sky-400 border-sky-600 dark:border-sky-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200'" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 flex items-center gap-2 cursor-pointer">
                     <span class="material-symbols-outlined text-[18px]">credit_card</span> Rekening Bank
                 </button>
@@ -118,6 +121,33 @@
                             Gunakan huruf kecil, angka, atau strip (-). Contoh: <strong class="text-sky-600 dark:text-sky-400">gudang-aplikasi</strong> sehingga alamat tokomu menjadi <span class="font-mono text-[11px]">{{ url('/') }}/gudang-aplikasi</span>
                         </p>
                         @error('slug') <span class="text-xs text-rose-500 mt-1 block font-semibold">{{ $message }}</span> @enderror
+
+                        @if(!empty($store->slug))
+                        <div x-data="{ copied: false, url: '{{ url('/' . $store->slug) }}' }" 
+                             class="mt-3 p-3 rounded-2xl bg-sky-50/70 dark:bg-sky-950/20 border border-sky-200/80 dark:border-sky-800/40 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                            <div class="flex items-center gap-2 min-w-0 text-xs text-sky-800 dark:text-sky-300">
+                                <span class="material-symbols-outlined text-[18px] text-sky-500 shrink-0">link</span>
+                                <div class="truncate">
+                                    <span class="text-[10px] uppercase font-bold text-sky-600 dark:text-sky-400 block sm:inline mr-1">Tautan Publik:</span>
+                                    <strong class="font-mono text-xs select-all text-slate-900 dark:text-white">{{ url('/' . $store->slug) }}</strong>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 shrink-0">
+                                <button type="button" 
+                                        @click="navigator.clipboard.writeText(url); copied = true; setTimeout(() => copied = false, 2000)"
+                                        class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-1 cursor-pointer"
+                                        :class="copied ? 'bg-emerald-500 text-white' : 'bg-sky-500 hover:bg-sky-400 text-white'">
+                                    <span class="material-symbols-outlined text-[15px]" x-text="copied ? 'check' : 'content_copy'"></span>
+                                    <span x-text="copied ? 'Tersalin!' : 'Salin Bio Link'"></span>
+                                </button>
+                                <a href="{{ route('store.show', $store->slug) }}" target="_blank"
+                                   class="px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 border border-sky-200 dark:border-sky-800 text-xs font-bold text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-slate-700 transition-colors flex items-center gap-1 shadow-xs">
+                                    <span class="material-symbols-outlined text-[15px]">open_in_new</span>
+                                    <span>Tes Buka</span>
+                                </a>
+                            </div>
+                        </div>
+                        @endif
                     </div>
 
                     <!-- Deskripsi Toko -->
@@ -172,7 +202,148 @@
 
                 </div>
 
-                <!-- TAB 2: REKENING BANK -->
+                <!-- TAB 2: MEDIA SOSIAL TOKO -->
+                <div x-show="tab === 'sosmed'" class="space-y-6" style="display: none;"
+                     x-data="{
+                         platforms: [
+                             { key: 'instagram', name: 'Instagram', icon: 'photo_camera', placeholder: 'https://instagram.com/username' },
+                             { key: 'tiktok', name: 'TikTok', icon: 'music_video', placeholder: 'https://tiktok.com/@username' },
+                             { key: 'facebook', name: 'Facebook', icon: 'public', placeholder: 'https://facebook.com/namahalaman' },
+                             { key: 'youtube', name: 'YouTube', icon: 'smart_display', placeholder: 'https://youtube.com/@channel' },
+                             { key: 'whatsapp', name: 'WhatsApp', icon: 'chat', placeholder: '08123456789 atau 628123456789' },
+                             { key: 'x', name: 'X / Twitter', icon: 'tag', placeholder: 'https://x.com/username' },
+                             { key: 'telegram', name: 'Telegram', icon: 'send', placeholder: 'https://t.me/username' },
+                             { key: 'github', name: 'GitHub', icon: 'code', placeholder: 'https://github.com/username' },
+                             { key: 'website', name: 'Website / Portofolio', icon: 'language', placeholder: 'https://domainanda.com' },
+                             { key: 'custom', name: 'Custom Lainnya', icon: 'link', placeholder: 'https://...' }
+                         ],
+                         socialItems: {{ json_encode(!empty($store->social_links) && is_array($store->social_links) ? $store->social_links : [
+                             ['platform' => 'instagram', 'name' => 'Instagram', 'url' => ''],
+                             ['platform' => 'whatsapp', 'name' => 'WhatsApp', 'url' => '']
+                         ]) }},
+                         addItem(platformKey = 'custom') {
+                             const p = this.platforms.find(x => x.key === platformKey) || { name: 'Custom', key: 'custom' };
+                             this.socialItems.push({
+                                 platform: p.key,
+                                 name: p.name,
+                                 url: ''
+                             });
+                         },
+                         removeItem(index) {
+                             this.socialItems.splice(index, 1);
+                         },
+                         getIcon(platform) {
+                             const p = this.platforms.find(x => x.key === platform);
+                             return p ? p.icon : 'link';
+                         },
+                         getPlaceholder(platform) {
+                             const p = this.platforms.find(x => x.key === platform);
+                             return p ? p.placeholder : 'https://...';
+                         },
+                         onPlatformChange(index, event) {
+                             const selectedKey = event.target.value;
+                             const p = this.platforms.find(x => x.key === selectedKey);
+                             if (p && (!this.socialItems[index].name || this.platforms.some(pl => pl.name === this.socialItems[index].name))) {
+                                 this.socialItems[index].name = p.name;
+                             }
+                         }
+                     }">
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-900 dark:text-white mb-1 flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-[18px] text-sky-500">share</span> Tautan Media Sosial & Kontak Toko
+                        </h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">
+                            Tautan sosmed yang diisi di sini akan tampil interaktif di halaman toko (khususnya versi mobile) untuk memudahkan calon pembeli mengunjungi dan menghubungi Anda.
+                        </p>
+                    </div>
+
+                    <!-- Quick Add Platform Badges -->
+                    <div class="p-4 rounded-xl bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] space-y-2">
+                        <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
+                            + Tambah Cepat Platform
+                        </span>
+                        <div class="flex flex-wrap gap-2">
+                            <template x-for="p in platforms" :key="p.key">
+                                <button type="button" 
+                                        @click="addItem(p.key)"
+                                        class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-[#111726] border border-slate-200 dark:border-[#222f49] hover:border-sky-500 hover:text-sky-500 dark:hover:text-sky-400 text-slate-700 dark:text-slate-300 transition-all flex items-center gap-1.5 shadow-xs cursor-pointer">
+                                    <span class="material-symbols-outlined text-[15px]" x-text="p.icon"></span>
+                                    <span x-text="p.name"></span>
+                                </button>
+                            </template>
+                        </div>
+                    </div>
+
+                    <!-- Repeater List -->
+                    <div class="space-y-3">
+                        <template x-for="(item, index) in socialItems" :key="index">
+                            <div class="p-3.5 sm:p-4 rounded-xl bg-white dark:bg-[#0e1526] border border-slate-200 dark:border-[#222f49] shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center gap-3 transition-all hover:border-slate-300 dark:hover:border-slate-700">
+                                
+                                <!-- Platform Select -->
+                                <div class="w-full sm:w-44 shrink-0">
+                                    <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Platform</label>
+                                    <div class="relative flex items-center">
+                                        <span class="material-symbols-outlined absolute left-2.5 text-[18px] text-sky-500 pointer-events-none" x-text="getIcon(item.platform)"></span>
+                                        <select :name="`social_links[${index}][platform]`" 
+                                                x-model="item.platform" 
+                                                @change="onPlatformChange(index, $event)"
+                                                class="w-full pl-9 pr-7 py-2 text-xs bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-lg text-slate-900 dark:text-white focus:outline-none focus:border-sky-500 font-semibold cursor-pointer">
+                                            <template x-for="p in platforms" :key="p.key">
+                                                <option :value="p.key" x-text="p.name" :selected="p.key === item.platform"></option>
+                                            </template>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Custom Display Name -->
+                                <div class="w-full sm:w-48 shrink-0">
+                                    <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Nama Tampilan</label>
+                                    <input type="text" 
+                                           :name="`social_links[${index}][name]`" 
+                                           x-model="item.name" 
+                                           placeholder="Misal: IG Official"
+                                           class="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-lg text-slate-900 dark:text-white focus:outline-none focus:border-sky-500">
+                                </div>
+
+                                <!-- URL / Link Input -->
+                                <div class="flex-1 min-w-0">
+                                    <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Tautan URL / Username</label>
+                                    <input type="text" 
+                                           :name="`social_links[${index}][url]`" 
+                                           x-model="item.url" 
+                                           :placeholder="getPlaceholder(item.platform)"
+                                           class="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-lg text-slate-900 dark:text-white focus:outline-none focus:border-sky-500 font-mono">
+                                </div>
+
+                                <!-- Delete Button -->
+                                <div class="sm:self-end sm:pb-0.5 pt-1 sm:pt-0 flex justify-end">
+                                    <button type="button" 
+                                            @click="removeItem(index)" 
+                                            title="Hapus tautan ini"
+                                            class="p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-lg transition-colors cursor-pointer flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-[19px]">delete</span>
+                                        <span class="sm:hidden text-xs font-semibold ml-1">Hapus</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </template>
+
+                        <div x-show="socialItems.length === 0" class="p-6 text-center text-slate-400 text-xs border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl">
+                            Belum ada tautan media sosial. Klik tombol tambah di atas untuk menambahkan link Instagram, WhatsApp, TikTok, Facebook, dll.
+                        </div>
+                    </div>
+
+                    <div class="pt-2">
+                        <button type="button" 
+                                @click="addItem('custom')" 
+                                class="px-4 py-2 rounded-xl text-xs font-bold text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-950/30 border border-sky-200 dark:border-sky-800 hover:bg-sky-100 dark:hover:bg-sky-900/40 transition-colors flex items-center gap-1.5 cursor-pointer">
+                            <span class="material-symbols-outlined text-[16px]">add_circle</span>
+                            <span>Tambah Tautan Kustom</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- TAB 3: REKENING BANK -->
                 <div x-show="tab === 'rekening'" class="space-y-6" style="display: none;">
                     <div>
                         <h3 class="text-sm font-bold text-slate-900 dark:text-white mb-1 flex items-center gap-1.5">
