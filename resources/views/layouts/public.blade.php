@@ -251,7 +251,7 @@
                 <x-theme-toggle />
                 
                 @guest
-                    <a class="hidden md:inline-flex items-center justify-center px-5 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-lg font-label-md text-label-md font-bold shadow-md hover:shadow-lg transition-all hover:scale-105" href="{{ route('register') }}" wire:navigate>
+                    <a class="hidden md:inline-flex items-center justify-center px-5 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-lg font-label-md text-label-md font-bold shadow-md hover:shadow-lg transition-all hover:scale-105" href="{{ route('register') }}">
                         <span class="material-symbols-outlined text-[1rem] mr-1">storefront</span> Jualan Sekarang!
                     </a>
                 @else
@@ -326,7 +326,7 @@
                     </a>
 
                     @guest
-                        <a href="{{ route('login') }}" class="header-action-btn primary text-xs !py-1 !px-3" wire:navigate>Masuk</a>
+                        <a href="{{ route('login') }}" class="header-action-btn primary text-xs !py-1 !px-3">Masuk</a>
                     @else
                         <div class="relative" x-data="{ open: false }">
                             <button @click="open = !open" @click.outside="open = false" class="flex items-center focus:outline-none">
@@ -404,7 +404,7 @@
                 <h4 class="font-label-md text-label-md text-on-background dark:text-white font-bold mb-4 uppercase tracking-wider">Support</h4>
                 <ul class="flex flex-col gap-3">
                     <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/contact') }}" wire:navigate>Contact Us</a></li>
-                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ route('login') }}" wire:navigate>Admin Login</a></li>
+                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ route('login') }}">Admin Login</a></li>
                 </ul>
             </div>
         </div>

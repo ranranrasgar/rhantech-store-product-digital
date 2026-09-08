@@ -1,5 +1,5 @@
-<!-- PWA Installation Banner & Prompt (Android, iOS & Desktop) -->
-<div id="pwa-install-banner" class="fixed bottom-4 left-4 right-4 md:left-auto md:right-6 md:max-w-md z-50 transform translate-y-32 opacity-0 pointer-events-none transition-all duration-500 ease-out" style="display: none;">
+<!-- PWA Installation Banner & Prompt (Only on Mobile Device / HP) -->
+<div id="pwa-install-banner" class="block md:hidden fixed bottom-4 left-4 right-4 z-50 transform translate-y-32 opacity-0 pointer-events-none transition-all duration-500 ease-out" style="display: none;">
     <div class="relative overflow-hidden rounded-2xl bg-[#0a1628]/95 backdrop-blur-xl border border-cyan-500/40 p-4 shadow-[0_12px_36px_rgba(0,0,0,0.55)] text-white">
         <!-- Ambient Glow -->
         <div class="absolute -top-10 -right-10 w-28 h-28 bg-cyan-500/20 rounded-full blur-2xl pointer-events-none"></div>
@@ -52,6 +52,14 @@
 
 <script>
 (function() {
+    // Only show on mobile devices (HP / Smartphone)
+    const isMobileDevice = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(navigator.userAgent.toLowerCase()) || 
+                           (window.matchMedia && window.matchMedia('(max-width: 767px)').matches);
+
+    if (!isMobileDevice) {
+        return; // Do not show install prompt on desktop/PC
+    }
+
     // Check if already running in standalone PWA mode
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
                          window.navigator.standalone === true || 

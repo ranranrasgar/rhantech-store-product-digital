@@ -87,15 +87,14 @@
             <!-- Action Buttons -->
             <div class="space-y-2">
                 <a href="{{ route('register') }}"
-                   class="w-full py-2.5 px-4 rounded-xl bg-primary hover:bg-primary/90 text-white font-black text-xs shadow-md shadow-primary/20 flex items-center justify-center gap-1.5 transition-all hover:scale-[1.01] active:scale-98"
-                   wire:navigate>
+                   class="w-full py-2.5 px-4 rounded-xl bg-primary hover:bg-primary/90 text-white font-black text-xs shadow-md shadow-primary/20 flex items-center justify-center gap-1.5 transition-all hover:scale-[1.01] active:scale-98">
                     <span>Daftar & Klaim Saldo Sekarang</span>
                     <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
                 </a>
 
                 <div class="flex items-center justify-between text-[11px] px-1 pt-0.5 text-on-surface-variant">
                     <span>Sudah punya akun?</span>
-                    <a href="{{ route('login') }}" class="font-bold text-primary hover:underline" wire:navigate>
+                    <a href="{{ route('login') }}" class="font-bold text-primary hover:underline">
                         Masuk di sini
                     </a>
                 </div>

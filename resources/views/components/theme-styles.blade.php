@@ -58,8 +58,12 @@
     }
 
     /* Critical Utility Fallbacks - Prevents FOUC before Tailwind CDN initializes */
-    .hidden, [hidden] {
+    [hidden] {
         display: none !important;
+    }
+
+    .hidden:not([class*="md:"]):not([class*="lg:"]):not([class*="sm:"]) {
+        display: none;
     }
 
     .sr-only {

@@ -7,7 +7,6 @@
     <title>Lupa Password — {{ $company->company_name ?? 'Rhantech' }}</title>
     <link rel="icon" type="image/png" href="{{ isset($company) && $company->favicon ? '/storage/'.$company->favicon : '/favicon.ico' }}" />
     <link rel="shortcut icon" type="image/png" href="{{ isset($company) && $company->favicon ? '/storage/'.$company->favicon : '/favicon.ico' }}" />
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script>
         tailwind.config = {
             darkMode: "class",
@@ -27,6 +26,9 @@
             }
         }
     </script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    @vite(['resources/css/app.css'])
+    @include('components.theme-styles')
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
