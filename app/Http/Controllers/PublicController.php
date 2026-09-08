@@ -21,6 +21,15 @@ class PublicController extends Controller
         $testimonials = Testimonial::query()->with('client')->where('is_active', true)->latest()->get();
         $popupAd = \App\Models\PopupAd::query()->where('is_active', true)->latest()->first();
 
+        // Aplikasi / produk digital yang sering dilihat calon pembeli
+        $popularProducts = Product::query()
+            ->with(['images', 'category', 'type', 'store', 'reviews'])
+            ->published()
+            ->orderByDesc('views')
+            ->orderByDesc('sales_count')
+            ->take(4)
+            ->get();
+
         // 10 Toko Terfavorit & Terlaris (Berdasarkan total penjualan berhasil / produk)
         $topStores = \App\Models\Store::query()
             ->with(['products' => function ($q) {
