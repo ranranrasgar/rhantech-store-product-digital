@@ -60,14 +60,16 @@
                         <span class="text-[11px] text-slate-400 mt-1 block">Komisi yang didapatkan mitra dari harga produk pada setiap transaksi sukses</span>
                     </div>
 
-                    <!-- Kode Referral Unik -->
+                    <!-- Kode Referral Otomatis Preview -->
                     <div>
                         <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
-                            Kode Referral Khusus
+                            Kode Referral (Otomatis dari Nama Akun)
                         </label>
-                        <input type="text" name="referral_code" id="referralCodeInput" value="{{ old('referral_code') }}" placeholder="Otomatis dari nama akun" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-[#222f49] bg-slate-50 dark:bg-[#0c1220] text-sm uppercase font-mono text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition">
-                        @error('referral_code') <span class="text-rose-500 text-xs mt-1 block">{{ $message }}</span> @enderror
-                        <span class="text-[11px] text-slate-400 mt-1 block">Biarkan kosong agar sistem otomatis membuatkan kode referral dari nama akun.</span>
+                        <div class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-[#222f49] bg-slate-100/70 dark:bg-[#0c1220]/70 text-sm font-mono font-bold text-sky-600 dark:text-sky-400 flex items-center justify-between">
+                            <span id="previewRefCode">Pilih akun di atas...</span>
+                            <span class="material-symbols-outlined text-[16px] text-slate-400">auto_awesome</span>
+                        </div>
+                        <span class="text-[11px] text-slate-400 mt-1 block">Kode dibuat otomatis dari nama akun saat disimpan.</span>
                     </div>
                 </div>
 
@@ -101,9 +103,11 @@
     document.getElementById('userSelect').addEventListener('change', function() {
         const selected = this.options[this.selectedIndex];
         const alias = selected.getAttribute('data-alias');
-        const refInput = document.getElementById('referralCodeInput');
-        if (alias && !refInput.value) {
-            refInput.placeholder = alias.toUpperCase().replace(/[^A-Z0-9]/g, '').substring(0, 8);
+        const preview = document.getElementById('previewRefCode');
+        if (alias) {
+            preview.innerText = alias.toUpperCase().replace(/[^A-Z0-9]/g, '').substring(0, 10);
+        } else {
+            preview.innerText = 'Pilih akun di atas...';
         }
     });
 </script>

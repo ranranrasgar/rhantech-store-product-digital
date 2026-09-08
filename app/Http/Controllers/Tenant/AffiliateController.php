@@ -62,22 +62,30 @@ class AffiliateController extends Controller
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
             'commission_rate' => 'required|numeric|min:0|max:100',
-            'referral_code' => 'nullable|string|max:50|unique:affiliates,referral_code',
         ]);
 
         $targetUser = \App\Models\User::with('store')->findOrFail($validated['user_id']);
         $hasStore = $targetUser->store;
 
-        // Generate referral code jika kosong berdasarkan nama user atau slug toko
-        if (empty($validated['referral_code'])) {
-            $rawBase = $hasStore ? $hasStore->slug : $targetUser->name;
-            $base = strtoupper(preg_replace('/[^A-Za-z0-9]/', '', $rawBase));
-            $base = substr($base, 0, 8);
-            if (empty($base)) $base = 'AFF';
-            $validated['referral_code'] = $base . rand(10, 99);
-        } else {
-            $validated['referral_code'] = strtoupper(preg_replace('/[^A-Za-z0-9_-]/', '', $validated['referral_code']));
+        // Otomatis buat Kode Referral berdasarkan nama akun user
+        $rawName = $targetUser->name;
+        $cleanBase = strtoupper(preg_replace('/[^A-Za-z0-9]/', '', $rawName));
+        $cleanBase = substr($cleanBase, 0, 10);
+        if (empty($cleanBase)) {
+            $cleanBase = 'USER' . $targetUser->id;
         }
+
+        $referralCode = $cleanBase;
+        $counter = 1;
+        while (\App\Models\Affiliate::where('referral_code', $referralCode)->exists()) {
+            $referralCode = $cleanBase . rand(10, 99);
+            $counter++;
+            if ($counter > 5) {
+                $referralCode = $cleanBase . rand(100, 999);
+                break;
+            }
+        }
+        $validated['referral_code'] = $referralCode;
 
         $validated['store_id'] = $currentStore ? $currentStore->id : null;
         $validated['affiliate_store_id'] = $hasStore ? $hasStore->id : null;
