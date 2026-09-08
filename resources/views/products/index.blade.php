@@ -129,8 +129,8 @@
     }
 </style>
 
-<main class="pt-[70px] md:pt-[108px] pb-16 min-h-screen">
-<div class="max-w-[1280px] mx-auto px-4 md:px-6">
+<main class="pt-[60px] md:pt-[108px] pb-16 min-h-screen">
+<div class="max-w-[1280px] mx-auto px-2 md:px-6">
 
     {{-- ── HERO STRIP WITH TOP PRODUCTS (PRODUK UNGGULAN PALING BANYAK DIKLIK) - HIDDEN ON MOBILE ── --}}
     <div class="hero-strip p-5 md:p-6 mb-6 hidden md:flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-6">
@@ -521,7 +521,7 @@
             </div>
         </div>
 
-        <div class="flex flex-col lg:flex-row gap-6 items-start">
+        <div class="flex flex-col lg:flex-row gap-3 md:gap-6 items-start">
             
             {{-- ── DESKTOP SIDEBAR FILTER (LEFT SIDE) ── --}}
             <aside class="hidden lg:block w-72 shrink-0">

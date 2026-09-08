@@ -38,13 +38,13 @@
     </div>
 
     {{-- Info --}}
-    <div class="p-3 flex flex-col flex-1">
-        <h3 class="text-sm text-gray-800 dark:text-gray-100 font-semibold line-clamp-2 leading-snug mb-1.5 group-hover:text-primary transition-colors flex-1">
+    <div class="p-2 md:p-3 flex flex-col flex-1">
+        <h3 class="text-xs md:text-sm text-gray-800 dark:text-gray-100 font-semibold line-clamp-2 leading-snug mb-1 md:mb-1.5 group-hover:text-primary transition-colors flex-1">
             {{ $product->name }}
         </h3>
 
-        {{-- Store Name Snippet --}}
-        <div class="flex items-center gap-1.5 mb-1.5 text-[11px] text-gray-500 dark:text-gray-400">
+        {{-- Store Name Snippet - hidden on mobile --}}
+        <div class="hidden md:flex items-center gap-1.5 mb-1.5 text-[11px] text-gray-500 dark:text-gray-400">
             <span class="material-symbols-outlined text-[13px] text-primary">storefront</span>
             <span class="truncate font-medium hover:underline">{{ $product->store ? $product->store->name : ($company->company_name ?? 'Official Store') }}</span>
         </div>
@@ -60,28 +60,30 @@
                 $displaySoldCatalog = $soldCountCatalog > 0 ? $soldCountCatalog : 12;
             }
         @endphp
+        {{-- Short description - hidden on mobile --}}
         @if(!empty($shortCatalogDesc))
-            <p class="text-[11px] text-gray-400 dark:text-gray-400 line-clamp-2 mb-2 leading-relaxed font-normal" title="{{ $shortCatalogDesc }}">
+            <p class="hidden md:block text-[11px] text-gray-400 dark:text-gray-400 line-clamp-2 mb-2 leading-relaxed font-normal" title="{{ $shortCatalogDesc }}">
                 {{ $shortCatalogDesc }}
             </p>
         @endif
 
         @if($hasDiscount)
-        <p class="text-xs text-gray-400 line-through mb-0.5">
+        <p class="text-[10px] md:text-xs text-gray-400 line-through mb-0.5">
             Rp{{ number_format($product->price, 0, ',', '.') }}
         </p>
         @endif
 
-        <div class="flex items-end justify-between mt-auto pt-1.5 border-t border-gray-100 dark:border-gray-800">
-            <p class="text-primary font-extrabold text-base leading-none">
+        <div class="flex items-end justify-between mt-auto pt-1 md:pt-1.5 border-t border-gray-100 dark:border-gray-800">
+            <p class="text-primary font-extrabold text-sm md:text-base leading-none">
                 Rp{{ number_format($price, 0, ',', '.') }}
             </p>
-            <div class="flex items-center gap-2 text-[10px] text-gray-400">
-                <span class="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-semibold px-1.5 py-0.5 rounded">
+            <div class="flex items-center gap-1 md:gap-2 text-[9px] md:text-[10px] text-gray-400">
+                {{-- Sold count - hidden on mobile to save space --}}
+                <span class="hidden md:inline bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-semibold px-1.5 py-0.5 rounded">
                     {{ $displaySoldCatalog }} Terjual
                 </span>
                 <span class="flex items-center gap-0.5 text-amber-500 font-bold">
-                    <span class="material-symbols-outlined text-[11px] fill-current">star</span>
+                    <span class="material-symbols-outlined text-[10px] md:text-[11px] fill-current">star</span>
                     <span>{{ number_format($product->effective_rating, 1) }}</span>
                 </span>
             </div>

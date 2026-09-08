@@ -1,5 +1,5 @@
-<!-- Result Stats Bar -->
-<div class="flex flex-wrap items-center justify-between gap-3 mb-4 pb-3 border-b border-gray-200 dark:border-gray-700">
+<!-- Result Stats Bar - hidden on mobile -->
+<div class="hidden md:flex flex-wrap items-center justify-between gap-3 mb-4 pb-3 border-b border-gray-200 dark:border-gray-700">
     <p class="text-xs md:text-sm text-gray-500 dark:text-gray-400">
         Menampilkan <span class="font-bold text-gray-800 dark:text-white">{{ $products->total() ?? $products->count() }}</span> produk digital
         @if(request('search'))
@@ -9,7 +9,7 @@
 </div>
 
 <!-- Products Grid -->
-<div id="products-items-grid" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-3 md:gap-4"
+<div id="products-items-grid" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-2 md:gap-4"
      data-current-page="{{ $products->currentPage() }}"
      data-last-page="{{ $products->lastPage() }}"
      data-has-more="{{ $products->hasMorePages() ? '1' : '0' }}">
