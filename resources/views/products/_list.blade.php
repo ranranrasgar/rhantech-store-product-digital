@@ -62,7 +62,9 @@
             </div>
 
             @php
-                $shortCatalogDesc = Str::limit(strip_tags($product->description ?? ''), 55);
+                $shortCatalogDesc = !empty($product->short_description) 
+                    ? trim($product->short_description) 
+                    : Str::limit(trim(preg_replace('/\s+/', ' ', strip_tags($product->description ?? ''))), 70);
                 $soldCountCatalog = $product->sales_count ?: ($product->orders_count ?? 0);
                 if ($soldCountCatalog < 5 && $product->id % 2 === 0) {
                     $displaySoldCatalog = $soldCountCatalog > 0 ? $soldCountCatalog : (10 + ($product->id % 15));
@@ -71,7 +73,7 @@
                 }
             @endphp
             @if(!empty($shortCatalogDesc))
-                <p class="text-[11px] text-gray-400 dark:text-gray-400 line-clamp-2 mb-2 leading-relaxed font-normal">
+                <p class="text-[11px] text-gray-400 dark:text-gray-400 line-clamp-2 mb-2 leading-relaxed font-normal" title="{{ $shortCatalogDesc }}">
                     {{ $shortCatalogDesc }}
                 </p>
             @endif

@@ -88,10 +88,13 @@
                 $ratingDisplay = $prod->effective_rating;
                 $reviewsDisplayCount = $prod->effective_reviews_count;
 
-                // Sort description (full text agar bisa dibaca calon pembeli)
-                $descText = !empty($prod->short_description) 
-                    ? trim($prod->short_description) 
-                    : trim(strip_tags($prod->description ?? ''));
+                // Sort description: Utamakan isi Short Description resmi toko. Jika kosong, baru ambil cuplikan sebagian dari full deskripsi
+                if (!empty($prod->short_description)) {
+                    $descText = trim($prod->short_description);
+                } else {
+                    $cleanDesc = trim(preg_replace('/\s+/', ' ', strip_tags($prod->description ?? '')));
+                    $descText = Str::limit($cleanDesc, 110, '...');
+                }
             @endphp
             <a href="{{ route('products.show', $prod->slug) }}" class="group bg-surface dark:bg-surface-container-low rounded-xl border border-outline-variant/60 hover:border-primary/50 overflow-hidden shadow-xs hover:shadow-md transition-all duration-200 flex flex-col hover:-translate-y-1" wire:navigate>
                 <div class="relative aspect-4/3 w-full bg-surface-container overflow-hidden">
