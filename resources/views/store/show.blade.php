@@ -7,7 +7,7 @@
 @endphp
 
 @section('content')
-<main class="min-h-screen bg-surface-container-lowest"
+<div class="min-h-screen bg-surface-container-lowest"
     x-data="{ 
         activeTab: 'beranda',
         isFollowing: {{ $isFollowing ? 'true' : 'false' }},
@@ -89,7 +89,7 @@
     </div>
 
     <!-- Store Navigation -->
-    <div class="bg-surface dark:bg-slate-900 border-b border-outline-variant sticky top-16 z-40 shadow-xs">
+    <div class="bg-surface dark:bg-slate-900 border-b border-outline-variant sticky top-[64px] sm:top-[68px] z-40 shadow-xs">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex overflow-x-auto hide-scrollbar">
             <button @click="activeTab = 'beranda'" :class="activeTab === 'beranda' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant hover:text-primary'" class="px-6 py-4 font-bold border-b-2 border-transparent transition-colors whitespace-nowrap">Beranda Toko</button>
             <button @click="activeTab = 'produk'" :class="activeTab === 'produk' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant hover:text-primary'" class="px-6 py-4 font-bold border-b-2 border-transparent transition-colors whitespace-nowrap">Semua Produk</button>

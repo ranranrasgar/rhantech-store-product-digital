@@ -706,9 +706,44 @@
     </section>
     @endif
 
+    {{-- KATEGORI PRODUK DIGITAL (MOBILE HORIZONTAL CHIP SCROLLER) --}}
+    @if(isset($categories) && $categories->count() > 0)
+    <section class="py-3 px-3 border-b border-outline-variant/30 bg-surface/30">
+        <div class="flex items-center justify-between gap-2 mb-2 px-1">
+            <div class="flex items-center gap-1.5">
+                <span class="p-1 rounded-lg bg-cyan-500/10 text-primary flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-[15px]">category</span>
+                </span>
+                <h2 class="text-xs font-black text-on-background dark:text-white uppercase tracking-wider">Kategori Pilihan</h2>
+            </div>
+            <a href="{{ route('products.index') }}" class="text-[11px] font-bold text-primary hover:underline" wire:navigate>
+                Katalog
+            </a>
+        </div>
+        <div class="flex items-center gap-2 overflow-x-auto hide-scrollbar pb-1 -mx-3 px-3">
+            <a href="{{ route('products.index') }}" 
+               class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-primary text-white shadow-xs shrink-0"
+               wire:navigate>
+                <span class="material-symbols-outlined text-[14px]">apps</span>
+                <span>Semua</span>
+            </a>
+            @foreach($categories as $cat)
+                <a href="{{ route('products.index', ['category' => $cat->id]) }}" 
+                   class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold bg-surface dark:bg-slate-800 border border-outline-variant hover:border-primary text-on-surface dark:text-gray-200 shrink-0 shadow-xs transition-colors"
+                   wire:navigate>
+                    <span>{{ $cat->name }}</span>
+                    @if($cat->products_count > 0)
+                        <span class="text-[9px] px-1.5 py-0.2 rounded-full bg-surface-container dark:bg-slate-700 text-on-surface-variant font-bold">{{ $cat->products_count }}</span>
+                    @endif
+                </a>
+            @endforeach
+        </div>
+    </section>
+    @endif
+
     {{-- PRODUK POPULER (2-COLUMN COMPACT MOBILE GRID) --}}
     @if(isset($popularProducts) && $popularProducts->count() > 0)
-    <section class="py-4 px-3 max-w-[1280px] mx-auto">
+    <section class="py-4 px-3 max-w-[1280px] mx-auto border-b border-outline-variant/30">
         <div class="flex items-center justify-between gap-2 mb-3 px-1">
             <div class="flex items-center gap-1.5">
                 <span class="p-1 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
@@ -770,5 +805,100 @@
         </div>
     </section>
     @endif
+
+    {{-- KATALOG PRODUK TERBARU (MOBILE 2-COLUMN GRID) --}}
+    @if(isset($latestProducts) && $latestProducts->count() > 0)
+    <section class="py-4 px-3 max-w-[1280px] mx-auto">
+        <div class="flex items-center justify-between gap-2 mb-3 px-1">
+            <div class="flex items-center gap-1.5">
+                <span class="p-1 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-[16px]">new_releases</span>
+                </span>
+                <h2 class="text-xs font-black text-on-background dark:text-white uppercase tracking-wider">Koleksi Terbaru</h2>
+            </div>
+            <a href="{{ route('products.index') }}" class="inline-flex items-center gap-0.5 text-[11px] font-bold text-primary hover:underline shrink-0" wire:navigate>
+                Katalog Lengkap <span class="material-symbols-outlined text-[12px]">arrow_forward</span>
+            </a>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+            @foreach($latestProducts as $prod)
+            @php
+                $mainImg = $prod->images->where('is_main', true)->first() ?? $prod->images->first();
+                $hasDiscount = $prod->discount_price && $prod->discount_price > 0 && $prod->discount_price < $prod->price;
+                $effectivePrice = $hasDiscount ? $prod->discount_price : $prod->price;
+                $ratingDisplay = $prod->effective_rating;
+            @endphp
+            <a href="{{ route('products.show', $prod->slug) }}"
+               class="group bg-surface rounded-xl border border-outline-variant hover:border-primary/40 overflow-hidden shadow-xs transition-all flex flex-col"
+               wire:navigate>
+                <div class="relative aspect-square w-full bg-surface-container overflow-hidden">
+                    @if($mainImg)
+                        <img src="{{ asset('storage/' . $mainImg->image_path) }}" alt="{{ $prod->name }}"
+                             class="w-full h-full object-cover object-top" loading="lazy">
+                    @else
+                        <div class="w-full h-full flex items-center justify-center text-outline-variant bg-surface-container-high">
+                            <span class="material-symbols-outlined text-2xl">inventory_2</span>
+                        </div>
+                    @endif
+                    @if($hasDiscount)
+                    <span class="absolute top-1 left-1 bg-red-500 text-white text-[8px] font-black px-1.5 py-0.5 rounded shadow">
+                        -{{ round((($prod->price - $prod->discount_price) / $prod->price) * 100) }}%
+                    </span>
+                    @endif
+                    <div class="absolute bottom-1 right-1 bg-black/60 backdrop-blur-xs text-white text-[8.5px] font-medium px-1.5 py-0.5 rounded flex items-center gap-0.5">
+                        <span class="material-symbols-outlined text-[9px]">visibility</span>
+                        <span>{{ number_format($prod->views ?? 0) }}</span>
+                    </div>
+                </div>
+                <div class="p-2 flex flex-col flex-1">
+                    <h3 class="text-xs font-semibold text-on-background dark:text-white line-clamp-2 leading-tight mb-1">
+                        {{ $prod->name }}
+                    </h3>
+                    @if($hasDiscount)
+                    <p class="text-[9px] text-on-surface-variant line-through leading-none mb-0.5">Rp{{ number_format($prod->price, 0, ',', '.') }}</p>
+                    @endif
+                    <div class="flex items-end justify-between mt-auto pt-1 border-t border-outline-variant/30">
+                        <p class="text-xs font-black text-primary leading-tight">Rp{{ number_format($effectivePrice, 0, ',', '.') }}</p>
+                        <span class="flex items-center gap-0.5 text-amber-500 font-bold text-[9.5px]">
+                            <span class="material-symbols-outlined text-[10px] fill-current">star</span>
+                            <span>{{ number_format((float)$ratingDisplay, 1) }}</span>
+                        </span>
+                    </div>
+                </div>
+            </a>
+            @endforeach
+        </div>
+
+        <div class="mt-4 text-center">
+            <a href="{{ route('products.index') }}" 
+               class="inline-flex items-center justify-center gap-1.5 w-full py-2.5 rounded-xl bg-surface dark:bg-slate-800 border border-outline-variant text-xs font-bold text-on-surface dark:text-white shadow-xs hover:border-primary transition-colors"
+               wire:navigate>
+                <span>Buka Semua Produk & Filter Toko</span>
+                <span class="material-symbols-outlined text-[16px] text-primary">storefront</span>
+            </a>
+        </div>
+    </section>
+    @endif
+
+    {{-- MOBILE FOOTER --}}
+    <footer class="mt-8 py-6 px-4 bg-surface-container dark:bg-slate-900 border-t border-outline-variant/40 text-center text-xs text-on-surface-variant">
+        <div class="flex items-center justify-center gap-2 mb-2 font-black text-sm text-on-background dark:text-white">
+            <img src="{{ isset($company) && $company->logo ? asset('storage/' . $company->logo) : asset('logo.png') }}" alt="{{ $company->company_name ?? 'rhantech' }}" class="h-6 w-auto">
+            <span>{{ $company->company_name ?? 'rhantech' }}</span>
+        </div>
+        <p class="text-[11px] leading-relaxed max-w-xs mx-auto mb-4 text-on-surface-variant/80">
+            Platform belanja produk digital, source code, sistem dan layanan IT terpercaya.
+        </p>
+        <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[11px] font-semibold text-primary mb-4">
+            <a href="{{ route('products.index') }}" wire:navigate>Produk & Toko</a>
+            <a href="{{ route('projects.index') }}" wire:navigate>Portfolio</a>
+            <a href="{{ route('about') }}" wire:navigate>Tentang Kami</a>
+            <a href="{{ url('/contact') }}" wire:navigate>Kontak</a>
+            <a href="{{ route('tenant.dashboard') }}" wire:navigate>Area Mitra</a>
+        </div>
+        <div class="text-[10px] text-on-surface-variant/60 pt-2 border-t border-outline-variant/30">
+            © {{ date('Y') }} {{ $company->company_name ?? 'rhantech' }}. All rights reserved.
+        </div>
+    </footer>
 </div>
 @endsection

@@ -129,7 +129,7 @@
     }
 </style>
 
-<main class="pt-[60px] md:pt-[108px] pb-16 min-h-screen">
+<div class="pt-3 md:pt-6 pb-16 min-h-screen">
 <div class="max-w-[1280px] mx-auto px-2 md:px-6">
 
     {{-- ── HERO STRIP WITH TOP PRODUCTS (PRODUK UNGGULAN PALING BANYAK DIKLIK) - HIDDEN ON MOBILE ── --}}
@@ -473,7 +473,7 @@
     }">
 
         {{-- ── MOBILE SHOPEE-STYLE SUB-HEADER (TABS & FILTER ICON) ── --}}
-        <div class="md:hidden sticky top-[68px] z-30 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 -mx-4 px-4 py-2 mb-3 shadow-xs">
+        <div class="md:hidden sticky top-[104px] z-30 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 -mx-4 px-4 py-2 mb-3 shadow-xs">
             <div class="flex items-center justify-between gap-2 overflow-x-auto hide-scrollbar">
                 {{-- Quick Sort Pills --}}
                 <div class="flex items-center gap-1.5 flex-1 overflow-x-auto hide-scrollbar py-0.5">
@@ -533,6 +533,7 @@
             {{-- ── MOBILE SHOPEE-STYLE FILTER SLIDE-OVER DRAWER ── --}}
             <div x-show="mobileFilterOpen" 
                  x-cloak
+                 style="display: none;"
                  class="fixed inset-0 z-50 overflow-hidden lg:hidden" 
                  aria-labelledby="slide-over-title" 
                  role="dialog" 
@@ -594,10 +595,11 @@
             </div>
 
             {{-- ── PRODUCTS GRID & RESULTS (RIGHT SIDE) ── --}}
-            <main class="flex-1 w-full min-w-0 relative">
+            <div class="flex-1 w-full min-w-0 relative">
                 {{-- Loading Indicator Overlay --}}
                 <div x-show="loading" 
                      x-cloak
+                     style="display: none;"
                      x-transition:enter="transition ease-out duration-150"
                      x-transition:enter-start="opacity-0"
                      x-transition:enter-end="opacity-100"
@@ -618,11 +620,11 @@
                 <div id="products-grid-container" class="transition-opacity duration-200" :class="loading ? 'opacity-40' : 'opacity-100'">
                     @include('products._list', ['products' => $products])
                 </div>
-            </main>
+            </div>
 
         </div>
     </section>
 
 </div>
-</main>
+</div>
 @endsection

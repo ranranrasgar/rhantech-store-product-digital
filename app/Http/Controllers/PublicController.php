@@ -91,7 +91,27 @@ class PublicController extends Controller
             ->values()
             ->take(10);
 
-        return view('welcome', compact('services', 'projects', 'clients', 'testimonials', 'popupAd', 'popularProducts', 'topStores'));
+        // Kategori produk aktif untuk navigasi cepat mobile
+        $categories = \App\Models\ProductCategory::select(['id', 'name'])
+            ->whereHas('products', function ($q) {
+                $q->published();
+            })
+            ->withCount(['products' => function ($q) {
+                $q->published();
+            }])
+            ->orderBy('name', 'asc')
+            ->take(12)
+            ->get();
+
+        // 12 Produk terbaru untuk katalog jelajah mobile
+        $latestProducts = Product::query()
+            ->with(['images', 'category', 'type', 'store', 'reviews'])
+            ->published()
+            ->latest()
+            ->take(12)
+            ->get();
+
+        return view('welcome', compact('services', 'projects', 'clients', 'testimonials', 'popupAd', 'popularProducts', 'topStores', 'categories', 'latestProducts'));
     }
 
     public function projects(Request $request)

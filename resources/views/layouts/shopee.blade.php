@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="scroll-smooth" lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
@@ -15,8 +15,6 @@
     <meta name="twitter:card" content="summary_large_image"/>
     <link rel="icon" type="image/png" href="{{ isset($company) && $company->favicon ? '/storage/'.$company->favicon : '/favicon.ico' }}" />
     <link rel="shortcut icon" type="image/png" href="{{ isset($company) && $company->favicon ? '/storage/'.$company->favicon : '/favicon.ico' }}" />
-    <!-- Alpine.js for interactive components like dropdowns -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com" rel="preconnect"/>
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -135,7 +133,6 @@
         }
     </style>
 @livewireStyles
-</head>
 <style>
 /* ── Modern Tech Header ── */
 .site-header {
@@ -230,6 +227,8 @@
 .search-tag:hover { color: #00d4ff; }
 .search-tag-sep { color: rgba(255,255,255,0.2); margin: 0 2px; }
 </style>
+</head>
+<body class="bg-[#f8fafc] dark:bg-[#0a1628] text-gray-800 dark:text-gray-100 font-body-md antialiased flex flex-col min-h-screen">
 
 <header class="site-header">
     {{-- Top micro bar --}}
@@ -320,7 +319,7 @@
     </div>
 </header>
 
-    <main class="flex-1 mt-[90px] md:mt-[108px]">
+    <main class="flex-1 mt-[105px] md:mt-[112px]">
         @yield('content')
     </main>
 

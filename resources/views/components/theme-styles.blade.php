@@ -42,10 +42,26 @@
         transition: background-color 180ms ease, color 180ms ease;
     }
 
+    [x-cloak] {
+        display: none !important;
+    }
+
+    html {
+        -webkit-overflow-scrolling: touch;
+        scroll-behavior: smooth;
+    }
+
+    /* Prevent accidental horizontal page blowout on mobile without breaking vertical scroll */
+    html, body {
+        max-width: 100%;
+        overflow-x: clip;
+    }
+
     @media (prefers-reduced-motion: reduce) {
         html,
         body {
             transition: none;
+            scroll-behavior: auto;
         }
     }
 </style>
