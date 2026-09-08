@@ -7,31 +7,30 @@
     <div class="max-w-7xl mx-auto space-y-8">
 
         <!-- Header Hero & Quick Info -->
-        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#0f172a] via-[#1e293b] to-[#0284c7] dark:from-[#0b1329] dark:via-[#111c38] dark:to-[#0369a1] text-white p-6 md:p-8 shadow-xl border border-white/10">
-            <!-- Background Glow Effects -->
-            <div class="absolute -top-24 -right-24 w-72 h-72 bg-sky-500/20 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="absolute -bottom-24 -left-24 w-72 h-72 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#00687a] via-[#00838f] to-[#0284c7] text-white p-6 md:p-8 shadow-md border border-teal-500/20">
+            <!-- Subtle soft ambient light -->
+            <div class="absolute -top-16 -right-16 w-64 h-64 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
 
             <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                 <div class="flex items-center gap-4">
-                    <div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl p-1 bg-white/10 backdrop-blur-md border border-white/20 shadow-inner overflow-hidden shrink-0">
+                    <div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl p-1 bg-white/20 backdrop-blur-md border border-white/30 shadow-sm overflow-hidden shrink-0">
                         @if($store && $store->logo)
                             <img src="{{ asset('storage/' . $store->logo) }}" alt="{{ $store->name }}" class="w-full h-full object-cover rounded-xl">
                         @else
-                            <div class="w-full h-full bg-gradient-to-tr from-sky-500 to-indigo-600 rounded-xl flex items-center justify-center font-black text-2xl text-white">
+                            <div class="w-full h-full bg-white/20 rounded-xl flex items-center justify-center font-black text-2xl text-white">
                                 {{ strtoupper(substr($store->name ?? 'T', 0, 2)) }}
                             </div>
                         @endif
                     </div>
                     <div>
-                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-xs font-semibold text-sky-200 mb-2">
-                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md border border-white/25 text-xs font-semibold text-teal-100 mb-2">
+                            <span class="w-2 h-2 rounded-full bg-emerald-300 animate-pulse"></span>
                             Merchant Partner
                         </div>
                         <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight text-white flex items-center gap-2">
                             {{ $store->name ?? 'Toko Saya' }}
                         </h1>
-                        <p class="text-xs md:text-sm text-slate-300 mt-1 max-w-xl line-clamp-1">
+                        <p class="text-xs md:text-sm text-teal-100 mt-1 max-w-xl line-clamp-1">
                             {{ $store->description ?: 'Kelola produk digital, pantau penjualan, dan tingkatkan penghasilan Anda.' }}
                         </p>
                     </div>
@@ -40,12 +39,12 @@
                 <!-- Action Hub Buttons -->
                 <div class="flex flex-wrap items-center gap-3">
                     @if($store && $store->slug)
-                    <a href="{{ route('store.show', $store->slug) }}" target="_blank" class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white text-xs md:text-sm font-semibold transition-all duration-200 flex items-center gap-2 shadow-sm">
+                    <a href="{{ route('store.show', $store->slug) }}" target="_blank" class="px-4 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 backdrop-blur-md border border-white/30 text-white text-xs md:text-sm font-semibold transition-all duration-200 flex items-center gap-2 shadow-xs hover:scale-[1.02]">
                         <span class="material-symbols-outlined text-[18px]">storefront</span>
                         Lihat Toko Publik
                     </a>
                     @endif
-                    <a href="{{ route('tenant.products.create') }}" class="px-5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs md:text-sm font-bold shadow-lg shadow-sky-500/30 hover:shadow-sky-500/50 transition-all duration-200 flex items-center gap-2">
+                    <a href="{{ route('tenant.products.create') }}" class="px-5 py-2.5 rounded-xl bg-white text-[#00687a] hover:bg-teal-50 text-xs md:text-sm font-bold shadow-md transition-all duration-200 flex items-center gap-2 hover:scale-[1.02]">
                         <span class="material-symbols-outlined text-[18px]">add_circle</span>
                         Tambah Produk
                     </a>
@@ -104,25 +103,61 @@
                     this.copyToClipboard();
                 }
             }
-        }" class="bg-gradient-to-br from-white via-sky-50/40 to-white dark:from-[#111726] dark:via-[#131f38] dark:to-[#111726] border-2 border-sky-500/20 dark:border-sky-500/30 rounded-3xl p-5 md:p-7 shadow-lg relative overflow-hidden">
+        <!-- Modul Promosi & Bagikan Tautan Toko -->
+        <div x-data="{
+            copied: false,
+            showQrModal: false,
+            storeUrl: '{{ $storeDirectUrl }}',
+            copyToClipboard() {
+                if (navigator.clipboard && window.isSecureContext) {
+                    navigator.clipboard.writeText(this.storeUrl).then(() => {
+                        this.triggerCopied();
+                    }).catch(() => {
+                        this.fallbackCopy();
+                    });
+                } else {
+                    this.fallbackCopy();
+                }
+            },
+            fallbackCopy() {
+                const input = document.getElementById('store-link-input');
+                if (input) {
+                    input.select();
+                    document.execCommand('copy');
+                    this.triggerCopied();
+                }
+            },
+            triggerCopied() {
+                this.copied = true;
+                setTimeout(() => { this.copied = false; }, 2500);
+            },
+            shareNative() {
+                if (navigator.share) {
+                    navigator.share({
+                        title: '{{ addslashes($storeTitle) }}',
+                        text: '{{ addslashes($shareMessage) }}',
+                        url: this.storeUrl
+                    }).catch(() => {});
+                } else {
+                    this.copyToClipboard();
+                }
+            }
+        }" class="bg-white dark:bg-[#161b22] border border-slate-200/90 dark:border-slate-800 rounded-2xl p-5 md:p-6 shadow-xs">
 
-            <!-- Ambient decorative glow -->
-            <div class="absolute -top-12 -right-12 w-48 h-48 bg-gradient-to-br from-sky-400/20 to-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
-
-            <div class="relative z-10 space-y-5">
+            <div class="space-y-5">
                 
                 <!-- Header: Title & Badges -->
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 md:w-11 md:h-11 rounded-2xl bg-gradient-to-tr from-sky-500 to-blue-600 text-white flex items-center justify-center shadow-md shadow-sky-500/25 shrink-0">
+                        <div class="w-10 h-10 md:w-11 md:h-11 rounded-2xl bg-teal-500/10 text-[#00838f] dark:text-teal-400 flex items-center justify-center shrink-0">
                             <span class="material-symbols-outlined text-[22px] md:text-[24px]">share</span>
                         </div>
                         <div>
                             <div class="flex items-center gap-2 flex-wrap">
-                                <h2 class="text-base md:text-lg font-black text-slate-900 dark:text-white tracking-tight">
+                                <h2 class="text-base md:text-lg font-bold text-slate-900 dark:text-white tracking-tight">
                                     Promosikan & Bagikan Toko Anda
                                 </h2>
-                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-gradient-to-r from-pink-500/10 to-rose-500/10 text-pink-600 dark:text-pink-400 border border-pink-500/20">
+                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border border-amber-200/80 dark:border-amber-800/60">
                                     <span>✨</span> Siap Dipakai di Bio TikTok & Instagram
                                 </span>
                             </div>
@@ -134,17 +169,17 @@
 
                     <!-- Quick Action: Ganti Slug Toko -->
                     <a href="{{ route('tenant.store.index') }}" 
-                       class="self-start sm:self-center inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] hover:border-sky-500 text-xs font-bold text-slate-700 dark:text-slate-200 hover:text-sky-600 dark:hover:text-sky-400 transition-all shadow-xs"
+                       class="self-start sm:self-center inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-[#00838f] text-xs font-bold text-slate-700 dark:text-slate-200 hover:text-[#00838f] dark:hover:text-teal-400 transition-all shadow-2xs"
                        title="Ubah URL / Slug Toko di Pengaturan">
-                        <span class="material-symbols-outlined text-[16px] text-sky-500">settings_suggest</span>
+                        <span class="material-symbols-outlined text-[16px] text-[#00838f] dark:text-teal-400">settings_suggest</span>
                         <span>Atur Slug Toko</span>
                     </a>
                 </div>
 
                 <!-- Main URL Box & Copy Actions -->
-                <div class="bg-white dark:bg-[#0c1220] p-2.5 sm:p-3 rounded-2xl border border-slate-200/80 dark:border-[#222f49] shadow-inner flex flex-col md:flex-row items-stretch md:items-center gap-2.5">
-                    <div class="flex items-center gap-2.5 flex-1 min-w-0 px-2 py-1">
-                        <span class="material-symbols-outlined text-[20px] text-sky-500 shrink-0">link</span>
+                <div class="bg-slate-50 dark:bg-slate-900/80 p-2 sm:p-2.5 rounded-xl border border-slate-200 dark:border-slate-700/80 flex flex-col md:flex-row items-stretch md:items-center gap-2.5">
+                    <div class="flex items-center gap-2.5 flex-1 min-w-0 px-2.5 py-1">
+                        <span class="material-symbols-outlined text-[20px] text-[#00838f] dark:text-teal-400 shrink-0">link</span>
                         <input type="text" id="store-link-input" readonly :value="storeUrl" 
                                @click="copyToClipboard()"
                                class="w-full bg-transparent border-none p-0 text-xs md:text-sm font-mono font-bold text-slate-900 dark:text-white focus:outline-none select-all cursor-pointer truncate"
@@ -155,77 +190,77 @@
                     <div class="flex items-center gap-2 shrink-0">
                         <!-- Copy Button -->
                         <button type="button" @click="copyToClipboard()"
-                                class="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl font-black text-xs transition-all duration-200 shadow-md cursor-pointer"
-                                :class="copied ? 'bg-emerald-500 text-white shadow-emerald-500/30' : 'bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white shadow-sky-500/25'">
-                            <span class="material-symbols-outlined text-[18px]" x-text="copied ? 'check_circle' : 'content_copy'"></span>
+                                class="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl font-bold text-xs transition-all duration-200 shadow-xs cursor-pointer"
+                                :class="copied ? 'bg-emerald-600 text-white' : 'bg-[#00838f] hover:bg-[#00727d] text-white'">
+                            <span class="material-symbols-outlined text-[17px]" x-text="copied ? 'check_circle' : 'content_copy'"></span>
                             <span x-text="copied ? 'Tersalin! 🎉' : 'Salin Tautan'"></span>
                         </button>
 
                         <!-- Open Store Button -->
                         <a :href="storeUrl" target="_blank"
-                           class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors shrink-0"
+                           class="p-2 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition-colors shrink-0"
                            title="Buka Toko di Tab Baru">
-                            <span class="material-symbols-outlined text-[18px]">open_in_new</span>
+                            <span class="material-symbols-outlined text-[17px]">open_in_new</span>
                         </a>
 
                         <!-- QR Code Button -->
                         <button type="button" @click="showQrModal = true"
-                                class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors shrink-0"
+                                class="p-2 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition-colors shrink-0 cursor-pointer"
                                 title="Lihat & Download QR Code Toko">
-                            <span class="material-symbols-outlined text-[18px]">qr_code_2</span>
+                            <span class="material-symbols-outlined text-[17px]">qr_code_2</span>
                         </button>
                     </div>
                 </div>
 
-                <!-- Social Media Share Buttons & Platform Suggestions -->
+                <!-- Social Media Share Buttons -->
                 <div class="pt-1 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
                     <div class="flex items-center gap-2 flex-wrap">
                         <span class="font-bold text-slate-500 dark:text-slate-400 text-[11px] uppercase tracking-wider mr-1">Bagikan Langsung:</span>
 
                         <!-- WhatsApp -->
                         <a href="https://api.whatsapp.com/send?text={{ $encodedMsg }}" target="_blank"
-                           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#128C7E] dark:text-[#25D366] font-bold text-xs border border-[#25D366]/30 transition-all hover:scale-105"
+                           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:hover:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 font-semibold text-xs border border-emerald-200 dark:border-emerald-800/60 transition-all hover:scale-105"
                            title="Bagikan ke WhatsApp Chat / Status">
-                            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+                            <svg class="w-3.5 h-3.5 fill-current text-emerald-600 dark:text-emerald-400" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
                             <span>WhatsApp</span>
                         </a>
 
                         <!-- Telegram -->
                         <a href="https://t.me/share/url?url={{ $encodedUrl }}&text={{ $encodedMsg }}" target="_blank"
-                           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#229ED9]/10 hover:bg-[#229ED9]/20 text-[#229ED9] font-bold text-xs border border-[#229ED9]/30 transition-all hover:scale-105"
+                           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sky-50 hover:bg-sky-100 dark:bg-sky-950/40 dark:hover:bg-sky-900/50 text-sky-700 dark:text-sky-300 font-semibold text-xs border border-sky-200 dark:border-sky-800/60 transition-all hover:scale-105"
                            title="Bagikan ke Telegram">
-                            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.196 1.006.128.832.942z"/></svg>
+                            <svg class="w-3.5 h-3.5 fill-current text-sky-500" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.196 1.006.128.832.942z"/></svg>
                             <span>Telegram</span>
                         </a>
 
                         <!-- Facebook -->
                         <a href="https://www.facebook.com/sharer/sharer.php?u={{ $encodedUrl }}" target="_blank"
-                           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#1877F2]/10 hover:bg-[#1877F2]/20 text-[#1877F2] font-bold text-xs border border-[#1877F2]/30 transition-all hover:scale-105"
+                           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/40 dark:hover:bg-blue-900/50 text-blue-700 dark:text-blue-300 font-semibold text-xs border border-blue-200 dark:border-blue-800/60 transition-all hover:scale-105"
                            title="Bagikan ke Facebook">
-                            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/></svg>
+                            <svg class="w-3.5 h-3.5 fill-current text-blue-600" viewBox="0 0 24 24"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/></svg>
                             <span>Facebook</span>
                         </a>
 
                         <!-- X (Twitter) -->
                         <a href="https://twitter.com/intent/tweet?text={{ $encodedMsg }}&url={{ $encodedUrl }}" target="_blank"
-                           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900/10 dark:bg-white/10 hover:bg-slate-900/20 text-slate-900 dark:text-white font-bold text-xs border border-slate-300 dark:border-slate-700 transition-all hover:scale-105"
+                           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-xs border border-slate-200 dark:border-slate-700 transition-all hover:scale-105"
                            title="Bagikan ke Twitter / X">
-                            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                            <svg class="w-3.5 h-3.5 fill-current text-slate-800 dark:text-white" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
                             <span>X</span>
                         </a>
 
                         <!-- Mobile Native Share Sheet -->
                         <button type="button" @click="shareNative()"
-                                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-purple-500/10 to-indigo-500/10 hover:from-purple-500/20 hover:to-indigo-500/20 text-purple-600 dark:text-purple-400 font-bold text-xs border border-purple-500/30 transition-all hover:scale-105 cursor-pointer"
+                                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-50 hover:bg-purple-100 dark:bg-purple-950/40 dark:hover:bg-purple-900/50 text-purple-700 dark:text-purple-300 font-semibold text-xs border border-purple-200 dark:border-purple-800/60 transition-all hover:scale-105 cursor-pointer"
                                 title="Bagikan via Aplikasi Lain di HP">
-                            <span class="material-symbols-outlined text-[15px]">send_to_mobile</span>
+                            <span class="material-symbols-outlined text-[15px] text-purple-600 dark:text-purple-400">send_to_mobile</span>
                             <span>Lainnya</span>
                         </button>
                     </div>
 
                     <!-- Guidance Note -->
                     <div class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1">
-                        <span class="material-symbols-outlined text-[14px] text-sky-500">info</span>
+                        <span class="material-symbols-outlined text-[14px] text-[#00838f] dark:text-teal-400">info</span>
                         <span>Tautan otomatis mengarahkan pengunjung ke etalase tokomu.</span>
                     </div>
                 </div>
