@@ -3,8 +3,39 @@
 @section('title', 'Overview')
 
 @section('content')
-<!-- Include Chart.js -->
+<!-- Include Chart.js & Leaflet Map -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<style>
+.leaflet-popup-content-wrapper {
+    background: #ffffff;
+    color: #0f172a;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.15);
+    padding: 0;
+    overflow: hidden;
+}
+.dark .leaflet-popup-content-wrapper {
+    background: #111726;
+    color: #f1f5f9;
+    border: 1px solid #222f49;
+}
+.leaflet-popup-content {
+    margin: 0;
+    line-height: 1.4;
+}
+.leaflet-popup-tip {
+    background: #ffffff;
+}
+.dark .leaflet-popup-tip {
+    background: #111726;
+}
+.custom-map-pin {
+    background: transparent;
+    border: none;
+}
+</style>
 
 <div class="flex-1 overflow-y-auto p-lg bg-background">
     <div class="max-w-container-max mx-auto space-y-lg">
@@ -128,6 +159,71 @@
                         </div>
                         <span class="font-body-md text-on-surface font-semibold">{{ $percentFailed }}%</span>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Geographic Distribution Map Section -->
+        <div class="bg-surface rounded-md border border-outline-variant p-lg space-y-md">
+            <!-- Header with Title & Filter Controls -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-lg bg-teal-500/10 text-teal-600 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[20px]">location_on</span>
+                        </div>
+                        <h3 class="font-headline-sm text-headline-sm font-bold text-on-surface">Peta Persebaran Mitra Toko & Pelanggan</h3>
+                    </div>
+                    <p class="text-xs text-on-surface-variant mt-1">
+                        Visualisasi titik lokasi toko seller digital dan pelanggan/customer berdasarkan koordinat geografis di seluruh Indonesia.
+                    </p>
+                </div>
+
+                <!-- Filter Controls & Legend -->
+                <div class="flex flex-wrap items-center gap-2">
+                    <button type="button" id="btnFilterAll" onclick="filterMapMarkers('all')" 
+                        class="px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors cursor-pointer bg-primary text-on-primary border-primary">
+                        Semua Titik ({{ $mapData['total_points'] }})
+                    </button>
+                    <button type="button" id="btnFilterStore" onclick="filterMapMarkers('store')" 
+                        class="px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors cursor-pointer bg-surface border-outline-variant text-on-surface hover:border-teal-500 flex items-center gap-1.5">
+                        <span class="w-2.5 h-2.5 rounded-full bg-[#00838f]"></span>
+                        Mitra Toko ({{ $mapData['total_stores'] }})
+                    </button>
+                    <button type="button" id="btnFilterCustomer" onclick="filterMapMarkers('customer')" 
+                        class="px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors cursor-pointer bg-surface border-outline-variant text-on-surface hover:border-blue-500 flex items-center gap-1.5">
+                        <span class="w-2.5 h-2.5 rounded-full bg-[#2563eb]"></span>
+                        Pelanggan ({{ $mapData['total_customers'] }})
+                    </button>
+                    <button type="button" onclick="resetMapView()" title="Fokuskan Ulang Peta" 
+                        class="p-1.5 rounded-lg border border-outline-variant text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors cursor-pointer">
+                        <span class="material-symbols-outlined text-[18px]">center_focus_strong</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Leaflet Map Container -->
+            <div class="relative w-full rounded-xl overflow-hidden border border-outline-variant bg-surface-container-low" style="height: 480px; z-index: 1;">
+                <div id="adminGeoMap" class="w-full h-full"></div>
+            </div>
+
+            <!-- Summary Footnotes -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2 border-t border-outline-variant/60 text-xs">
+                <div class="p-3 rounded-lg bg-surface-container-lowest border border-outline-variant/50">
+                    <span class="text-on-surface-variant block text-[11px]">Total Titik Terdata</span>
+                    <span class="font-bold text-sm text-on-surface mt-0.5 block">{{ $mapData['total_points'] }} Lokasi</span>
+                </div>
+                <div class="p-3 rounded-lg bg-surface-container-lowest border border-outline-variant/50">
+                    <span class="text-on-surface-variant block text-[11px]">Mitra Toko (Sellers)</span>
+                    <span class="font-bold text-sm text-teal-600 dark:text-teal-400 mt-0.5 block">{{ $mapData['total_stores'] }} Toko Tersebar</span>
+                </div>
+                <div class="p-3 rounded-lg bg-surface-container-lowest border border-outline-variant/50">
+                    <span class="text-on-surface-variant block text-[11px]">Pelanggan Aktif</span>
+                    <span class="font-bold text-sm text-blue-600 dark:text-blue-400 mt-0.5 block">{{ $mapData['total_customers'] }} Pembeli Unik</span>
+                </div>
+                <div class="p-3 rounded-lg bg-surface-container-lowest border border-outline-variant/50">
+                    <span class="text-on-surface-variant block text-[11px]">Cakupan Wilayah</span>
+                    <span class="font-bold text-sm text-on-surface mt-0.5 block truncate" title="Jawa, Sumatera, Riau, dll">Jawa, Sumatera & Nasional</span>
                 </div>
             </div>
         </div>
@@ -327,6 +423,166 @@
                 }
             }
         });
+
+        // -------------------------------------------------------------
+        // Leaflet Interactive Geo Map for Stores & Customers
+        // -------------------------------------------------------------
+        const mapRawData = @json($mapData);
+        let geoMap = null;
+        let mapMarkersLayer = null;
+
+        function initAdminGeoMap() {
+            const mapContainer = document.getElementById('adminGeoMap');
+            if (!mapContainer || typeof L === 'undefined') return;
+
+            geoMap = L.map('adminGeoMap', {
+                scrollWheelZoom: false
+            }).setView([-6.92, 107.65], 7);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 18,
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors'
+            }).addTo(geoMap);
+
+            mapMarkersLayer = L.layerGroup().addTo(geoMap);
+
+            renderMarkers('all');
+        }
+
+        function createPinIcon(type) {
+            if (type === 'store') {
+                return L.divIcon({
+                    className: 'custom-map-pin',
+                    html: `
+                        <div style="position: relative; display: flex; flex-direction: column; align-items: center; cursor: pointer;">
+                            <div style="width: 34px; height: 34px; border-radius: 50%; background: #00838f; color: white; display: flex; align-items: center; justify-content: center; border: 2px solid #ffffff; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3); font-weight: bold;">
+                                <span class="material-symbols-outlined" style="font-size: 18px;">storefront</span>
+                            </div>
+                            <div style="width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid #00838f; margin-top: -2px;"></div>
+                        </div>
+                    `,
+                    iconSize: [34, 40],
+                    iconAnchor: [17, 40],
+                    popupAnchor: [0, -38]
+                });
+            } else {
+                return L.divIcon({
+                    className: 'custom-map-pin',
+                    html: `
+                        <div style="position: relative; display: flex; flex-direction: column; align-items: center; cursor: pointer;">
+                            <div style="width: 32px; height: 32px; border-radius: 50%; background: #2563eb; color: white; display: flex; align-items: center; justify-content: center; border: 2px solid #ffffff; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3); font-weight: bold;">
+                                <span class="material-symbols-outlined" style="font-size: 16px;">person</span>
+                            </div>
+                            <div style="width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 7px solid #2563eb; margin-top: -2px;"></div>
+                        </div>
+                    `,
+                    iconSize: [32, 37],
+                    iconAnchor: [16, 37],
+                    popupAnchor: [0, -35]
+                });
+            }
+        }
+
+        function renderMarkers(filterType) {
+            if (!geoMap || !mapMarkersLayer) return;
+            mapMarkersLayer.clearLayers();
+
+            let list = [];
+            if (filterType === 'store') {
+                list = mapRawData.stores || [];
+            } else if (filterType === 'customer') {
+                list = mapRawData.customers || [];
+            } else {
+                list = mapRawData.all || [];
+            }
+
+            const bounds = [];
+
+            list.forEach(item => {
+                if (!item.lat || !item.lng) return;
+
+                const marker = L.marker([item.lat, item.lng], {
+                    icon: createPinIcon(item.type)
+                });
+
+                let popupContent = '';
+                if (item.type === 'store') {
+                    popupContent = `
+                        <div style="padding: 12px; min-width: 220px; max-width: 260px; font-family: inherit;">
+                            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
+                                <span style="background: #ccfbf1; color: #0f766e; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 9999px;">🏪 MITRA TOKO</span>
+                                <span style="font-size: 11px; color: #64748b;">• ${item.products_count} Produk</span>
+                            </div>
+                            <h4 style="margin: 0; font-size: 14px; font-weight: 700; color: #0f172a;">${item.name}</h4>
+                            <p style="margin: 4px 0 0; font-size: 11px; color: #64748b; line-height: 1.3;">📍 ${item.address}</p>
+                            <div style="margin-top: 6px; font-size: 11px; color: #475569;">
+                                Pemilik: <b>${item.owner}</b>
+                            </div>
+                            <div style="margin-top: 10px; padding-top: 8px; border-top: 1px solid #e2e8f0; display: flex; gap: 6px;">
+                                ${item.store_url ? `<a href="${item.store_url}" target="_blank" style="padding: 4px 8px; border-radius: 6px; background: #00838f; color: white; font-size: 11px; font-weight: 700; text-decoration: none;">Buka Toko</a>` : ''}
+                                <a href="${item.maps_url}" target="_blank" style="padding: 4px 8px; border-radius: 6px; background: #f1f5f9; color: #334155; font-size: 11px; font-weight: 600; text-decoration: none;">Google Maps</a>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    popupContent = `
+                        <div style="padding: 12px; min-width: 220px; max-width: 260px; font-family: inherit;">
+                            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
+                                <span style="background: #dbeafe; color: #1d4ed8; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 9999px;">👤 PELANGGAN</span>
+                                <span style="font-size: 11px; color: #64748b;">• ${item.orders_count} Order</span>
+                            </div>
+                            <h4 style="margin: 0; font-size: 14px; font-weight: 700; color: #0f172a;">${item.name}</h4>
+                            <p style="margin: 4px 0 0; font-size: 11px; color: #64748b; line-height: 1.3;">📍 ${item.address}</p>
+                            <div style="margin-top: 6px; font-size: 11px; color: #166534;">
+                                Total Belanja: <b>Rp ${Number(item.total_spent).toLocaleString('id-ID')}</b>
+                            </div>
+                            <div style="margin-top: 2px; font-size: 10px; color: #94a3b8;">
+                                Terakhir order: ${item.last_order}
+                            </div>
+                            <div style="margin-top: 10px; padding-top: 8px; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-size: 10px; color: #64748b; font-family: monospace;">${item.phone || item.email}</span>
+                                <a href="${item.maps_url}" target="_blank" style="padding: 4px 8px; border-radius: 6px; background: #f1f5f9; color: #334155; font-size: 11px; font-weight: 600; text-decoration: none;">Maps</a>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                marker.bindPopup(popupContent);
+                mapMarkersLayer.addLayer(marker);
+                bounds.push([item.lat, item.lng]);
+            });
+
+            if (bounds.length > 0) {
+                geoMap.fitBounds(bounds, { padding: [40, 40], maxZoom: 12 });
+            }
+        }
+
+        window.filterMapMarkers = function(type) {
+            const btnAll = document.getElementById('btnFilterAll');
+            const btnStore = document.getElementById('btnFilterStore');
+            const btnCust = document.getElementById('btnFilterCustomer');
+
+            const resetClass = "px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors cursor-pointer bg-surface border-outline-variant text-on-surface hover:border-outline";
+            if (btnAll) btnAll.className = resetClass;
+            if (btnStore) btnStore.className = resetClass;
+            if (btnCust) btnCust.className = resetClass;
+
+            if (type === 'store') {
+                if (btnStore) btnStore.className = "px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors cursor-pointer bg-[#00838f] text-white border-[#00838f]";
+            } else if (type === 'customer') {
+                if (btnCust) btnCust.className = "px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors cursor-pointer bg-[#2563eb] text-white border-[#2563eb]";
+            } else {
+                if (btnAll) btnAll.className = "px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors cursor-pointer bg-primary text-on-primary border-primary";
+            }
+
+            renderMarkers(type);
+        };
+
+        window.resetMapView = function() {
+            window.filterMapMarkers('all');
+        };
+
+        initAdminGeoMap();
     });
 </script>
 @endsection
