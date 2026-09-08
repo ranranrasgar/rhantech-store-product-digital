@@ -88,13 +88,18 @@
 
     <div class="p-4 space-y-6">
 
-        <!-- 1. Bagian Ulasan & Statistik Penjualan (Ratings & Social Proof) -->
+        {{-- 1. Bagian Ulasan & Statistik Penjualan: Hanya tampil untuk produk resmi platform (store_id null atau di panel admin) --}}
+        @php
+            $isPlatformProduct = request()->routeIs('admin.*') || (isset($productItem) && is_null($productItem->store_id));
+        @endphp
+
+        @if($isPlatformProduct)
         <div class="p-3.5 rounded-lg bg-surface-container-low border border-outline-variant/60">
             <div class="flex items-center gap-2 mb-2">
                 <span class="material-symbols-outlined text-amber-500 text-[18px]">star</span>
                 <label class="font-bold text-xs md:text-sm text-on-surface">Ulasan & Statistik Penjualan (Bintang, Penilaian, Terjual)</label>
             </div>
-            <p class="text-xs text-on-surface-variant mb-3">Atur tampilan angka rating, jumlah penilaian, dan jumlah produk terjual yang tampil di bawah judul produk. Jika dikosongkan, sistem akan mengkalkulasi otomatis.</p>
+            <p class="text-xs text-on-surface-variant mb-3">Atur tampilan angka rating, jumlah penilaian, dan jumlah produk terjual yang tampil di bawah judul produk (Khusus Produk Resmi Platform). Jika dikosongkan, sistem akan mengkalkulasi otomatis.</p>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
                     <label class="block text-xs font-semibold text-on-surface mb-1">Rating Bintang (1.0 - 5.0)</label>
@@ -111,6 +116,7 @@
                 </div>
             </div>
         </div>
+        @endif
 
         <!-- 2. Bagian 4 Badge Kepercayaan Utama (Akses Instan & Aman, Direct Link, dll) -->
         <div class="p-3.5 rounded-lg bg-surface-container-low border border-outline-variant/60">
