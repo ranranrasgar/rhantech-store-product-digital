@@ -65,17 +65,17 @@ class Product extends Model
     public function scopeApproved($query)
     {
         return $query->where(function ($q) {
-            $q->whereNull('store_id')
-              ->orWhere('approval_status', 'approved');
+            $q->whereNull('products.store_id')
+              ->orWhere('products.approval_status', 'approved');
         });
     }
 
     public function scopePublished($query)
     {
-        return $query->where('is_active', true)
+        return $query->where('products.is_active', true)
             ->where(function ($q) {
-                $q->whereNull('store_id')
-                  ->orWhere('approval_status', 'approved');
+                $q->whereNull('products.store_id')
+                  ->orWhere('products.approval_status', 'approved');
             });
     }
 
