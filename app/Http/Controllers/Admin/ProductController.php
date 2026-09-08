@@ -157,6 +157,11 @@ class ProductController extends Controller
             }
         }
 
+        // Jika reviews_count diisi, otomatis buatkan ulasan random berbahasa Indonesia sesuai nama produk
+        if ($request->filled('reviews_count') && (int)$request->input('reviews_count') > 0) {
+            $this->syncRandomReviews($product, (int)$request->input('reviews_count'));
+        }
+
         return redirect()->route('admin.products.index')->with('success', 'Product created successfully.');
     }
 
@@ -247,6 +252,11 @@ class ProductController extends Controller
                     'image_path' => $path
                 ]);
             }
+        }
+
+        // Jika reviews_count diisi, otomatis buatkan/sinkronkan ulasan random berbahasa Indonesia sesuai judul produk
+        if ($request->filled('reviews_count') && (int)$request->input('reviews_count') > 0) {
+            $this->syncRandomReviews($product, (int)$request->input('reviews_count'));
         }
 
         return redirect()->route('admin.products.index')->with('success', 'Product updated successfully.');
@@ -371,5 +381,92 @@ class ProductController extends Controller
             }
         }
         return count($cleaned) > 0 ? array_values($cleaned) : null;
+    }
+
+    /**
+     * Otomatis sinkronkan/buat ulasan random berbahasa Indonesia sesuai nama/judul produk
+     */
+    protected function syncRandomReviews(Product $product, int $targetCount)
+    {
+        // Batasi maksimal yang dibuat di database (misal max 150 agar database tetap ringan dan cepat)
+        $targetCount = min($targetCount, 150);
+
+        // Ambil ulasan yang sudah ada untuk produk ini
+        $existingReviewsCount = \App\Models\ProductReview::where('product_id', $product->id)->count();
+        $needToCreate = $targetCount - $existingReviewsCount;
+
+        if ($needToCreate <= 0) {
+            return;
+        }
+
+        // Ambil nama-nama user yang bukan akun rill mendaftar mandiri (admin, staff, demo, atau user seeder)
+        $systemUserNames = \App\Models\User::where(function($q) {
+            $q->whereIn('role', ['admin', 'Admin', 'superadmin', 'Superadmin', 'accounting', 'staff', 'demo'])
+              ->orWhere('email', 'like', '%@rhantech.com')
+              ->orWhere('email', 'like', '%@example%')
+              ->orWhere('email', 'like', '%@store%');
+        })->pluck('name')->filter()->toArray();
+
+        // Bank nama pembeli lokal Indonesia yang natural & beragam untuk melengkapi
+        $fallbackNames = [
+            'Budi Santoso', 'Rizky Pratama', 'Ahmad Fauzi', 'Dian Permana', 'Hendra Setiawan',
+            'Dimas Saputra', 'Bayu Nugroho', 'Fajar Ramadhan', 'Aris Munandar', 'Wahyu Hidayat',
+            'Agus Triyono', 'Eko Prasetyo', 'Doni Kurniawan', 'Rian Kusuma', 'Teguh Wibowo',
+            'Siti Rahmawati', 'Anisa Nur', 'Dewi Lestari', 'Putri Ayu', 'Rina Anggraini',
+            'Indah Pertiwi', 'Nurul Hidayah', 'Tri Wahyuni', 'Fitri Handayani', 'Mega Silvia',
+            'Yusuf Maulana', 'Gilang Ramadhan', 'Aditya Wijaya', 'Bagus Prabowo', 'Ilham Syahputra',
+            'M. Reza Fahlevi', 'Danang Prasetya', 'Bambang Supriyanto', 'Arief Budiman', 'Yudi Hermawan',
+            'Sandi Gunawan', 'Ferry Irawan', 'Taufik Rahman', 'Irvan Fachrudin', 'Lukman Hakim'
+        ];
+
+        $poolNames = array_values(array_unique(array_merge($systemUserNames, $fallbackNames)));
+
+        $productName = $product->name;
+
+        // Template kalimat ulasan natural bahasa Indonesia bertema produk digital / source code / aplikasi
+        $templates = [
+            "Source code {$productName} sangat rapi dan mudah dimengerti. Panduan instalasinya jelas, langsung running lancar di localhost tanpa error. Mantap!",
+            "Alhamdulillah sangat puas dengan {$productName}. Fiturnya lengkap sesuai deskripsi dan sangat membantu mempercepat project klien saya.",
+            "Aplikasi {$productName} ini recommended banget! Desain UI-nya modern, clean, dan kodingannya mudah di-custom. Admin juga fast respon saat ditanya.",
+            "Proses download instan langsung masuk email setelah checkout. {$productName} bekerja 100% normal tanpa kendala. Terima kasih Rhantech!",
+            "Bagus sekali, kodingan {$productName} rapi berstandar MVC/Laravel. Dokumentasi lengkap dan database langsung siap import.",
+            "Sangat worth it dengan harganya. Menghemat waktu development berminggu-minggu berkat {$productName}. Sukses terus buat developernya!",
+            "Awalnya ragu, tapi setelah coba pasang {$productName} ternyata beneran work 100% dan bebas error. Pelayanan dan responnya jempolan!",
+            "Fitur di {$productName} lengkap banget dan responsive saat dibuka di HP maupun laptop. Kualitasnya jempolan, bintang lima!",
+            "Pengalaman beli {$productName} sangat memuaskan. File zip lengkap beserta panduan step by step, langsung bisa dipakai.",
+            "Sangat membantu bisnis kami. Modul di dalam {$productName} sangat terstruktur dan mudah disesuaikan dengan kebutuhan.",
+            "Recomended seller! {$productName} kualitas premium, source code bersih tanpa enkripsi jadi gampang dimodifikasi.",
+            "Mantap pisan {$productName}, proses instalasinya gampang banget tinggal import database dan setting config. Top!",
+            "Aplikasi {$productName} ini bener-bener powerful. Fitur-fiturnya lengkap dan tampilannya sangat memanjakan mata.",
+            "Sesuai ekspektasi dan gambar demo! {$productName} berjalan mulus di server hosting cPanel maupun localhost. Makasih banyak!",
+            "Keren abis! Source code {$productName} mudah dipelajari buat bahan skripsi / portofolio maupun dipakai langsung untuk bisnis.",
+            "Pelayanan memuaskan, link unduhan {$productName} langsung aktif hitungan detik setelah bayar. Sangat profesional.",
+            "Kualitas {$productName} bintang lima, fungsi-fungsi krusialnya berjalan optimal. Worth every rupiah!",
+            "Sudah coba beberapa modul di {$productName}, semuanya berjalan lancar. Dokumentasi PDF-nya ngebantu banget.",
+            "Sangat puas order {$productName} di sini. Source code bersih tanpa malware dan supportnya ramah ketika ada pertanyaan teknis.",
+            "Produk {$productName} sangat recommended untuk developer atau agensi yang mau hemat waktu buat bikin sistem."
+        ];
+
+        for ($i = 0; $i < $needToCreate; $i++) {
+            $randomName = $poolNames[array_rand($poolNames)];
+            $randomTemplate = $templates[array_rand($templates)];
+            // Distribusi rating realistis (sebagian besar 5 bintang, sedikit 4 bintang)
+            $randomRating = (rand(1, 10) <= 8) ? 5 : 4;
+            $randomDaysAgo = rand(1, 45);
+            $randomCreatedAt = now()->subDays($randomDaysAgo)->subHours(rand(1, 23))->subMinutes(rand(1, 59));
+
+            \App\Models\ProductReview::create([
+                'product_id' => $product->id,
+                'user_id' => null,
+                'order_id' => null,
+                'customer_name' => $randomName,
+                'customer_email' => \Illuminate\Support\Str::slug($randomName) . rand(10, 99) . '@gmail.com',
+                'rating' => $randomRating,
+                'comment' => $randomTemplate,
+                'is_visible' => true,
+                'created_at' => $randomCreatedAt,
+                'updated_at' => $randomCreatedAt,
+            ]);
+        }
     }
 }

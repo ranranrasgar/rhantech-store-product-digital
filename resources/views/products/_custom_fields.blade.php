@@ -103,6 +103,7 @@
                 <div>
                     <label class="block text-xs font-semibold text-on-surface mb-1">Jumlah Ulasan / Penilaian</label>
                     <input type="number" min="0" name="reviews_count" value="{{ old('reviews_count', $productItem?->reviews_count ?? '42') }}" placeholder="cth: 42" class="w-full px-3 py-2 bg-surface border border-outline-variant rounded-lg font-body-sm text-xs">
+                    <span class="text-[10px] text-emerald-600 dark:text-emerald-400 mt-1 block">Otomatis generate ulasan random bahasa Indonesia sesuai judul produk</span>
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-on-surface mb-1">Jumlah Produk Terjual</label>
