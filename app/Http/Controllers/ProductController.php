@@ -116,8 +116,24 @@ class ProductController extends Controller
         return view('products.index', compact('products', 'categories', 'types', 'stores', 'banners', 'topProducts'));
     }
 
-    public function show($slug)
+    public function show(Request $request, $slug)
     {
+        // Tangkap referensi afiliasi/toko jika ada di URL (?ref=slug_toko atau kode_referral)
+        if ($request->filled('ref')) {
+            $ref = $request->query('ref');
+            session(['affiliate_ref' => $ref]);
+
+            $affiliate = \App\Models\Affiliate::where('referral_code', $ref)->first();
+            if ($affiliate) {
+                $sessionKey = 'aff_clicked_' . $affiliate->id;
+                if (!session()->has($sessionKey)) {
+                    $clicks = (int) $affiliate->clicks_count + 1;
+                    $affiliate->update(['clicks_count' => (string)$clicks]);
+                    session([$sessionKey => true]);
+                }
+            }
+        }
+
         $product = Product::with([
             'store:id,name,slug,logo', 
             'helpCategory.articles' => function($q) {

@@ -32,14 +32,25 @@ class PublicStoreController extends Controller
             }
         }
         
-        // Only show active & approved products for store page (Produk Milik Sendiri)
-        $products = $store->products()->published()->paginate(12);
+        // Set session affiliate_ref otomatis ke slug toko ini agar jika pembeli membeli produk showcase, komisi otomatis masuk ke toko ini
+        session(['affiliate_ref' => $store->slug]);
 
-        // Ambil produk showcase afiliasi yang dipajang oleh toko ini
-        $showcaseProducts = $store->showcaseProducts()
+        // Ambil ID produk milik toko sendiri dan ID produk showcase yang dipajang oleh toko ini
+        $ownProductIds = $store->products()->published()->pluck('products.id');
+        $showcaseProductIds = $store->showcaseProducts()->published()->pluck('products.id');
+        $allProductIds = $ownProductIds->merge($showcaseProductIds)->unique()->values();
+
+        // Query semua produk (produk sendiri + produk showcase yang dipajang)
+        $productsQuery = \App\Models\Product::whereIn('id', $allProductIds)
             ->published()
-            ->with(['store', 'category', 'images'])
-            ->get();
+            ->with(['store', 'category', 'images', 'type']);
+
+        // Filter kategori jika ada query param
+        if ($request->filled('category')) {
+            $productsQuery->where('product_category_id', $request->query('category'));
+        }
+
+        $products = $productsQuery->latest()->paginate(12)->withQueryString();
 
         // Fetch appearance settings
         $appearance = is_string($store->appearance_data) ? json_decode($store->appearance_data, true) : $store->appearance_data;
@@ -52,12 +63,12 @@ class PublicStoreController extends Controller
             $isFollowing = $store->followers()->where('user_id', Auth::id())->exists();
         }
         
-        // Fetch categories from products
-        $categories = \App\Models\ProductCategory::whereHas('products', function($q) use ($store) {
-            $q->where('store_id', $store->id)->published();
+        // Fetch categories from all displayed products
+        $categories = \App\Models\ProductCategory::whereHas('products', function($q) use ($allProductIds) {
+            $q->whereIn('id', $allProductIds)->published();
         })->get();
         
-        return view('store.show', compact('store', 'products', 'showcaseProducts', 'appearance', 'isFollowing', 'categories'));
+        return view('store.show', compact('store', 'products', 'appearance', 'isFollowing', 'categories'));
     }
 
     /**
