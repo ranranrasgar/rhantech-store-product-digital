@@ -150,16 +150,44 @@
 
                         <!-- Right Banner / Image Preview -->
                         <div class="md:col-span-5 relative">
-                            <div class="relative rounded-2xl overflow-hidden border border-outline-variant/60 shadow-lg aspect-4/3 group">
-                                @if($store->banner)
-                                    <img src="{{ asset('storage/' . $store->banner) }}" alt="{{ $store->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                                @elseif($store->products && $store->products->first() && $store->products->first()->primary_image_url)
-                                    <img src="{{ $store->products->first()->primary_image_url }}" alt="{{ $store->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                                @else
-                                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Vendor Store" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                            <div class="relative rounded-2xl overflow-hidden border border-outline-variant/60 shadow-lg aspect-4/3 bg-gradient-to-tr from-slate-900 via-primary/80 to-slate-800 flex items-center justify-center group">
+                                @php
+                                    $bannerUrl = null;
+                                    if (!empty($store->banner)) {
+                                        $bannerUrl = Str::startsWith($store->banner, 'http') ? $store->banner : asset('storage/' . $store->banner);
+                                    } elseif ($store->products && $store->products->first() && $store->products->first()->primary_image_url) {
+                                        $bannerUrl = $store->products->first()->primary_image_url;
+                                    }
+                                @endphp
+                                
+                                @if($bannerUrl)
+                                    <img src="{{ $bannerUrl }}" 
+                                         alt="{{ $store->name }}" 
+                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                                 @endif
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
-                                <div class="absolute bottom-4 left-4 right-4 text-white">
+
+                                <!-- Fallback Banner jika gambar kosong atau link eksternal/CDN crash -->
+                                <div class="w-full h-full p-6 flex flex-col justify-between items-center text-center bg-gradient-to-br from-[#06B6D4]/30 via-primary/30 to-slate-900/90 {{ $bannerUrl ? 'hidden' : 'flex' }}">
+                                    <div class="flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-xs border border-white/20 text-white text-xs">
+                                        <span class="material-symbols-outlined text-[16px] text-amber-400">verified</span>
+                                        <span>Verified Vendor</span>
+                                    </div>
+                                    <div class="flex flex-col items-center">
+                                        @if($store->logo)
+                                            <img src="{{ asset('storage/' . $store->logo) }}" alt="{{ $store->name }}" class="w-20 h-20 rounded-2xl object-cover border-2 border-white/30 shadow-xl mb-3">
+                                        @else
+                                            <div class="w-20 h-20 rounded-2xl bg-white/20 text-white flex items-center justify-center font-black text-3xl shadow-xl mb-3 border border-white/30">
+                                                {{ strtoupper(substr($store->name, 0, 1)) }}
+                                            </div>
+                                        @endif
+                                        <h3 class="text-white font-black text-lg drop-shadow-md max-w-[260px] truncate">{{ $store->name }}</h3>
+                                    </div>
+                                    <span class="text-[11px] font-medium text-slate-300">Pusat Aplikasi &amp; Source Code Terpercaya</span>
+                                </div>
+
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none"></div>
+                                <div class="absolute bottom-4 left-4 right-4 text-white pointer-events-none">
                                     <div class="text-xs font-bold uppercase tracking-wider text-emerald-300">Rekomendasi Terbaik</div>
                                     <div class="text-base font-black truncate">{{ $store->name }}</div>
                                 </div>
@@ -258,14 +286,22 @@
                                     </div>
                                 </div>
 
-                                <div class="rounded-xl overflow-hidden h-48 border border-outline-variant relative">
-                                    @if($tStore->banner)
-                                        <img src="{{ asset('storage/' . $tStore->banner) }}" class="w-full h-full object-cover">
-                                    @elseif($tStore->products->first() && $tStore->products->first()->primary_image_url)
-                                        <img src="{{ $tStore->products->first()->primary_image_url }}" class="w-full h-full object-cover">
-                                    @else
-                                        <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover">
+                                <div class="rounded-xl overflow-hidden h-48 border border-outline-variant relative bg-gradient-to-tr from-slate-900 to-primary/80 flex items-center justify-center">
+                                    @php
+                                        $tBanner = null;
+                                        if (!empty($tStore->banner)) {
+                                            $tBanner = Str::startsWith($tStore->banner, 'http') ? $tStore->banner : asset('storage/' . $tStore->banner);
+                                        } elseif ($tStore->products->first() && $tStore->products->first()->primary_image_url) {
+                                            $tBanner = $tStore->products->first()->primary_image_url;
+                                        }
+                                    @endphp
+                                    @if($tBanner)
+                                        <img src="{{ $tBanner }}" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                                     @endif
+                                    <div class="w-full h-full p-4 flex flex-col justify-center items-center text-center {{ $tBanner ? 'hidden' : 'flex' }}">
+                                        <span class="material-symbols-outlined text-3xl text-white/80 mb-1">storefront</span>
+                                        <span class="text-white font-bold text-sm">{{ $tStore->name }}</span>
+                                    </div>
                                 </div>
 
                                 <div class="flex items-center justify-between pt-2">
@@ -306,30 +342,29 @@
             </div>
         </div>
     @endif
-</section>
 
-    {{-- Aplikasi Yang Sering Dilihat Calon Pembeli --}}
+    {{-- Aplikasi Yang Sering Dilihat Calon Pembeli (Di dalam container max-w & padding yang pas) --}}
     @if(isset($popularProducts) && $popularProducts->count() > 0)
-    <div class="mt-12 pt-8 border-t border-outline-variant/30 z-10">
+    <div class="mt-14 pt-8 border-t border-outline-variant/30 z-10 w-full">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-5">
-            <div class="flex items-center gap-2">
-                <span class="p-1.5 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
-                    <span class="material-symbols-outlined text-[18px]">trending_up</span>
+            <div class="flex items-center gap-2.5">
+                <span class="p-2 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[20px]">trending_up</span>
                 </span>
                 <div>
-                    <h2 class="text-sm md:text-base font-bold text-on-background dark:text-white leading-tight">
+                    <h2 class="text-base md:text-lg font-black text-on-background dark:text-white leading-tight">
                         Aplikasi Populer Paling Sering Dilihat
                     </h2>
-                    <p class="text-xs text-on-surface-variant">Produk & sistem digital rekomendasi yang paling diminati calon pembeli</p>
+                    <p class="text-xs text-on-surface-variant mt-0.5">Produk &amp; sistem digital rekomendasi yang paling diminati calon pembeli</p>
                 </div>
             </div>
-            <a href="{{ route('products.index') }}" class="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline group shrink-0" wire:navigate>
+            <a href="{{ route('products.index') }}" class="inline-flex items-center gap-1 text-xs font-bold text-primary hover:underline group shrink-0" wire:navigate>
                 <span>Lihat Semua Katalog</span>
                 <span class="material-symbols-outlined text-[14px] transition-transform group-hover:translate-x-0.5">arrow_forward</span>
             </a>
         </div>
 
-        <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             @foreach($popularProducts as $prod)
             @php
                 $mainImg = $prod->images->where('is_main', true)->first() ?? $prod->images->first();
@@ -346,7 +381,7 @@
                 $ratingDisplay = $prod->effective_rating;
                 $reviewsDisplayCount = $prod->effective_reviews_count;
 
-                // Sort description: Utamakan isi Short Description resmi toko. Jika kosong, baru ambil cuplikan sebagian dari full deskripsi
+                // Sort description
                 if (!empty($prod->short_description)) {
                     $descText = trim($prod->short_description);
                 } else {
@@ -354,72 +389,72 @@
                     $descText = Str::limit($cleanDesc, 110, '...');
                 }
             @endphp
-            <a href="{{ route('products.show', $prod->slug) }}" class="group bg-surface dark:bg-surface-container-low rounded-xl border border-outline-variant/60 hover:border-primary/50 overflow-hidden shadow-xs hover:shadow-md transition-all duration-200 flex flex-col hover:-translate-y-1" wire:navigate>
+            <a href="{{ route('products.show', $prod->slug) }}" class="group bg-surface rounded-2xl border border-outline-variant hover:border-primary/50 overflow-hidden shadow-xs hover:shadow-md transition-all duration-200 flex flex-col hover:-translate-y-1" wire:navigate>
                 <div class="relative aspect-4/3 w-full bg-surface-container overflow-hidden">
                     @if($mainImg)
-                        <img src="{{ asset('storage/' . $mainImg->image_path) }}" alt="{{ $prod->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy">
+                        <img src="{{ asset('storage/' . $mainImg->image_path) }}" alt="{{ $prod->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&auto=format&fit=crop&q=80'">
                     @else
-                        <div class="w-full h-full flex items-center justify-center text-outline-variant">
+                        <div class="w-full h-full flex items-center justify-center text-outline-variant bg-surface-container-high">
                             <span class="material-symbols-outlined text-3xl">inventory_2</span>
                         </div>
                     @endif
 
                     @if($hasDiscount)
-                        <span class="absolute top-2 left-2 bg-red-500 text-white text-[9px] font-extrabold px-1.5 py-0.5 rounded shadow">
+                        <span class="absolute top-2.5 left-2.5 bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-md shadow">
                             -{{ round((($prod->price - $prod->discount_price) / $prod->price) * 100) }}%
                         </span>
                     @endif
 
-                    <div class="absolute bottom-1.5 right-1.5 bg-black/60 backdrop-blur-xs text-white text-[9px] font-medium px-1.5 py-0.5 rounded flex items-center gap-0.5">
-                        <span class="material-symbols-outlined text-[10px]">visibility</span>
+                    <div class="absolute bottom-2 right-2 bg-black/60 backdrop-blur-xs text-white text-[10px] font-medium px-2 py-0.5 rounded-md flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[12px]">visibility</span>
                         <span>{{ number_format($prod->views ?? 0) }}</span>
                     </div>
                 </div>
 
-                <div class="p-3.5 flex flex-col flex-1">
-                    <div class="flex items-center justify-between gap-1 mb-1">
-                        <span class="text-[10px] font-bold text-primary uppercase tracking-wider line-clamp-1">
+                <div class="p-4 flex flex-col flex-1">
+                    <div class="flex items-center justify-between gap-1 mb-1.5">
+                        <span class="text-[10px] font-black text-primary uppercase tracking-wider line-clamp-1">
                             {{ $prod->category->name ?? ($prod->type->name ?? 'Aplikasi') }}
                         </span>
                         {{-- Rating badge --}}
-                        <span class="inline-flex items-center gap-0.5 text-[11px] font-bold text-amber-500 shrink-0">
-                            <span class="material-symbols-outlined text-[12px] fill-current text-amber-500">star</span>
+                        <span class="inline-flex items-center gap-0.5 text-xs font-bold text-amber-500 shrink-0">
+                            <span class="material-symbols-outlined text-[13px] fill-current text-amber-500">star</span>
                             <span>{{ number_format((float)$ratingDisplay, 1) }}</span>
                             @if($reviewsDisplayCount > 0)
-                                <span class="text-[9px] font-normal text-on-surface-variant">({{ $reviewsDisplayCount }})</span>
+                                <span class="text-[10px] font-normal text-on-surface-variant">({{ $reviewsDisplayCount }})</span>
                             @endif
                         </span>
                     </div>
 
-                    <h3 class="text-xs md:text-sm font-bold text-on-background dark:text-white line-clamp-2 leading-snug group-hover:text-primary transition-colors mb-1.5">
+                    <h3 class="text-sm font-bold text-on-background dark:text-white line-clamp-2 leading-snug group-hover:text-primary transition-colors mb-1.5">
                         {{ $prod->name }}
                     </h3>
 
                     {{-- Toko --}}
-                    <div class="flex items-center gap-1 text-[10px] text-on-surface-variant mb-2">
-                        <span class="material-symbols-outlined text-[12px] text-primary">storefront</span>
+                    <div class="flex items-center gap-1.5 text-xs text-on-surface-variant mb-2.5">
+                        <span class="material-symbols-outlined text-[14px] text-primary">storefront</span>
                         <span class="truncate font-medium">{{ $prod->store ? $prod->store->name : ($company->company_name ?? 'Official Store') }}</span>
                     </div>
 
-                    {{-- Sort Deskripsi Full agar calon pembeli bisa membaca --}}
+                    {{-- Sort Deskripsi Full agar calon pembeli bisa membaca rapi --}}
                     @if(!empty($descText))
-                        <div class="mb-3 p-2 rounded-lg bg-surface-container/60 border border-outline-variant/30 text-[11px] text-on-surface-variant leading-relaxed">
-                            <p class="font-normal whitespace-pre-line break-words">{{ $descText }}</p>
+                        <div class="mb-3 p-2.5 rounded-xl bg-surface-container-low border border-outline-variant/40 text-xs text-on-surface-variant leading-relaxed">
+                            <p class="font-normal line-clamp-3">{{ $descText }}</p>
                         </div>
                     @endif
 
-                    <div class="pt-2 border-t border-outline-variant/40 flex items-center justify-between mt-auto">
+                    <div class="pt-3 border-t border-outline-variant/40 flex items-center justify-between mt-auto">
                         <div>
                             @if($hasDiscount)
                                 <p class="text-[10px] text-on-surface-variant line-through leading-none mb-0.5">
                                     Rp{{ number_format($prod->price, 0, ',', '.') }}
                                 </p>
                             @endif
-                            <p class="text-xs md:text-sm font-extrabold text-primary leading-tight">
+                            <p class="text-sm font-black text-primary leading-tight">
                                 Rp{{ number_format($effectivePrice, 0, ',', '.') }}
                             </p>
                         </div>
-                        <span class="text-[9px] px-1.5 py-0.5 bg-surface-container rounded text-on-surface-variant font-medium shrink-0">
+                        <span class="text-[10px] px-2 py-0.5 bg-surface-container rounded-md text-on-surface-variant font-semibold shrink-0">
                             {{ $displaySold }} Terjual
                         </span>
                     </div>
