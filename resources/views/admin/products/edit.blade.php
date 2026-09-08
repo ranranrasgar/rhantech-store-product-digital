@@ -111,8 +111,9 @@
             </div>
 
             <div>
-                <label class="block font-label-md text-on-surface mb-xs">Description *</label>
-                <textarea name="description" rows="5" required class="w-full pl-4 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-secondary focus:ring-1 focus:ring-secondary/20">{{ old('description', $product->description) }}</textarea>
+                <label class="block font-label-md text-on-surface mb-xs">Full Description *</label>
+                <div id="editor-container" class="w-full bg-surface-container-low border border-[#CBD5E1] rounded-b-lg font-body-md text-body-md text-on-surface" style="min-height: 250px;"></div>
+                <input type="hidden" name="description" id="description" value="{{ old('description', $product->description) }}">
                 @error('description')<span class="text-error text-xs">{{ $message }}</span>@enderror
             </div>
 
@@ -230,5 +231,67 @@
         `;
         container.appendChild(row);
     }
+</script>
+
+<!-- Quill Rich Text Editor (Toolbox) -->
+<link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+<script>
+    function initQuillProductEdit() {
+        var editorElem = document.getElementById('editor-container');
+        if (!editorElem || editorElem.__quill_initialized) return;
+
+        // Clear existing toolbar/editor if re-initialized
+        editorElem.innerHTML = '';
+        var prevToolbar = editorElem.previousElementSibling;
+        if (prevToolbar && prevToolbar.classList.contains('ql-toolbar')) {
+            prevToolbar.remove();
+        }
+
+        var quill = new Quill('#editor-container', {
+            theme: 'snow',
+            placeholder: 'Tuliskan deskripsi lengkap produk di sini...',
+            modules: {
+                toolbar: [
+                    [{ 'header': [1, 2, 3, false] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    [{ 'align': [] }],
+                    ['link', 'image', 'video'],
+                    ['clean']
+                ]
+            }
+        });
+        editorElem.__quill_initialized = true;
+
+        var descriptionInput = document.getElementById('description');
+        if (descriptionInput && descriptionInput.value) {
+            quill.root.innerHTML = descriptionInput.value;
+        }
+
+        // Realtime sync to hidden input on every change
+        quill.on('text-change', function() {
+            var html = quill.root.innerHTML;
+            descriptionInput.value = (html === '<p><br></p>' || quill.getText().trim().length === 0) ? '' : html;
+        });
+
+        // Add custom styles to match theme
+        var toolbar = editorElem.previousElementSibling;
+        if (toolbar && toolbar.classList.contains('ql-toolbar')) {
+            toolbar.classList.add('bg-surface-container', 'border-[#CBD5E1]', 'rounded-t-lg');
+        }
+        editorElem.classList.add('border-t-0', 'border-[#CBD5E1]', 'rounded-b-lg', 'bg-surface-container-low');
+
+        var productForm = editorElem.closest('form');
+        if (productForm) {
+            productForm.addEventListener('submit', function(e) {
+                var html = quill.root.innerHTML;
+                descriptionInput.value = (html === '<p><br></p>' || quill.getText().trim().length === 0) ? '' : html;
+            });
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', initQuillProductEdit);
+    document.addEventListener('livewire:navigated', initQuillProductEdit);
 </script>
 @endsection
