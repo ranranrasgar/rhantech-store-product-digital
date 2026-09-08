@@ -11,7 +11,7 @@ class ProductTypeController extends Controller
 {
     public function index()
     {
-        $types = ProductType::orderBy('name', 'asc')->get();
+        $types = ProductType::withCount('products')->orderBy('name', 'asc')->get();
         return view('admin.product_types.index', compact('types'));
     }
 
