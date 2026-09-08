@@ -75,69 +75,99 @@
                 <table class="w-full text-left text-xs md:text-sm whitespace-nowrap">
                     <thead class="bg-slate-50/80 dark:bg-[#0c1220]/80 border-b border-slate-100 dark:border-[#222f49] text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider text-[11px]">
                         <tr>
-                            <th class="p-4 md:px-6 min-w-[280px]">Profil Mitra</th>
-                            <th class="p-4 md:px-6">Pengikut</th>
+                            <th class="p-4 md:px-6 min-w-[260px]">Profil Mitra</th>
+                            <th class="p-4 md:px-6 min-w-[220px]">Link Referral Toko</th>
+                            <th class="p-4 md:px-6">Bagi Hasil</th>
                             <th class="p-4 md:px-6">Jumlah Klik</th>
-                            <th class="p-4 md:px-6">Pesanan</th>
-                            <th class="p-4 md:px-6">Total Penjualan</th>
+                            <th class="p-4 md:px-6">Pesanan Sukses</th>
                             <th class="p-4 md:px-6 text-right pr-8">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100 dark:divide-[#1d273d]">
                         @forelse($affiliates as $aff)
+                        @php
+                            $refLink = route('public.store.show', $store->slug ?? 'store') . '?ref=' . ($aff->referral_code ?? $aff->id);
+                        @endphp
                         <tr class="hover:bg-slate-50/60 dark:hover:bg-[#151e30]/50 transition-colors">
                             
                             <!-- Affiliate Profile -->
-                            <td class="p-4 md:px-6 whitespace-normal min-w-[280px]">
+                            <td class="p-4 md:px-6 whitespace-normal min-w-[260px]">
                                 <div class="flex items-center gap-3.5">
-                                    <div class="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden shrink-0">
-                                        <img src="{{ $aff->avatar_url }}" class="w-full h-full object-cover">
+                                    <div class="w-11 h-11 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden shrink-0">
+                                        @if($aff->avatar_url)
+                                            <img src="{{ $aff->avatar_url }}" class="w-full h-full object-cover">
+                                        @else
+                                            <div class="w-full h-full flex items-center justify-center font-black text-sky-500 bg-sky-50 dark:bg-sky-950/40 text-base">
+                                                {{ substr($aff->name, 0, 1) }}
+                                            </div>
+                                        @endif
                                     </div>
                                     <div class="min-w-0">
                                         <div class="font-bold text-slate-900 dark:text-white flex items-center gap-1 leading-snug">
                                             {{ $aff->name }}
                                             @if($aff->is_golden_tick)
-                                                <span class="material-symbols-outlined text-[15px] text-sky-500">verified</span>
+                                                <span class="material-symbols-outlined text-[15px] text-sky-500" title="Mitra Terverifikasi">verified</span>
                                             @endif
                                         </div>
-                                        <div class="text-[11px] text-slate-400 mt-0.5 font-mono">
-                                            {{ $aff->handle }}
+                                        <div class="text-[11px] text-slate-400 mt-0.5 font-mono flex items-center gap-2">
+                                            <span>{{ $aff->handle }}</span>
+                                            @if($aff->whatsapp)
+                                                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $aff->whatsapp) }}" target="_blank" class="text-emerald-500 hover:underline flex items-center gap-0.5 font-sans text-[10px]">
+                                                    <span class="material-symbols-outlined text-[12px]">chat</span> WA
+                                                </a>
+                                            @endif
                                         </div>
-                                        <div class="mt-1">
+                                        <div class="mt-1 flex items-center gap-1.5">
                                             <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
-                                                {{ $aff->platform }}
+                                                {{ $aff->platform ?? 'Multi-Platform' }}
                                             </span>
+                                            @if($aff->followers_count && $aff->followers_count !== '-')
+                                                <span class="text-[10px] text-slate-400 font-medium">
+                                                    {{ $aff->followers_count }} fans
+                                                </span>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
                             </td>
 
-                            <!-- Followers -->
-                            <td class="p-4 md:px-6">
-                                <div class="font-bold text-slate-900 dark:text-white">
-                                    {{ $aff->followers_count }}
+                            <!-- Referral Link & Code -->
+                            <td class="p-4 md:px-6 min-w-[220px]">
+                                <div class="space-y-1">
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-mono font-bold bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400 border border-sky-200/60 dark:border-sky-800/40">
+                                        {{ $aff->referral_code ?? 'AFF' . $aff->id }}
+                                    </span>
+                                    <div class="flex items-center gap-1.5">
+                                        <input type="text" readonly value="{{ $refLink }}" class="text-[11px] font-mono bg-slate-100 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] px-2 py-1 rounded-lg text-slate-600 dark:text-slate-400 w-36 truncate focus:outline-none" id="ref_{{ $aff->id }}">
+                                        <button type="button" onclick="navigator.clipboard.writeText('{{ $refLink }}'); alert('Link referral berhasil disalin!');" class="p-1 text-slate-500 hover:text-sky-500 bg-white dark:bg-[#161f33] border border-slate-200 dark:border-[#222f49] rounded-lg transition" title="Salin Link">
+                                            <span class="material-symbols-outlined text-[14px]">content_copy</span>
+                                        </button>
+                                    </div>
                                 </div>
+                            </td>
+
+                            <!-- Commission Rate -->
+                            <td class="p-4 md:px-6">
+                                <div class="font-bold text-emerald-600 dark:text-emerald-400 text-sm">
+                                    {{ $aff->commission_rate ?? 10 }}%
+                                </div>
+                                <div class="text-[10px] text-slate-400">Komisi Penjualan</div>
                             </td>
 
                             <!-- Clicks -->
                             <td class="p-4 md:px-6">
                                 <div class="font-semibold text-slate-700 dark:text-slate-300">
-                                    {{ number_format($aff->clicks_count) }}
+                                    {{ number_format((int)$aff->clicks_count) }}
                                 </div>
+                                <div class="text-[10px] text-slate-400">Total Kunjungan</div>
                             </td>
 
                             <!-- Orders -->
                             <td class="p-4 md:px-6">
                                 <div class="font-semibold text-slate-700 dark:text-slate-300">
-                                    {{ number_format($aff->orders_count) }}
+                                    {{ number_format((int)$aff->orders_count) }}
                                 </div>
-                            </td>
-
-                            <!-- Sales Range -->
-                            <td class="p-4 md:px-6">
-                                <div class="font-extrabold text-slate-900 dark:text-white">
-                                    {{ $aff->sales_range }}
-                                </div>
+                                <div class="text-[10px] text-slate-400">Transaksi Berhasil</div>
                             </td>
 
                             <!-- Actions -->
@@ -148,7 +178,7 @@
                                     </a>
                                     <form action="{{ route('tenant.affiliates.destroy', $aff->id) }}" method="POST" onsubmit="return confirm('Hapus mitra affiliate {{ $aff->name }}?');">
                                         @csrf @method('DELETE')
-                                        <button type="submit" class="px-2.5 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 text-rose-600 dark:text-rose-400 text-xs font-bold transition-colors">
+                                        <button type="submit" class="px-2.5 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 text-rose-600 dark:text-rose-400 text-xs font-bold transition-colors" title="Hapus">
                                             <span class="material-symbols-outlined text-[15px]">delete</span>
                                         </button>
                                     </form>
@@ -164,7 +194,7 @@
                                         <span class="material-symbols-outlined text-[32px]">handshake</span>
                                     </div>
                                     <h3 class="font-bold text-base text-slate-800 dark:text-white mb-1">Belum ada mitra affiliate</h3>
-                                    <p class="text-xs text-slate-400 mb-5">Tambahkan kreator konten atau promotor untuk membantu penjualan toko Anda.</p>
+                                    <p class="text-xs text-slate-400 mb-5">Daftarkan kreator atau teman promotor untuk membantu menjualkan produk toko Anda.</p>
                                     <a href="{{ route('tenant.affiliates.create') }}" class="px-5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs shadow-lg shadow-sky-500/25 transition-all">
                                         Tambah Mitra Pertama
                                     </a>

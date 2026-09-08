@@ -11,9 +11,26 @@ class PublicStoreController extends Controller
     /**
      * Display the public store profile page.
      */
-    public function show(string $slug)
+    public function show(Request $request, string $slug)
     {
         $store = Store::where('slug', $slug)->firstOrFail();
+
+        // Check affiliate referral tracking
+        if ($request->filled('ref')) {
+            $refCode = $request->query('ref');
+            $affiliate = \App\Models\Affiliate::where('referral_code', $refCode)->first();
+            if ($affiliate) {
+                // Simpan di session agar bisa dipakai saat checkout
+                session(['affiliate_ref' => $affiliate->referral_code]);
+                // Increment click jika belum di-count di sesi ini
+                $sessionKey = 'aff_clicked_' . $affiliate->id;
+                if (!session()->has($sessionKey)) {
+                    $clicks = (int) $affiliate->clicks_count + 1;
+                    $affiliate->update(['clicks_count' => (string)$clicks]);
+                    session([$sessionKey => true]);
+                }
+            }
+        }
         
         // Only show active & approved products for store page
         $products = $store->products()->published()->paginate(12);
