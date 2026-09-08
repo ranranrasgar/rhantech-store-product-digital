@@ -334,7 +334,11 @@ class ProductController extends Controller
         return back()->with('info', "Produk \"{$product->name}\" telah ditolak dengan alasan yang disimpan.");
     }
 
-    protected function cleanArrayItems($items)
+    /**
+     * @param mixed $items
+     * @return array|null
+     */
+    protected function cleanArrayItems(?array $items): ?array
     {
         if (!is_array($items)) return null;
         $cleaned = [];
@@ -347,7 +351,11 @@ class ProductController extends Controller
         return count($cleaned) > 0 ? array_values($cleaned) : null;
     }
 
-    protected function cleanAssocItems($items)
+    /**
+     * @param mixed $items
+     * @return array|null
+     */
+    protected function cleanAssocItems(?array $items): ?array
     {
         if (!is_array($items)) return null;
         $cleaned = [];
@@ -368,7 +376,11 @@ class ProductController extends Controller
         return count($cleaned) > 0 ? array_values($cleaned) : null;
     }
 
-    protected function cleanFaqItems($items)
+    /**
+     * @param mixed $items
+     * @return array|null
+     */
+    protected function cleanFaqItems(?array $items): ?array
     {
         if (!is_array($items)) return null;
         $cleaned = [];

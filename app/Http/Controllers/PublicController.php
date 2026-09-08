@@ -21,19 +21,53 @@ class PublicController extends Controller
         $testimonials = Testimonial::query()->with('client')->where('is_active', true)->latest()->get();
         $popupAd = \App\Models\PopupAd::query()->where('is_active', true)->latest()->first();
 
-        // Aplikasi / produk digital yang sering dilihat calon pembeli
-        $popularProducts = Product::query()
+        // Aplikasi / produk digital rekomendasi: Adil antar toko, rating terbaik, dan acak/random setiap refresh
+        $candidateProducts = Product::query()
             ->with(['images', 'category', 'type', 'store', 'reviews'])
             ->published()
-            ->orderByDesc('views')
-            ->orderByDesc('sales_count')
-            ->take(4)
             ->get();
+
+        // Urutkan berdasarkan rating efektif tertinggi terlebih dahulu
+        $sortedByRating = $candidateProducts->sortByDesc(function ($product) {
+            return $product->effective_rating;
+        });
+
+        // Agar adil bagi semua toko/tenant (termasuk official store), kelompokkan per toko
+        // lalu ambil produk terbaik dari masing-masing toko terlebih dahulu
+        $byStore = $sortedByRating->groupBy(function ($product) {
+            return $product->store_id ? (string)$product->store_id : 'official';
+        });
+
+        // Ambil 1-2 perwakilan produk terbaik dari tiap toko secara acak jika toko punya beberapa produk berating tinggi
+        $fairPool = collect();
+        foreach ($byStore as $storeProducts) {
+            // Ambil produk berating tertinggi dari toko ini
+            $topRating = $storeProducts->max(fn($p) => $p->effective_rating);
+            $bestFromStore = $storeProducts->filter(fn($p) => $p->effective_rating >= ($topRating - 0.5));
+            $fairPool->push($bestFromStore->random());
+        }
+
+        // Jika jumlah perwakilan toko masih kurang dari 4, lengkapi dari sisa produk berating tertinggi lainnya
+        if ($fairPool->count() < 4) {
+            $poolIds = $fairPool->pluck('id')->all();
+            $remaining = $sortedByRating->reject(fn($p) => in_array($p->id, $poolIds));
+            $topRemaining = $remaining->take(8);
+            if ($topRemaining->isNotEmpty()) {
+                $needed = 4 - $fairPool->count();
+                $fairPool = $fairPool->concat($topRemaining->shuffle()->take($needed));
+            }
+        }
+
+        // Acak urutan tampilan setiap kali refresh halaman dan ambil 4 item
+        $popularProducts = $fairPool->shuffle()->take(4);
 
         // 10 Toko Terfavorit & Terlaris (Berdasarkan total penjualan berhasil / produk)
         $topStores = \App\Models\Store::query()
             ->with(['products' => function ($q) {
-                $q->published()->with('images');
+                $q->published()
+                  ->with('images')
+                  ->orderByDesc('sales_count')
+                  ->orderByDesc('views');
             }])
             ->withCount(['products' => function ($q) {
                 $q->published();

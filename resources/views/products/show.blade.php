@@ -596,7 +596,7 @@
                         $fourStarCount = $totalReviewsCount - $fiveStarCount;
                     }
                 @endphp
-
+                @php
                     $reviewsJson = $allReviews->map(function($r) {
                         return [
                             'id' => $r->id,

@@ -49,10 +49,10 @@
                         {{ $heroBadge ?: 'Pilihan Komunitas & Platform' }}
                     </span>
                     <h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-background dark:text-white text-balance">
-                        Top 10 Toko <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-[#06B6D4]">Terfavorit &amp; Terlaris</span>
+                        Brand &amp; Developer <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-[#06B6D4]">Aplikasi Digital Terbaik</span>
                     </h1>
                     <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mt-2 text-balance">
-                        {{ $heroSubtitle ?: 'Jelajahi kreator, developer, dan vendor digital terpercaya dengan reputasi dan penjualan tertinggi.' }}
+                        {{ $heroSubtitle ?: 'Jelajahi brand developer dan toko software resmi dengan produk aplikasi pilihan & reputasi terpercaya.' }}
                     </p>
                 </div>
                 
@@ -148,31 +148,95 @@
                             </div>
                         </div>
 
-                        <!-- Right Banner / Image Preview -->
-                        <div class="md:col-span-5 relative">
-                            <div class="relative rounded-2xl overflow-hidden border border-outline-variant/60 shadow-lg aspect-4/3 bg-gradient-to-tr from-slate-900 via-primary/80 to-slate-800 flex items-center justify-center group">
-                                @php
-                                    $bannerUrl = null;
-                                    if (!empty($store->banner)) {
-                                        $bannerUrl = Str::startsWith($store->banner, 'http') ? $store->banner : asset('storage/' . $store->banner);
-                                    } elseif ($store->products && $store->products->first() && $store->products->first()->primary_image_url) {
-                                        $bannerUrl = $store->products->first()->primary_image_url;
-                                    }
-                                @endphp
-                                
-                                @if($bannerUrl)
-                                    <img src="{{ $bannerUrl }}" 
-                                         alt="{{ $store->name }}" 
-                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                @endif
+                        <!-- Right Showcase: Produk Terlaris Milik Toko Ini (Bergantian Otomatis 1-2 Produk) -->
+                        <div class="md:col-span-5 relative w-full">
+                            @php
+                                $storeTopProducts = $store->products ? $store->products->take(2)->values() : collect();
+                            @endphp
 
-                                <!-- Fallback Banner jika gambar kosong atau link eksternal/CDN crash -->
-                                <div class="w-full h-full p-6 flex flex-col justify-between items-center text-center bg-gradient-to-br from-[#06B6D4]/30 via-primary/30 to-slate-900/90 {{ $bannerUrl ? 'hidden' : 'flex' }}">
-                                    <div class="flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-xs border border-white/20 text-white text-xs">
-                                        <span class="material-symbols-outlined text-[16px] text-amber-400">verified</span>
-                                        <span>Verified Vendor</span>
-                                    </div>
+                            @if($storeTopProducts->isNotEmpty())
+                                <div class="relative w-full h-[300px] sm:h-[340px] md:h-[360px] rounded-2xl overflow-hidden border border-outline-variant/70 shadow-lg bg-slate-950"
+                                     x-data="{ 
+                                         prodIdx: 0, 
+                                         totalProds: {{ $storeTopProducts->count() }},
+                                         timer: null,
+                                         init() {
+                                             if (this.totalProds > 1) {
+                                                 this.timer = setInterval(() => {
+                                                     this.prodIdx = (this.prodIdx + 1) % this.totalProds;
+                                                 }, 3500);
+                                             }
+                                         }
+                                     }">
+                                    @foreach($storeTopProducts as $pIdx => $tp)
+                                        @php
+                                            $tpImg = $tp->images ? ($tp->images->where('is_main', true)->first() ?? $tp->images->first()) : null;
+                                            $tpImgUrl = $tpImg ? asset('storage/' . $tpImg->image_path) : null;
+                                        @endphp
+                                        <a href="{{ route('products.show', $tp->slug) }}"
+                                           x-show="prodIdx === {{ $pIdx }}"
+                                           x-cloak
+                                           x-transition:enter="transition ease-out duration-500"
+                                           x-transition:enter-start="opacity-0 scale-95"
+                                           x-transition:enter-end="opacity-100 scale-100"
+                                           class="absolute inset-0 w-full h-full block group overflow-hidden">
+                                            @if($tpImgUrl)
+                                                <img src="{{ $tpImgUrl }}" 
+                                                     alt="{{ $tp->name }}" 
+                                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                                                     onerror="this.src='https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&auto=format&fit=crop&q=80'">
+                                            @else
+                                                <div class="w-full h-full bg-gradient-to-tr from-slate-900 via-primary/60 to-slate-800 flex items-center justify-center">
+                                                    <span class="material-symbols-outlined text-5xl text-white/30">inventory_2</span>
+                                                </div>
+                                            @endif
+
+                                            <!-- Badge Produk Terlaris / Unggulan -->
+                                            <div class="absolute top-3.5 left-3.5 z-10 flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-950/80 backdrop-blur-md border border-white/20 text-white text-[11px] font-bold shadow-md">
+                                                <span class="material-symbols-outlined text-[14px] text-amber-400">local_fire_department</span>
+                                                <span>{{ $pIdx === 0 ? 'Produk Paling Laris' : 'Rekomendasi Unggulan' }}</span>
+                                            </div>
+
+                                            @if($storeTopProducts->count() > 1)
+                                            <!-- Indikator Slide Produk -->
+                                            <div class="absolute top-3.5 right-3.5 z-10 flex gap-1 bg-black/40 backdrop-blur-xs px-2 py-1 rounded-full">
+                                                @foreach($storeTopProducts as $dIdx => $dp)
+                                                    <span class="w-1.5 h-1.5 rounded-full transition-all" :class="prodIdx === {{ $dIdx }} ? 'bg-white w-3' : 'bg-white/40'"></span>
+                                                @endforeach
+                                            </div>
+                                            @endif
+
+                                            <!-- Bottom Overlay & Product Details -->
+                                            <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent pointer-events-none"></div>
+                                            <div class="absolute bottom-0 inset-x-0 p-4 text-white flex items-end justify-between gap-3 z-10">
+                                                <div class="min-w-0">
+                                                    <div class="flex items-center gap-1.5 text-amber-400 text-xs font-bold mb-1">
+                                                        <span class="material-symbols-outlined text-[14px]">star</span>
+                                                        <span>{{ $tp->effective_rating }}</span>
+                                                        <span class="text-white/60 text-[11px]">({{ $tp->effective_reviews_count }} ulasan)</span>
+                                                    </div>
+                                                    <h4 class="text-sm md:text-base font-black truncate drop-shadow group-hover:text-primary transition-colors">
+                                                        {{ $tp->name }}
+                                                    </h4>
+                                                    <p class="text-xs text-white/70 truncate">
+                                                        {{ $tp->category->name ?? 'Aplikasi Digital' }}
+                                                    </p>
+                                                </div>
+                                                <div class="shrink-0 text-right">
+                                                    <div class="text-xs text-emerald-400 font-extrabold text-sm md:text-base">
+                                                        Rp{{ number_format($tp->discount_price && $tp->discount_price < $tp->price ? $tp->discount_price : $tp->price, 0, ',', '.') }}
+                                                    </div>
+                                                    <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-white/80 group-hover:text-primary mt-0.5">
+                                                        Lihat Detail <span class="material-symbols-outlined text-[12px]">arrow_forward</span>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    @endforeach
+                                </div>
+                            @else
+                                {{-- Fallback jika toko belum memiliki produk --}}
+                                <div class="relative w-full h-[300px] sm:h-[340px] md:h-[360px] rounded-2xl overflow-hidden border border-outline-variant/60 shadow-lg bg-gradient-to-tr from-slate-900 via-primary/80 to-slate-800 flex items-center justify-center p-6 text-center">
                                     <div class="flex flex-col items-center">
                                         @if($store->logo)
                                             <img src="{{ asset('storage/' . $store->logo) }}" alt="{{ $store->name }}" class="w-20 h-20 rounded-2xl object-cover border-2 border-white/30 shadow-xl mb-3">
@@ -181,17 +245,11 @@
                                                 {{ strtoupper(substr($store->name, 0, 1)) }}
                                             </div>
                                         @endif
-                                        <h3 class="text-white font-black text-lg drop-shadow-md max-w-[260px] truncate">{{ $store->name }}</h3>
+                                        <h3 class="text-white font-black text-lg drop-shadow-md">{{ $store->name }}</h3>
+                                        <span class="text-xs text-slate-300 mt-1">Pusat Aplikasi &amp; Source Code Terpercaya</span>
                                     </div>
-                                    <span class="text-[11px] font-medium text-slate-300">Pusat Aplikasi &amp; Source Code Terpercaya</span>
                                 </div>
-
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none"></div>
-                                <div class="absolute bottom-4 left-4 right-4 text-white pointer-events-none">
-                                    <div class="text-xs font-bold uppercase tracking-wider text-emerald-300">Rekomendasi Terbaik</div>
-                                    <div class="text-base font-black truncate">{{ $store->name }}</div>
-                                </div>
-                            </div>
+                            @endif
                         </div>
                     </div>
                 @endforeach

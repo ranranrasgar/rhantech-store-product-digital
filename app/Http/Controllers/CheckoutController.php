@@ -226,7 +226,7 @@ class CheckoutController extends Controller
         }
     }
 
-    public function payment($invoice_number)
+    public function payment(string $invoice_number)
     {
         $order = Order::with('orderItems.product')->where('invoice_number', $invoice_number)->firstOrFail();
         
@@ -240,7 +240,7 @@ class CheckoutController extends Controller
     /**
      * Endpoint untuk sinkronisasi realtime saat pembayaran di Midtrans Snap selesai
      */
-    public function checkStatus($invoice_number)
+    public function checkStatus(string $invoice_number)
     {
         $order = Order::with('orderItems.product.store')->where('invoice_number', $invoice_number)->firstOrFail();
 

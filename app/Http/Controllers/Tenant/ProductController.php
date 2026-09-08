@@ -409,7 +409,7 @@ class ProductController extends Controller
         return back()->with('success', 'Main image updated.');
     }
 
-    protected function cleanArrayItems($items)
+    protected function cleanArrayItems(mixed $items): ?array
     {
         if (!is_array($items)) return null;
         $cleaned = [];
@@ -422,7 +422,7 @@ class ProductController extends Controller
         return count($cleaned) > 0 ? array_values($cleaned) : null;
     }
 
-    protected function cleanAssocItems($items)
+    protected function cleanAssocItems(mixed $items): ?array
     {
         if (!is_array($items)) return null;
         $cleaned = [];
@@ -443,7 +443,7 @@ class ProductController extends Controller
         return count($cleaned) > 0 ? array_values($cleaned) : null;
     }
 
-    protected function cleanFaqItems($items)
+    protected function cleanFaqItems(mixed $items): ?array
     {
         if (!is_array($items)) return null;
         $cleaned = [];
