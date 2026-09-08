@@ -71,14 +71,14 @@
         }
         document.addEventListener('livewire:navigated', () => {
             const savedTheme = localStorage.getItem(storageKey);
-            const theme = ['light', 'dark'].includes(savedTheme) ? savedTheme : (mediaQuery.matches ? 'dark' : 'light');
+            const theme = ['light', 'dark'].includes(savedTheme) ? savedTheme : 'light';
             applyTheme(theme);
             initialise();
         });
         initialise();
 
         mediaQuery.addEventListener('change', (event) => {
-            if (!getStoredTheme()) applyTheme(event.matches ? 'dark' : 'light');
+            if (getStoredTheme()) return; // Keep user preference if set
         });
 
         window.addEventListener('storage', (event) => {

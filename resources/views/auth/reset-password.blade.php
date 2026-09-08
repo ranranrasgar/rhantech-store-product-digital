@@ -67,6 +67,7 @@
             </div>
 
             <div class="flex items-center gap-4">
+                <x-theme-toggle />
                 @if(!empty($company->phone) || !empty($company->whatsapp))
                     <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $company->whatsapp ?? $company->phone) }}?text=Halo,%20saya%20butuh%20bantuan%20reset%20password" target="_blank" class="text-xs sm:text-sm font-semibold text-[#00838f] dark:text-teal-400 hover:underline inline-flex items-center gap-1">
                         <span class="material-symbols-outlined text-[18px]">support_agent</span>

@@ -69,6 +69,7 @@
             </div>
 
             <div class="flex items-center gap-4">
+                <x-theme-toggle />
                 <a href="{{ route('help.index') }}" class="text-xs sm:text-sm font-semibold text-[#00838f] dark:text-teal-400 hover:underline inline-flex items-center gap-1">
                     <span class="material-symbols-outlined text-[18px]">help_center</span>
                     <span>Pusat Bantuan</span>

@@ -11,7 +11,7 @@
 
         const theme = ['light', 'dark'].includes(savedTheme)
             ? savedTheme
-            : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            : 'light';
 
         document.documentElement.classList.toggle('dark', theme === 'dark');
         document.documentElement.dataset.theme = theme;
