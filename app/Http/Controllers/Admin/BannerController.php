@@ -59,6 +59,7 @@ class BannerController extends Controller
             }
 
             $banner->link = $request->input("banners.{$position}.link");
+            $banner->is_active = $request->has("banners.{$position}.is_active") ? (bool)$request->input("banners.{$position}.is_active") : false;
             $banner->save();
         }
 

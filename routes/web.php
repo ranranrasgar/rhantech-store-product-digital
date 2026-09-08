@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\ContactMessageController;
 
 // Public Routes
 Route::get('/', [PublicController::class, 'home'])->name('home');
+Route::get('/about', [PublicController::class, 'about'])->name('about');
 Route::get('/projects', [PublicController::class, 'projects'])->name('projects.index');
 Route::get('/projects/{slug}', [PublicController::class, 'projectDetail'])->name('projects.show');
 Route::get('/projects/{slug}/brochure', [PublicController::class, 'downloadBrochure'])->name('projects.brochure');
@@ -209,6 +210,6 @@ Route::get('/storage/{path}', function (string $path) {
 
 // Direct Store URL: http://127.0.0.1:8000/<nama-toko> (e.g., http://127.0.0.1:8000/gudang-aplikasi)
 Route::get('/{slug}', [\App\Http\Controllers\PublicStoreController::class, 'show'])
-    ->where('slug', '^(?!admin|tenant|dashboard|projects|products|clients|cart|checkout|payment|download|contact|help|login|register|logout|forgot-password|reset-password|email|storage|chat|toko).*$')
+    ->where('slug', '^(?!admin|tenant|dashboard|about|projects|products|clients|cart|checkout|payment|download|contact|help|login|register|logout|forgot-password|reset-password|email|storage|chat|toko).*$')
     ->name('store.direct');
 

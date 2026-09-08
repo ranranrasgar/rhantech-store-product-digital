@@ -38,9 +38,23 @@
             
             {{-- Main Banner --}}
             <div class="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-100 dark:border-slate-700 p-5 col-span-1 lg:col-span-2">
-                <h3 class="font-bold text-lg mb-4 text-gray-800 dark:text-gray-100">Banner Utama (Kiri)</h3>
+                @php $main = $banners->get('main'); @endphp
+                <div class="flex items-center justify-between mb-4 pb-2 border-b border-gray-100 dark:border-slate-700">
+                    <div>
+                        <h3 class="font-bold text-lg text-gray-800 dark:text-gray-100">Banner Utama (Kiri)</h3>
+                        <p class="text-xs text-gray-400">Tampil besar di sebelah kiri katalog produk</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="hidden" name="banners[main][is_active]" value="0">
+                            <input type="checkbox" name="banners[main][is_active]" value="1" {{ ($main && $main->is_active !== null ? $main->is_active : true) ? 'checked' : '' }} class="sr-only peer">
+                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-emerald-500"></div>
+                            <span class="ml-2 text-xs font-semibold text-gray-700 dark:text-gray-300">Aktif</span>
+                        </label>
+                    </div>
+                </div>
+
                 <div class="mb-4">
-                    @php $main = $banners->get('main'); @endphp
                     <div class="relative group cursor-pointer" @click="$refs.mainInput.click()">
                         <img :src="previews.main || '{{ $main && $main->image_path ? asset('storage/' . $main->image_path) : '' }}'" 
                              x-show="previews.main || '{{ $main && $main->image_path ? 1 : '' }}'"
@@ -72,10 +86,18 @@
             <div class="col-span-1 flex flex-col gap-6">
                 {{-- Side Banner 1 --}}
                 <div class="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-100 dark:border-slate-700 p-5">
-                    <h3 class="font-bold text-lg mb-4 text-gray-800 dark:text-gray-100">Banner Samping (Atas)</h3>
+                    @php $side1 = $banners->get('side_1'); @endphp
+                    <div class="flex items-center justify-between mb-4 pb-2 border-b border-gray-100 dark:border-slate-700">
+                        <h3 class="font-bold text-base text-gray-800 dark:text-gray-100">Samping (Atas)</h3>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="hidden" name="banners[side_1][is_active]" value="0">
+                            <input type="checkbox" name="banners[side_1][is_active]" value="1" {{ ($side1 && $side1->is_active !== null ? $side1->is_active : true) ? 'checked' : '' }} class="sr-only peer">
+                            <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-emerald-500"></div>
+                            <span class="ml-1.5 text-xs font-semibold text-gray-700 dark:text-gray-300">Aktif</span>
+                        </label>
+                    </div>
+
                     <div class="mb-4">
-                        @php $side1 = $banners->get('side_1'); @endphp
-                        
                         <div class="relative group cursor-pointer" @click="$refs.side1Input.click()">
                             <img :src="previews.side_1 || '{{ $side1 && $side1->image_path ? asset('storage/' . $side1->image_path) : '' }}'" 
                                  x-show="previews.side_1 || '{{ $side1 && $side1->image_path ? 1 : '' }}'"
@@ -103,10 +125,18 @@
 
                 {{-- Side Banner 2 --}}
                 <div class="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-100 dark:border-slate-700 p-5">
-                    <h3 class="font-bold text-lg mb-4 text-gray-800 dark:text-gray-100">Banner Samping (Bawah)</h3>
+                    @php $side2 = $banners->get('side_2'); @endphp
+                    <div class="flex items-center justify-between mb-4 pb-2 border-b border-gray-100 dark:border-slate-700">
+                        <h3 class="font-bold text-base text-gray-800 dark:text-gray-100">Samping (Bawah)</h3>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="hidden" name="banners[side_2][is_active]" value="0">
+                            <input type="checkbox" name="banners[side_2][is_active]" value="1" {{ ($side2 && $side2->is_active !== null ? $side2->is_active : true) ? 'checked' : '' }} class="sr-only peer">
+                            <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-emerald-500"></div>
+                            <span class="ml-1.5 text-xs font-semibold text-gray-700 dark:text-gray-300">Aktif</span>
+                        </label>
+                    </div>
+
                     <div class="mb-4">
-                        @php $side2 = $banners->get('side_2'); @endphp
-                        
                         <div class="relative group cursor-pointer" @click="$refs.side2Input.click()">
                             <img :src="previews.side_2 || '{{ $side2 && $side2->image_path ? asset('storage/' . $side2->image_path) : '' }}'" 
                                  x-show="previews.side_2 || '{{ $side2 && $side2->image_path ? 1 : '' }}'"

@@ -157,11 +157,37 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs font-bold text-on-surface uppercase tracking-wider mb-2">Tentang Perusahaan (About Us)</label>
-                        <textarea name="description" rows="3" 
+                        <label class="block text-xs font-bold text-on-surface uppercase tracking-wider mb-2">Tentang Perusahaan (About Us / Profil Lengkap)</label>
+                        <textarea name="description" rows="5" 
                                   class="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline-variant rounded-xl text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
-                                  placeholder="Tuliskan profil lengkap mengenai visi perusahaan...">{{ old('description', $profile->description ?? '') }}</textarea>
+                                  placeholder="Tuliskan cerita dan profil lengkap perusahaan yang akan tampil di halaman /about...">{{ old('description', $profile->description ?? '') }}</textarea>
                         @error('description')<span class="text-error text-xs mt-1 block">{{ $message }}</span>@enderror
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-xs font-bold text-on-surface uppercase tracking-wider mb-2">Visi Perusahaan</label>
+                            <textarea name="vision" rows="3" 
+                                      class="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline-variant rounded-xl text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                                      placeholder="Visi perusahaan ke depan...">{{ old('vision', $profile->vision ?? '') }}</textarea>
+                            @error('vision')<span class="text-error text-xs mt-1 block">{{ $message }}</span>@enderror
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-on-surface uppercase tracking-wider mb-2">Misi Perusahaan</label>
+                            <textarea name="mission" rows="3" 
+                                      class="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline-variant rounded-xl text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                                      placeholder="Misi-misi yang dijalankan...">{{ old('mission', $profile->mission ?? '') }}</textarea>
+                            @error('mission')<span class="text-error text-xs mt-1 block">{{ $message }}</span>@enderror
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-on-surface uppercase tracking-wider mb-2">Tahun Berdiri / Pengalaman (Founded Year)</label>
+                        <input type="text" name="founded_year" value="{{ old('founded_year', $profile->founded_year ?? '') }}" 
+                               class="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline-variant rounded-xl text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                               placeholder="Contoh: 2018 atau 6+ Tahun Pengalaman">
+                        @error('founded_year')<span class="text-error text-xs mt-1 block">{{ $message }}</span>@enderror
                     </div>
 
                     <div>

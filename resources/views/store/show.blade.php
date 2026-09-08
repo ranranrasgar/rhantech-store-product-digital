@@ -1,4 +1,4 @@
-@extends('layouts.public')
+@extends('layouts.store')
 
 @section('title', $store->name)
 
@@ -66,14 +66,14 @@
                 <!-- Actions -->
                 @if(!auth()->check() || auth()->id() !== $store->user_id)
                 <div class="flex items-center gap-3 mt-4 md:mt-0">
-                    <button @click="window.dispatchEvent(new CustomEvent('open-chat-with-store', { 
+                    <button @click="@auth window.dispatchEvent(new CustomEvent('open-chat-with-store', { 
                         detail: { 
                             store_id: {{ $store->id }}, 
                             store_name: '{{ addslashes($store->name) }}',
                             store_slug: '{{ $store->slug }}',
                             store_logo: '{{ $store->logo ? asset('storage/' . $store->logo) : '' }}'
                         } 
-                    }))" class="px-6 py-2 bg-transparent border border-white text-white rounded font-bold hover:bg-white/20 transition-colors flex items-center gap-2">
+                    })) @else window.location.href = '{{ route('login') }}' @endauth" class="px-6 py-2 bg-transparent border border-white text-white rounded font-bold hover:bg-white/20 transition-colors flex items-center gap-2 cursor-pointer">
                         <span class="material-symbols-outlined text-[18px]">chat</span> Chat
                     </button>
                     <button @click="toggleFollow()" 
@@ -89,7 +89,7 @@
     </div>
 
     <!-- Store Navigation -->
-    <div class="bg-white border-b border-outline-variant sticky top-0 z-40 shadow-sm">
+    <div class="bg-surface dark:bg-slate-900 border-b border-outline-variant sticky top-16 z-40 shadow-xs">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex overflow-x-auto hide-scrollbar">
             <button @click="activeTab = 'beranda'" :class="activeTab === 'beranda' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant hover:text-primary'" class="px-6 py-4 font-bold border-b-2 border-transparent transition-colors whitespace-nowrap">Beranda Toko</button>
             <button @click="activeTab = 'produk'" :class="activeTab === 'produk' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant hover:text-primary'" class="px-6 py-4 font-bold border-b-2 border-transparent transition-colors whitespace-nowrap">Semua Produk</button>

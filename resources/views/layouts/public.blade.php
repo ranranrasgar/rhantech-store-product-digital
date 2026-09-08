@@ -145,7 +145,7 @@
             </a>
             <div class="hidden md:flex items-center gap-lg nav-links">
                 <a class="nav-link {{ request()->is('/') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-secondary transition-colors duration-200" href="{{ url('/#home') }}">Home</a>
-                <a class="nav-link text-on-surface-variant dark:text-on-surface-variant/80 hover:text-secondary transition-colors duration-200" href="{{ url('/#about') }}">About</a>
+                <a class="nav-link {{ request()->routeIs('about') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-secondary transition-colors duration-200" href="{{ route('about') }}" wire:navigate>About</a>
                 <a class="nav-link text-on-surface-variant dark:text-on-surface-variant/80 hover:text-secondary transition-colors duration-200" href="{{ url('/#services') }}">Services</a>
                 <a class="nav-link {{ request()->routeIs('projects.*') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-secondary transition-colors duration-200" href="{{ route('projects.index') }}" wire:navigate>Portfolio</a>
                 <a class="nav-link {{ request()->routeIs('products.*') || request()->routeIs('checkout.*') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-secondary transition-colors duration-200" href="{{ route('products.index') }}" wire:navigate>Store</a>
@@ -213,7 +213,7 @@
         <!-- Mobile Menu -->
         <div x-show="mobileMenuOpen" style="display: none;" class="md:hidden bg-surface dark:bg-surface-container-lowest border-t border-outline-variant/30 py-4 px-4 flex flex-col gap-4 shadow-lg absolute w-full left-0">
             <a class="nav-link {{ request()->is('/') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }}" href="{{ url('/#home') }}">Home</a>
-            <a class="nav-link text-on-surface-variant dark:text-on-surface-variant/80" href="{{ url('/#about') }}">About</a>
+            <a class="nav-link {{ request()->routeIs('about') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }}" href="{{ route('about') }}" wire:navigate>About</a>
             <a class="nav-link text-on-surface-variant dark:text-on-surface-variant/80" href="{{ url('/#services') }}">Services</a>
             <a class="nav-link {{ request()->routeIs('projects.*') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }}" href="{{ route('projects.index') }}" wire:navigate>Portfolio</a>
             <a class="nav-link {{ request()->routeIs('products.*') || request()->routeIs('checkout.*') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }}" href="{{ route('products.index') }}" wire:navigate>Store</a>
@@ -248,7 +248,7 @@
             <div>
                 <h4 class="font-label-md text-label-md text-on-background dark:text-white font-bold mb-4 uppercase tracking-wider">Company</h4>
                 <ul class="flex flex-col gap-3">
-                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/#about') }}">About Us</a></li>
+                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ route('about') }}" wire:navigate>About Us</a></li>
                     <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/#services') }}">Services</a></li>
                     <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/projects') }}" wire:navigate>Portfolio</a></li>
                 </ul>

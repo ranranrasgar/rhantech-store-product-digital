@@ -524,28 +524,6 @@
     @endif
 </section>
 
-<!-- About Section -->
-<section id="about" class="py-2xl border-t border-outline-variant/30">
-    <div class="max-w-container-max mx-auto px-lg">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-xl items-center">
-            <div>
-                <h2 class="font-headline-xl text-on-background dark:text-white mb-md">About Us</h2>
-                <div class="font-body-lg text-on-surface-variant whitespace-pre-wrap">{{ $company->about_text ?? 'We are a dedicated team of professionals focused on delivering the best results for our clients.' }}</div>
-            </div>
-            <div class="grid grid-cols-2 gap-md">
-                <div class="bg-surface-container rounded-xl p-lg text-center border border-outline-variant/30">
-                    <div class="font-display-lg text-secondary mb-xs">25+</div>
-                    <div class="font-label-md text-on-surface">Years Experience</div>
-                </div>
-                <div class="bg-surface-container rounded-xl p-lg text-center border border-outline-variant/30">
-                    <div class="font-display-lg text-secondary mb-xs">1500+</div>
-                    <div class="font-label-md text-on-surface">Projects Delivered</div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
 <!-- Services Section -->
 @if(isset($services) && $services->count() > 0)
 <section id="services" class="py-2xl bg-surface-container">

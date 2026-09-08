@@ -1,13 +1,16 @@
 @auth
 <!-- Floating Chat Widget -->
-    <div x-data="buyerChatWidget()" x-init="initWidget()" class="fixed bottom-0 right-0 md:right-4 z-50 items-end flex">
+<!-- Floating Chat Widget -->
+    <div x-data="buyerChatWidget()" x-init="initWidget()" class="fixed bottom-4 right-4 z-50 items-end flex">
         <!-- Chat Button (Closed State) -->
-        <button x-show="!chatOpen" @click="toggleChat(true)" x-transition.opacity class="bg-primary text-white shadow-xl hover:bg-primary/90 transition-all flex items-center justify-center gap-2 font-medium px-4 py-3 rounded-tl-lg md:rounded-t-lg relative" style="min-width: 130px;">
-            <span class="material-symbols-outlined text-[20px]">chat</span>
-            <span>Chat Toko</span>
+        <button x-show="!chatOpen" @click="toggleChat(true)" x-transition.opacity 
+                class="bg-primary/95 hover:bg-primary text-white shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-1.5 font-bold p-3 md:px-3.5 md:py-2 rounded-full md:rounded-xl backdrop-blur-xs relative cursor-pointer group hover:scale-105 active:scale-95" 
+                title="Buka Chat Toko">
+            <span class="material-symbols-outlined text-[20px] md:text-[18px]">chat</span>
+            <span class="hidden md:inline text-xs font-semibold tracking-tight">Chat Toko</span>
             <!-- Notification Badge -->
             <template x-if="unreadTotal > 0">
-                <div class="absolute -top-2 -right-2 bg-amber-400 text-slate-900 text-[10px] font-black px-2 py-0.5 rounded-full border-2 border-white animate-bounce shadow-md" x-text="unreadTotal"></div>
+                <div class="absolute -top-1 -right-1 bg-amber-400 text-slate-900 text-[9px] font-black px-1.5 py-0.2 rounded-full border-2 border-white animate-bounce shadow" x-text="unreadTotal"></div>
             </template>
         </button>
 

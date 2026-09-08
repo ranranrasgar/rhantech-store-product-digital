@@ -207,43 +207,42 @@
     </div>
 
     {{-- ── BANNER ROW ── --}}
-    <div class="flex gap-3 mb-8 h-[160px] md:h-[240px]">
-        @if(isset($banners) && $banners->has('main'))
+    @php
+        $hasMain = isset($banners) && $banners->has('main') && $banners->get('main')->image_path;
+        $hasSide1 = isset($banners) && $banners->has('side_1') && $banners->get('side_1')->image_path;
+        $hasSide2 = isset($banners) && $banners->has('side_2') && $banners->get('side_2')->image_path;
+        $anyActiveBanner = $hasMain || $hasSide1 || $hasSide2;
+    @endphp
+
+    @if($anyActiveBanner)
+    <div class="flex flex-col md:flex-row gap-3 mb-8 {{ $hasMain && ($hasSide1 || $hasSide2) ? 'h-auto md:h-[240px]' : '' }}">
+        @if($hasMain)
             @php $mainBanner = $banners->get('main'); @endphp
-            <a href="{{ $mainBanner->link ?? '#' }}" class="flex-[2] overflow-hidden rounded-xl shadow-sm relative group cursor-pointer block">
+            <a href="{{ $mainBanner->link ?? '#' }}" class="{{ ($hasSide1 || $hasSide2) ? 'flex-[2] h-[160px] md:h-full' : 'w-full h-[180px] md:h-[260px]' }} overflow-hidden rounded-xl shadow-sm relative group cursor-pointer block">
                 <img src="{{ asset('storage/' . $mainBanner->image_path) }}" alt="{{ $mainBanner->title ?? 'Banner Utama' }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                <div class="absolute inset-0 bg-gradient-to-r from-black/30 to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-r from-black/25 to-transparent"></div>
             </a>
-        @else
-            <div class="flex-[2] overflow-hidden rounded-xl shadow-sm relative group cursor-pointer bg-gray-200 dark:bg-gray-800 flex items-center justify-center">
-                <span class="text-gray-400 text-xs">Banner Utama (Kiri)</span>
-            </div>
         @endif
 
-        <div class="flex-1 flex flex-col gap-3">
-            @if(isset($banners) && $banners->has('side_1'))
+        @if($hasSide1 || $hasSide2)
+        <div class="{{ $hasMain ? 'flex-1' : 'w-full' }} flex flex-col sm:flex-row md:flex-col gap-3">
+            @if($hasSide1)
                 @php $side1 = $banners->get('side_1'); @endphp
-                <a href="{{ $side1->link ?? '#' }}" class="flex-1 overflow-hidden rounded-xl shadow-sm cursor-pointer group block">
+                <a href="{{ $side1->link ?? '#' }}" class="flex-1 h-[115px] md:h-full overflow-hidden rounded-xl shadow-sm cursor-pointer group block">
                     <img src="{{ asset('storage/' . $side1->image_path) }}" alt="{{ $side1->title ?? 'Banner Samping Atas' }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                 </a>
-            @else
-                <div class="flex-1 overflow-hidden rounded-xl shadow-sm cursor-pointer group bg-gray-200 dark:bg-gray-800 flex items-center justify-center">
-                    <span class="text-gray-400 text-xs">Samping Atas</span>
-                </div>
             @endif
 
-            @if(isset($banners) && $banners->has('side_2'))
+            @if($hasSide2)
                 @php $side2 = $banners->get('side_2'); @endphp
-                <a href="{{ $side2->link ?? '#' }}" class="flex-1 overflow-hidden rounded-xl shadow-sm cursor-pointer group block">
+                <a href="{{ $side2->link ?? '#' }}" class="flex-1 h-[115px] md:h-full overflow-hidden rounded-xl shadow-sm cursor-pointer group block">
                     <img src="{{ asset('storage/' . $side2->image_path) }}" alt="{{ $side2->title ?? 'Banner Samping Bawah' }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                 </a>
-            @else
-                <div class="flex-1 overflow-hidden rounded-xl shadow-sm cursor-pointer group bg-gray-200 dark:bg-gray-800 flex items-center justify-center">
-                    <span class="text-gray-400 text-xs">Samping Bawah</span>
-                </div>
             @endif
         </div>
+        @endif
     </div>
+    @endif
 
     {{-- ── MAIN CATALOG SECTION: LEFT SIDEBAR FILTER & RIGHT PRODUCTS LIST ── --}}
     <section x-data="{

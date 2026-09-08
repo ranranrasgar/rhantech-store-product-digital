@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    @include('components.theme-init')
+    <title>@yield('title', $store->name ?? 'Toko Digital')</title>
+    <meta name="description" content="@yield('meta_description', $store->description ?? 'Toko digital resmi penyedia produk dan template terpercaya.')"/>
+    <meta property="og:title" content="@yield('title', $store->name ?? 'Toko Digital')"/>
+    <meta property="og:description" content="@yield('meta_description', $store->description ?? 'Toko digital resmi penyedia produk dan template terpercaya.')"/>
+    <meta property="og:image" content="@yield('meta_image', $store->logo ? asset('storage/'.$store->logo) : '')"/>
+    <meta property="og:type" content="website"/>
+    <link rel="icon" type="image/png" href="{{ $store->logo ? asset('storage/'.$store->logo) : (isset($company) && $company->favicon ? '/storage/'.$company->favicon : '/favicon.ico') }}" />
+    <link rel="shortcut icon" type="image/png" href="{{ $store->logo ? asset('storage/'.$store->logo) : (isset($company) && $company->favicon ? '/storage/'.$company->favicon : '/favicon.ico') }}" />
+
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "rgb(var(--theme-primary, 0 179 204) / <alpha-value>)",
+                        secondary: "rgb(var(--theme-secondary, 0 104 122) / <alpha-value>)",
+                        surface: "rgb(var(--theme-surface, 255 255 255) / <alpha-value>)",
+                        "on-surface": "rgb(var(--theme-on-surface, 27 28 30) / <alpha-value>)",
+                        "on-surface-variant": "rgb(var(--theme-on-surface-variant, 90 95 102) / <alpha-value>)",
+                        "surface-container": "rgb(var(--theme-surface-container, 243 244 246) / <alpha-value>)",
+                        "surface-container-high": "rgb(var(--theme-surface-high, 230 234 238) / <alpha-value>)",
+                        "surface-container-low": "rgb(var(--theme-surface-low, 248 249 250) / <alpha-value>)",
+                        "surface-container-lowest": "rgb(var(--theme-surface-lowest, 255 255 255) / <alpha-value>)",
+                        "outline-variant": "rgb(var(--theme-outline-variant, 226 232 240) / <alpha-value>)",
+                        background: "rgb(var(--theme-background, 248 250 252) / <alpha-value>)",
+                        "on-background": "rgb(var(--theme-on-background, 15 23 42) / <alpha-value>)",
+                        error: "#ba1a1a",
+                    }
+                }
+            }
+        };
+    </script>
+    @include('components.theme-styles')
+    <style>
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+    @livewireStyles
+</head>
+<body class="bg-background text-on-background antialiased flex flex-col min-h-screen">
+
+    {{-- Top Store Navbar --}}
+    <nav x-data="{ mobileMenuOpen: false }" class="bg-surface/90 dark:bg-slate-900/90 backdrop-blur-md sticky top-0 w-full z-50 border-b border-outline-variant/50 shadow-xs transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
+            
+            {{-- Left: Store Brand Identity --}}
+            <div class="flex items-center gap-2.5 min-w-0 pr-2">
+                <a href="{{ route('store.show', $store->slug) }}" class="flex items-center gap-2.5 group min-w-0">
+                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl overflow-hidden bg-surface-container border border-outline-variant shrink-0 shadow-xs flex items-center justify-center">
+                        @if(!empty($store->logo))
+                            <img src="{{ asset('storage/' . $store->logo) }}" alt="{{ $store->name }}" class="w-full h-full object-cover">
+                        @else
+                            <img src="https://ui-avatars.com/api/?name={{ urlencode($store->name) }}&background=0D8ABC&color=fff&size=80" alt="{{ $store->name }}" class="w-full h-full object-cover">
+                        @endif
+                    </div>
+                    <div class="min-w-0">
+                        <div class="flex items-center gap-1">
+                            <span class="font-black text-sm sm:text-lg text-on-surface dark:text-white group-hover:text-primary transition-colors tracking-tight leading-none truncate">
+                                {{ $store->name }}
+                            </span>
+                            <span class="material-symbols-outlined text-[15px] sm:text-[16px] text-primary shrink-0" title="Verified Store">verified</span>
+                        </div>
+                        <p class="text-[10px] sm:text-[11px] text-on-surface-variant font-medium mt-0.5 truncate max-w-[120px] sm:max-w-xs">
+                            {{ $store->description ? Str::limit($store->description, 30) : 'Official Store' }}
+                        </p>
+                    </div>
+                </a>
+            </div>
+
+
+            {{-- Right: Return to Public Store & User Actions --}}
+            <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+                <x-theme-toggle />
+
+                {{-- Tombol Kembali ke Marketplace / Store Publik --}}
+                <a href="{{ route('products.index') }}" 
+                   class="inline-flex items-center gap-1.5 p-2 sm:px-3.5 sm:py-1.5 rounded-xl sm:rounded-lg bg-surface-container border border-outline-variant hover:border-primary hover:text-primary text-xs font-bold text-on-surface transition-all shadow-xs shrink-0" 
+                   title="Jelajahi Toko & Produk Lain">
+                    <span class="material-symbols-outlined text-[18px] sm:text-[16px] text-secondary">storefront</span>
+                    <span class="hidden sm:inline">Jelajahi Toko Lain</span>
+                </a>
+
+                @guest
+                    <a href="{{ route('login') }}" class="text-xs font-bold text-on-surface-variant hover:text-on-surface px-2 py-1.5 rounded-lg transition-colors shrink-0">
+                        Masuk
+                    </a>
+                @else
+                    {{-- User Dropdown --}}
+                    @php
+                        $userAvatar = auth()->user()->avatar 
+                            ? (Str::startsWith(auth()->user()->avatar, 'http') ? auth()->user()->avatar : asset('storage/' . auth()->user()->avatar))
+                            : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=0284c7&color=fff';
+                    @endphp
+                    <div class="relative shrink-0" x-data="{ open: false }">
+                        <button @click="open = !open" @click.outside="open = false" class="flex items-center focus:outline-none rounded-full ring-2 ring-transparent hover:ring-primary/20 transition-all p-0.5">
+                            <img src="{{ $userAvatar }}" 
+                                 onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=0284c7&color=fff';" 
+                                 alt="{{ auth()->user()->name }}" 
+                                 class="w-8 h-8 rounded-full object-cover border border-outline-variant/60">
+                        </button>
+                        
+                        <div x-show="open" style="display: none;" class="absolute right-0 mt-2 w-52 bg-surface dark:bg-slate-800 border border-outline-variant rounded-xl shadow-xl py-2 z-50">
+                            <div class="px-4 py-2 border-b border-outline-variant">
+                                <p class="text-xs font-bold text-on-surface dark:text-white truncate">{{ auth()->user()->name }}</p>
+                                <p class="text-[11px] text-on-surface-variant truncate">{{ auth()->user()->email }}</p>
+                            </div>
+                            <a href="{{ route('tenant.profile.index') }}" class="flex items-center gap-2 px-4 py-2 text-xs text-on-surface dark:text-slate-200 hover:bg-surface-container transition-colors">
+                                <span class="material-symbols-outlined text-[16px]">account_circle</span> Profil Saya
+                            </a>
+                            <a href="{{ route('tenant.dashboard') }}" class="flex items-center gap-2 px-4 py-2 text-xs text-on-surface dark:text-slate-200 hover:bg-surface-container transition-colors">
+                                <span class="material-symbols-outlined text-[16px]">storefront</span> Dashboard Toko
+                            </a>
+                            <form method="POST" action="{{ route('logout') }}" class="border-t border-outline-variant mt-1 pt-1">
+                                @csrf
+                                <button type="submit" class="w-full text-left flex items-center gap-2 px-4 py-2 text-xs text-error hover:bg-error/10 transition-colors">
+                                    <span class="material-symbols-outlined text-[16px]">logout</span> Keluar
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                @endguest
+            </div>
+
+        </div>
+    </nav>
+
+    {{-- Main Store View Body --}}
+    <main class="flex-1">
+        @yield('content')
+    </main>
+
+    {{-- Store Specific Footer --}}
+    <footer class="bg-surface dark:bg-slate-900 border-t border-outline-variant/60 py-12 mt-auto text-on-surface-variant text-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+            
+            {{-- Store Info --}}
+            <div class="space-y-2">
+                <div class="flex items-center gap-2.5">
+                    @if(!empty($store->logo))
+                        <img src="{{ asset('storage/' . $store->logo) }}" alt="{{ $store->name }}" class="w-7 h-7 rounded-lg object-cover">
+                    @endif
+                    <span class="font-black text-base text-on-surface dark:text-white">{{ $store->name }}</span>
+                </div>
+                <p class="text-on-surface-variant leading-relaxed max-w-sm">
+                    {{ $store->description ?: 'Toko resmi mitra platform. Menyediakan berbagai solusi dan aset digital terbaik untuk kebutuhan Anda.' }}
+                </p>
+                <div class="text-[11px] text-on-surface-variant/70">
+                    © {{ date('Y') }} {{ $store->name }}. Hak Cipta Dilindungi.
+                </div>
+            </div>
+
+            {{-- Quick Links Store --}}
+            <div class="flex flex-col gap-2">
+                <h4 class="font-bold text-xs uppercase tracking-wider text-on-surface dark:text-white">Navigasi Toko</h4>
+                <div class="flex flex-col gap-1.5">
+                    <a href="{{ route('store.show', $store->slug) }}" class="hover:text-primary transition-colors">Produk &amp; Katalog {{ $store->name }}</a>
+                    <a href="{{ route('products.index') }}" class="hover:text-primary transition-colors flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[14px]">arrow_back</span>
+                        Cari Produk &amp; Toko Lainnya di Marketplace
+                    </a>
+                </div>
+            </div>
+
+            {{-- Security & Support --}}
+            <div class="bg-surface-container dark:bg-slate-800/50 p-4 rounded-xl border border-outline-variant/50 space-y-2">
+                <div class="flex items-center gap-2 text-on-surface dark:text-white font-bold text-xs">
+                    <span class="material-symbols-outlined text-[18px] text-emerald-500">verified_user</span>
+                    Transaksi &amp; Garansi Aman
+                </div>
+                <p class="text-[11px] leading-relaxed">
+                    Setiap pembelian produk dari toko ini diproses dan dilindungi secara instan melalui gateway pembayaran otomatis platform.
+                </p>
+            </div>
+
+        </div>
+    </footer>
+
+    @include('components.theme-manager')
+    @auth
+        @include('components.firebase-init')
+        <div x-data="firebaseManager" x-init="initFirebase()" style="display:none;"></div>
+    @endauth
+    @include('components.chat-widget')
+    @livewireScripts
+</body>
+</html>

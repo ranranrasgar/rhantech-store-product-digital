@@ -192,6 +192,18 @@ class PublicController extends Controller
         return view('clients.index', compact('clients', 'testimonials'));
     }
 
+    public function about()
+    {
+        $company = \App\Models\CompanyProfile::first(['*']);
+        $services = Service::query()->where('is_active', true)->take(6)->get();
+        $testimonials = Testimonial::query()->with('client')->where('is_active', true)->latest()->take(3)->get();
+        $totalProducts = Product::published()->count();
+        $totalProjects = Project::where('status', 'published')->count();
+        $totalStores = \App\Models\Store::count();
+
+        return view('about', compact('company', 'services', 'testimonials', 'totalProducts', 'totalProjects', 'totalStores'));
+    }
+
     public function contact()
     {
         return view('contact');
