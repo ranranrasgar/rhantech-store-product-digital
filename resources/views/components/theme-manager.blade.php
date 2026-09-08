@@ -39,7 +39,8 @@
         };
 
         const applyTheme = (theme, persist = false) => {
-            document.documentElement.classList.toggle('dark', theme === 'dark');
+            const isDark = theme === 'dark';
+            document.documentElement.classList.toggle('dark', isDark);
             document.documentElement.dataset.theme = theme;
             document.documentElement.style.colorScheme = theme;
 
@@ -47,43 +48,49 @@
                 try {
                     localStorage.setItem(storageKey, theme);
                 } catch (error) {
-                    // The selected theme still applies for the current page.
+                    // Storage can be unavailable in privacy-restricted browsers.
                 }
             }
 
             updateControls(theme);
         };
 
-        const initialise = () => {
-            const initialTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
-            updateControls(initialTheme);
-
-            document.querySelectorAll('[data-theme-toggle]').forEach((button) => {
-                button.addEventListener('click', () => {
-                    const nextTheme = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
-                    applyTheme(nextTheme, true);
-                });
-            });
+        const syncTheme = () => {
+            const savedTheme = getStoredTheme();
+            const theme = savedTheme ? savedTheme : (document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+            applyTheme(theme, false);
         };
 
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initialise, { once: true });
-        }
-        document.addEventListener('livewire:navigated', () => {
-            const savedTheme = localStorage.getItem(storageKey);
-            const theme = ['light', 'dark'].includes(savedTheme) ? savedTheme : 'light';
-            applyTheme(theme);
-            initialise();
-        });
-        initialise();
+        // Attach a single delegation click listener on document to prevent duplicate listener execution
+        if (!window.__themeToggleDelegationAttached) {
+            window.__themeToggleDelegationAttached = true;
+            document.addEventListener('click', (event) => {
+                const button = event.target.closest('[data-theme-toggle]');
+                if (!button) return;
 
-        mediaQuery.addEventListener('change', (event) => {
-            if (getStoredTheme()) return; // Keep user preference if set
+                event.preventDefault();
+                event.stopPropagation();
+
+                const isCurrentlyDark = document.documentElement.classList.contains('dark');
+                const nextTheme = isCurrentlyDark ? 'light' : 'dark';
+                applyTheme(nextTheme, true);
+            });
+        }
+
+        // Initialize theme UI state
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', syncTheme, { once: true });
+        } else {
+            syncTheme();
+        }
+
+        document.addEventListener('livewire:navigated', () => {
+            syncTheme();
         });
 
         window.addEventListener('storage', (event) => {
             if (event.key === storageKey && ['light', 'dark'].includes(event.newValue)) {
-                applyTheme(event.newValue);
+                applyTheme(event.newValue, false);
             }
         });
     })();

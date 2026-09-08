@@ -88,14 +88,36 @@
         align-items: center !important;
         justify-content: center !important;
         flex-shrink: 0 !important;
+        cursor: pointer !important;
+        border: 1px solid rgba(203, 213, 225, 0.8) !important;
+        background-color: #ffffff !important;
+        color: #334155 !important;
+        transition: all 180ms ease !important;
+    }
+
+    [data-theme-toggle]:hover {
+        background-color: #f1f5f9 !important;
+        color: #0f172a !important;
+    }
+
+    html.dark [data-theme-toggle] {
+        border-color: rgba(51, 65, 85, 0.8) !important;
+        background-color: #161b22 !important;
+        color: #cbd5e1 !important;
+    }
+
+    html.dark [data-theme-toggle]:hover {
+        background-color: #21262d !important;
+        color: #ffffff !important;
     }
 
     [data-theme-toggle] svg {
-        width: 20px !important;
-        height: 20px !important;
-        max-width: 20px !important;
-        max-height: 20px !important;
+        width: 18px !important;
+        height: 18px !important;
+        max-width: 18px !important;
+        max-height: 18px !important;
         flex-shrink: 0 !important;
+        pointer-events: none !important;
     }
 
     @media (prefers-reduced-motion: reduce) {
