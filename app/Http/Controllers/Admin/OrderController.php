@@ -109,6 +109,14 @@ class OrderController extends Controller
                 }
             }
 
+            // Tambahkan komisi affiliator ke toko perujuk jika ada
+            if ($order->referrer_store_id && $order->affiliate_commission > 0) {
+                $refStore = \App\Models\Store::find($order->referrer_store_id);
+                if ($refStore) {
+                    $refStore->increment('balance', $order->affiliate_commission);
+                }
+            }
+
             // Kirim email notifikasi pembelian ke customer
             try {
                 \Illuminate\Support\Facades\Mail::to($order->customer_email)->send(new \App\Mail\OrderPaidMail($order));
@@ -148,6 +156,14 @@ class OrderController extends Controller
                             if ($item->product && $item->product->store_id) {
                                 $itemTotal = $item->price * $item->quantity;
                                 $item->product->store->increment('balance', $itemTotal);
+                            }
+                        }
+
+                        // Tambahkan komisi affiliator ke toko perujuk jika ada
+                        if ($order->referrer_store_id && $order->affiliate_commission > 0) {
+                            $refStore = \App\Models\Store::find($order->referrer_store_id);
+                            if ($refStore) {
+                                $refStore->increment('balance', $order->affiliate_commission);
                             }
                         }
 

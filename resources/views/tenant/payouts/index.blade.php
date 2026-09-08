@@ -135,19 +135,20 @@
                 </div>
             </div>
 
-            <!-- 2. Etalase Afiliasi (Showcase) -->
+            <!-- 2. Komisi Afiliasi (Terjual via Etalase / Referral) -->
             <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 shadow-sm">
                 <div class="flex items-center justify-between">
-                    <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Etalase Afiliasi</span>
+                    <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Komisi Afiliasi (Terjual)</span>
                     <div class="w-8 h-8 rounded-xl bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400 flex items-center justify-center">
-                        <span class="material-symbols-outlined text-[18px]">shopping_basket</span>
+                        <span class="material-symbols-outlined text-[18px]">monetization_on</span>
                     </div>
                 </div>
-                <div class="mt-3 text-xl font-black text-slate-900 dark:text-white">
-                    {{ $myShowcaseCount }} Produk
+                <div class="mt-3 text-xl font-black text-sky-600 dark:text-sky-400">
+                    Rp {{ number_format($totalAffiliateCommission, 0, ',', '.') }}
                 </div>
-                <div class="mt-1 text-[11px] text-slate-400">
-                    Dipajang di etalase toko Anda
+                <div class="mt-1 text-[11px] text-slate-400 flex items-center justify-between">
+                    <span>{{ $totalAffiliateSoldOrdersCount }} pesanan terjual</span>
+                    <span class="text-sky-500 font-medium">({{ $myShowcaseCount }} dipajang)</span>
                 </div>
             </div>
 
@@ -201,7 +202,7 @@
                     Penjualan Produk Sendiri ({{ $pagedOwnOrders->total() }})
                 </a>
                 <a href="{{ route('tenant.payouts.index', ['tab' => 'afiliasi_showcase']) }}" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 {{ $tab === 'afiliasi_showcase' ? 'text-sky-600 dark:text-sky-400 border-sky-600 dark:border-sky-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200' }}">
-                    Etalase Afiliasi ({{ $myShowcaseCount }})
+                    Komisi Penjualan Afiliasi ({{ $pagedAffiliateSoldOrders->total() }})
                 </a>
                 <a href="{{ route('tenant.payouts.index', ['tab' => 'mitra_referral']) }}" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 {{ $tab === 'mitra_referral' ? 'text-sky-600 dark:text-sky-400 border-sky-600 dark:border-sky-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200' }}">
                     Mitra Afiliasi Toko ({{ $myAffiliateMitra->count() }})
@@ -350,59 +351,112 @@
             @endif
             @endif
 
-            <!-- TAB 3: ETALASE AFILIASI (SHOWCASE) -->
+            <!-- TAB 3: KOMISI PENJUALAN AFILIASI (TERJUAL) & ETALASE -->
             @if($tab === 'afiliasi_showcase')
-            <div class="p-6 space-y-6">
-                <div class="flex items-center justify-between">
+            <div class="space-y-6">
+                <!-- Info Banner Etalase -->
+                <div class="p-6 border-b border-slate-100 dark:border-[#222f49] flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-sky-500/5">
                     <div>
-                        <h3 class="font-bold text-base text-slate-900 dark:text-white">Katalog Produk yang Anda Pajang di Etalase</h3>
-                        <p class="text-xs text-slate-500">Setiap produk ini dibeli oleh pengunjung melalui toko Anda, komisi penjualan akan langsung mengalir ke saldo toko.</p>
+                        <div class="flex items-center gap-2">
+                            <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-sky-500 text-white text-xs font-black">
+                                {{ $myShowcaseCount }}
+                            </span>
+                            <h3 class="font-bold text-sm md:text-base text-slate-900 dark:text-white">Produk Aktif Dipajang di Etalase Toko</h3>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-1">Setiap kali pembeli checkout produk etalase atau lewat link referral toko Anda, komisi penjualan otomatis masuk ke saldo.</p>
                     </div>
-                    <a href="{{ route('tenant.showcase.index') }}" class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs font-bold transition shadow-xs flex items-center gap-1.5">
-                        <span class="material-symbols-outlined text-[16px]">add_shopping_cart</span>
-                        Kelola Etalase Afiliasi
+                    <a href="{{ route('tenant.showcase.index') }}" class="px-4 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs font-bold transition shadow-sm flex items-center justify-center gap-1.5 shrink-0">
+                        <span class="material-symbols-outlined text-[16px]">storefront</span>
+                        Kelola Etalase Produk Afiliasi ({{ $myShowcaseCount }})
                     </a>
                 </div>
 
-                @php
-                    $showcaseList = $store->showcaseProducts()->published()->with(['store', 'category', 'images'])->get();
-                @endphp
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    @forelse($showcaseList as $p)
-                    <div class="p-4 rounded-2xl border border-slate-200 dark:border-[#222f49] bg-slate-50/50 dark:bg-[#0c1220]/50 flex items-center gap-3">
-                        <div class="w-12 h-12 rounded-xl bg-slate-200 dark:bg-slate-700 overflow-hidden shrink-0">
-                            @php $img = $p->images->first(); @endphp
-                            @if($img)
-                                <img src="{{ asset('storage/' . $img->image_path) }}" class="w-full h-full object-cover">
-                            @else
-                                <div class="w-full h-full flex items-center justify-center text-slate-400">
-                                    <span class="material-symbols-outlined text-[20px]">inventory_2</span>
-                                </div>
-                            @endif
-                        </div>
-                        <div class="min-w-0 flex-1">
-                            <h4 class="font-bold text-xs text-slate-900 dark:text-white truncate">{{ $p->name }}</h4>
-                            <div class="text-[11px] text-slate-400 mt-0.5">
-                                {{ $p->store ? $p->store->name : 'Platform Official' }}
-                            </div>
-                            <div class="text-xs font-extrabold text-sky-600 dark:text-sky-400 mt-1">
-                                Rp {{ number_format($p->price, 0, ',', '.') }}
-                            </div>
-                        </div>
-                    </div>
-                    @empty
-                    <div class="col-span-full p-12 text-center text-slate-400">
-                        <span class="material-symbols-outlined text-4xl mb-2 block">shopping_basket</span>
-                        Anda belum memajang produk afiliasi di etalase toko Anda.
-                        <div class="mt-3">
-                            <a href="{{ route('tenant.showcase.index') }}" class="text-xs font-bold text-sky-500 hover:underline">
-                                Buka Katalog & Pasang Produk Sekarang →
-                            </a>
-                        </div>
-                    </div>
-                    @endforelse
+                <!-- Tabel Riwayat Komisi Barang Terjual -->
+                <div class="overflow-x-auto pb-8">
+                    <table class="w-full text-left text-xs md:text-sm whitespace-nowrap">
+                        <thead class="bg-slate-50/80 dark:bg-[#0c1220]/80 border-b border-slate-100 dark:border-[#222f49] text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider text-[11px]">
+                            <tr>
+                                <th class="p-4 md:px-6">Invoice & Tanggal</th>
+                                <th class="p-4 md:px-6 min-w-[220px]">Produk yang Terjual</th>
+                                <th class="p-4 md:px-6">Pemilik Produk / Toko</th>
+                                <th class="p-4 md:px-6">Pembeli</th>
+                                <th class="p-4 md:px-6 text-right pr-8">Komisi Anda</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 dark:divide-[#1d273d]">
+                            @forelse($pagedAffiliateSoldOrders as $affOrder)
+                            @php
+                                $firstItem = $affOrder->orderItems->first();
+                                $productOwner = $firstItem?->product?->store?->name ?? ($affOrder->product?->store?->name ?? 'Platform Official');
+                                $productName = $firstItem?->product?->name ?? ($affOrder->product?->name ?? 'Produk Afiliasi');
+                            @endphp
+                            <tr class="hover:bg-slate-50/60 dark:hover:bg-[#151e30]/50 transition-colors">
+                                <td class="p-4 md:px-6">
+                                    <div class="font-mono font-bold text-slate-900 dark:text-white text-xs">
+                                        {{ $affOrder->invoice_number }}
+                                    </div>
+                                    <div class="text-[11px] text-slate-400 mt-0.5">
+                                        {{ $affOrder->created_at->format('d M Y, H:i') }} WIB
+                                    </div>
+                                </td>
+                                <td class="p-4 md:px-6">
+                                    <div class="font-bold text-slate-900 dark:text-white line-clamp-1">
+                                        {{ $productName }}
+                                        @if($affOrder->orderItems->count() > 1)
+                                            <span class="text-xs text-sky-500 font-normal">(+{{ $affOrder->orderItems->count() - 1 }} item lainnya)</span>
+                                        @endif
+                                    </div>
+                                    <div class="text-[11px] text-slate-400 font-mono mt-0.5">
+                                        Total Belanja: Rp {{ number_format($affOrder->amount, 0, ',', '.') }}
+                                    </div>
+                                </td>
+                                <td class="p-4 md:px-6">
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                                        <span class="material-symbols-outlined text-[14px] text-slate-400">store</span>
+                                        {{ $productOwner }}
+                                    </span>
+                                </td>
+                                <td class="p-4 md:px-6">
+                                    <div class="font-bold text-slate-800 dark:text-white text-xs">
+                                        {{ $affOrder->customer_name }}
+                                    </div>
+                                    <div class="text-[11px] text-slate-400">
+                                        {{ $affOrder->customer_email }}
+                                    </div>
+                                </td>
+                                <td class="p-4 md:px-6 text-right pr-8">
+                                    <div class="font-extrabold text-emerald-600 dark:text-emerald-400 text-sm md:text-base">
+                                        + Rp {{ number_format($affOrder->affiliate_commission, 0, ',', '.') }}
+                                    </div>
+                                    <div class="text-[10px] text-sky-500 font-bold">Komisi Afiliasi Cair</div>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="5" class="p-16 text-center text-slate-400">
+                                    <div class="flex flex-col items-center justify-center max-w-sm mx-auto">
+                                        <div class="w-16 h-16 rounded-2xl bg-sky-500/10 text-sky-500 flex items-center justify-center mb-4">
+                                            <span class="material-symbols-outlined text-[32px]">monetization_on</span>
+                                        </div>
+                                        <h3 class="font-bold text-base text-slate-800 dark:text-white mb-1">Belum Ada Produk Afiliasi yang Terjual</h3>
+                                        <p class="text-xs text-slate-400 mb-4">Pajang produk menarik dari toko lain di etalase Anda atau bagikan link toko Anda untuk mulai menghasilkan komisi setiap penjualan!</p>
+                                        <a href="{{ route('tenant.showcase.index') }}" class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs font-bold transition shadow-xs flex items-center gap-1.5">
+                                            <span class="material-symbols-outlined text-[16px]">shopping_cart_checkout</span>
+                                            Pilih Produk untuk Dipajang Sekarang
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
+
+                @if($pagedAffiliateSoldOrders->hasPages())
+                    <div class="p-4 border-t border-slate-100 dark:border-[#222f49] flex justify-center">
+                        {{ $pagedAffiliateSoldOrders->links() }}
+                    </div>
+                @endif
             </div>
             @endif
 

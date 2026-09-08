@@ -41,6 +41,15 @@ class PayoutController extends Controller
         $totalAffiliateClicks = $myAffiliateMitra->sum('clicks_count');
         $totalAffiliateOrders = $myAffiliateMitra->sum('orders_count');
 
+        // 2b. Transaksi Afiliasi yang Berhasil Terjual lewat Toko ini (Showcase / Referral Link Toko)
+        $affiliateSoldOrdersQuery = \App\Models\Order::where('referrer_store_id', $store->id)
+            ->whereIn('status', ['paid', 'downloaded'])
+            ->with(['orderItems.product.store', 'product.store']);
+
+        $totalAffiliateCommission = (clone $affiliateSoldOrdersQuery)->sum('affiliate_commission');
+        $totalAffiliateSoldOrdersCount = (clone $affiliateSoldOrdersQuery)->count();
+        $pagedAffiliateSoldOrders = (clone $affiliateSoldOrdersQuery)->latest()->paginate(15, ['*'], 'affiliate_page');
+
         // 3. Riwayat Penarikan Dana (Payouts)
         $payoutsQuery = $store->payoutRequests()->latest();
         $payouts = (clone $payoutsQuery)->get();
@@ -57,11 +66,14 @@ class PayoutController extends Controller
             'payouts',
             'pagedPayouts',
             'pagedOwnOrders',
+            'pagedAffiliateSoldOrders',
             'totalOwnRevenue',
             'myShowcaseCount',
             'myAffiliateMitra',
             'totalAffiliateClicks',
             'totalAffiliateOrders',
+            'totalAffiliateCommission',
+            'totalAffiliateSoldOrdersCount',
             'totalWithdrawn',
             'totalPendingPayout'
         ));

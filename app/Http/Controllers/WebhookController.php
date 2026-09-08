@@ -163,6 +163,14 @@ class WebhookController extends Controller
                                 $item->product->store->increment('balance', $itemTotal);
                             }
                         }
+
+                        // Tambahkan komisi affiliator ke toko perujuk jika ada
+                        if ($order->referrer_store_id && $order->affiliate_commission > 0) {
+                            $refStore = \App\Models\Store::find($order->referrer_store_id);
+                            if ($refStore) {
+                                $refStore->increment('balance', $order->affiliate_commission);
+                            }
+                        }
                     } catch (\Throwable $storeEx) {
                         Log::error("Failed to increment store balance for Order {$orderId}: " . $storeEx->getMessage());
                     }

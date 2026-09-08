@@ -25,4 +25,9 @@ class Order extends Model
     {
         return $this->hasMany(ProductReview::class);
     }
+
+    public function referrerStore()
+    {
+        return $this->belongsTo(Store::class, 'referrer_store_id');
+    }
 }
