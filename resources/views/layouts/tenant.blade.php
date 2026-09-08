@@ -284,6 +284,7 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
     .tenant-sidebar { transform: translateX(-100%); transition: transform 0.3s ease-in-out; }
     .tenant-sidebar.open { transform: translateX(0); }
     .tenant-main { margin-left: 0 !important; width: 100%; }
+    .topbar-search { display: none !important; }
 }
 </style>
 </head>

@@ -19,11 +19,22 @@
             document.querySelectorAll('[data-theme-toggle]').forEach((button) => {
                 button.setAttribute('aria-label', actionLabel);
                 button.setAttribute('title', actionLabel);
-                button.querySelector('[data-theme-icon="moon"]')?.classList.toggle('hidden', isDark);
-                button.querySelector('[data-theme-icon="sun"]')?.classList.toggle('hidden', !isDark);
+                const moon = button.querySelector('[data-theme-icon="moon"]');
+                const sun = button.querySelector('[data-theme-icon="sun"]');
+                if (moon) {
+                    moon.classList.toggle('hidden', isDark);
+                    moon.style.display = isDark ? 'none' : 'block';
+                }
+                if (sun) {
+                    sun.classList.toggle('hidden', !isDark);
+                    sun.style.display = !isDark ? 'none' : 'block';
+                }
 
                 const label = button.querySelector('[data-theme-label]');
-                if (label) label.textContent = actionLabel;
+                if (label) {
+                    label.textContent = actionLabel;
+                    label.style.display = 'none';
+                }
             });
         };
 
@@ -64,10 +75,7 @@
             applyTheme(theme);
             initialise();
         });
-        if(false){
-        } else {
-            initialise();
-        }
+        initialise();
 
         mediaQuery.addEventListener('change', (event) => {
             if (!getStoredTheme()) applyTheme(event.matches ? 'dark' : 'light');

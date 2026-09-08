@@ -57,6 +57,43 @@
         overflow-x: clip;
     }
 
+    /* Critical Utility Fallbacks - Prevents FOUC before Tailwind CDN initializes */
+    .hidden, [hidden] {
+        display: none !important;
+    }
+
+    .sr-only {
+        position: absolute !important;
+        width: 1px !important;
+        height: 1px !important;
+        padding: 0 !important;
+        margin: -1px !important;
+        overflow: hidden !important;
+        clip: rect(0, 0, 0, 0) !important;
+        white-space: nowrap !important;
+        border-width: 0 !important;
+    }
+
+    [data-theme-toggle] {
+        width: 36px !important;
+        height: 36px !important;
+        min-width: 36px !important;
+        max-width: 36px !important;
+        border-radius: 9999px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        flex-shrink: 0 !important;
+    }
+
+    [data-theme-toggle] svg {
+        width: 20px !important;
+        height: 20px !important;
+        max-width: 20px !important;
+        max-height: 20px !important;
+        flex-shrink: 0 !important;
+    }
+
     @media (prefers-reduced-motion: reduce) {
         html,
         body {

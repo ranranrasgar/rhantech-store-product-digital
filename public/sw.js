@@ -3,7 +3,7 @@
  * Version: 1.0.0
  */
 
-const CACHE_NAME = 'rhantech-pwa-v1';
+const CACHE_NAME = 'rhantech-pwa-v2';
 const OFFLINE_URL = '/offline.html';
 
 const PRECACHE_ASSETS = [
@@ -53,8 +53,15 @@ self.addEventListener('fetch', (event) => {
     if (request.method !== 'GET') return;
     if (url.origin !== self.location.origin) return;
 
-    // Never cache admin panel requests or API mutations
-    if (url.pathname.startsWith('/admin') || url.pathname.startsWith('/livewire')) {
+    // Never cache admin panel, tenant dashboard, or dynamic user session pages
+    if (
+        url.pathname.startsWith('/admin') || 
+        url.pathname.startsWith('/tenant') || 
+        url.pathname.startsWith('/dashboard') || 
+        url.pathname.startsWith('/livewire') ||
+        url.pathname.startsWith('/login') ||
+        url.pathname.startsWith('/register')
+    ) {
         return;
     }
 
