@@ -11,13 +11,60 @@ class PayoutController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $store = auth()->user()->store;
         if (!$store) return redirect()->route('tenant.store.index');
 
-        $payouts = $store->payoutRequests()->latest()->get();
-        return view('tenant.payouts.index', compact('store', 'payouts'));
+        $tab = $request->get('tab', 'semua');
+
+        // 1. Pesanan produk sendiri yang sudah lunas (Paid / Downloaded)
+        $ownProductOrdersQuery = \App\Models\Order::where(function ($q) use ($store) {
+            $q->whereHas('orderItems.product', function ($sub) use ($store) {
+                $sub->where('store_id', $store->id);
+            })->orWhereHas('product', function ($sub) use ($store) {
+                $sub->where('store_id', $store->id);
+            });
+        })->whereIn('status', ['paid', 'downloaded'])
+          ->with(['product', 'orderItems.product']);
+
+        $ownProductOrders = (clone $ownProductOrdersQuery)->latest()->get();
+        $totalOwnRevenue = 0;
+        foreach ($ownProductOrders as $o) {
+            $tenantItems = $o->orderItems->filter(fn($item) => $item->product && $item->product->store_id == $store->id);
+            $totalOwnRevenue += $tenantItems->isNotEmpty() ? $tenantItems->sum(fn($i) => $i->price * $i->quantity) : $o->amount;
+        }
+
+        // 2. Data Afiliasi / Showcase Toko Saya
+        $myShowcaseCount = $store->showcaseProducts()->count();
+        $myAffiliateMitra = \App\Models\Affiliate::where('store_id', $store->id)->get();
+        $totalAffiliateClicks = $myAffiliateMitra->sum('clicks_count');
+        $totalAffiliateOrders = $myAffiliateMitra->sum('orders_count');
+
+        // 3. Riwayat Penarikan Dana (Payouts)
+        $payoutsQuery = $store->payoutRequests()->latest();
+        $payouts = (clone $payoutsQuery)->get();
+        $totalWithdrawn = $payouts->where('status', 'approved')->sum('amount');
+        $totalPendingPayout = $payouts->where('status', 'pending')->sum('amount');
+
+        // 4. Data untuk Tab aktif
+        $pagedPayouts = $payoutsQuery->paginate(15, ['*'], 'payout_page');
+        $pagedOwnOrders = $ownProductOrdersQuery->paginate(15, ['*'], 'order_page');
+
+        return view('tenant.payouts.index', compact(
+            'store',
+            'tab',
+            'payouts',
+            'pagedPayouts',
+            'pagedOwnOrders',
+            'totalOwnRevenue',
+            'myShowcaseCount',
+            'myAffiliateMitra',
+            'totalAffiliateClicks',
+            'totalAffiliateOrders',
+            'totalWithdrawn',
+            'totalPendingPayout'
+        ));
     }
 
     public function store(Request $request)
