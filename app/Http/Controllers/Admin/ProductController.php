@@ -426,6 +426,7 @@ class ProductController extends Controller
         $poolNames = array_values(array_unique(array_merge($systemUserNames, $fallbackNames)));
 
         $productName = $product->name;
+        $targetRating = (float)($product->rating_override ?: 4.9);
 
         // Template kalimat ulasan natural bahasa Indonesia bertema produk digital / source code / aplikasi
         $templates = [
@@ -439,7 +440,7 @@ class ProductController extends Controller
             "Fitur di {$productName} lengkap banget dan responsive saat dibuka di HP maupun laptop. Kualitasnya jempolan, bintang lima!",
             "Pengalaman beli {$productName} sangat memuaskan. File zip lengkap beserta panduan step by step, langsung bisa dipakai.",
             "Sangat membantu bisnis kami. Modul di dalam {$productName} sangat terstruktur dan mudah disesuaikan dengan kebutuhan.",
-            "Recomended seller! {$productName} kualitas premium, source code bersih tanpa enkripsi jadi gampang dimodifikasi.",
+            "Recomended seller! {$productName} kualitas premium, source code bersih tanpa malware dan supportnya ramah ketika ada pertanyaan teknis.",
             "Mantap pisan {$productName}, proses instalasinya gampang banget tinggal import database dan setting config. Top!",
             "Aplikasi {$productName} ini bener-bener powerful. Fitur-fiturnya lengkap dan tampilannya sangat memanjakan mata.",
             "Sesuai ekspektasi dan gambar demo! {$productName} berjalan mulus di server hosting cPanel maupun localhost. Makasih banyak!",
@@ -454,8 +455,19 @@ class ProductController extends Controller
         for ($i = 0; $i < $needToCreate; $i++) {
             $randomName = $poolNames[array_rand($poolNames)];
             $randomTemplate = $templates[array_rand($templates)];
-            // Distribusi rating realistis (sebagian besar 5 bintang, sedikit 4 bintang)
-            $randomRating = (rand(1, 10) <= 8) ? 5 : 4;
+
+            // Distribusi rating disesuaikan agar rata-rata mendekati target rating
+            if ($targetRating >= 4.8) {
+                $randomRating = (rand(1, 10) <= 9) ? 5 : 4;
+            } elseif ($targetRating >= 4.5) {
+                $randomRating = (rand(1, 10) <= 6) ? 5 : 4;
+            } elseif ($targetRating >= 4.2) {
+                $dice = rand(1, 10);
+                $randomRating = ($dice <= 4) ? 5 : (($dice <= 8) ? 4 : 3);
+            } else {
+                $randomRating = (rand(1, 10) <= 5) ? 4 : 3;
+            }
+
             $randomDaysAgo = rand(1, 45);
             $randomCreatedAt = now()->subDays($randomDaysAgo)->subHours(rand(1, 23))->subMinutes(rand(1, 59));
 

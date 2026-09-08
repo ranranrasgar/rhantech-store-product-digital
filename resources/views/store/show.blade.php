@@ -131,7 +131,7 @@
                         } else {
                             $displaySold = $soldCount > 0 ? $soldCount : 12;
                         }
-                        $avgRating = $product->rating_override ?: ($product->reviews->avg('rating') ?: 5.0);
+                        $avgRating = $product->effective_rating;
                         $shortDesc = $product->short_description ?: Str::limit(strip_tags($product->description ?? ''), 55);
                         $hasDiscount = $product->discount_price && $product->discount_price > 0 && $product->discount_price < $product->price;
                     @endphp
@@ -451,7 +451,7 @@
                                     } else {
                                         $displaySold = $soldCount > 0 ? $soldCount : 12;
                                     }
-                                    $avgRating = $product->rating_override ?: ($product->reviews->avg('rating') ?: 5.0);
+                                    $avgRating = $product->effective_rating;
                                     $shortDesc = Str::limit(strip_tags($product->description ?? ''), 55);
                                     $hasDiscount = $product->discount_price && $product->discount_price > 0 && $product->discount_price < $product->price;
                                 @endphp
@@ -536,7 +536,7 @@
                     } else {
                         $displaySold = $soldCount > 0 ? $soldCount : 12;
                     }
-                    $avgRating = $product->rating_override ?: ($product->reviews->avg('rating') ?: 5.0);
+                    $avgRating = $product->effective_rating;
                     $shortDesc = Str::limit(strip_tags($product->description ?? ''), 55);
                     $hasDiscount = $product->discount_price && $product->discount_price > 0 && $product->discount_price < $product->price;
                 @endphp

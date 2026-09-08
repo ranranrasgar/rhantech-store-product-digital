@@ -127,26 +127,27 @@
                         
                         <!-- Ratings & Stats -->
                         @php 
-                            $realReviewsCount = $product->reviews->count();
-                            $realAverageRating = $realReviewsCount > 0 ? round($product->reviews->avg('rating'), 1) : 0;
                             $realPaidOrdersCount = $product->orders()->whereIn('status', ['paid', 'downloaded'])->count();
-                            
-                            $rating = $product->rating_override ?: ($realReviewsCount > 0 ? $realAverageRating : null);
+                            $rating = $product->effective_rating;
                             $sold = $product->sales_count ?: $realPaidOrdersCount;
-                            $reviews = $product->reviews_count ?: $realReviewsCount;
+                            $reviews = $product->effective_reviews_count;
                         @endphp
                         <div class="flex flex-wrap items-center gap-3 md:gap-4 text-xs md:text-sm mb-4 pb-4 border-b border-outline-variant/60">
-                            @if($rating)
-                                <div class="flex items-center gap-1.5 text-amber-500 font-bold">
-                                    <span class="underline underline-offset-4">{{ number_format($rating, 1) }}</span>
-                                    <div class="flex items-center text-amber-500">
-                                        @for($i = 1; $i <= 5; $i++)
-                                            <span class="material-symbols-outlined text-[15px]">{{ $i <= round($rating) ? 'star' : 'star_half' }}</span>
-                                        @endfor
-                                    </div>
+                            <div class="flex items-center gap-1.5 text-amber-500 font-bold">
+                                <span class="underline underline-offset-4">{{ number_format($rating, 1) }}</span>
+                                <div class="flex items-center text-amber-500">
+                                    @for($i = 1; $i <= 5; $i++)
+                                        @if($rating >= $i)
+                                            <span class="material-symbols-outlined text-[15px] fill-current">star</span>
+                                        @elseif($rating >= $i - 0.5)
+                                            <span class="material-symbols-outlined text-[15px] fill-current">star_half</span>
+                                        @else
+                                            <span class="material-symbols-outlined text-[15px] text-slate-300">star</span>
+                                        @endif
+                                    @endfor
                                 </div>
-                                <div class="h-3.5 w-px bg-outline-variant"></div>
-                            @endif
+                            </div>
+                            <div class="h-3.5 w-px bg-outline-variant"></div>
                             <div class="text-on-surface-variant">
                                 <span class="font-bold text-on-surface">{{ $reviews }}</span> Penilaian
                             </div>
@@ -576,13 +577,20 @@
                 <!-- Tab 2: Ulasan & Testimoni Pembeli (Social Proof & Reviews) -->
                 @php
                     $allReviews = $product->reviews;
-                    $totalReviewsCount = $allReviews->count();
-                    $avgRating = $totalReviewsCount > 0 ? round($allReviews->avg('rating'), 1) : 0;
+                    $totalReviewsCount = $allReviews->count() > 0 ? $allReviews->count() : $product->effective_reviews_count;
+                    $avgRating = $product->effective_rating;
                     $fiveStarCount = $allReviews->where('rating', 5)->count();
                     $fourStarCount = $allReviews->where('rating', 4)->count();
                     $threeStarCount = $allReviews->where('rating', 3)->count();
                     $twoStarCount = $allReviews->where('rating', 2)->count();
                     $oneStarCount = $allReviews->where('rating', 1)->count();
+                    
+                    // Jika ada review riil namun override berbeda atau data seeded, sesuaikan count bar agar proporsional
+                    if ($fiveStarCount == 0 && $fourStarCount == 0 && $totalReviewsCount > 0) {
+                        $fiveStarCount = (int) round($totalReviewsCount * 0.85);
+                        $fourStarCount = $totalReviewsCount - $fiveStarCount;
+                    }
+                @endphp
 
                     $reviewsJson = $allReviews->map(function($r) {
                         return [
@@ -694,7 +702,13 @@
                                     </div>
                                     <div class="flex items-center justify-center gap-1 text-amber-500 my-1.5">
                                         @for($i = 1; $i <= 5; $i++)
-                                            <span class="material-symbols-outlined text-[20px] fill-current">{{ $i <= round($avgRating) ? 'star' : 'star_half' }}</span>
+                                            @if($avgRating >= $i)
+                                                <span class="material-symbols-outlined text-[20px] fill-current">star</span>
+                                            @elseif($avgRating >= $i - 0.5)
+                                                <span class="material-symbols-outlined text-[20px] fill-current">star_half</span>
+                                            @else
+                                                <span class="material-symbols-outlined text-[20px] text-slate-300">star</span>
+                                            @endif
                                         @endfor
                                     </div>
                                     <p class="text-xs text-on-surface-variant font-medium">Berdasarkan <strong>{{ $totalReviewsCount }} ulasan</strong> pembeli terverifikasi</p>

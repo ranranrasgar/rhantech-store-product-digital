@@ -85,10 +85,8 @@
                 }
 
                 // Rating & Reviews count
-                $realRevCount = $prod->reviews ? $prod->reviews->count() : 0;
-                $realRevAvg = $realRevCount > 0 ? round($prod->reviews->avg('rating'), 1) : 0;
-                $ratingDisplay = $prod->rating_override ?: ($realRevCount > 0 ? $realRevAvg : 4.9);
-                $reviewsDisplayCount = $prod->reviews_count ?: $realRevCount;
+                $ratingDisplay = $prod->effective_rating;
+                $reviewsDisplayCount = $prod->effective_reviews_count;
 
                 // Sort description (full text agar bisa dibaca calon pembeli)
                 $descText = !empty($prod->short_description) 

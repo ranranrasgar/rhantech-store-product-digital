@@ -93,4 +93,40 @@ class Product extends Model
     {
         return !empty($this->store_id) && $this->approval_status === 'rejected';
     }
+
+    /**
+     * Rating efektif terpadu (sinkron di semua halaman)
+     */
+    public function getEffectiveRatingAttribute(): float
+    {
+        if (!empty($this->rating_override) && (float)$this->rating_override > 0) {
+            return round((float)$this->rating_override, 1);
+        }
+
+        if ($this->relationLoaded('reviews')) {
+            $avg = $this->reviews->avg('rating');
+            if ($avg) return round((float)$avg, 1);
+        } else {
+            $avg = $this->reviews()->avg('rating');
+            if ($avg) return round((float)$avg, 1);
+        }
+
+        return 4.9;
+    }
+
+    /**
+     * Jumlah ulasan efektif terpadu (sinkron di semua halaman)
+     */
+    public function getEffectiveReviewsCountAttribute(): int
+    {
+        if (!is_null($this->reviews_count) && (int)$this->reviews_count > 0) {
+            return (int)$this->reviews_count;
+        }
+
+        if ($this->relationLoaded('reviews')) {
+            return $this->reviews->count();
+        }
+
+        return $this->reviews()->count();
+    }
 }

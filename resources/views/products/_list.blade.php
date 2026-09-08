@@ -92,7 +92,7 @@
                     </span>
                     <span class="flex items-center gap-0.5 text-amber-500 font-bold">
                         <span class="material-symbols-outlined text-[11px] fill-current">star</span>
-                        <span>4.9</span>
+                        <span>{{ number_format($product->effective_rating, 1) }}</span>
                     </span>
                 </div>
             </div>
