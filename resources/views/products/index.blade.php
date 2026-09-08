@@ -132,8 +132,8 @@
 <main class="pt-[70px] md:pt-[108px] pb-16 min-h-screen">
 <div class="max-w-[1280px] mx-auto px-4 md:px-6">
 
-    {{-- ── HERO STRIP WITH TOP PRODUCTS (PRODUK UNGGULAN PALING BANYAK DIKLIK) ── --}}
-    <div class="hero-strip p-5 md:p-6 mb-6 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-6">
+    {{-- ── HERO STRIP WITH TOP PRODUCTS (PRODUK UNGGULAN PALING BANYAK DIKLIK) - HIDDEN ON MOBILE ── --}}
+    <div class="hero-strip p-5 md:p-6 mb-6 hidden md:flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-6">
         <div class="text-white max-w-sm shrink-0">
             <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/15 backdrop-blur-xs text-[11px] font-bold uppercase tracking-wider text-white mb-2">
                 <span class="material-symbols-outlined text-[14px] text-amber-300">local_fire_department</span>
@@ -215,7 +215,7 @@
     @endphp
 
     @if($anyActiveBanner)
-    <div class="flex flex-col md:flex-row gap-3 mb-8 {{ $hasMain && ($hasSide1 || $hasSide2) ? 'h-auto md:h-[240px]' : '' }}">
+    <div class="hidden md:flex flex-col md:flex-row gap-3 mb-8 {{ $hasMain && ($hasSide1 || $hasSide2) ? 'h-auto md:h-[240px]' : '' }}">
         @if($hasMain)
             @php $mainBanner = $banners->get('main'); @endphp
             <a href="{{ $mainBanner->link ?? '#' }}" class="{{ ($hasSide1 || $hasSide2) ? 'flex-[2] h-[160px] md:h-full' : 'w-full h-[180px] md:h-[260px]' }} overflow-hidden rounded-xl shadow-sm relative group cursor-pointer block">
@@ -252,6 +252,11 @@
         store: '{{ request('store') }}',
         sort: '{{ request('sort', 'latest') }}',
         loading: false,
+        loadingMore: false,
+        currentPage: {{ $products->currentPage() }},
+        lastPage: {{ $products->lastPage() }},
+        hasMorePages: {{ $products->hasMorePages() ? 'true' : 'false' }},
+        mobileFilterOpen: false,
         debounceTimer: null,
 
         init() {
@@ -265,6 +270,19 @@
                 this.fetchProducts(false);
             });
             this.bindPagination();
+            this.initInfiniteScroll();
+        },
+
+        initInfiniteScroll() {
+            window.addEventListener('scroll', () => {
+                if (this.loading || this.loadingMore || !this.hasMorePages) return;
+                // Trigger when user scrolls down towards the bottom of page
+                const scrollPosition = window.innerHeight + window.pageYOffset;
+                const threshold = document.documentElement.offsetHeight - 750;
+                if (scrollPosition >= threshold) {
+                    this.loadMoreProducts();
+                }
+            }, { passive: true });
         },
 
         setCategory(id) {
@@ -312,8 +330,17 @@
             this.fetchProducts(true);
         },
 
+        getActiveFilterCount() {
+            let count = 0;
+            if (this.category) count++;
+            if (this.type) count++;
+            if (this.store) count++;
+            return count;
+        },
+
         fetchProducts(updateUrl = true) {
             this.loading = true;
+            this.currentPage = 1;
             const params = new URLSearchParams();
             if (this.search) params.append('search', this.search);
             if (this.category) params.append('category', this.category);
@@ -335,6 +362,12 @@
                 if (container) {
                     container.innerHTML = html;
                     this.bindPagination();
+                    const gridEl = document.getElementById('products-items-grid');
+                    if (gridEl) {
+                        this.currentPage = parseInt(gridEl.dataset.currentPage) || 1;
+                        this.lastPage = parseInt(gridEl.dataset.lastPage) || 1;
+                        this.hasMorePages = gridEl.dataset.hasMore === '1';
+                    }
                 }
                 if (updateUrl) {
                     params.delete('ajax');
@@ -348,6 +381,48 @@
             })
             .finally(() => {
                 this.loading = false;
+            });
+        },
+
+        loadMoreProducts() {
+            if (this.loadingMore || !this.hasMorePages) return;
+            this.loadingMore = true;
+            const nextPage = this.currentPage + 1;
+
+            const params = new URLSearchParams();
+            if (this.search) params.append('search', this.search);
+            if (this.category) params.append('category', this.category);
+            if (this.type) params.append('type', this.type);
+            if (this.store) params.append('store', this.store);
+            if (this.sort && this.sort !== 'latest') params.append('sort', this.sort);
+            params.append('page', nextPage);
+            params.append('ajax', '1');
+
+            fetch('{{ route('products.index') }}?' + params.toString(), {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(res => res.text())
+            .then(html => {
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = html;
+                const newGrid = tempDiv.querySelector('#products-items-grid');
+                const targetGrid = document.getElementById('products-items-grid');
+
+                if (newGrid && targetGrid) {
+                    const newCards = newGrid.querySelectorAll('.prod-card');
+                    newCards.forEach(card => targetGrid.appendChild(card));
+                    this.currentPage = parseInt(newGrid.dataset.currentPage) || nextPage;
+                    this.lastPage = parseInt(newGrid.dataset.lastPage) || this.lastPage;
+                    this.hasMorePages = newGrid.dataset.hasMore === '1';
+                } else {
+                    this.hasMorePages = false;
+                }
+            })
+            .catch(err => {
+                console.error('Error loading more products:', err);
+            })
+            .finally(() => {
+                this.loadingMore = false;
             });
         },
 
@@ -379,6 +454,12 @@
                     .then(html => {
                         container.innerHTML = html;
                         this.bindPagination();
+                        const gridEl = document.getElementById('products-items-grid');
+                        if (gridEl) {
+                            this.currentPage = parseInt(gridEl.dataset.currentPage) || parseInt(page);
+                            this.lastPage = parseInt(gridEl.dataset.lastPage) || this.lastPage;
+                            this.hasMorePages = gridEl.dataset.hasMore === '1';
+                        }
                         params.delete('ajax');
                         window.history.pushState({}, '', '{{ route('products.index') }}?' + params.toString());
                         window.scrollTo({ top: container.offsetTop - 120, behavior: 'smooth' });
@@ -390,229 +471,127 @@
             });
         }
     }">
+
+        {{-- ── MOBILE SHOPEE-STYLE SUB-HEADER (TABS & FILTER ICON) ── --}}
+        <div class="md:hidden sticky top-[68px] z-30 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 -mx-4 px-4 py-2 mb-3 shadow-xs">
+            <div class="flex items-center justify-between gap-2 overflow-x-auto hide-scrollbar">
+                {{-- Quick Sort Pills --}}
+                <div class="flex items-center gap-1.5 flex-1 overflow-x-auto hide-scrollbar py-0.5">
+                    <button type="button" 
+                            @click="setSort('latest')" 
+                            class="px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all"
+                            :class="sort === 'latest' ? 'bg-primary text-white shadow-xs' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200'">
+                        Terbaru
+                    </button>
+                    <button type="button" 
+                            @click="setSort('popular')" 
+                            class="px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all"
+                            :class="sort === 'popular' ? 'bg-primary text-white shadow-xs' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200'">
+                        Terpopuler
+                    </button>
+                    <button type="button" 
+                            @click="setSort('best_seller')" 
+                            class="px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all"
+                            :class="sort === 'best_seller' ? 'bg-primary text-white shadow-xs' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200'">
+                        Terlaris
+                    </button>
+                    <button type="button" 
+                            @click="setSort(sort === 'price_low' ? 'price_high' : 'price_low')" 
+                            class="px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-0.5"
+                            :class="(sort === 'price_low' || sort === 'price_high') ? 'bg-primary text-white shadow-xs' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200'">
+                        <span>Harga</span>
+                        <span class="material-symbols-outlined text-xs">
+                            <span x-text="sort === 'price_high' ? 'arrow_downward' : 'arrow_upward'"></span>
+                        </span>
+                    </button>
+                </div>
+
+                {{-- Shopee-style Filter Icon Button --}}
+                <button type="button" 
+                        @click="mobileFilterOpen = true" 
+                        class="shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-xs font-bold hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors relative"
+                        title="Buka Filter">
+                    <span class="material-symbols-outlined text-[16px] text-primary">tune</span>
+                    <span>Filter</span>
+                    <template x-if="getActiveFilterCount() > 0">
+                        <span class="w-4 h-4 rounded-full bg-rose-500 text-white text-[9px] font-black flex items-center justify-center -mr-1"
+                              x-text="getActiveFilterCount()"></span>
+                    </template>
+                </button>
+            </div>
+        </div>
+
         <div class="flex flex-col lg:flex-row gap-6 items-start">
             
-            {{-- ── SIDEBAR FILTER (LEFT SIDE) ── --}}
-            <aside class="w-full lg:w-72 shrink-0">
+            {{-- ── DESKTOP SIDEBAR FILTER (LEFT SIDE) ── --}}
+            <aside class="hidden lg:block w-72 shrink-0">
                 <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 sticky top-24 shadow-sm">
-                    
-                    {{-- Header Filter --}}
-                    <div class="flex items-center justify-between pb-3.5 mb-4 border-b border-gray-100 dark:border-gray-700">
-                        <div class="flex items-center gap-2">
-                            <span class="material-symbols-outlined text-primary text-xl">tune</span>
-                            <h2 class="text-sm font-bold text-gray-800 dark:text-white uppercase tracking-wider">Filter & Pencarian</h2>
-                        </div>
-                        <button type="button" 
-                                x-show="search || category || type || store || sort !== 'latest'" 
-                                x-cloak
-                                @click="resetFilters()" 
-                                class="text-xs font-semibold text-rose-500 hover:underline flex items-center gap-0.5 transition-opacity">
-                            <span class="material-symbols-outlined text-sm">restart_alt</span> Reset
-                        </button>
-                    </div>
+                    @include('products._filter_content', ['suffix' => 'desktop'])
+                </div>
+            </aside>
 
-                    {{-- Form Filter & Pencarian --}}
-                    <form @submit.prevent="fetchProducts(true)" class="space-y-4">
-                        <div>
-                            <label for="product-search" class="block text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2">
-                                Pencarian Produk
-                            </label>
-                            <div class="relative">
-                                <input type="text" 
-                                       id="product-search" 
-                                       x-model="search"
-                                       @input="onSearchInput()" 
-                                       placeholder="Cari nama produk, toko..." 
-                                       class="w-full pl-9 pr-8 py-2 text-xs md:text-sm bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-lg border border-gray-200 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">
-                                <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-base">
-                                    search
-                                </span>
-                                <button type="button"
-                                        x-show="search" 
-                                        x-cloak
-                                        @click="clearSearch()" 
-                                        class="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-rose-500 transition-colors"
-                                        title="Hapus pencarian">
-                                    <span class="material-symbols-outlined text-sm">close</span>
-                                </button>
+            {{-- ── MOBILE SHOPEE-STYLE FILTER SLIDE-OVER DRAWER ── --}}
+            <div x-show="mobileFilterOpen" 
+                 x-cloak
+                 class="fixed inset-0 z-50 overflow-hidden lg:hidden" 
+                 aria-labelledby="slide-over-title" 
+                 role="dialog" 
+                 aria-modal="true">
+                {{-- Backdrop --}}
+                <div x-show="mobileFilterOpen"
+                     x-transition:enter="ease-in-out duration-300"
+                     x-transition:enter-start="opacity-0"
+                     x-transition:enter-end="opacity-100"
+                     x-transition:leave="ease-in-out duration-300"
+                     x-transition:leave-start="opacity-100"
+                     x-transition:leave-end="opacity-0"
+                     @click="mobileFilterOpen = false"
+                     class="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"></div>
+
+                <div class="fixed inset-y-0 right-0 max-w-full flex pl-10">
+                    <div x-show="mobileFilterOpen"
+                         x-transition:enter="transform transition ease-in-out duration-300"
+                         x-transition:enter-start="translate-x-full"
+                         x-transition:enter-end="translate-x-0"
+                         x-transition:leave="transform transition ease-in-out duration-300"
+                         x-transition:leave-start="translate-x-0"
+                         x-transition:leave-end="translate-x-full"
+                         class="w-screen max-w-xs bg-white dark:bg-gray-800 shadow-2xl flex flex-col justify-between">
+                        
+                        {{-- Drawer Header --}}
+                        <div class="p-4 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between bg-gray-50 dark:bg-gray-900">
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-primary text-xl">tune</span>
+                                <h3 class="text-sm font-bold text-gray-800 dark:text-white uppercase tracking-wider">Filter & Urutkan</h3>
                             </div>
+                            <button type="button" 
+                                    @click="mobileFilterOpen = false" 
+                                    class="p-1 rounded-full text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                                <span class="material-symbols-outlined text-xl">close</span>
+                            </button>
                         </div>
 
-                        {{-- Sort Dropdown --}}
-                        <div>
-                            <label class="block text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2">
-                                Urutkan Berdasarkan
-                            </label>
-                            <select x-model="sort" @change="fetchProducts(true)" class="w-full px-3 py-2 text-xs md:text-sm bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-lg border border-gray-200 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">
-                                <option value="latest">Terbaru</option>
-                                <option value="popular">Paling Banyak Dilihat</option>
-                                <option value="best_seller">Terlaris</option>
-                                <option value="price_low">Harga Terendah</option>
-                                <option value="price_high">Harga Tertinggi</option>
-                            </select>
+                        {{-- Drawer Body --}}
+                        <div class="p-4 overflow-y-auto flex-1">
+                            @include('products._filter_content', ['suffix' => 'mobile'])
                         </div>
-                    </form>
 
-                    {{-- Filter Kategori --}}
-                    <div class="mt-5 pt-4 border-t border-gray-100 dark:border-gray-700">
-                        <h3 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2.5 flex items-center justify-between">
-                            <span>Kategori Produk</span>
-                            <span class="text-[11px] font-normal lowercase opacity-75">({{ $categories->count() }})</span>
-                        </h3>
-
-                        <div class="space-y-1 max-h-56 overflow-y-auto pr-1">
+                        {{-- Drawer Footer Actions --}}
+                        <div class="p-4 border-t border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 flex items-center gap-3">
                             <button type="button" 
-                                    @click="setCategory('')" 
-                                    class="w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-xs md:text-sm text-left transition-all"
-                                    :class="!category ? 'bg-primary/10 text-primary font-bold border-l-4 border-primary' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'">
-                                <span class="flex items-center gap-1.5">
-                                    <span class="material-symbols-outlined text-sm" :class="!category ? 'text-primary' : 'text-gray-400'">apps</span>
-                                    Semua Kategori
-                                </span>
+                                    @click="resetFilters(); mobileFilterOpen = false;" 
+                                    class="flex-1 py-2.5 px-3 border border-gray-300 dark:border-gray-600 rounded-lg text-xs font-semibold text-gray-700 dark:text-gray-200 text-center hover:bg-gray-100 dark:hover:bg-gray-750 transition-colors">
+                                Reset
                             </button>
-
-                            @foreach($categories as $cat)
                             <button type="button" 
-                                    @click="setCategory('{{ $cat->id }}')" 
-                                    class="w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-xs md:text-sm text-left transition-all"
-                                    :class="category == '{{ $cat->id }}' ? 'bg-primary/10 text-primary font-bold border-l-4 border-primary' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'">
-                                <div class="flex items-center gap-1.5 truncate pr-2">
-                                    <span class="truncate">{{ $cat->name }}</span>
-                                    @if($cat->store)
-                                        <span class="text-[9px] px-1 py-0.2 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 font-normal shrink-0" title="Kategori dari toko {{ $cat->store->name }}">
-                                            {{ Str::limit($cat->store->name, 10) }}
-                                        </span>
-                                    @endif
-                                </div>
-                                @if(isset($cat->products_count))
-                                <span class="text-[10px] px-1.5 py-0.5 rounded-full transition-colors shrink-0"
-                                      :class="category == '{{ $cat->id }}' ? 'bg-primary text-white font-bold' : 'bg-gray-100 dark:bg-gray-700 text-gray-500'">
-                                    {{ $cat->products_count }}
-                                </span>
-                                @endif
+                                    @click="mobileFilterOpen = false" 
+                                    class="flex-1 py-2.5 px-3 bg-primary text-white rounded-lg text-xs font-bold text-center hover:opacity-90 shadow-sm transition-opacity">
+                                Terapkan
                             </button>
-                            @endforeach
-                        </div>
-                    </div>
-
-                    {{-- Filter Tipe / Platform --}}
-                    @if(isset($types) && $types->count() > 0)
-                    <div class="mt-5 pt-4 border-t border-gray-100 dark:border-gray-700">
-                        <h3 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2.5 flex items-center justify-between">
-                            <span>Tipe / Platform</span>
-                            <span class="text-[11px] font-normal lowercase opacity-75">({{ $types->count() }})</span>
-                        </h3>
-
-                        <div class="space-y-1 max-h-56 overflow-y-auto pr-1">
-                            <button type="button" 
-                                    @click="setType('')" 
-                                    class="w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-xs md:text-sm text-left transition-all"
-                                    :class="!type ? 'bg-primary/10 text-primary font-bold border-l-4 border-primary' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'">
-                                <span class="flex items-center gap-1.5">
-                                    <span class="material-symbols-outlined text-sm" :class="!type ? 'text-primary' : 'text-gray-400'">devices</span>
-                                    Semua Tipe
-                                </span>
-                            </button>
-
-                            @foreach($types as $tp)
-                            <button type="button" 
-                                    @click="setType('{{ $tp->id }}')" 
-                                    class="w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-xs md:text-sm text-left transition-all"
-                                    :class="type == '{{ $tp->id }}' ? 'bg-primary/10 text-primary font-bold border-l-4 border-primary' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'">
-                                <div class="flex items-center gap-1.5 truncate pr-2">
-                                    <span class="truncate">{{ $tp->name }}</span>
-                                    @if($tp->store)
-                                        <span class="text-[9px] px-1 py-0.2 rounded bg-sky-500/10 text-sky-600 dark:text-sky-400 font-normal shrink-0" title="Tipe dari toko {{ $tp->store->name }}">
-                                            {{ Str::limit($tp->store->name, 10) }}
-                                        </span>
-                                    @endif
-                                </div>
-                                @if(isset($tp->products_count))
-                                <span class="text-[10px] px-1.5 py-0.5 rounded-full transition-colors shrink-0"
-                                      :class="type == '{{ $tp->id }}' ? 'bg-primary text-white font-bold' : 'bg-gray-100 dark:bg-gray-700 text-gray-500'">
-                                    {{ $tp->products_count }}
-                                </span>
-                                @endif
-                            </button>
-                            @endforeach
-                        </div>
-                    </div>
-                    @endif
-
-                    {{-- Filter Toko (Store) --}}
-                    @if(isset($stores) && $stores->count() > 0)
-                    <div class="mt-5 pt-4 border-t border-gray-100 dark:border-gray-700">
-                        <h3 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2.5 flex items-center justify-between">
-                            <span>Toko / Mitra</span>
-                            <span class="text-[11px] font-normal lowercase opacity-75">({{ $stores->count() }})</span>
-                        </h3>
-
-                        <div class="space-y-1 max-h-44 overflow-y-auto pr-1">
-                            <button type="button" 
-                                    @click="setStore('')" 
-                                    class="w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-xs md:text-sm text-left transition-all"
-                                    :class="!store ? 'bg-primary/10 text-primary font-bold border-l-4 border-primary' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'">
-                                <span class="flex items-center gap-1.5">
-                                    <span class="material-symbols-outlined text-sm" :class="!store ? 'text-primary' : 'text-gray-400'">storefront</span>
-                                    Semua Toko
-                                </span>
-                            </button>
-
-                            @foreach($stores as $st)
-                            <button type="button" 
-                                    @click="setStore('{{ $st->id }}')" 
-                                    class="w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-xs md:text-sm text-left transition-all"
-                                    :class="store == '{{ $st->id }}' ? 'bg-primary/10 text-primary font-bold border-l-4 border-primary' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'">
-                                <span class="truncate pr-2">{{ $st->name }}</span>
-                            </button>
-                            @endforeach
-                        </div>
-                    </div>
-                    @endif
-
-                    {{-- Active Filter Tags --}}
-                    <div x-show="search || category || type || store" x-cloak class="mt-5 pt-4 border-t border-gray-100 dark:border-gray-700">
-                        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-2">Filter Aktif:</span>
-                        <div class="flex flex-wrap gap-1.5">
-                            <template x-if="search">
-                                <span class="inline-flex items-center gap-1 text-[11px] bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-2.5 py-0.5 rounded-full border border-gray-300 dark:border-gray-600">
-                                    <span x-text="'&quot;' + (search.length > 15 ? search.substring(0, 15) + '...' : search) + '&quot;'"></span>
-                                    <button type="button" @click="clearSearch()" class="hover:text-rose-500">
-                                        <span class="material-symbols-outlined text-xs">close</span>
-                                    </button>
-                                </span>
-                            </template>
-
-                            <template x-if="category">
-                                <span class="inline-flex items-center gap-1 text-[11px] bg-primary/15 text-primary px-2.5 py-0.5 rounded-full font-semibold">
-                                    <span>Kategori Terpilih</span>
-                                    <button type="button" @click="setCategory('')" class="hover:text-rose-500">
-                                        <span class="material-symbols-outlined text-xs">close</span>
-                                    </button>
-                                </span>
-                            </template>
-
-                            <template x-if="type">
-                                <span class="inline-flex items-center gap-1 text-[11px] bg-sky-500/15 text-sky-600 dark:text-sky-400 px-2.5 py-0.5 rounded-full font-semibold">
-                                    <span>Tipe Terpilih</span>
-                                    <button type="button" @click="setType('')" class="hover:text-rose-500">
-                                        <span class="material-symbols-outlined text-xs">close</span>
-                                    </button>
-                                </span>
-                            </template>
-
-                            <template x-if="store">
-                                <span class="inline-flex items-center gap-1 text-[11px] bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 px-2.5 py-0.5 rounded-full font-semibold">
-                                    <span>Toko Terpilih</span>
-                                    <button type="button" @click="setStore('')" class="hover:text-rose-500">
-                                        <span class="material-symbols-outlined text-xs">close</span>
-                                    </button>
-                                </span>
-                            </template>
                         </div>
                     </div>
                 </div>
-            </aside>
+            </div>
 
             {{-- ── PRODUCTS GRID & RESULTS (RIGHT SIDE) ── --}}
             <main class="flex-1 w-full min-w-0 relative">
