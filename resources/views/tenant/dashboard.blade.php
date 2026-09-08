@@ -7,13 +7,10 @@
     <div class="max-w-7xl mx-auto space-y-8">
 
         <!-- Header Hero & Quick Info -->
-        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#00687a] via-[#00838f] to-[#0284c7] text-white p-6 md:p-8 shadow-md border border-teal-500/20">
-            <!-- Subtle soft ambient light -->
-            <div class="absolute -top-16 -right-16 w-64 h-64 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
-
-            <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+        <div class="rounded-2xl bg-[#00838f] text-white p-6 md:p-7 border border-[#00727d] dark:border-teal-700">
+            <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                 <div class="flex items-center gap-4">
-                    <div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl p-1 bg-white/20 backdrop-blur-md border border-white/30 shadow-sm overflow-hidden shrink-0">
+                    <div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl p-1 bg-white/15 border border-white/25 overflow-hidden shrink-0">
                         @if($store && $store->logo)
                             <img src="{{ asset('storage/' . $store->logo) }}" alt="{{ $store->name }}" class="w-full h-full object-cover rounded-xl">
                         @else
@@ -23,8 +20,8 @@
                         @endif
                     </div>
                     <div>
-                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md border border-white/25 text-xs font-semibold text-teal-100 mb-2">
-                            <span class="w-2 h-2 rounded-full bg-emerald-300 animate-pulse"></span>
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 border border-white/25 text-xs font-semibold text-teal-50 mb-2">
+                            <span class="w-2 h-2 rounded-full bg-emerald-300"></span>
                             Merchant Partner
                         </div>
                         <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight text-white flex items-center gap-2">
@@ -39,12 +36,12 @@
                 <!-- Action Hub Buttons -->
                 <div class="flex flex-wrap items-center gap-3">
                     @if($store && $store->slug)
-                    <a href="{{ route('store.show', $store->slug) }}" target="_blank" class="px-4 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 backdrop-blur-md border border-white/30 text-white text-xs md:text-sm font-semibold transition-all duration-200 flex items-center gap-2 shadow-xs hover:scale-[1.02]">
+                    <a href="{{ route('store.show', $store->slug) }}" target="_blank" class="px-4 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 border border-white/30 text-white text-xs md:text-sm font-semibold transition-colors flex items-center gap-2">
                         <span class="material-symbols-outlined text-[18px]">storefront</span>
                         Lihat Toko Publik
                     </a>
                     @endif
-                    <a href="{{ route('tenant.products.create') }}" class="px-5 py-2.5 rounded-xl bg-white text-[#00687a] hover:bg-teal-50 text-xs md:text-sm font-bold shadow-md transition-all duration-200 flex items-center gap-2 hover:scale-[1.02]">
+                    <a href="{{ route('tenant.products.create') }}" class="px-5 py-2.5 rounded-xl bg-white text-[#00838f] hover:bg-teal-50 text-xs md:text-sm font-bold transition-colors flex items-center gap-2">
                         <span class="material-symbols-outlined text-[18px]">add_circle</span>
                         Tambah Produk
                     </a>
@@ -103,46 +100,7 @@
                     this.copyToClipboard();
                 }
             }
-        <!-- Modul Promosi & Bagikan Tautan Toko -->
-        <div x-data="{
-            copied: false,
-            showQrModal: false,
-            storeUrl: '{{ $storeDirectUrl }}',
-            copyToClipboard() {
-                if (navigator.clipboard && window.isSecureContext) {
-                    navigator.clipboard.writeText(this.storeUrl).then(() => {
-                        this.triggerCopied();
-                    }).catch(() => {
-                        this.fallbackCopy();
-                    });
-                } else {
-                    this.fallbackCopy();
-                }
-            },
-            fallbackCopy() {
-                const input = document.getElementById('store-link-input');
-                if (input) {
-                    input.select();
-                    document.execCommand('copy');
-                    this.triggerCopied();
-                }
-            },
-            triggerCopied() {
-                this.copied = true;
-                setTimeout(() => { this.copied = false; }, 2500);
-            },
-            shareNative() {
-                if (navigator.share) {
-                    navigator.share({
-                        title: '{{ addslashes($storeTitle) }}',
-                        text: '{{ addslashes($shareMessage) }}',
-                        url: this.storeUrl
-                    }).catch(() => {});
-                } else {
-                    this.copyToClipboard();
-                }
-            }
-        }" class="bg-white dark:bg-[#161b22] border border-slate-200/90 dark:border-slate-800 rounded-2xl p-5 md:p-6 shadow-xs">
+        }" class="bg-white dark:bg-[#161b22] border border-slate-200 dark:border-slate-800 rounded-2xl p-5 md:p-6">
 
             <div class="space-y-5">
                 
@@ -169,7 +127,7 @@
 
                     <!-- Quick Action: Ganti Slug Toko -->
                     <a href="{{ route('tenant.store.index') }}" 
-                       class="self-start sm:self-center inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-[#00838f] text-xs font-bold text-slate-700 dark:text-slate-200 hover:text-[#00838f] dark:hover:text-teal-400 transition-all shadow-2xs"
+                       class="self-start sm:self-center inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-[#00838f] text-xs font-bold text-slate-700 dark:text-slate-200 hover:text-[#00838f] dark:hover:text-teal-400 transition-colors"
                        title="Ubah URL / Slug Toko di Pengaturan">
                         <span class="material-symbols-outlined text-[16px] text-[#00838f] dark:text-teal-400">settings_suggest</span>
                         <span>Atur Slug Toko</span>
@@ -190,7 +148,7 @@
                     <div class="flex items-center gap-2 shrink-0">
                         <!-- Copy Button -->
                         <button type="button" @click="copyToClipboard()"
-                                class="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl font-bold text-xs transition-all duration-200 shadow-xs cursor-pointer"
+                                class="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl font-bold text-xs transition-colors cursor-pointer"
                                 :class="copied ? 'bg-emerald-600 text-white' : 'bg-[#00838f] hover:bg-[#00727d] text-white'">
                             <span class="material-symbols-outlined text-[17px]" x-text="copied ? 'check_circle' : 'content_copy'"></span>
                             <span x-text="copied ? 'Tersalin! 🎉' : 'Salin Tautan'"></span>
@@ -219,7 +177,7 @@
 
                         <!-- WhatsApp -->
                         <a href="https://api.whatsapp.com/send?text={{ $encodedMsg }}" target="_blank"
-                           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:hover:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 font-semibold text-xs border border-emerald-200 dark:border-emerald-800/60 transition-all hover:scale-105"
+                           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:hover:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 font-semibold text-xs border border-emerald-200 dark:border-emerald-800/60 transition-colors"
                            title="Bagikan ke WhatsApp Chat / Status">
                             <svg class="w-3.5 h-3.5 fill-current text-emerald-600 dark:text-emerald-400" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
                             <span>WhatsApp</span>
@@ -227,7 +185,7 @@
 
                         <!-- Telegram -->
                         <a href="https://t.me/share/url?url={{ $encodedUrl }}&text={{ $encodedMsg }}" target="_blank"
-                           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sky-50 hover:bg-sky-100 dark:bg-sky-950/40 dark:hover:bg-sky-900/50 text-sky-700 dark:text-sky-300 font-semibold text-xs border border-sky-200 dark:border-sky-800/60 transition-all hover:scale-105"
+                           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sky-50 hover:bg-sky-100 dark:bg-sky-950/40 dark:hover:bg-sky-900/50 text-sky-700 dark:text-sky-300 font-semibold text-xs border border-sky-200 dark:border-sky-800/60 transition-colors"
                            title="Bagikan ke Telegram">
                             <svg class="w-3.5 h-3.5 fill-current text-sky-500" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.196 1.006.128.832.942z"/></svg>
                             <span>Telegram</span>
@@ -235,7 +193,7 @@
 
                         <!-- Facebook -->
                         <a href="https://www.facebook.com/sharer/sharer.php?u={{ $encodedUrl }}" target="_blank"
-                           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/40 dark:hover:bg-blue-900/50 text-blue-700 dark:text-blue-300 font-semibold text-xs border border-blue-200 dark:border-blue-800/60 transition-all hover:scale-105"
+                           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/40 dark:hover:bg-blue-900/50 text-blue-700 dark:text-blue-300 font-semibold text-xs border border-blue-200 dark:border-blue-800/60 transition-colors"
                            title="Bagikan ke Facebook">
                             <svg class="w-3.5 h-3.5 fill-current text-blue-600" viewBox="0 0 24 24"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/></svg>
                             <span>Facebook</span>
@@ -243,7 +201,7 @@
 
                         <!-- X (Twitter) -->
                         <a href="https://twitter.com/intent/tweet?text={{ $encodedMsg }}&url={{ $encodedUrl }}" target="_blank"
-                           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-xs border border-slate-200 dark:border-slate-700 transition-all hover:scale-105"
+                           class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-xs border border-slate-200 dark:border-slate-700 transition-colors"
                            title="Bagikan ke Twitter / X">
                             <svg class="w-3.5 h-3.5 fill-current text-slate-800 dark:text-white" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
                             <span>X</span>
@@ -251,7 +209,7 @@
 
                         <!-- Mobile Native Share Sheet -->
                         <button type="button" @click="shareNative()"
-                                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-50 hover:bg-purple-100 dark:bg-purple-950/40 dark:hover:bg-purple-900/50 text-purple-700 dark:text-purple-300 font-semibold text-xs border border-purple-200 dark:border-purple-800/60 transition-all hover:scale-105 cursor-pointer"
+                                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-50 hover:bg-purple-100 dark:bg-purple-950/40 dark:hover:bg-purple-900/50 text-purple-700 dark:text-purple-300 font-semibold text-xs border border-purple-200 dark:border-purple-800/60 transition-colors cursor-pointer"
                                 title="Bagikan via Aplikasi Lain di HP">
                             <span class="material-symbols-outlined text-[15px] text-purple-600 dark:text-purple-400">send_to_mobile</span>
                             <span>Lainnya</span>
@@ -268,9 +226,9 @@
 
             <!-- Modal QR Code -->
             <div x-show="showQrModal" x-cloak style="display: none;"
-                 class="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+                 class="fixed inset-0 z-50 overflow-y-auto bg-black/60 flex items-center justify-center p-4">
                 <div @click.outside="showQrModal = false"
-                     class="bg-white dark:bg-[#111726] border border-slate-200 dark:border-[#222f49] rounded-3xl p-6 max-w-sm w-full shadow-2xl text-center relative">
+                     class="bg-white dark:bg-[#111726] border border-slate-200 dark:border-[#222f49] rounded-2xl p-6 max-w-sm w-full text-center relative">
                     <button type="button" @click="showQrModal = false" 
                             class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-white p-1 rounded-full">
                         <span class="material-symbols-outlined text-[20px]">close</span>
@@ -285,16 +243,16 @@
                         Scan dengan kamera HP untuk langsung membuka toko: <span class="font-bold text-sky-600 dark:text-sky-400">{{ $store->name }}</span>
                     </p>
 
-                    <div class="p-3 bg-white rounded-2xl border border-slate-200 inline-block shadow-inner mb-4">
+                    <div class="p-3 bg-white rounded-xl border border-slate-200 inline-block mb-4">
                         <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data={{ $encodedUrl }}" 
                              alt="QR Code Toko {{ $store->name }}"
-                             class="w-48 h-48 rounded-xl object-contain mx-auto">
+                             class="w-48 h-48 rounded-lg object-contain mx-auto">
                     </div>
 
                     <div class="space-y-2">
                         <a href="https://api.qrserver.com/v1/create-qr-code/?size=500x500&data={{ $encodedUrl }}&download=1"
                            target="_blank" download="qr-toko-{{ $storeSlug }}.png"
-                           class="w-full py-2.5 px-4 bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs rounded-xl shadow-md transition-colors flex items-center justify-center gap-1.5">
+                           class="w-full py-2.5 px-4 bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs rounded-xl transition-colors flex items-center justify-center gap-1.5">
                             <span class="material-symbols-outlined text-[16px]">download</span>
                             <span>Download Gambar QR Code</span>
                         </a>
@@ -311,7 +269,7 @@
         <!-- 4 Essential Metrics Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             <!-- Metric 1: Total Revenue -->
-            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
+            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5">
                 <div class="flex items-center justify-between">
                     <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Saldo Penjual</span>
                     <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
@@ -332,7 +290,7 @@
             </div>
 
             <!-- Metric 2: Completed Orders -->
-            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
+            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5">
                 <div class="flex items-center justify-between">
                     <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Pesanan Berhasil</span>
                     <div class="w-10 h-10 rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-400 flex items-center justify-center">
@@ -353,7 +311,7 @@
             </div>
 
             <!-- Metric 3: Pending Orders -->
-            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
+            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5">
                 <div class="flex items-center justify-between">
                     <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Menunggu Pembayaran</span>
                     <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center">
@@ -374,7 +332,7 @@
             </div>
 
             <!-- Metric 4: Active Products -->
-            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
+            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5">
                 <div class="flex items-center justify-between">
                     <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Katalog Produk</span>
                     <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
@@ -400,7 +358,7 @@
             
             <!-- Left Area: Recent Orders (7 cols) -->
             <div class="lg:col-span-7 space-y-6">
-                <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl shadow-sm overflow-hidden">
+                <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl overflow-hidden">
                     <div class="p-5 md:p-6 border-b border-slate-100 dark:border-[#222f49] flex items-center justify-between">
                         <div>
                             <h2 class="text-base font-bold text-slate-900 dark:text-white">Transaksi Penjualan Terbaru</h2>
@@ -475,8 +433,8 @@
 
                 <!-- Feature Shortcuts Banner -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <a href="{{ route('tenant.appearance.index') }}" class="group bg-gradient-to-br from-indigo-50 to-white dark:from-[#131b2e] dark:to-[#111726] border border-indigo-100 dark:border-[#263553] rounded-2xl p-5 hover:border-indigo-400 dark:hover:border-indigo-500 transition-all shadow-sm">
-                        <div class="w-10 h-10 rounded-xl bg-indigo-500 text-white flex items-center justify-center shadow-md shadow-indigo-500/20 mb-3 group-hover:scale-105 transition-transform">
+                    <a href="{{ route('tenant.appearance.index') }}" class="group bg-slate-50 hover:bg-slate-100/80 dark:bg-[#131b2e] border border-slate-200 dark:border-[#263553] rounded-2xl p-5 hover:border-indigo-400 dark:hover:border-indigo-500 transition-colors">
+                        <div class="w-10 h-10 rounded-xl bg-indigo-500 text-white flex items-center justify-center mb-3">
                             <span class="material-symbols-outlined text-[20px]">palette</span>
                         </div>
                         <h3 class="text-sm font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors flex items-center gap-1">
@@ -485,8 +443,8 @@
                         <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Kustomisasi banner, tampilan beranda, dan tema etalase toko Anda.</p>
                     </a>
 
-                    <a href="{{ route('tenant.bank.index') }}" class="group bg-gradient-to-br from-sky-50 to-white dark:from-[#101e33] dark:to-[#111726] border border-sky-100 dark:border-[#1d3559] rounded-2xl p-5 hover:border-sky-400 dark:hover:border-sky-500 transition-all shadow-sm">
-                        <div class="w-10 h-10 rounded-xl bg-sky-500 text-white flex items-center justify-center shadow-md shadow-sky-500/20 mb-3 group-hover:scale-105 transition-transform">
+                    <a href="{{ route('tenant.bank.index') }}" class="group bg-slate-50 hover:bg-slate-100/80 dark:bg-[#101e33] border border-slate-200 dark:border-[#1d3559] rounded-2xl p-5 hover:border-sky-400 dark:hover:border-sky-500 transition-colors">
+                        <div class="w-10 h-10 rounded-xl bg-sky-500 text-white flex items-center justify-center mb-3">
                             <span class="material-symbols-outlined text-[20px]">credit_card</span>
                         </div>
                         <h3 class="text-sm font-bold text-slate-900 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors flex items-center gap-1">
@@ -501,7 +459,7 @@
             <div class="lg:col-span-5 space-y-6">
                 
                 <!-- Store Quick Glance -->
-                <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl shadow-sm p-6">
+                <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-6">
                     <div class="flex items-center justify-between mb-4">
                         <h2 class="text-base font-bold text-slate-900 dark:text-white">Koleksi Produk Anda</h2>
                         <a href="{{ route('tenant.products.index') }}" class="text-xs font-bold text-sky-600 dark:text-sky-400 hover:underline">
@@ -542,8 +500,7 @@
                 </div>
 
                 <!-- Tips & Growth Guide -->
-                <div class="bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-2xl p-6 shadow-md border border-slate-700 relative overflow-hidden">
-                    <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-sky-500/20 rounded-full blur-2xl pointer-events-none"></div>
+                <div class="bg-slate-900 text-white rounded-2xl p-6 border border-slate-800">
                     <div class="flex items-center gap-3 mb-3">
                         <div class="w-8 h-8 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center">
                             <span class="material-symbols-outlined text-[18px]">lightbulb</span>
@@ -553,7 +510,7 @@
                     <p class="text-xs text-slate-300 leading-relaxed">
                         Lengkapi deskripsi produk digital Anda dengan informasi spesifikasi source code/aplikasi, panduan instalasi, dan link demo langsung untuk meningkatkan kepercayaan calon pembeli.
                     </p>
-                    <div class="mt-4 pt-4 border-t border-slate-700/60 flex items-center justify-between">
+                    <div class="mt-4 pt-4 border-t border-slate-800 flex items-center justify-between">
                         <span class="text-[11px] text-slate-400">Pusat Bantuan Mitra</span>
                         <a href="{{ route('contact') }}" class="text-xs font-bold text-sky-400 hover:text-sky-300 transition-colors flex items-center gap-0.5">
                             Hubungi Tim Support <span class="material-symbols-outlined text-[14px]">chevron_right</span>
