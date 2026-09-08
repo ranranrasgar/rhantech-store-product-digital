@@ -36,6 +36,7 @@
         width: 100%;
         height: 100%;
         object-fit: cover;
+        object-position: top;
         transition: transform 0.35s ease;
     }
     .prod-card:hover .img-wrap img { transform: scale(1.06); }

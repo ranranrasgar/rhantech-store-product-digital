@@ -448,9 +448,9 @@
                 }
             @endphp
             <a href="{{ route('products.show', $prod->slug) }}" class="group bg-surface rounded-2xl border border-outline-variant hover:border-primary/50 overflow-hidden shadow-xs hover:shadow-md transition-all duration-200 flex flex-col hover:-translate-y-1" wire:navigate>
-                <div class="relative aspect-4/3 w-full bg-surface-container overflow-hidden">
+                <div class="relative aspect-square w-full bg-surface-container overflow-hidden">
                     @if($mainImg)
-                        <img src="{{ asset('storage/' . $mainImg->image_path) }}" alt="{{ $prod->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&auto=format&fit=crop&q=80'">
+                        <img src="{{ asset('storage/' . $mainImg->image_path) }}" alt="{{ $prod->name }}" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-300" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&auto=format&fit=crop&q=80'">
                     @else
                         <div class="w-full h-full flex items-center justify-center text-outline-variant bg-surface-container-high">
                             <span class="material-symbols-outlined text-3xl">inventory_2</span>
