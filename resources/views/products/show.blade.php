@@ -923,53 +923,91 @@
                     </div>
                 </div>
 
-                <!-- Tab 4: Tanya Jawab (FAQ) -->
+                <!-- Tab 4: Tanya Jawab (FAQ) & Panduan -->
                 @php
-                    // Ambil artikel dari Help Category jika produk terhubung dengan kategori Pusat Bantuan
+                    // 1. Artikel dari Help Category Platform (jika produk terhubung dengan kategori Pusat Bantuan)
                     $hasHelpArticles = $product->helpCategory && $product->helpCategory->articles && $product->helpCategory->articles->count() > 0;
-                    $articlesList = $hasHelpArticles ? $product->helpCategory->articles : null;
+                    $articlesList = $hasHelpArticles ? $product->helpCategory->articles : collect();
+
+                    // 2. Tanya Jawab (FAQ) Khusus Toko untuk produk ini
+                    $customFaqs = is_array($product->faqs) && count($product->faqs) > 0 ? $product->faqs : [];
+                    $hasCustomFaqs = count($customFaqs) > 0;
                 @endphp
-                <div x-show="activeTab === 'faq'" x-cloak class="pt-6 space-y-3" x-data="{ openFaq: 0 }">
+                <div x-show="activeTab === 'faq'" x-cloak class="pt-6 space-y-6" x-data="{ openFaq: 0 }">
+                    
+                    {{-- Bagian A: Panduan & Tanya Jawab Khusus dari Toko (Jika Toko menambahkan FAQ tersendiri) --}}
+                    @if($hasCustomFaqs)
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-2 pb-2 border-b border-outline-variant/60">
+                                <span class="material-symbols-outlined text-primary text-[20px]">quiz</span>
+                                <h4 class="text-xs md:text-sm font-bold text-on-surface">Panduan & Tanya Jawab Produk (Dari Penjual)</h4>
+                            </div>
+                            @foreach($customFaqs as $fIdx => $faq)
+                            <div class="rounded-xl border border-outline-variant/80 bg-surface-container-low overflow-hidden transition-all">
+                                <button type="button" @click="openFaq = (openFaq === {{ $fIdx }} ? null : {{ $fIdx }})" class="w-full p-4 text-left flex items-center justify-between gap-3 text-xs md:text-sm font-bold text-on-surface hover:text-primary transition-colors">
+                                    <span class="flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-primary text-[18px]">help</span>
+                                        {{ $faq['question'] ?? '' }}
+                                    </span>
+                                    <span class="material-symbols-outlined text-base transition-transform duration-200" :class="openFaq === {{ $fIdx }} ? 'rotate-180 text-primary' : ''">expand_more</span>
+                                </button>
+                                <div x-show="openFaq === {{ $fIdx }}" x-collapse class="px-4 pb-4 pt-1 text-xs text-on-surface-variant leading-relaxed border-t border-outline-variant/40">
+                                    {!! nl2br(e($faq['answer'] ?? '')) !!}
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                    @endif
+
+                    {{-- Bagian B: Artikel Pusat Bantuan Platform yang Relevan (Jika memilih kategori bantuan platform) --}}
                     @if($hasHelpArticles)
-                        <div class="mb-4 flex items-center justify-between pb-2 border-b border-outline-variant/50">
-                            <div class="flex items-center gap-2 text-xs text-on-surface-variant">
-                                <span class="material-symbols-outlined text-primary text-[18px]">folder_open</span>
-                                <span>Kategori Bantuan: <strong class="text-on-surface">{{ $product->helpCategory->name }}</strong> ({{ $articlesList->count() }} Topik)</span>
+                        <div class="space-y-3 {{ $hasCustomFaqs ? 'pt-4 border-t border-outline-variant/60' : '' }}">
+                            <div class="flex items-center justify-between pb-2 border-b border-outline-variant/50">
+                                <div class="flex items-center gap-2 text-xs text-on-surface-variant">
+                                    <span class="material-symbols-outlined text-blue-500 text-[18px]">folder_open</span>
+                                    <span>Pusat Bantuan Platform: <strong class="text-on-surface">{{ $product->helpCategory->name }}</strong> ({{ $articlesList->count() }} Topik)</span>
+                                </div>
+                                <a href="{{ route('help.index') }}#category-{{ $product->helpCategory->slug }}" target="_blank" class="text-xs text-primary hover:underline flex items-center gap-1 font-semibold">
+                                    <span>Buka di Pusat Bantuan</span>
+                                    <span class="material-symbols-outlined text-[14px]">open_in_new</span>
+                                </a>
                             </div>
-                            <a href="{{ route('help.index') }}#category-{{ $product->helpCategory->slug }}" target="_blank" class="text-xs text-primary hover:underline flex items-center gap-1 font-semibold">
-                                <span>Buka di Pusat Bantuan</span>
-                                <span class="material-symbols-outlined text-[14px]">open_in_new</span>
-                            </a>
-                        </div>
-                        @foreach($articlesList as $fIdx => $article)
-                        <div class="rounded-xl border border-outline-variant/80 bg-surface-container-low overflow-hidden transition-all">
-                            <button type="button" @click="openFaq = (openFaq === {{ $fIdx }} ? null : {{ $fIdx }})" class="w-full p-4 text-left flex items-center justify-between gap-3 text-xs md:text-sm font-bold text-on-surface hover:text-primary transition-colors">
-                                <span class="flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-primary text-[18px]">quiz</span>
-                                    {{ $article->title }}
-                                </span>
-                                <span class="material-symbols-outlined text-base transition-transform duration-200" :class="openFaq === {{ $fIdx }} ? 'rotate-180 text-primary' : ''">expand_more</span>
-                            </button>
-                            <div x-show="openFaq === {{ $fIdx }}" x-collapse class="px-4 pb-4 pt-1 text-xs text-on-surface-variant leading-relaxed border-t border-outline-variant/40 prose prose-sm dark:prose-invert max-w-none">
-                                {!! $article->content !!}
+                            @foreach($articlesList as $aIdx => $article)
+                            @php $combinedIdx = 'help_' . $aIdx; @endphp
+                            <div class="rounded-xl border border-outline-variant/80 bg-surface-container-low overflow-hidden transition-all">
+                                <button type="button" @click="openFaq = (openFaq === '{{ $combinedIdx }}' ? null : '{{ $combinedIdx }}')" class="w-full p-4 text-left flex items-center justify-between gap-3 text-xs md:text-sm font-bold text-on-surface hover:text-primary transition-colors">
+                                    <span class="flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-blue-500 text-[18px]">article</span>
+                                        {{ $article->title }}
+                                    </span>
+                                    <span class="material-symbols-outlined text-base transition-transform duration-200" :class="openFaq === '{{ $combinedIdx }}' ? 'rotate-180 text-primary' : ''">expand_more</span>
+                                </button>
+                                <div x-show="openFaq === '{{ $combinedIdx }}' " x-collapse class="px-4 pb-4 pt-1 text-xs text-on-surface-variant leading-relaxed border-t border-outline-variant/40 prose prose-sm dark:prose-invert max-w-none">
+                                    {!! $article->content !!}
+                                </div>
                             </div>
+                            @endforeach
                         </div>
-                        @endforeach
-                    @else
-                        @foreach($faqItems as $fIdx => $faq)
-                        <div class="rounded-xl border border-outline-variant/80 bg-surface-container-low overflow-hidden transition-all">
-                            <button type="button" @click="openFaq = (openFaq === {{ $fIdx }} ? null : {{ $fIdx }})" class="w-full p-4 text-left flex items-center justify-between gap-3 text-xs md:text-sm font-bold text-on-surface hover:text-primary transition-colors">
-                                <span class="flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-primary text-[18px]">quiz</span>
-                                    {{ $faq['question'] ?? '' }}
-                                </span>
-                                <span class="material-symbols-outlined text-base transition-transform duration-200" :class="openFaq === {{ $fIdx }} ? 'rotate-180 text-primary' : ''">expand_more</span>
-                            </button>
-                            <div x-show="openFaq === {{ $fIdx }}" x-collapse class="px-4 pb-4 pt-1 text-xs text-on-surface-variant leading-relaxed border-t border-outline-variant/40">
-                                {!! nl2br(e($faq['answer'] ?? '')) !!}
+                    @endif
+
+                    {{-- Fallback: Jika tidak memilih kategori dan tidak ada FAQ kustom, tampilkan FAQ umum standar --}}
+                    @if(!$hasCustomFaqs && !$hasHelpArticles)
+                        <div class="space-y-3">
+                            @foreach($faqItems as $fIdx => $faq)
+                            <div class="rounded-xl border border-outline-variant/80 bg-surface-container-low overflow-hidden transition-all">
+                                <button type="button" @click="openFaq = (openFaq === {{ $fIdx }} ? null : {{ $fIdx }})" class="w-full p-4 text-left flex items-center justify-between gap-3 text-xs md:text-sm font-bold text-on-surface hover:text-primary transition-colors">
+                                    <span class="flex items-center gap-2">
+                                        <span class="material-symbols-outlined text-primary text-[18px]">quiz</span>
+                                        {{ $faq['question'] ?? '' }}
+                                    </span>
+                                    <span class="material-symbols-outlined text-base transition-transform duration-200" :class="openFaq === {{ $fIdx }} ? 'rotate-180 text-primary' : ''">expand_more</span>
+                                </button>
+                                <div x-show="openFaq === {{ $fIdx }}" x-collapse class="px-4 pb-4 pt-1 text-xs text-on-surface-variant leading-relaxed border-t border-outline-variant/40">
+                                    {!! nl2br(e($faq['answer'] ?? '')) !!}
+                                </div>
                             </div>
+                            @endforeach
                         </div>
-                        @endforeach
                     @endif
                 </div>
 

@@ -242,32 +242,62 @@
             </div>
         </div>
 
-        <!-- 6. Tab Tanya Jawab (FAQ) dari Modul Pusat Bantuan / Help Articles -->
+        <!-- 6. Tab Tanya Jawab (FAQ) & Panduan Produk -->
         <div class="p-3.5 rounded-lg bg-surface-container-low border border-outline-variant/60">
-            <div class="flex items-center gap-2 mb-2">
-                <span class="material-symbols-outlined text-blue-500 text-[18px]">help_outline</span>
-                <label class="font-bold text-xs md:text-sm text-on-surface">Tab: Tanya Jawab (FAQ) Otomatis dari Pusat Bantuan</label>
+            <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-blue-500 text-[18px]">help_outline</span>
+                    <label class="font-bold text-xs md:text-sm text-on-surface">Tab: Tanya Jawab (FAQ) & Panduan Produk</label>
+                </div>
+                <button type="button" onclick="addFaqRow()" class="text-xs bg-primary/10 text-primary hover:bg-primary hover:text-white px-2.5 py-1 rounded font-bold transition flex items-center gap-1">
+                    <span class="material-symbols-outlined text-xs">add</span> Tambah Tanya Jawab Toko
+                </button>
             </div>
             <p class="text-xs text-on-surface-variant mb-3">
-                Ambil artikel FAQ langsung dari modul <strong>Pusat Bantuan / Help Center</strong> (<a href="{{ url('/admin/help_articles') }}" target="_blank" class="text-primary underline font-medium">/admin/help_articles</a>). Cukup pilih salah satu kategori di bawah ini, semua artikel bantuan dalam kategori tersebut akan otomatis tampil di tab Tanya Jawab (FAQ) produk tanpa perlu input manual lagi:
+                Hubungkan dengan kategori Pusat Bantuan platform atau buat panduan & tanya jawab khusus toko Anda di bawah ini agar pembeli memahami produk yang dirilis:
             </p>
             
-            <div class="space-y-3">
-                <div>
-                    <label class="block text-xs font-semibold text-on-surface mb-1">Pilih Kategori Bantuan / FAQ:</label>
-                    <select name="help_category_id" class="w-full px-3 py-2 bg-surface border border-outline-variant rounded-lg font-body-sm text-xs focus:border-primary focus:ring-1 focus:ring-primary/20">
-                        <option value="">-- Tidak Memilih Kategori (Gunakan Template FAQ Umum Standar) --</option>
+            <div class="space-y-4">
+                {{-- Pilihan Kategori Pusat Bantuan Resmi Platform --}}
+                <div class="p-3 bg-surface rounded-lg border border-outline-variant/50">
+                    <label class="block text-xs font-bold text-on-surface mb-1 flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-sm text-primary">category</span>
+                        Kategori Pusat Bantuan Platform (Opsional):
+                    </label>
+                    <p class="text-[11px] text-on-surface-variant mb-2">Pilih kategori standar platform agar artikel bantuan terkait langsung muncul di tab produk & terhubung ke Pusat Bantuan resmi.</p>
+                    <select name="help_category_id" class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-sm text-xs focus:border-primary focus:ring-1 focus:ring-primary/20">
+                        <option value="">-- Tanpa Kategori Platform (Hanya Tampilkan Tanya Jawab Khusus Toko) --</option>
                         @foreach($helpCategories ?? [] as $hc)
                             <option value="{{ $hc->id }}" {{ (string)old('help_category_id', $productItem?->help_category_id) === (string)$hc->id ? 'selected' : '' }}>
-                                {{ $hc->name }} ({{ $hc->articles_count ?? $hc->articles()->count() }} artikel bantuan)
+                                {{ $hc->name }} ({{ $hc->articles_count ?? $hc->articles()->count() }} topik bantuan platform)
                             </option>
                         @endforeach
                     </select>
                 </div>
-                <div class="p-2.5 rounded-lg bg-surface-container border border-outline-variant/40 flex items-start gap-2">
-                    <span class="material-symbols-outlined text-primary text-[18px] mt-0.5">info</span>
-                    <div class="text-[11px] text-on-surface-variant leading-relaxed">
-                        Jika Anda ingin menambahkan pertanyaan & jawaban baru untuk kategori ini, silakan kelola langsung di menu <a href="{{ url('/admin/help_articles') }}" target="_blank" class="text-primary font-bold hover:underline">Kelola Help Articles</a>. Semua pembaruan akan langsung tersinkronisasi ke produk ini.
+
+                {{-- Panduan / Tanya Jawab Khusus Produk Toko --}}
+                <div>
+                    <label class="block text-xs font-bold text-on-surface mb-1 flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-sm text-primary">quiz</span>
+                        Daftar Tanya Jawab / Panduan Khusus Toko Anda:
+                    </label>
+                    <p class="text-[11px] text-on-surface-variant mb-2.5">Toko bebas membuat FAQ spesifik untuk produk ini (contoh: cara instalasi khusus, lisensi toko, akun demo, kontak bantuan teknis toko, dll):</p>
+                    
+                    <div id="faqs-container" class="space-y-3">
+                        @foreach($faqs as $fIdx => $faq)
+                        <div class="p-2.5 rounded-lg bg-surface border border-outline-variant/50 relative">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="material-symbols-outlined text-primary text-base shrink-0">help</span>
+                                <div class="flex-1">
+                                    <input type="text" name="faqs[{{ $fIdx }}][question]" value="{{ $faq['question'] ?? '' }}" placeholder="Pertanyaan (cth: Bagaimana cara import database produk ini?)" class="w-full px-3 py-1.5 bg-surface-container-lowest border border-outline-variant rounded font-body-sm text-xs font-semibold">
+                                </div>
+                                <button type="button" onclick="this.closest('.p-2\\.5').remove()" class="p-1 text-error hover:bg-error/10 rounded transition" title="Hapus Pertanyaan">
+                                    <span class="material-symbols-outlined text-sm">delete</span>
+                                </button>
+                            </div>
+                            <textarea name="faqs[{{ $fIdx }}][answer]" rows="2" placeholder="Jawaban / langkah panduan..." class="w-full px-3 py-1.5 bg-surface-container-lowest border border-outline-variant rounded text-xs">{{ $faq['answer'] ?? '' }}</textarea>
+                        </div>
+                        @endforeach
                     </div>
                 </div>
             </div>
@@ -364,6 +394,26 @@ function addGuaranteeRow() {
             </button>
         </div>
         <textarea name="guarantees[${idx}][description]" rows="2" placeholder="Penjelasan garansi..." class="w-full px-3 py-1.5 bg-surface-container-lowest border border-outline-variant rounded text-xs"></textarea>
+    `;
+    container.appendChild(div);
+}
+
+function addFaqRow() {
+    const container = document.getElementById('faqs-container');
+    const idx = Date.now();
+    const div = document.createElement('div');
+    div.className = 'p-2.5 rounded-lg bg-surface border border-outline-variant/50 relative';
+    div.innerHTML = `
+        <div class="flex items-center gap-2 mb-2">
+            <span class="material-symbols-outlined text-primary text-base shrink-0">help</span>
+            <div class="flex-1">
+                <input type="text" name="faqs[${idx}][question]" placeholder="Pertanyaan baru seputar produk..." class="w-full px-3 py-1.5 bg-surface-container-lowest border border-outline-variant rounded font-body-sm text-xs font-semibold">
+            </div>
+            <button type="button" onclick="this.closest('.p-2\\\\.5').remove()" class="p-1 text-error hover:bg-error/10 rounded transition" title="Hapus Pertanyaan">
+                <span class="material-symbols-outlined text-sm">delete</span>
+            </button>
+        </div>
+        <textarea name="faqs[${idx}][answer]" rows="2" placeholder="Jawaban atau penjelasan panduan..." class="w-full px-3 py-1.5 bg-surface-container-lowest border border-outline-variant rounded text-xs"></textarea>
     `;
     container.appendChild(div);
 }
