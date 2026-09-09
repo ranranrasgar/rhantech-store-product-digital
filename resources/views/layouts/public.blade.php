@@ -585,6 +585,7 @@
     @endauth
     @include('components.chat-widget')
     @include('components.new-member-bonus-bubble')
+    @include('components.popup-ad-modal')
     @include('components.pwa-install-prompt')
     @livewireScripts
 </body>

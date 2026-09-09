@@ -76,6 +76,10 @@ class AppServiceProvider extends ServiceProvider
             $view->with('popularSearches', \App\Models\ProductSearch::getPopular(7));
         });
 
+        View::composer(['layouts.public', 'welcome'], function ($view) {
+            $view->with('popupAd', \App\Models\PopupAd::where('is_active', true)->latest()->first());
+        });
+
         View::composer(['layouts.admin', 'admin.*'], function ($view) {
             $pendingPayoutsCount = PayoutRequest::where('status', 'pending')->count();
             $pendingPayoutsList = PayoutRequest::with('store')
