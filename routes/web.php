@@ -50,6 +50,12 @@ Route::get('/help', [\App\Http\Controllers\HelpController::class, 'index'])->nam
 Route::get('/help/article/{slug}', [\App\Http\Controllers\HelpController::class, 'show'])->name('help.show');
 Route::post('/help/article/{id}/feedback', [\App\Http\Controllers\HelpController::class, 'feedback'])->name('help.feedback');
 
+// Legal & Compliance Routes (Regulasi RI: UU ITE, PP PMSE, UU PDP, UU Hak Cipta, UU Perlindungan Konsumen)
+Route::get('/terms', [\App\Http\Controllers\LegalController::class, 'terms'])->name('legal.terms');
+Route::get('/privacy', [\App\Http\Controllers\LegalController::class, 'privacy'])->name('legal.privacy');
+Route::get('/copyright', [\App\Http\Controllers\LegalController::class, 'copyright'])->name('legal.copyright');
+Route::get('/refund-policy', [\App\Http\Controllers\LegalController::class, 'refund'])->name('legal.refund');
+
 Route::get('/login', [\App\Http\Controllers\Auth\AuthController::class, 'create'])->name('login')->middleware('guest');
 Route::post('/login', [\App\Http\Controllers\Auth\AuthController::class, 'store'])->middleware(['guest', 'throttle:auth']);
 Route::get('/register', [\App\Http\Controllers\Auth\AuthController::class, 'showRegisterForm'])->name('register')->middleware('guest');
@@ -125,8 +131,20 @@ Route::middleware(['auth', 'verified', 'is_tenant'])->prefix('dashboard')->name(
     Route::post('categories/quick-store', [\App\Http\Controllers\Tenant\ProductController::class, 'quickStoreCategory'])->name('categories.quick-store');
     Route::post('types/quick-store', [\App\Http\Controllers\Tenant\ProductController::class, 'quickStoreType'])->name('types.quick-store');
 
-    // iklan
+    // Iklan Diskon & Voucher Toko
     Route::resource('campaigns', \App\Http\Controllers\Tenant\CampaignController::class);
+
+    // Pusat Iklan Toko & Promosi (Rhantech Seller Ads)
+    Route::get('ads', [\App\Http\Controllers\Tenant\AdController::class, 'index'])->name('ads.index');
+    Route::post('ads/claim-voucher', [\App\Http\Controllers\Tenant\AdController::class, 'claimWelcomeVoucher'])->name('ads.claim-voucher');
+    Route::get('ads/top-up', [\App\Http\Controllers\Tenant\AdController::class, 'topUp'])->name('ads.top-up');
+    Route::post('ads/top-up', [\App\Http\Controllers\Tenant\AdController::class, 'processTopUp'])->name('ads.process-top-up');
+    Route::get('ads/payment/{reference_no}', [\App\Http\Controllers\Tenant\AdController::class, 'payment'])->name('ads.payment');
+    Route::get('ads/finish/{reference_no}', [\App\Http\Controllers\Tenant\AdController::class, 'finishTopUp'])->name('ads.finish-top-up');
+    Route::get('ads/create', [\App\Http\Controllers\Tenant\AdController::class, 'create'])->name('ads.create');
+    Route::post('ads', [\App\Http\Controllers\Tenant\AdController::class, 'store'])->name('ads.store');
+    Route::patch('ads/{ad}/toggle', [\App\Http\Controllers\Tenant\AdController::class, 'toggle'])->name('ads.toggle');
+    Route::delete('ads/{ad}', [\App\Http\Controllers\Tenant\AdController::class, 'destroy'])->name('ads.destroy');
 
     // Chat Seller Center
     Route::get('chat', [\App\Http\Controllers\Tenant\ChatController::class, 'index'])->name('chat.index');
@@ -214,6 +232,6 @@ Route::get('/storage/{path}', function (string $path) {
 
 // Direct Store URL: http://127.0.0.1:8000/<nama-toko> (e.g., http://127.0.0.1:8000/gudang-aplikasi)
 Route::get('/{slug}', [\App\Http\Controllers\PublicStoreController::class, 'show'])
-    ->where('slug', '^(?!admin|tenant|dashboard|about|projects|products|clients|cart|checkout|payment|download|contact|help|login|register|logout|forgot-password|reset-password|email|storage|chat|toko).*$')
+    ->where('slug', '^(?!admin|tenant|dashboard|about|projects|products|clients|cart|checkout|payment|download|contact|help|terms|privacy|copyright|refund-policy|login|register|logout|forgot-password|reset-password|email|storage|chat|toko).*$')
     ->name('store.direct');
 

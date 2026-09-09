@@ -23,8 +23,8 @@ class StoreController extends Controller
 
         $reservedSlugs = [
             'admin', 'tenant', 'dashboard', 'projects', 'products', 'clients', 'cart', 'checkout', 
-            'payment', 'download', 'contact', 'help', 'login', 'register', 'logout', 
-            'forgot-password', 'reset-password', 'email', 'storage', 'chat', 'toko'
+            'payment', 'download', 'contact', 'help', 'terms', 'privacy', 'copyright', 'refund-policy',
+            'login', 'register', 'logout', 'forgot-password', 'reset-password', 'email', 'storage', 'chat', 'toko'
         ];
 
         // Format slug dari input atau nama toko
@@ -49,12 +49,18 @@ class StoreController extends Controller
             'social_links' => 'nullable|array',
         ];
 
+        // Saat baru pertama kali buka toko, WAJIB menyetujui Kontrak Elektronik PMSE & Hak Cipta
+        if (!$store) {
+            $rules['agree_terms'] = 'accepted';
+        }
+
         $messages = [
             'slug.unique' => 'URL / Slug toko ini sudah digunakan oleh toko lain. Silakan pilih nama slug lain.',
             'slug.not_in' => 'URL / Slug ini merupakan kata kunci sistem dan tidak boleh digunakan.',
             'slug.regex' => 'URL / Slug hanya boleh berisi huruf, angka, dan tanda strip (-).',
             'logo.max' => 'Ukuran logo tidak boleh lebih dari 2 MB.',
             'logo.image' => 'File harus berupa gambar.',
+            'agree_terms.accepted' => 'Anda wajib membaca dan menyetujui Syarat & Ketentuan Layanan, Kebijakan Hak Cipta & Regulasi RI untuk dapat membuka toko.',
         ];
 
         $request->validate($rules, $messages);
@@ -121,12 +127,16 @@ class StoreController extends Controller
         if ($store) {
             $store->update($data);
             $message = 'Profil toko berhasil diperbarui.';
+            return redirect()->back()->with('success', $message);
         } else {
             $data['balance'] = 0;
-            $user->store()->create($data);
-            $message = 'Profil toko berhasil dibuat.';
-        }
+            $data['ad_balance'] = 0;
+            $data['terms_accepted_at'] = now();
+            $data['terms_accepted_ip'] = $request->ip();
+            $newStore = $user->store()->create($data);
 
-        return redirect()->back()->with('success', $message);
+            $message = '🎉 Selamat! Toko "' . $newStore->name . '" berhasil dibuka! Buka menu Iklan Toko & Promosi untuk mengklaim Bonus Saldo Iklan Rp500.000!';
+            return redirect()->route('tenant.dashboard')->with('success', $message);
+        }
     }
 }

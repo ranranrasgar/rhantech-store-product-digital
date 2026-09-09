@@ -491,8 +491,17 @@
             <div>
                 <label class="flex items-center gap-2 cursor-pointer">
                     <input type="checkbox" name="is_active" value="1" {{ old('is_active', isset($sourceProduct) ? $sourceProduct->is_active : true) ? 'checked' : '' }} class="rounded border-outline-variant text-primary focus:ring-primary">
-                    <span class="font-label-md text-on-surface">Aktif (Tampil di Toko)</span>
+                    <span class="font-label-md text-on-surface">Aktif (Tampil di Toko setelah Disetujui)</span>
                 </label>
+            </div>
+
+            <!-- Info Moderasi Kualitas & Link Produk (SOP Perlindungan Konsumen) -->
+            <div class="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-800 dark:text-amber-300 text-xs flex items-start gap-2.5">
+                <span class="material-symbols-outlined text-[18px] text-amber-500 shrink-0 mt-0.5">verified</span>
+                <div class="leading-relaxed">
+                    <span class="font-bold block mb-0.5">Verifikasi Kualitas & Link Aktif oleh Admin:</span>
+                    Demi mencegah produk fiktif dan memastikan tautan unduhan benar-benar aktif untuk pembeli, setiap produk baru akan ditinjau secara berkala oleh tim moderator (status: <span class="font-semibold text-amber-600 dark:text-amber-400">In Review</span>) sebelum tampil publik di marketplace.
+                </div>
             </div>
 
             <div class="flex justify-end pt-md border-t border-outline-variant">

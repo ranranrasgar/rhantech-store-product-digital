@@ -140,4 +140,18 @@ class Product extends Model
 
         return $this->reviews()->count();
     }
+
+    public function ads()
+    {
+        return $this->hasMany(SellerAd::class);
+    }
+
+    public function activeAd()
+    {
+        return $this->hasOne(SellerAd::class)
+            ->where('status', 'active')
+            ->whereHas('store', function ($q) {
+                $q->where('ad_balance', '>', 0);
+            });
+    }
 }

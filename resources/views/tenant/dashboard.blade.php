@@ -549,6 +549,69 @@
             <!-- Right Area: Store Products & Performance Quick Guide (5 cols) -->
             <div class="lg:col-span-5 space-y-6">
                 
+                <!-- Pusat Iklan Toko & Promosi Platform (Biru Langit Theme) -->
+                <div class="bg-gradient-to-br from-sky-500/10 via-cyan-500/5 to-transparent dark:from-sky-950/20 dark:to-transparent border border-sky-200/90 dark:border-slate-800 rounded-2xl p-5 md:p-6 bg-white dark:bg-[#111726] relative overflow-hidden shadow-sm">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-9 h-9 rounded-xl bg-sky-100 dark:bg-sky-950/50 text-sky-600 dark:text-sky-400 flex items-center justify-center shrink-0">
+                                <span class="material-symbols-outlined text-[20px]">ads_click</span>
+                            </div>
+                            <div>
+                                <h3 class="font-extrabold text-sm text-slate-900 dark:text-white">Iklan Toko & Promosi</h3>
+                                <p class="text-[11px] text-slate-500 dark:text-slate-400">Tingkatkan penjualan dengan iklan bersponsor</p>
+                            </div>
+                        </div>
+                        <span class="px-2 py-0.5 rounded-full bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 text-[10px] font-bold">Rhantech Ads</span>
+                    </div>
+
+                    @if(isset($hasClaimedWelcomeVoucher) && !$hasClaimedWelcomeVoucher)
+                    <div class="my-3 p-3 rounded-xl bg-gradient-to-r from-sky-50 to-cyan-50 dark:from-sky-950/40 dark:to-cyan-950/20 border border-sky-200 dark:border-sky-800 flex items-center justify-between gap-2">
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sky-600 dark:text-sky-400 text-[20px]">redeem</span>
+                            <div>
+                                <div class="text-xs font-black text-slate-900 dark:text-white">Bonus Saldo Rp500.000</div>
+                                <div class="text-[10px] text-slate-500 dark:text-slate-400">Tingkatkan kunjungan toko hingga +30%</div>
+                            </div>
+                        </div>
+                        <form action="{{ route('tenant.ads.claim-voucher') }}" method="POST">
+                            @csrf
+                            <button type="submit" class="px-3 py-1.5 rounded-lg bg-[#0284c7] hover:bg-[#0369a1] text-white text-[11px] font-bold shadow-xs cursor-pointer" style="background: #0284c7 !important; color: #ffffff !important;">
+                                Klaim
+                            </button>
+                        </form>
+                    </div>
+                    @else
+                    <div class="my-2 px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 flex items-center gap-1.5 text-[11px] font-bold text-emerald-700 dark:text-emerald-300">
+                        <span class="material-symbols-outlined text-[14px]">verified</span>
+                        <span>Bonus Saldo Rp500.000 Aktif (+30% Kunjungan)</span>
+                    </div>
+                    @endif
+
+                    <div class="grid grid-cols-2 gap-3 my-3 p-3 rounded-xl bg-slate-50/80 dark:bg-slate-900/60 border border-slate-200/60 dark:border-slate-800">
+                        <div>
+                            <div class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Saldo Iklan</div>
+                            <div class="text-base font-black {{ ($adBalance ?? 0) <= 0 ? 'text-rose-600 dark:text-rose-400' : 'text-slate-900 dark:text-white' }} mt-0.5">
+                                Rp {{ number_format($adBalance ?? 0, 0, ',', '.') }}
+                            </div>
+                        </div>
+                        <div>
+                            <div class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Iklan Aktif</div>
+                            <div class="text-base font-black text-slate-900 dark:text-white mt-0.5">
+                                {{ number_format($activeAdsCount ?? 0) }} Kampanye
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 mt-4">
+                        <a href="{{ route('tenant.ads.index') }}" class="flex-1 py-2 px-3 rounded-xl bg-[#0284c7] hover:bg-[#0369a1] text-white text-xs font-bold text-center transition-colors flex items-center justify-center gap-1" style="background: #0284c7 !important; color: #ffffff !important;">
+                            <span>Buka Pusat Iklan</span>
+                        </a>
+                        <a href="{{ route('tenant.ads.top-up') }}" class="py-2 px-3 rounded-xl border border-sky-300 dark:border-sky-800 text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-950/30 text-xs font-bold transition-colors">
+                            + Isi Saldo
+                        </a>
+                    </div>
+                </div>
+
                 <!-- Store Quick Glance -->
                 <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-6">
                     <div class="flex items-center justify-between mb-4">

@@ -410,30 +410,44 @@
 
     <!-- Footer (Desktop Only) -->
     <footer aria-label="Footer" class="hidden md:block bg-surface-container dark:bg-surface-container-lowest text-on-surface dark:text-on-surface-variant font-body-md text-body-md font-label-md text-label-md w-full border-t border-outline-variant mt-auto">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-lg px-lg py-2xl max-w-container-max mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-8 px-6 lg:px-10 py-12 max-w-7xl mx-auto">
             <div class="col-span-1 md:col-span-2">
                 <a class="font-headline-lg text-headline-lg font-black text-primary dark:text-on-primary-container flex items-center gap-2 mb-4" href="{{ url('/') }}" wire:navigate>
                     <img src="{{ isset($company) && $company->logo ? asset('storage/' . $company->logo) : asset('logo.png') }}" alt="{{ $company->company_name ?? 'rhantech' }}" class="h-8 w-auto">
                     {{ $company->company_name ?? 'rhantech' }}
                 </a>
-                <p class="text-on-surface-variant max-w-sm mb-6">Building scalable, modern, and impactful digital solutions for businesses worldwide. Precision engineering meets elegant design.</p>
-                <div class="font-label-md text-label-md text-on-surface-variant/60">
-                    © {{ date('Y') }} {{ $company->company_name ?? 'rhantech' }}. All rights reserved.
+                <p class="text-on-surface-variant text-sm max-w-sm mb-4 leading-relaxed">Platform Marketplace Produk Digital, Source Code & Lisensi Resmi Indonesia. Memfasilitasi transaksi aman, terpercaya, dan patuh regulasi nasional.</p>
+                <div class="text-xs text-on-surface-variant/70 space-y-1">
+                    <div>© {{ date('Y') }} {{ $company->company_name ?? 'PT Rhantech Digital Globalindo' }}.</div>
+                    <div class="text-[11px] text-slate-500">Penyelenggara Sistem Elektronik (PSE) Terdaftar Komdigi/Kominfo</div>
                 </div>
             </div>
             <div>
-                <h4 class="font-label-md text-label-md text-on-background dark:text-white font-bold mb-4 uppercase tracking-wider">Company</h4>
-                <ul class="flex flex-col gap-3">
-                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ route('about') }}" wire:navigate>About Us</a></li>
-                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/#services') }}">Services</a></li>
-                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/projects') }}" wire:navigate>Portfolio</a></li>
+                <h4 class="font-label-md text-label-md text-on-background dark:text-white font-bold mb-4 uppercase tracking-wider text-xs">Perusahaan</h4>
+                <ul class="flex flex-col gap-2.5 text-xs">
+                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ route('about') }}" wire:navigate>Tentang Kami</a></li>
+                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/#services') }}">Layanan</a></li>
+                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/projects') }}" wire:navigate>Portofolio</a></li>
+                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/products') }}" wire:navigate>Katalog Produk</a></li>
                 </ul>
             </div>
             <div>
-                <h4 class="font-label-md text-label-md text-on-background dark:text-white font-bold mb-4 uppercase tracking-wider">Support</h4>
-                <ul class="flex flex-col gap-3">
-                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/contact') }}" wire:navigate>Contact Us</a></li>
-                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ route('login') }}">Admin Login</a></li>
+                <h4 class="font-label-md text-label-md text-on-background dark:text-white font-bold mb-4 uppercase tracking-wider text-xs">Bantuan & Seller</h4>
+                <ul class="flex flex-col gap-2.5 text-xs">
+                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors font-semibold flex items-center gap-1.5" href="{{ route('help.index') }}"><span class="material-symbols-outlined text-[16px]">help</span> Pusat Bantuan</a></li>
+                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/contact') }}" wire:navigate>Hubungi Kami</a></li>
+                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ route('login') }}">Login Akun / Mitra</a></li>
+                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ route('register') }}">Buka Toko Digital</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-label-md text-label-md text-on-background dark:text-white font-bold mb-4 uppercase tracking-wider text-xs">Kebijakan & Regulasi</h4>
+                <ul class="flex flex-col gap-2.5 text-xs">
+                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ route('legal.terms') }}">Syarat & Ketentuan (PMSE)</a></li>
+                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ route('legal.privacy') }}">Kebijakan Privasi (UU PDP)</a></li>
+                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ route('legal.copyright') }}">Hak Cipta & Lisensi (HAKI)</a></li>
+                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ route('legal.refund') }}">Kebijakan Refund Konsumen</a></li>
+                    <li class="pt-1"><a class="text-[11px] text-sky-600 hover:underline flex items-center gap-1 font-medium" href="https://simpktn.kemendag.go.id" target="_blank" rel="noopener noreferrer">Layanan Ditjen PKTN Kemendag ↗</a></li>
                 </ul>
             </div>
         </div>

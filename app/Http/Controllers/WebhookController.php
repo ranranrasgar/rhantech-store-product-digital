@@ -30,9 +30,10 @@ class WebhookController extends Controller
                 return response()->json(['message' => 'Test notification received successfully'], 200);
             }
 
-            // 1. Prioritaskan jika order ini milik aplikasi ini sendiri (ada di tabel orders)
+            // 1. Prioritaskan jika order ini milik aplikasi ini sendiri (ada di tabel orders atau ad_transactions)
             $localOrderExists = Order::where('invoice_number', $orderId)->exists();
-            if ($localOrderExists) {
+            $adTopUpExists = \App\Models\AdTransaction::where('reference_no', $orderId)->exists();
+            if ($localOrderExists || $adTopUpExists) {
                 return $this->processLocal($request);
             }
 
@@ -133,6 +134,28 @@ class WebhookController extends Controller
             $hash2 = hash("sha512", $orderId . $statusCode . $amountFormatted . $serverKey);
 
             $isValidSignature = ($signatureKey === $hash1 || $signatureKey === $hash2);
+
+            // Periksa apakah ini transaksi Top Up Saldo Iklan
+            $adTransaction = \App\Models\AdTransaction::where('reference_no', $orderId)->first();
+            if ($adTransaction) {
+                if ($trxStatus === 'capture' || $trxStatus === 'settlement') {
+                    if ($adTransaction->status !== 'completed') {
+                        $adTransaction->update(['status' => 'completed']);
+                        $adTransaction->store->increment('ad_balance', $adTransaction->amount);
+
+                        // Aktifkan iklan toko yang terjeda
+                        \App\Models\SellerAd::where('store_id', $adTransaction->store_id)
+                            ->where('status', 'paused')
+                            ->update(['status' => 'active']);
+
+                        Log::info("Ad Topup #{$orderId} settled successfully! Saldo Rp{$adTransaction->amount} added to store #{$adTransaction->store_id}");
+                    }
+                } elseif (in_array($trxStatus, ['cancel', 'deny', 'expire'])) {
+                    $adTransaction->update(['status' => 'failed']);
+                }
+
+                return response()->json(['message' => 'ad topup processed', 'status' => $adTransaction->fresh()->status], 200);
+            }
 
             $order = Order::with('orderItems.product.store')->where('invoice_number', $orderId)->first();
 

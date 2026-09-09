@@ -26,6 +26,14 @@
             </span>
         </div>
 
+        {{-- Iklan / Sponsored Badge Biru Langit (Shopee Style) --}}
+        @if($product->relationLoaded('activeAd') && $product->activeAd)
+        <div class="absolute top-2 right-2 bg-gradient-to-r from-slate-900/95 to-slate-800/95 backdrop-blur-md text-white text-[10px] font-extrabold px-2.5 py-0.5 rounded-full shadow-md flex items-center gap-1.5 z-10 border border-sky-400/50">
+            <span class="w-2 h-2 rounded-full bg-[#0284c7] shadow-[0_0_8px_#38bdf8] animate-pulse"></span>
+            <span class="text-sky-300 uppercase tracking-wider text-[9px]">Iklan</span>
+        </div>
+        @endif
+
         {{-- Discount badge --}}
         @if($hasDiscount)
         <div class="absolute top-2 left-2 bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow">

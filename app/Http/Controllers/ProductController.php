@@ -42,7 +42,25 @@ class ProductController extends Controller
             ->limit(5)
             ->get();
 
-        $query = Product::with(['store:id,name,slug', 'images', 'category:id,name', 'type:id,name'])
+        // Banner Toko Beriklan (Bergantian / Carousel Slide) beserta produk yang diiklankannya
+        $sponsoredStores = \App\Models\Store::where('ad_balance', '>', 0)
+            ->whereHas('ads', function ($q) {
+                $q->activeAndFunded()->whereNotNull('product_id');
+            })
+            ->with([
+                'ads' => function ($q) {
+                    $q->activeAndFunded()->whereNotNull('product_id')->with(['product.images', 'product.category']);
+                },
+                'products' => function ($q) {
+                    $q->published()->with('images')->latest()->take(10);
+                },
+                'showcaseProducts' => function ($q) {
+                    $q->published()->with('images')->latest()->take(10);
+                }
+            ])
+            ->get();
+
+        $query = Product::with(['store:id,name,slug', 'images', 'category:id,name', 'type:id,name', 'activeAd'])
             ->published();
 
         if ($request->filled('category')) {
@@ -94,6 +112,15 @@ class ProductController extends Controller
             $query->whereRaw('COALESCE(discount_price, price) <= ?', [$request->max_price]);
         }
 
+        // Prioritaskan produk beriklan aktif (Shopee Sponsored Products)
+        $query->orderByRaw('EXISTS (
+            SELECT 1 FROM seller_ads 
+            JOIN stores ON stores.id = seller_ads.store_id 
+            WHERE seller_ads.product_id = products.id 
+              AND seller_ads.status = "active" 
+              AND stores.ad_balance > 0
+        ) DESC');
+
         if ($request->sort == 'best_seller') {
             $query->withCount(['orders' => function ($q) {
                 $q->where('status', 'paid');
@@ -110,6 +137,14 @@ class ProductController extends Controller
 
         $products = $query->paginate(12)->withQueryString();
 
+        // Rekam tayangan/impresi iklan untuk produk beriklan yang tampil
+        $sponsoredProductIds = $products->filter(fn($p) => !is_null($p->activeAd))->pluck('id');
+        if ($sponsoredProductIds->isNotEmpty()) {
+            \App\Models\SellerAd::whereIn('product_id', $sponsoredProductIds)
+                ->where('status', 'active')
+                ->increment('views_count');
+        }
+
         // Rekam kata kunci pencarian pembeli untuk analitik & tren populer
         if ($request->filled('search')) {
             \App\Models\ProductSearch::record($request->search, $products->total());
@@ -120,7 +155,7 @@ class ProductController extends Controller
             return view('products._list', compact('products'))->render();
         }
 
-        return view('products.index', compact('products', 'categories', 'types', 'stores', 'banners', 'topProducts'));
+        return view('products.index', compact('products', 'categories', 'types', 'stores', 'banners', 'topProducts', 'sponsoredStores'));
     }
 
     public function show(Request $request, string $slug)

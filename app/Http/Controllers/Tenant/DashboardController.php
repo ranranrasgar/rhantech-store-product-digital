@@ -14,8 +14,10 @@ class DashboardController extends Controller
         $store = $user->store;
 
         if (!$store) {
-            // Jika user belum punya toko, tampilkan dashboard khusus pembeli
-            return view('tenant.dashboard_buyer');
+            // Jika user belum punya toko, tampilkan dashboard pembeli dengan tren promosi platform
+            $trendingSearches = \App\Models\ProductSearch::orderByDesc('hits')->take(8)->get();
+            $topProducts = \App\Models\Product::published()->with(['store', 'images'])->orderByDesc('views')->take(4)->get();
+            return view('tenant.dashboard_buyer', compact('trendingSearches', 'topProducts'));
         }
 
         // Hitung total produk & produk aktif
@@ -55,6 +57,13 @@ class DashboardController extends Controller
             ->take(12)
             ->get();
 
+        // Saldo Iklan & Status Promosi Toko
+        $adBalance = (float) ($store->ad_balance ?? 0);
+        $activeAdsCount = $store->ads()->where('status', 'active')->count();
+        $hasClaimedWelcomeVoucher = \App\Models\AdTransaction::where('store_id', $store->id)
+            ->where('payment_method', 'promo_voucher')
+            ->exists();
+
         return view('tenant.dashboard', compact(
             'store',
             'totalProducts',
@@ -68,7 +77,10 @@ class DashboardController extends Controller
             'completedOrdersCount',
             'recentOrders',
             'topProducts',
-            'trendingSearches'
+            'trendingSearches',
+            'adBalance',
+            'activeAdsCount',
+            'hasClaimedWelcomeVoucher'
         ));
     }
 }

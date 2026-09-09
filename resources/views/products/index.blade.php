@@ -291,6 +291,170 @@
         </div>
     </div>
 
+    {{-- ── SEAMLESS SPONSORED STORE CAROUSEL STRIP (TOKO REKOMENDASI TERVERIFIKASI) ── --}}
+    @if(isset($sponsoredStores) && $sponsoredStores->count() > 0)
+    <div x-data="{
+            activeStoreIndex: 0,
+            totalStores: {{ $sponsoredStores->count() }},
+            autoPlayTimer: null,
+            init() {
+                if (this.totalStores > 1) {
+                    this.startAutoPlay();
+                }
+            },
+            startAutoPlay() {
+                this.autoPlayTimer = setInterval(() => {
+                    this.nextStore();
+                }, 6000);
+            },
+            stopAutoPlay() {
+                if (this.autoPlayTimer) clearInterval(this.autoPlayTimer);
+            },
+            nextStore() {
+                this.activeStoreIndex = (this.activeStoreIndex + 1) % this.totalStores;
+            },
+            prevStore() {
+                this.activeStoreIndex = (this.activeStoreIndex - 1 + this.totalStores) % this.totalStores;
+            }
+         }"
+         @mouseenter="stopAutoPlay()"
+         @mouseleave="totalStores > 1 && startAutoPlay()"
+         class="mb-6 rounded-xl border border-slate-200/80 dark:border-slate-800/80 p-3 md:py-2.5 md:px-4 bg-white/40 dark:bg-slate-900/40 backdrop-blur-xs transition-all relative">
+        
+        @foreach($sponsoredStores as $sIndex => $spStore)
+        @php
+            // Ambil produk beriklan aktif dari toko ini
+            $adProductIds = $spStore->ads->where('status', 'active')->pluck('product_id')->filter()->unique();
+            $adProducts = $spStore->ads->where('status', 'active')->map(fn($a) => $a->product)->filter();
+            
+            // Ambil seluruh produk toko (termasuk yang tidak diiklankan & produk etalase showcase)
+            $otherAds = $spStore->ads->where('status', '!=', 'active')->map(fn($a) => $a->product)->filter();
+            $ownProds = $spStore->products ?? collect();
+            $showcaseProds = $spStore->showcaseProducts ?? collect();
+            
+            // Gabungkan: produk beriklan diutamakan di depan, diikuti produk lainnya tanpa duplikasi
+            $storeDisplayProducts = $adProducts
+                ->concat($otherAds)
+                ->concat($ownProds)
+                ->concat($showcaseProds)
+                ->unique('id')
+                ->take(6);
+        @endphp
+        <div x-show="activeStoreIndex === {{ $sIndex }}"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 translate-x-2"
+             x-transition:enter-end="opacity-100 translate-x-0"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100 translate-x-0"
+             x-transition:leave-end="opacity-0 -translate-x-2"
+             class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+            
+            <!-- 1. Info Toko Rekomendasi (Kiri) -->
+            <div class="flex items-center gap-2.5 shrink-0 max-w-full lg:max-w-[220px] xl:max-w-[250px]">
+                <div class="w-9 h-9 md:w-10 md:h-10 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shrink-0 shadow-2xs flex items-center justify-center">
+                    @if($spStore->logo)
+                        <img src="{{ asset('storage/' . $spStore->logo) }}" alt="{{ $spStore->name }}" class="w-full h-full object-cover">
+                    @else
+                        <img src="https://ui-avatars.com/api/?name={{ urlencode($spStore->name) }}&background=0284c7&color=fff" alt="{{ $spStore->name }}" class="w-full h-full object-cover">
+                    @endif
+                </div>
+
+                <div class="min-w-0 flex-1">
+                    <div class="flex items-center gap-1.5 flex-wrap">
+                        <a href="{{ route('store.show', $spStore->slug) }}" class="text-xs md:text-sm font-extrabold text-slate-900 dark:text-white hover:text-[#0284c7] transition-colors truncate block">
+                            {{ $spStore->name }}
+                        </a>
+                        <span class="px-1.5 py-0.5 rounded-full bg-sky-50 dark:bg-sky-950/60 text-[#0284c7] dark:text-sky-400 text-[9px] font-bold border border-sky-200/80 dark:border-sky-800/60 flex items-center gap-0.5">
+                            <span class="material-symbols-outlined text-[11px]">verified</span>
+                            Toko Rekomendasi
+                        </span>
+                    </div>
+                    <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
+                        {{ $spStore->description ?: 'Mitra resmi dengan koleksi produk digital pilihan.' }}
+                    </p>
+                </div>
+            </div>
+
+            <!-- 2. Produk Toko (Tengah - Termasuk Yang Tidak Diiklankan) -->
+            <div class="flex-1 overflow-x-auto hide-scrollbar py-0.5 min-w-0">
+                <div class="flex items-center gap-2">
+                    @forelse($storeDisplayProducts as $p)
+                        @php
+                            $pImg = $p->images->where('is_main', true)->first() ?? $p->images->first();
+                            $hasDisc = $p->discount_price && $p->discount_price > 0 && $p->discount_price < $p->price;
+                            $pPrice = $hasDisc ? $p->discount_price : $p->price;
+                            $isAd = $adProductIds->contains($p->id);
+                        @endphp
+                        <a href="{{ route('products.show', $p->slug) }}" 
+                           class="group/pmini flex items-center gap-2 p-1.5 pr-2.5 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 hover:border-sky-400 dark:hover:border-sky-500 transition-all shadow-2xs hover:shadow-xs shrink-0 w-[130px] sm:w-[140px] xl:w-[155px] min-w-0 relative">
+                            
+                            <!-- Thumbnail -->
+                            <div class="w-9 h-9 md:w-10 md:h-10 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-800 shrink-0 relative">
+                                @if($pImg)
+                                    <img src="{{ asset('storage/' . $pImg->image_path) }}" alt="{{ $p->name }}" class="w-full h-full object-cover group-hover/pmini:scale-105 transition-transform duration-200">
+                                @else
+                                    <div class="w-full h-full flex items-center justify-center text-slate-400">
+                                        <span class="material-symbols-outlined text-sm">inventory_2</span>
+                                    </div>
+                                @endif
+                                @if($isAd)
+                                    <span class="absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-[#0284c7] ring-1 ring-white dark:ring-slate-900" title="Produk Bersponsor"></span>
+                                @endif
+                            </div>
+
+                            <!-- Info -->
+                            <div class="min-w-0 flex-1">
+                                <h4 class="text-[11px] font-bold text-slate-800 dark:text-slate-100 truncate group-hover/pmini:text-[#0284c7] transition-colors leading-tight" title="{{ $p->name }}">
+                                    {{ $p->name }}
+                                </h4>
+                                <div class="flex items-baseline gap-1 mt-0.5">
+                                    <span class="text-[10px] font-black text-[#0284c7]">
+                                        Rp{{ number_format($pPrice, 0, ',', '.') }}
+                                    </span>
+                                    @if($hasDisc)
+                                    <span class="text-[8px] text-slate-400 line-through">
+                                        Rp{{ number_format($p->price, 0, ',', '.') }}
+                                    </span>
+                                    @endif
+                                </div>
+                            </div>
+                        </a>
+                    @empty
+                        <div class="text-xs text-slate-400 italic py-1">Belum ada produk untuk toko ini.</div>
+                    @endforelse
+                </div>
+            </div>
+
+            <!-- 3. Aksi & Carousel Controls (Kanan) -->
+            <div class="flex items-center justify-end gap-2 shrink-0 self-end lg:self-center pt-2 lg:pt-0 border-t lg:border-t-0 border-slate-200/60 dark:border-slate-800/60 w-full lg:w-auto">
+                <a href="{{ route('store.show', $spStore->slug) }}" 
+                   class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0284c7] hover:bg-[#0369a1] text-white text-xs font-bold transition-all shadow-xs shrink-0 whitespace-nowrap">
+                    <span>Kunjungi Toko</span>
+                    <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                </a>
+
+                <!-- Navigasi Carousel jika toko bersponsor > 1 -->
+                <template x-if="totalStores > 1">
+                    <div class="flex items-center gap-1 shrink-0 ml-1">
+                        <button type="button" @click="prevStore()" class="w-7 h-7 rounded-lg border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 transition-colors cursor-pointer shadow-2xs">
+                            <span class="material-symbols-outlined text-[15px]">chevron_left</span>
+                        </button>
+                        <span class="text-[10px] font-mono font-bold text-slate-500 px-0.5">
+                            <span x-text="activeStoreIndex + 1"></span>/<span x-text="totalStores"></span>
+                        </span>
+                        <button type="button" @click="nextStore()" class="w-7 h-7 rounded-lg border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 transition-colors cursor-pointer shadow-2xs">
+                            <span class="material-symbols-outlined text-[15px]">chevron_right</span>
+                        </button>
+                    </div>
+                </template>
+            </div>
+
+        </div>
+        @endforeach
+
+    </div>
+    @endif
+
     {{-- ── BANNER ROW ── --}}
     @php
         $hasMain = isset($banners) && $banners->has('main') && $banners->get('main')->image_path;

@@ -365,14 +365,71 @@
                     </div>
                 </div>
 
+                <!-- Persetujuan Kontrak Elektronik & Regulasi RI (Khusus Buka Toko Baru atau Informasi Status Legalitas) -->
+                @if(!isset($store) || empty($store->id))
+                <div class="p-5 rounded-2xl bg-sky-50/60 dark:bg-sky-950/20 border-2 border-sky-200/80 dark:border-sky-800/50 space-y-3">
+                    <div class="flex items-start gap-3">
+                        <span class="p-2 bg-sky-500 text-white rounded-xl shrink-0 mt-0.5 shadow-sm">
+                            <span class="material-symbols-outlined text-[20px]">gavel</span>
+                        </span>
+                        <div>
+                            <h4 class="text-xs md:text-sm font-bold text-slate-900 dark:text-white">Persetujuan Kontrak Elektronik & Kepatuhan Hukum RI</h4>
+                            <p class="text-[11px] md:text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">
+                                Berdasarkan UU ITE No. 1/2024, PP No. 80/2019 (PMSE), UU Hak Cipta No. 28/2014, dan UU Perlindungan Data Pribadi No. 27/2022, setiap penjual wajib menyatakan persetujuan secara sah sebelum mengaktifkan toko.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="pl-0 sm:pl-11 space-y-3">
+                        <div class="p-3 bg-white dark:bg-[#0c1220] rounded-xl border border-sky-100 dark:border-sky-900/40 text-[11px] text-slate-600 dark:text-slate-300 space-y-1.5">
+                            <p class="font-semibold text-slate-800 dark:text-slate-200">Klausul Kewajiban Penjual (Tenant):</p>
+                            <ul class="list-disc pl-4 space-y-1 text-slate-500 dark:text-slate-400">
+                                <li>Menjamin bahwa seluruh produk digital yang dijual adalah karya asli atau memiliki hak lisensi distribusi resmi (<strong>Dilarang keras script bajakan/nulled/cracked</strong>).</li>
+                                <li>Bertanggung jawab penuh atas kualitas produk, keaslian link download, dan layanan purna jual kepada pembeli.</li>
+                                <li>Menyetujui bahwa platform Rhantech berhak melakukan penonaktifan sementara (*Notice and Takedown*) atau pembekuan akun jika terdapat laporan pelanggaran HAKI yang sah.</li>
+                            </ul>
+                        </div>
+
+                        <label class="flex items-start gap-3 cursor-pointer select-none">
+                            <input type="checkbox" name="agree_terms" value="1" required
+                                   class="mt-1 w-4 h-4 text-sky-600 border-slate-300 rounded focus:ring-sky-500 shrink-0 cursor-pointer">
+                            <span class="text-xs text-slate-700 dark:text-slate-300 leading-snug">
+                                Saya telah membaca, memahami, dan menyetujui 
+                                <a href="{{ route('legal.terms') }}" target="_blank" class="text-sky-600 dark:text-sky-400 font-bold hover:underline">Syarat & Ketentuan Layanan</a>, 
+                                <a href="{{ route('legal.copyright') }}" target="_blank" class="text-sky-600 dark:text-sky-400 font-bold hover:underline">Kebijakan Hak Cipta & Lisensi (HAKI)</a>, 
+                                <a href="{{ route('legal.refund') }}" target="_blank" class="text-sky-600 dark:text-sky-400 font-bold hover:underline">Kebijakan Refund</a>, serta 
+                                <a href="{{ route('legal.privacy') }}" target="_blank" class="text-sky-600 dark:text-sky-400 font-bold hover:underline">Kebijakan Privasi (UU PDP)</a> Rhantech.
+                            </span>
+                        </label>
+                        @error('agree_terms') <span class="text-xs text-rose-500 font-semibold block">{{ $message }}</span> @enderror
+                    </div>
+                </div>
+                @else
+                <div class="p-4 rounded-2xl bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] flex items-center justify-between gap-4 text-xs">
+                    <div class="flex items-center gap-2.5">
+                        <span class="material-symbols-outlined text-[18px] text-emerald-500">verified_user</span>
+                        <span class="text-slate-600 dark:text-slate-400">
+                            Kontrak Elektronik Toko Disetujui pada: <strong class="text-slate-800 dark:text-slate-200">{{ $store->terms_accepted_at ? $store->terms_accepted_at->format('d M Y, H:i') : 'Saat Pendaftaran Toko' }}</strong>
+                            @if($store->terms_accepted_ip)
+                                <span class="text-slate-400 text-[11px]">(IP: {{ $store->terms_accepted_ip }})</span>
+                            @endif
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <a href="{{ route('legal.terms') }}" target="_blank" class="text-sky-600 dark:text-sky-400 hover:underline font-semibold text-[11px]">Syarat & Ketentuan ↗</a>
+                        <a href="{{ route('legal.copyright') }}" target="_blank" class="text-sky-600 dark:text-sky-400 hover:underline font-semibold text-[11px]">Hak Cipta ↗</a>
+                    </div>
+                </div>
+                @endif
+
                 <!-- Action Submit Button -->
                 <div class="pt-6 border-t border-slate-100 dark:border-[#1d273d] flex items-center justify-end gap-3">
                     <a href="{{ route('tenant.dashboard') }}" class="px-5 py-2.5 text-xs md:text-sm font-semibold border border-slate-200 dark:border-[#222f49] text-slate-600 dark:text-slate-300 rounded-xl hover:bg-slate-100 dark:hover:bg-[#161f33] transition-colors">
                         Batal
                     </a>
                     <button type="submit" class="px-6 py-2.5 text-xs md:text-sm font-bold text-white bg-sky-500 hover:bg-sky-400 rounded-xl shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 transition-all flex items-center gap-2 cursor-pointer">
-                        <span class="material-symbols-outlined text-[18px]">save</span>
-                        Simpan Pengaturan
+                        <span class="material-symbols-outlined text-[18px]">store</span>
+                        {{ isset($store) && $store->id ? 'Simpan Pengaturan Toko' : 'Buka Toko Sekarang' }}
                     </button>
                 </div>
 

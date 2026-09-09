@@ -34,13 +34,35 @@
         <h1 class="text-4xl font-normal mb-8 text-gray-800">Bagaimana kami dapat membantu Anda?</h1>
         
         <form action="{{ route('help.index') }}" method="GET" class="max-w-2xl mx-auto relative">
-            <div class="relative flex items-center w-full h-12 rounded-full shadow-md bg-white overflow-hidden border border-transparent focus-within:border-blue-500 transition-colors">
+            <div class="relative flex items-center w-full h-12 rounded-full shadow-md bg-white overflow-hidden border border-transparent focus-within:border-sky-500 transition-colors">
                 <div class="grid place-items-center h-full w-12 text-gray-400">
                     <span class="material-symbols-outlined">search</span>
                 </div>
-                <input class="peer h-full w-full outline-none text-sm text-gray-700 pr-2 bg-transparent" type="text" name="q" placeholder="Jelaskan masalah Anda" autocomplete="off" />
+                <input class="peer h-full w-full outline-none text-sm text-gray-700 pr-4 bg-transparent" type="text" name="q" placeholder="Cari topik panduan (misal: saldo iklan, 500rb, kunjungan 30%, buka toko, upload source code)..." autocomplete="off" />
             </div>
         </form>
+
+        <div class="flex flex-wrap items-center justify-center gap-2 mt-4 max-w-2xl mx-auto">
+            <span class="text-xs text-gray-500 font-medium">Topik Populer:</span>
+            <a href="{{ route('help.index', ['q' => 'Saldo Iklan 500rb']) }}" class="px-3 py-1 rounded-full bg-white text-xs font-semibold text-sky-700 border border-sky-200 hover:bg-sky-50 shadow-xs transition-colors">
+                💰 Saldo Iklan 500rb
+            </a>
+            <a href="{{ route('help.index', ['q' => 'Kunjungan 30%']) }}" class="px-3 py-1 rounded-full bg-white text-xs font-semibold text-sky-700 border border-sky-200 hover:bg-sky-50 shadow-xs transition-colors">
+                📈 Kunjungan +30%
+            </a>
+            <a href="{{ route('help.index', ['q' => 'Buka Toko']) }}" class="px-3 py-1 rounded-full bg-white text-xs font-semibold text-sky-700 border border-sky-200 hover:bg-sky-50 shadow-xs transition-colors">
+                🏪 Buka Toko Gratis
+            </a>
+            <a href="{{ route('help.index', ['q' => 'Bidding']) }}" class="px-3 py-1 rounded-full bg-white text-xs font-semibold text-sky-700 border border-sky-200 hover:bg-sky-50 shadow-xs transition-colors">
+                🎯 Mode Bidding
+            </a>
+            <a href="{{ route('help.index', ['q' => 'Upload Source Code']) }}" class="px-3 py-1 rounded-full bg-white text-xs font-semibold text-sky-700 border border-sky-200 hover:bg-sky-50 shadow-xs transition-colors">
+                📦 Upload File .ZIP
+            </a>
+            <a href="{{ route('help.index', ['q' => 'Tarik Saldo']) }}" class="px-3 py-1 rounded-full bg-white text-xs font-semibold text-sky-700 border border-sky-200 hover:bg-sky-50 shadow-xs transition-colors">
+                💳 Penarikan Dana Payout
+            </a>
+        </div>
     </section>
 
     <!-- Main Content -->

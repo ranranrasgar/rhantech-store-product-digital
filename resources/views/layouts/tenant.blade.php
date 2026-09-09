@@ -327,7 +327,10 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
             <span class="material-symbols-outlined">chat</span> Chat Pelanggan
         </a>
 
-        <div class="nav-section-label">Marketing & Afiliasi</div>
+        <div class="nav-section-label">Marketing & Promosi</div>
+        <a href="{{ route('tenant.ads.index') }}" class="nav-link {{ request()->routeIs('tenant.ads.*') ? 'active' : '' }}">
+            <span class="material-symbols-outlined">ads_click</span> Iklan Promosi Toko
+        </a>
         <a href="{{ route('tenant.showcase.index') }}" class="nav-link {{ request()->routeIs('tenant.showcase.*') ? 'active' : '' }}">
             <span class="material-symbols-outlined">shopping_basket</span> Etalase Afiliasi
         </a>
@@ -335,7 +338,7 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
             <span class="material-symbols-outlined">handshake</span> Mitra Toko Saya
         </a>
         <a href="{{ route('tenant.campaigns.index') }}" class="nav-link {{ request()->routeIs('tenant.campaigns.*') ? 'active' : '' }}">
-            <span class="material-symbols-outlined">campaign</span> Campaign & Promo
+            <span class="material-symbols-outlined">campaign</span> Diskon & Voucher
         </a>
 
         <div class="nav-section-label">Toko</div>
@@ -361,10 +364,18 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
         <a href="{{ route('tenant.performance.index') ?? '#' }}" class="nav-link {{ request()->routeIs('tenant.performance.*') ? 'active' : '' }}">
             <span class="material-symbols-outlined">monitoring</span> Performa Toko
         </a>
+        <div class="nav-section-label">Pusat Bantuan</div>
+        <a href="{{ route('help.index') }}" target="_blank" class="nav-link">
+            <span class="material-symbols-outlined">help</span> Panduan Aplikasi
+        </a>
         @else
         <div class="nav-section-label">Toko Saya</div>
         <a href="{{ route('tenant.store.index') }}" class="nav-link {{ request()->routeIs('tenant.store.*') ? 'active' : '' }}">
             <span class="material-symbols-outlined">storefront</span> Mulai Berjualan
+        </a>
+        <div class="nav-section-label">Pusat Bantuan</div>
+        <a href="{{ route('help.index') }}" target="_blank" class="nav-link">
+            <span class="material-symbols-outlined">help</span> Panduan Aplikasi
         </a>
         @endif
     </nav>
@@ -404,10 +415,13 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
         </div>
         <div style="display:flex; align-items:center; gap:8px;">
             <x-theme-toggle />
-            <div class="topbar-search hidden md:flex">
+            <form action="{{ route('help.index') }}" method="GET" class="topbar-search hidden md:flex" target="_blank">
                 <span class="material-symbols-outlined" style="font-size:16px; color:rgba(255,255,255,0.3);">search</span>
-                <input type="text" placeholder="Cari...">
-            </div>
+                <input type="text" name="q" placeholder="Cari panduan..." autocomplete="off">
+            </form>
+            <a href="{{ route('help.index') }}" target="_blank" class="topbar-icon-btn" title="Pusat Bantuan & Panduan">
+                <span class="material-symbols-outlined" style="font-size:20px;">help</span>
+            </a>
             <button class="topbar-icon-btn">
                 <span class="material-symbols-outlined" style="font-size:20px;">notifications</span>
             </button>

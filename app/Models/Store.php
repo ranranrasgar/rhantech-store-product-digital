@@ -11,6 +11,7 @@ class Store extends Model
     protected $casts = [
         'appearance_data' => 'array',
         'social_links' => 'array',
+        'terms_accepted_at' => 'datetime',
     ];
 
     public function user()
@@ -38,5 +39,15 @@ class Store extends Model
         return $this->belongsToMany(Product::class, 'store_showcase_products', 'store_id', 'product_id')
                     ->withPivot('is_active')
                     ->withTimestamps();
+    }
+
+    public function ads()
+    {
+        return $this->hasMany(SellerAd::class);
+    }
+
+    public function adTransactions()
+    {
+        return $this->hasMany(AdTransaction::class);
     }
 }

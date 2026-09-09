@@ -79,6 +79,21 @@
                     @error('amount')
                         <p class="text-rose-400 text-xs mt-2">{{ $message }}</p>
                     @enderror
+
+                    <!-- Summary Rules Note -->
+                    <div class="mt-3.5 pt-3 border-t border-white/10 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-300">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-[13px] text-emerald-400">check_circle</span> Min. Rp10.000</span>
+                            <span class="opacity-40">•</span>
+                            <span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-[13px] text-amber-400">schedule</span> Cair maks. 1x24 jam (hari kerja)</span>
+                            <span class="opacity-40">•</span>
+                            <span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-[13px] text-sky-400">percent</span> Fee platform 2,5%</span>
+                        </div>
+                        <a href="{{ route('help.show', 'panduan-lengkap-penarikan-saldo-penjualan-toko-payout-withdraw') }}" target="_blank" class="text-sky-300 hover:text-white underline flex items-center gap-1">
+                            <span>Baca Panduan & Aturan Payout</span>
+                            <span class="material-symbols-outlined text-[12px]">open_in_new</span>
+                        </a>
+                    </div>
                 </div>
             </div>
 
