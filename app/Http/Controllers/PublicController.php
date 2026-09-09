@@ -10,6 +10,7 @@ use App\Models\Client;
 use App\Models\Project;
 use App\Models\Testimonial;
 use App\Models\Product;
+use App\Models\ContactMessage;
 
 class PublicController extends Controller
 {
@@ -225,7 +226,7 @@ class PublicController extends Controller
         $services = Service::query()->where('is_active', true)->take(6)->get();
         $testimonials = Testimonial::query()->with('client')->where('is_active', true)->latest()->take(3)->get();
         $totalProducts = Product::published()->count();
-        $totalProjects = Project::where('status', 'published')->count();
+        $totalProjects = Project::query()->where('status', 'published')->count();
         $totalStores = \App\Models\Store::count();
 
         return view('about', compact('company', 'services', 'testimonials', 'totalProducts', 'totalProjects', 'totalStores'));
