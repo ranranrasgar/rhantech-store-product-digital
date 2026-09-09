@@ -201,8 +201,8 @@
 @push('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 <script>
-    document.addEventListener('alpine:init', () => {
-        Alpine.data('bannerCropper', () => ({
+    function bannerCropper() {
+        return {
             showModal: false,
             currentPosition: '',
             cropperInstance: null,
@@ -234,23 +234,37 @@
                     
                     if (this.cropperInstance) {
                         this.cropperInstance.destroy();
+                        this.cropperInstance = null;
                     }
                     
+                    const initCropper = () => {
+                        if (typeof Cropper !== 'undefined') {
+                            this.cropperInstance = new Cropper(imageElement, {
+                                aspectRatio: ratio,
+                                viewMode: 2,
+                                dragMode: 'move',
+                                autoCropArea: 1,
+                                restore: false,
+                                guides: true,
+                                center: true,
+                                highlight: false,
+                                cropBoxMovable: true,
+                                cropBoxResizable: true,
+                                toggleDragModeOnDblclick: false,
+                            });
+                        }
+                    };
+
                     setTimeout(() => {
-                        this.cropperInstance = new Cropper(imageElement, {
-                            aspectRatio: ratio,
-                            viewMode: 2,
-                            dragMode: 'move',
-                            autoCropArea: 1,
-                            restore: false,
-                            guides: true,
-                            center: true,
-                            highlight: false,
-                            cropBoxMovable: true,
-                            cropBoxResizable: true,
-                            toggleDragModeOnDblclick: false,
-                        });
-                    }, 100);
+                        if (typeof Cropper === 'undefined') {
+                            const script = document.createElement('script');
+                            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js';
+                            script.onload = initCropper;
+                            document.head.appendChild(script);
+                        } else {
+                            initCropper();
+                        }
+                    }, 150);
                 };
                 reader.readAsDataURL(file);
                 
@@ -285,7 +299,24 @@
                 
                 this.closeCropper();
             }
-        }));
+        };
+    }
+
+    // Expose globally so Alpine evaluates x-data="bannerCropper()" without errors
+    window.bannerCropper = bannerCropper;
+
+    if (window.Alpine) {
+        Alpine.data('bannerCropper', bannerCropper);
+    } else {
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('bannerCropper', bannerCropper);
+        });
+    }
+
+    document.addEventListener('livewire:navigated', () => {
+        if (window.Alpine && typeof Alpine.data === 'function') {
+            Alpine.data('bannerCropper', bannerCropper);
+        }
     });
 </script>
 @endpush
