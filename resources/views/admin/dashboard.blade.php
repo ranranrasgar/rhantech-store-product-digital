@@ -110,6 +110,64 @@
             </div>
         </div>
 
+        <!-- Mini Strip: Multi-Tenant Ad Revenue & Payout Summary -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-md">
+            <!-- Pemasukan Iklan Tenant -->
+            <a href="{{ route('admin.ads.index') }}" class="bg-surface rounded-md border border-outline-variant p-4 flex items-center justify-between hover:border-primary transition group">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined text-[20px]">campaign</span>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Pemasukan Iklan (Top-Up)</p>
+                        <h4 class="text-lg font-black text-emerald-600">Rp {{ number_format($totalAdRevenue, 0, ',', '.') }}</h4>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <span class="text-xs font-bold text-primary group-hover:underline flex items-center gap-0.5">
+                        <span>Kelola Iklan</span>
+                        <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                    </span>
+                    <span class="text-[11px] text-on-surface-variant block mt-0.5">{{ $activeAdsCount }} Iklan Aktif</span>
+                </div>
+            </a>
+
+            <!-- Saldo Iklan Beredar di Tenant -->
+            <div class="bg-surface rounded-md border border-outline-variant p-4 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-sky-500/10 text-[#0284c7] flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined text-[20px]">account_balance_wallet</span>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Saldo Iklan di Toko</p>
+                        <h4 class="text-lg font-black text-[#0284c7]">Rp {{ number_format($totalAdBalance, 0, ',', '.') }}</h4>
+                    </div>
+                </div>
+                <div class="text-right text-[11px] text-on-surface-variant">
+                    Siap belanja iklan
+                </div>
+            </div>
+
+            <!-- Manajemen Payout Tenant -->
+            <a href="{{ route('admin.payouts.index') }}" class="bg-surface rounded-md border border-outline-variant p-4 flex items-center justify-between hover:border-primary transition group">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-600 flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined text-[20px]">payments</span>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Permintaan Payout</p>
+                        <h4 class="text-lg font-black text-on-surface">Pencairan Dana</h4>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <span class="text-xs font-bold text-amber-600 group-hover:underline flex items-center gap-0.5">
+                        <span>Lihat Payout</span>
+                        <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                    </span>
+                </div>
+            </a>
+        </div>
+
         <!-- Charts Section -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-md">
             <!-- Revenue Growth -->

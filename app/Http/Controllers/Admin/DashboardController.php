@@ -57,12 +57,23 @@ class DashboardController extends Controller
         // 5. Recent Activity Feed (Recent messages)
         $recentMessages = ContactMessage::query()->latest()->take(3)->get();
 
+        // 5b. Metrik Iklan & Saldo Tenant
+        $totalAdRevenue = \App\Models\AdTransaction::where('type', 'credit')
+            ->where('status', 'completed')
+            ->where('payment_method', '!=', 'promo_voucher')
+            ->sum('total_amount');
+        $activeAdsCount = \App\Models\SellerAd::where('status', 'active')->count();
+        $totalAdBalance = Store::sum('ad_balance');
+
         // 6. Geographic Map Data (Stores & Customers)
         $mapData = $this->getMapMarkers();
 
         return view('admin.dashboard', compact(
             'totalOrders',
             'totalRevenue',
+            'totalAdRevenue',
+            'activeAdsCount',
+            'totalAdBalance',
             'totalStores',
             'totalProducts',
             'newMessages',
