@@ -154,4 +154,62 @@ class Product extends Model
                 $q->where('ad_balance', '>', 0);
             });
     }
+
+    /**
+     * Cari campaign diskon langsung yang sedang aktif untuk produk ini
+     */
+    public function getActiveDiscountCampaignAttribute()
+    {
+        $storeId = $this->store_id;
+        $campaigns = \App\Models\Campaign::active()
+            ->where('type', 'discount')
+            ->where(function ($query) use ($storeId) {
+                if ($storeId) {
+                    $query->where('store_id', $storeId)->orWhereNull('store_id');
+                } else {
+                    $query->whereNull('store_id');
+                }
+            })
+            ->get();
+            
+        foreach ($campaigns as $campaign) {
+            if ($campaign->applies_to === 'all') return $campaign;
+            if ($campaign->applies_to === 'product' && is_array($campaign->product_ids) && in_array($this->id, $campaign->product_ids)) return $campaign;
+            if ($campaign->applies_to === 'category' && is_array($campaign->category_ids) && in_array($this->product_category_id, $campaign->category_ids)) return $campaign;
+        }
+        
+        return null;
+    }
+
+    /**
+     * Dapatkan harga diskon terbaik (dari campaign aktif atau manual discount_price)
+     */
+    public function getDiscountPriceAttribute($value)
+    {
+        $campaign = $this->active_discount_campaign;
+        
+        $campaignDiscountPrice = null;
+        if ($campaign) {
+            $eligibleTotal = (float) $this->price;
+            if ($campaign->discount_type === 'percentage') {
+                $pct = (float) $campaign->discount_value;
+                if ($pct >= 100) {
+                    $discount = $eligibleTotal;
+                } else {
+                    $discount = ($eligibleTotal * $pct) / 100;
+                }
+            } else {
+                $discount = min($eligibleTotal, (float) $campaign->discount_value);
+            }
+            $campaignDiscountPrice = max(0, $eligibleTotal - $discount);
+        }
+
+        $manualDiscountPrice = ($value && $value > 0 && $value < $this->price) ? (float) $value : null;
+
+        if ($campaignDiscountPrice !== null && $manualDiscountPrice !== null) {
+            return min($campaignDiscountPrice, $manualDiscountPrice);
+        }
+
+        return $campaignDiscountPrice ?? $manualDiscountPrice;
+    }
 }
