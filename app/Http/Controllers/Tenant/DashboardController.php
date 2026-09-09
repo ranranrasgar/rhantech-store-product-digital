@@ -49,6 +49,12 @@ class DashboardController extends Controller
         // Produk Unggulan / Terpopuler Toko
         $topProducts = $store->products()->with(['images'])->latest()->take(4)->get();
 
+        // Kata Kunci & Tags Paling Banyak Dicari Pembeli di Platform (Insight Pasar)
+        $trendingSearches = \App\Models\ProductSearch::orderByDesc('hits')
+            ->orderByDesc('last_searched_at')
+            ->take(12)
+            ->get();
+
         return view('tenant.dashboard', compact(
             'store',
             'totalProducts',
@@ -61,7 +67,8 @@ class DashboardController extends Controller
             'pendingOrdersCount',
             'completedOrdersCount',
             'recentOrders',
-            'topProducts'
+            'topProducts',
+            'trendingSearches'
         ));
     }
 }

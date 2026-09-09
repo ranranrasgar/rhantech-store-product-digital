@@ -193,6 +193,10 @@ Route::middleware(['auth', 'is_admin'])->prefix('admin')->name('admin.')->group(
     Route::get('stores', [\App\Http\Controllers\Admin\StoreController::class, 'index'])->name('stores.index');
     Route::get('payouts', [\App\Http\Controllers\Admin\PayoutController::class, 'index'])->name('payouts.index');
     Route::patch('payouts/{payout}', [\App\Http\Controllers\Admin\PayoutController::class, 'update'])->name('payouts.update');
+
+    // Buyer Search Analytics
+    Route::get('searches', [\App\Http\Controllers\Admin\SearchAnalyticsController::class, 'index'])->name('searches.index');
+    Route::delete('searches/{search}', [\App\Http\Controllers\Admin\SearchAnalyticsController::class, 'destroy'])->name('searches.destroy');
 });
 
 // Cloudflare R2 Media Proxy / Redirect Fallback for local /storage/{path} requests

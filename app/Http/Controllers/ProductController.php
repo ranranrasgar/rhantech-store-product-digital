@@ -77,6 +77,8 @@ class ProductController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('tags', 'like', "%{$search}%")
+                    ->orWhere('short_description', 'like', "%{$search}%")
                     ->orWhere('description', 'like', "%{$search}%")
                     ->orWhereHas('store', function ($sq) use ($search) {
                         $sq->where('name', 'like', "%{$search}%");
@@ -108,6 +110,11 @@ class ProductController extends Controller
 
         $products = $query->paginate(12)->withQueryString();
 
+        // Rekam kata kunci pencarian pembeli untuk analitik & tren populer
+        if ($request->filled('search')) {
+            \App\Models\ProductSearch::record($request->search, $products->total());
+        }
+
         // Jika AJAX request
         if ($request->ajax() || $request->header('X-Requested-With') === 'XMLHttpRequest' || $request->boolean('ajax')) {
             return view('products._list', compact('products'))->render();
@@ -116,7 +123,7 @@ class ProductController extends Controller
         return view('products.index', compact('products', 'categories', 'types', 'stores', 'banners', 'topProducts'));
     }
 
-    public function show(Request $request, $slug)
+    public function show(Request $request, string $slug)
     {
         // Tangkap referensi afiliasi/toko jika ada di URL (?ref=slug_toko atau kode_referral)
         if ($request->filled('ref')) {
@@ -170,7 +177,7 @@ class ProductController extends Controller
         return view('products.show', compact('product', 'hasPurchased', 'userReview', 'userOrder'));
     }
 
-    public function brochure($slug)
+    public function brochure(string $slug)
     {
         $product = Product::with(['category', 'type', 'images', 'store'])
             ->where('slug', $slug)

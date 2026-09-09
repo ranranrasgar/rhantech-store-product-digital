@@ -7,6 +7,7 @@ use Kreait\Firebase\Contract\Messaging;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Notification;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
 
 class FirebaseService
 {
@@ -15,7 +16,7 @@ class FirebaseService
     public function __construct()
     {
         // Path to firebase credentials json file
-        $credentialsPath = env('FIREBASE_CREDENTIALS');
+        $credentialsPath = config('services.firebase.credentials') ?: env('FIREBASE_CREDENTIALS');
         
         if ($credentialsPath && file_exists(base_path($credentialsPath))) {
             $factory = (new Factory)->withServiceAccount(base_path($credentialsPath));
@@ -52,7 +53,7 @@ class FirebaseService
             $this->messaging->sendMulticast($message, $tokens);
         } catch (\Exception $e) {
             // Log error or ignore
-            \Log::error('FCM Error: ' . $e->getMessage());
+            Log::error('FCM Error: ' . $e->getMessage());
         }
     }
 }

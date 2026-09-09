@@ -1,9 +1,43 @@
 @extends('layouts.shopee')
-@section('title', 'Katalog Produk Digital')
+@section('title', 'Jual Source Code & Aplikasi Digital Siap Pakai - ' . ($company->company_name ?? 'R-Tech'))
+@section('meta_description', 'Katalog terlengkap jual beli source code aplikasi web, aplikasi kasir (POS), sistem informasi sekolah, toko online, Android/iOS & script PHP siap pakai bergaransi.')
+@section('meta_keywords', 'aplikasi kasir pos, source code web, jual source code laravel, script php indonesia, sistem informasi sekolah, template website, download source code murah')
+@section('canonical_url', route('products.index'))
+
+@section('schema_json_ld')
+<script type="application/ld+json">
+{
+  "@@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "Katalog Produk Digital & Source Code Aplikasi",
+  "description": "Katalog terlengkap jual beli source code aplikasi web, kasir POS, sistem informasi sekolah, toko online siap pakai.",
+  "url": "{{ route('products.index') }}",
+  "breadcrumb": {
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Beranda",
+        "item": "{{ url('/') }}"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Katalog Produk Digital",
+        "item": "{{ route('products.index') }}"
+      }
+    ]
+  }
+}
+</script>
+@endsection
+
 @section('content')
 
 <style>
     body { background: #f0f4f8; }
+    html.dark body { background: #0f172a !important; }
     .hide-scrollbar::-webkit-scrollbar { display: none; }
     .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
@@ -13,7 +47,8 @@
         border-radius: 14px;
         overflow: hidden;
         box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-        transition: transform 0.22s ease, box-shadow 0.22s ease;
+        border: 1px solid rgba(0,0,0,0.05);
+        transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
         display: flex;
         flex-direction: column;
         position: relative;
@@ -51,6 +86,23 @@
     }
     .prod-card:hover .img-overlay { opacity: 1; }
 
+    /* Dark Mode support for prod-card */
+    html.dark .prod-card,
+    .dark .prod-card {
+        background: rgb(var(--theme-surface-container, 30 41 59)) !important;
+        border: 1px solid rgb(var(--theme-outline-variant, 51 65 85) / 0.5) !important;
+        box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+    }
+    html.dark .prod-card:hover,
+    .dark .prod-card:hover {
+        box-shadow: 0 12px 28px rgba(0,0,0,0.5);
+        border-color: rgba(var(--theme-primary-rgb, 0, 179, 204), 0.5) !important;
+    }
+    html.dark .prod-card .img-wrap,
+    .dark .prod-card .img-wrap {
+        background: rgb(var(--theme-surface-lowest, 15 23 42)) !important;
+    }
+
     /* Category chip */
     .cat-chip {
         display: inline-flex; align-items: center; gap: 6px;
@@ -70,6 +122,20 @@
         border-color: var(--theme-primary, #00b3cc);
         color: var(--theme-primary, #00b3cc);
         background: rgba(0,179,204,0.06);
+    }
+    html.dark .cat-chip,
+    .dark .cat-chip {
+        background: rgb(var(--theme-surface-container, 30 41 59));
+        color: #94a3b8;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    }
+    html.dark .cat-chip:hover,
+    html.dark .cat-chip.active,
+    .dark .cat-chip:hover,
+    .dark .cat-chip.active {
+        border-color: var(--theme-primary, #00b3cc);
+        color: var(--theme-primary, #00b3cc);
+        background: rgba(0,179,204,0.15);
     }
 
     /* Hero gradient */
@@ -108,12 +174,22 @@
     .svc-card:hover { background: var(--theme-primary, #00b3cc); color: #fff; transform: translateY(-3px); }
     .svc-card:hover span { color: #fff; }
     .svc-card span { color: var(--theme-primary, #00b3cc); transition: color 0.2s; }
+    html.dark .svc-card,
+    .dark .svc-card {
+        background: rgb(var(--theme-surface-container, 30 41 59));
+        color: #cbd5e1;
+        box-shadow: 0 1px 6px rgba(0,0,0,0.3);
+    }
 
     /* Section title */
     .section-title {
         font-size: 18px; font-weight: 800; color: #1a202c;
         display: flex; align-items: center; gap: 10px;
         margin-bottom: 16px;
+    }
+    html.dark .section-title,
+    .dark .section-title {
+        color: #f1f5f9;
     }
     .section-title::after {
         content: '';
@@ -132,6 +208,11 @@
 <div class="pt-3 md:pt-6 pb-16 min-h-screen">
 <div class="max-w-[1280px] mx-auto px-2 md:px-6">
 
+    @php
+        $isSearching = request()->filled('search') || request()->filled('category') || request()->filled('type') || request()->filled('store');
+    @endphp
+
+    @if(!$isSearching)
     {{-- ── HERO STRIP WITH TOP PRODUCTS (PRODUK UNGGULAN PALING BANYAK DIKLIK) - HIDDEN ON MOBILE ── --}}
     <div class="hero-strip p-5 md:p-6 mb-6 hidden md:flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-6">
         <div class="text-white max-w-sm shrink-0">
@@ -168,7 +249,11 @@
                         {{-- Image thumbnail --}}
                         <div class="w-full aspect-[4/3] rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700 relative mb-2">
                             @if($topImg)
-                                <img src="{{ asset('storage/' . $topImg->image_path) }}" alt="{{ $top->name }}" class="w-full h-full object-cover group-hover/card:scale-105 transition-transform duration-300">
+                                <img src="{{ asset('storage/' . $topImg->image_path) }}" 
+                                     alt="Produk Unggulan: {{ $top->name }} - {{ $top->category ? $top->category->name : 'Source Code Aplikasi' }}" 
+                                     title="{{ $top->name }}"
+                                     loading="lazy"
+                                     class="w-full h-full object-cover group-hover/card:scale-105 transition-transform duration-300">
                             @else
                                 <div class="w-full h-full flex items-center justify-center text-gray-400">
                                     <span class="material-symbols-outlined text-2xl">image</span>
@@ -242,6 +327,7 @@
         </div>
         @endif
     </div>
+    @endif
     @endif
 
     {{-- ── MAIN CATALOG SECTION: LEFT SIDEBAR FILTER & RIGHT PRODUCTS LIST ── --}}
@@ -472,8 +558,40 @@
         }
     }">
 
-        {{-- ── MOBILE SHOPEE-STYLE SUB-HEADER (TABS & FILTER ICON) ── --}}
-        <div class="md:hidden sticky top-[104px] z-30 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 -mx-4 px-4 py-2 mb-3 shadow-xs">
+        {{-- ── SEARCH RESULT NOTICE HEADER (TAMPIL HANYA JIKA SEDANG MENCARI/FILTER) ── --}}
+        @if($isSearching)
+        <div class="mb-4 flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-gray-800 p-3.5 md:p-4 rounded-xl border border-gray-200 dark:border-gray-700 shadow-xs">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-2xl">manage_search</span>
+                </div>
+                <div>
+                    <h2 class="text-sm md:text-base font-bold text-gray-800 dark:text-white leading-tight flex flex-wrap items-center gap-1.5">
+                        <span>Hasil Pencarian:</span>
+                        @if(request('search'))
+                            <span class="text-primary font-black">"{{ request('search') }}"</span>
+                        @endif
+                        @if(request('category') && $categories->find(request('category')))
+                            <span class="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded text-gray-700 dark:text-gray-300 font-medium">Kategori: {{ $categories->find(request('category'))->name }}</span>
+                        @endif
+                        @if(request('type') && $types->find(request('type')))
+                            <span class="text-xs bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded text-gray-700 dark:text-gray-300 font-medium">Tipe: {{ $types->find(request('type'))->name }}</span>
+                        @endif
+                    </h2>
+                    <p class="text-[11px] md:text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                        Ditemukan <span class="font-bold text-gray-800 dark:text-gray-200">{{ $products->total() ?? $products->count() }}</span> produk digital yang sesuai
+                    </p>
+                </div>
+            </div>
+            <a href="{{ route('products.index') }}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 text-xs font-semibold transition-colors">
+                <span class="material-symbols-outlined text-sm">close</span>
+                <span>Reset Pencarian</span>
+            </a>
+        </div>
+        @endif
+
+        {{-- ── MOBILE & TABLET SUB-HEADER (TABS & FILTER ICON) - VISIBLE ON SCREENS < 1024px ── --}}
+        <div class="lg:hidden sticky top-[104px] md:top-[146px] z-30 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 -mx-2 md:-mx-6 px-3 md:px-6 py-2 mb-4 shadow-xs">
             <div class="flex items-center justify-between gap-2 overflow-x-auto hide-scrollbar">
                 {{-- Quick Sort Pills --}}
                 <div class="flex items-center gap-1.5 flex-1 overflow-x-auto hide-scrollbar py-0.5">

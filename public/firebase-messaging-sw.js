@@ -17,11 +17,15 @@ if (firebaseConfig.apiKey) {
 
     messaging.onBackgroundMessage(function(payload) {
         console.log('[firebase-messaging-sw.js] Received background message ', payload);
-        const notificationTitle = payload.notification.title;
+        const notificationTitle = (payload.notification && payload.notification.title) 
+            || (payload.data && payload.data.title) 
+            || 'Pesan Baru';
         const notificationOptions = {
-            body: payload.notification.body,
-            icon: '/images/logo.png', // Replace with your actual icon
-            data: payload.data
+            body: (payload.notification && payload.notification.body) 
+                || (payload.data && payload.data.body) 
+                || 'Ada pesan atau aktivitas baru di akun Anda.',
+            icon: '/images/logo.png',
+            data: payload.data || {}
         };
 
         self.registration.showNotification(notificationTitle, notificationOptions);

@@ -3,13 +3,18 @@
     $mainImg = $product->images->where('is_main', true)->first() ?? $product->images->first();
     $hasDiscount = $product->discount_price && $product->discount_price > 0 && $product->discount_price < $product->price;
     $price = $hasDiscount ? $product->discount_price : $product->price;
+    $catName = $product->category ? $product->category->name : 'Aplikasi';
+    $imgAlt = 'Jual ' . $product->name . ' - Source Code ' . $catName . ' Siap Pakai';
 @endphp
-<a href="{{ route('products.show', $product->slug) }}" class="prod-card group">
+<a href="{{ route('products.show', $product->slug) }}" class="prod-card group bg-white dark:bg-[#1e293b] border border-gray-100 dark:border-slate-700/60">
 
     {{-- Image --}}
     <div class="img-wrap">
         @if($mainImg)
-            <img src="{{ asset('storage/' . $mainImg->image_path) }}" alt="{{ $product->name }}" loading="lazy">
+            <img src="{{ asset('storage/' . $mainImg->image_path) }}" 
+                 alt="{{ $imgAlt }}" 
+                 title="{{ $product->name }}" 
+                 loading="lazy">
         @else
             <div class="no-img flex items-center justify-center text-gray-300 bg-gray-50 dark:bg-gray-800">
                 <span class="material-symbols-outlined text-5xl">inventory_2</span>
@@ -39,7 +44,7 @@
 
     {{-- Info --}}
     <div class="p-2 md:p-3 flex flex-col flex-1">
-        <h3 class="text-xs md:text-sm text-gray-800 dark:text-gray-100 font-semibold line-clamp-2 leading-snug mb-1 md:mb-1.5 group-hover:text-primary transition-colors flex-1">
+        <h3 class="text-xs md:text-sm text-gray-900 dark:text-white font-semibold line-clamp-2 leading-snug mb-1 md:mb-1.5 group-hover:text-primary transition-colors flex-1">
             {{ $product->name }}
         </h3>
 

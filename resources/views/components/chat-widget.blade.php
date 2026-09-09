@@ -181,6 +181,8 @@
             unreadTotal: 0,
             isSending: false,
             pollTimer: null,
+            isFetchingConversations: false,
+            isFetchingMessages: false,
 
             get filteredConversations() {
                 if (!this.searchStoreQuery) return this.conversations;
@@ -188,13 +190,18 @@
             },
 
             initWidget() {
+                // Fetch unread count & initial conversations once at load
                 this.fetchConversations();
-                this.pollTimer = setInterval(() => {
-                    this.fetchConversations(false);
-                    if (this.chatOpen && this.selectedStore) {
-                        this.fetchMessages(this.selectedStore.id, false);
+
+                // Listen for tab visibility changes (pause when tab in background)
+                document.addEventListener('visibilitychange', () => {
+                    if (!document.hidden) {
+                        this.fetchConversations();
+                        if (this.chatOpen && this.selectedStore) {
+                            this.fetchMessages(this.selectedStore.id, false);
+                        }
                     }
-                }, 4000);
+                });
 
                 // Listen for global FCM messages
                 window.addEventListener('fcm-message-received', (e) => {
@@ -210,10 +217,35 @@
                 });
             },
 
+            startPolling() {
+                this.stopPolling();
+                this.pollTimer = setInterval(() => {
+                    if (document.hidden) return;
+                    if (this.chatOpen) {
+                        this.fetchConversations(false);
+                        if (this.selectedStore) {
+                            this.fetchMessages(this.selectedStore.id, false);
+                        }
+                    } else {
+                        this.stopPolling();
+                    }
+                }, 5000);
+            },
+
+            stopPolling() {
+                if (this.pollTimer) {
+                    clearInterval(this.pollTimer);
+                    this.pollTimer = null;
+                }
+            },
+
             toggleChat(state) {
                 this.chatOpen = state;
-                if (state && !this.selectedStore && this.conversations.length > 0) {
-                    this.selectStore(this.conversations[0]);
+                if (state) {
+                    this.fetchConversations(true);
+                    this.startPolling();
+                } else {
+                    this.stopPolling();
                 }
             },
 
@@ -231,9 +263,13 @@
                 }
 
                 this.fetchMessages(detail.store_id, true);
+                this.startPolling();
             },
 
             fetchConversations(autoSelect = false) {
+                if (this.isFetchingConversations) return;
+                this.isFetchingConversations = true;
+
                 fetch('{{ route("chat.conversations") }}')
                     .then(r => r.json())
                     .then(res => {
@@ -243,7 +279,10 @@
                             this.selectStore(this.conversations[0]);
                         }
                     })
-                    .catch(() => {});
+                    .catch(() => {})
+                    .finally(() => {
+                        this.isFetchingConversations = false;
+                    });
             },
 
             selectStore(conv) {
@@ -257,6 +296,9 @@
             },
 
             fetchMessages(storeId, scrollDown = true) {
+                if (this.isFetchingMessages) return;
+                this.isFetchingMessages = true;
+
                 fetch('{{ url("chat/messages") }}/' + storeId)
                     .then(r => r.json())
                     .then(res => {
@@ -271,7 +313,10 @@
                             });
                         }
                     })
-                    .catch(() => {});
+                    .catch(() => {})
+                    .finally(() => {
+                        this.isFetchingMessages = false;
+                    });
             },
 
             sendMessage() {

@@ -5,14 +5,56 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     @include('components.theme-init')
     @include('components.pwa-head')
-    <title>@yield('title', ($company->company_name ?? 'rhantech') . ' - We Build Digital Experiences')</title>
-    <meta name="description" content="@yield('meta_description', $company->about_text ?? 'We build scalable, modern, and impactful digital solutions for businesses worldwide.')"/>
-    <meta name="keywords" content="digital agency, web development, mobile app development, UI/UX design, cloud infrastructure"/>
-    <meta property="og:title" content="@yield('title', ($company->company_name ?? 'rhantech') . ' - We Build Digital Experiences')"/>
-    <meta property="og:description" content="@yield('meta_description', $company->about_text ?? 'We build scalable, modern, and impactful digital solutions for businesses worldwide.')"/>
+    <title>@yield('title', 'Jual Source Code & Aplikasi Digital Siap Pakai - ' . ($company->company_name ?? 'R-Tech'))</title>
+    <meta name="description" content="@yield('meta_description', 'Pusat jual beli source code aplikasi web, aplikasi kasir (POS), sistem informasi sekolah, toko online, template website, dan produk digital siap pakai terpercaya.')"/>
+    <meta name="keywords" content="@yield('meta_keywords', 'jual source code, download aplikasi kasir pos, sistem informasi web, template laravel, source code php, aplikasi toko online, script php indonesia, aplikasi sekolah')"/>
+    <meta name="author" content="{{ $company->company_name ?? 'R-Tech' }}"/>
+    <meta name="robots" content="@yield('meta_robots', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1')"/>
+    <link rel="canonical" href="@yield('canonical_url', url()->current())" />
+
+    {{-- Open Graph / Facebook --}}
+    <meta property="og:locale" content="id_ID"/>
+    <meta property="og:type" content="@yield('og_type', 'website')"/>
+    <meta property="og:site_name" content="{{ $company->company_name ?? 'R-Tech' }}"/>
+    <meta property="og:title" content="@yield('title', 'Jual Source Code & Aplikasi Digital Siap Pakai - ' . ($company->company_name ?? 'R-Tech'))"/>
+    <meta property="og:description" content="@yield('meta_description', 'Pusat jual beli source code aplikasi web, aplikasi kasir (POS), sistem informasi sekolah, toko online, template website, dan produk digital siap pakai terpercaya.')"/>
+    <meta property="og:url" content="@yield('canonical_url', url()->current())"/>
     <meta property="og:image" content="@yield('meta_image', isset($company) && $company->logo ? asset('storage/'.$company->logo) : '')"/>
-    <meta property="og:type" content="website"/>
+
+    {{-- Twitter / X Card --}}
     <meta name="twitter:card" content="summary_large_image"/>
+    <meta name="twitter:title" content="@yield('title', 'Jual Source Code & Aplikasi Digital Siap Pakai - ' . ($company->company_name ?? 'R-Tech'))"/>
+    <meta name="twitter:description" content="@yield('meta_description', 'Pusat jual beli source code aplikasi web, aplikasi kasir (POS), sistem informasi sekolah, toko online, template website, dan produk digital siap pakai terpercaya.')"/>
+    <meta name="twitter:image" content="@yield('meta_image', isset($company) && $company->logo ? asset('storage/'.$company->logo) : '')"/>
+
+    {{-- Global Structured Data (Schema.org) --}}
+    <script type="application/ld+json">
+    {
+      "@@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "{{ $company->company_name ?? 'R-Tech' }}",
+      "url": "{{ url('/') }}",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "{{ route('products.index') }}?search={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@@context": "https://schema.org",
+      "@type": "OnlineStore",
+      "name": "{{ $company->company_name ?? 'R-Tech' }}",
+      "url": "{{ route('products.index') }}",
+      "logo": "{{ isset($company) && $company->logo ? asset('storage/'.$company->logo) : asset('favicon.ico') }}",
+      "description": "Marketplace dan toko resmi penyedia source code, aplikasi web, sistem kasir, dan produk digital berkualitas di Indonesia."
+    }
+    </script>
+    @yield('schema_json_ld')
     <link rel="icon" type="image/png" href="{{ isset($company) && $company->favicon ? '/storage/'.$company->favicon : '/favicon.ico' }}" />
     <link rel="shortcut icon" type="image/png" href="{{ isset($company) && $company->favicon ? '/storage/'.$company->favicon : '/favicon.ico' }}" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -302,18 +344,17 @@
                     </button>
                 </div>
             </form>
-            <div class="hidden md:flex items-center gap-1 mt-1.5 px-1">
-                <span class="text-white/35 text-[11px]">Populer:</span>
-                <a href="{{ route('products.index', ['search' => 'Source Code']) }}" class="search-tag">Source Code</a>
-                <span class="search-tag-sep">·</span>
-                <a href="{{ route('products.index', ['search' => 'Laravel']) }}" class="search-tag">Laravel</a>
-                <span class="search-tag-sep">·</span>
-                <a href="{{ route('products.index', ['search' => 'CodeIgniter']) }}" class="search-tag">CodeIgniter</a>
-                <span class="search-tag-sep">·</span>
-                <a href="{{ route('products.index', ['search' => 'React Native']) }}" class="search-tag">React Native</a>
-                <span class="search-tag-sep">·</span>
-                <a href="{{ route('products.index', ['search' => 'Flutter']) }}" class="search-tag">Flutter</a>
+            @if(!empty($popularSearches) && count($popularSearches) > 0)
+            <div class="hidden md:flex items-center gap-1.5 mt-1.5 px-1 overflow-x-auto scrollbar-none whitespace-nowrap">
+                <span class="text-white/40 text-[11px] font-medium">Populer:</span>
+                @foreach($popularSearches as $popSearch)
+                    <a href="{{ route('products.index', ['search' => $popSearch]) }}" class="search-tag" title="Cari {{ $popSearch }}">{{ $popSearch }}</a>
+                    @if(!$loop->last)
+                        <span class="search-tag-sep">·</span>
+                    @endif
+                @endforeach
             </div>
+            @endif
         </div>
 
         {{-- Right actions --}}
@@ -334,7 +375,7 @@
     </div>
 </header>
 
-    <main class="flex-1 mt-[105px] md:mt-[112px]">
+    <main class="flex-1 mt-[105px] md:mt-[146px]">
         @yield('content')
     </main>
 

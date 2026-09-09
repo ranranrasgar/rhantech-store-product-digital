@@ -1,5 +1,121 @@
 @extends('layouts.shopee')
-@section('title', $product->name . ' - ' . ($company->company_name ?? 'Rhantech'))
+
+@php
+    $mainImg = $product->images->where('is_main', true)->first() ?? $product->images->first();
+    $mainImgUrl = $mainImg ? asset('storage/' . $mainImg->image_path) : (isset($company) && $company->logo ? asset('storage/' . $company->logo) : '');
+    $categoryName = $product->category ? $product->category->name : 'Produk Digital';
+    $typeName = $product->type ? $product->type->name : 'Source Code';
+    $metaTitle = 'Jual ' . $product->name . ' - ' . $typeName . ' ' . $categoryName . ' | ' . ($company->company_name ?? 'Rhantech');
+    $cleanDesc = !empty($product->short_description) 
+        ? trim($product->short_description) 
+        : Str::limit(trim(preg_replace('/\s+/', ' ', strip_tags($product->description ?? ''))), 160);
+    $metaKeywords = implode(', ', array_filter(array_merge([
+        $product->name,
+        'source code ' . $product->name,
+        'download ' . $product->name,
+        'aplikasi ' . $categoryName,
+        'source code ' . $categoryName,
+        $typeName,
+        'jual source code',
+        'script php indonesia',
+        'beli source code siap pakai'
+    ], $product->tags_array ?? [])));
+    $activePrice = ($product->discount_price && $product->discount_price > 0 && $product->discount_price < $product->price) 
+        ? $product->discount_price 
+        : $product->price;
+    $ratingVal = number_format($product->effective_rating ?? 5.0, 1);
+    $reviewCountVal = max(1, (int)($product->effective_reviews_count ?? 1));
+@endphp
+
+@section('title', $metaTitle)
+@section('meta_description', $cleanDesc)
+@section('meta_keywords', $metaKeywords)
+@section('meta_image', $mainImgUrl)
+@section('og_type', 'product')
+@section('canonical_url', route('products.show', $product->slug))
+
+@section('schema_json_ld')
+<script type="application/ld+json">
+{
+  "@@context": "https://schema.org/",
+  "@type": "Product",
+  "name": "{{ addslashes($product->name) }}",
+  "image": [
+    "{{ $mainImgUrl }}"
+  ],
+  "description": "{{ addslashes($cleanDesc) }}",
+  "sku": "PROD-{{ $product->id }}",
+  "mpn": "RTECH-{{ $product->id }}",
+  "brand": {
+    "@type": "Brand",
+    "name": "{{ addslashes($product->store ? $product->store->name : ($company->company_name ?? 'R-Tech')) }}"
+  },
+  "category": "{{ addslashes($categoryName) }}",
+  "keywords": "{{ addslashes(!empty($product->tags) ? $product->tags : $metaKeywords) }}",
+  "offers": {
+    "@type": "Offer",
+    "url": "{{ route('products.show', $product->slug) }}",
+    "priceCurrency": "IDR",
+    "price": "{{ $activePrice }}",
+    "priceValidUntil": "{{ date('Y-12-31', strtotime('+1 year')) }}",
+    "itemCondition": "https://schema.org/NewCondition",
+    "availability": "https://schema.org/InStock",
+    "seller": {
+      "@type": "Organization",
+      "name": "{{ addslashes($product->store ? $product->store->name : ($company->company_name ?? 'R-Tech')) }}"
+    }
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "{{ $ratingVal }}",
+    "bestRating": "5",
+    "worstRating": "1",
+    "ratingCount": "{{ $reviewCountVal }}"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Beranda",
+      "item": "{{ url('/') }}"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Katalog Produk",
+      "item": "{{ route('products.index') }}"
+    },
+    @if($product->category)
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "{{ addslashes($product->category->name) }}",
+      "item": "{{ route('products.index', ['category' => $product->category->id]) }}"
+    },
+    {
+      "@type": "ListItem",
+      "position": 4,
+      "name": "{{ addslashes($product->name) }}",
+      "item": "{{ route('products.show', $product->slug) }}"
+    }
+    @else
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "{{ addslashes($product->name) }}",
+      "item": "{{ route('products.show', $product->slug) }}"
+    }
+    @endif
+  ]
+}
+</script>
+@endsection
 
 @section('content')
 @php
@@ -72,15 +188,22 @@
                              onmousemove="zoomImage(event)" 
                              onmouseleave="resetZoomImage()">
                             @if($product->images->count() > 0)
-                                @php $mainImg = $product->images->where('is_main', true)->first() ?? $product->images->first(); @endphp
-                                <img id="mainImage" src="{{ asset('storage/' . $mainImg->image_path) }}" alt="{{ $product->name }}" class="w-full h-full object-cover origin-center transition-transform duration-100 ease-out group-hover:scale-[1.75]">
+                                @php 
+                                    $mainImg = $product->images->where('is_main', true)->first() ?? $product->images->first(); 
+                                    $mainImgAlt = 'Jual ' . $product->name . ' - ' . ($product->category ? $product->category->name : 'Source Code Aplikasi') . ' Siap Pakai';
+                                @endphp
+                                <img id="mainImage" 
+                                     src="{{ asset('storage/' . $mainImg->image_path) }}" 
+                                     alt="{{ $mainImgAlt }}" 
+                                     title="{{ $product->name }}" 
+                                     class="w-full h-full object-cover origin-center transition-transform duration-100 ease-out group-hover:scale-[1.75]">
                                 <div class="absolute bottom-2 right-2 bg-surface/80 dark:bg-black/60 backdrop-blur-md px-2 py-0.5 rounded-sm text-xs font-semibold text-on-surface flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                     <span class="material-symbols-outlined text-[14px]">zoom_in</span> Perbesar
                                 </div>
                             @else
                                 <div class="w-full h-full flex flex-col items-center justify-center text-on-surface-variant">
                                     <span class="material-symbols-outlined text-6xl text-outline-variant mb-2">image</span>
-                                    <span class="text-xs font-medium">Foto Produk Digital</span>
+                                    <span class="text-xs font-medium">Foto Produk Digital {{ $product->name }}</span>
                                 </div>
                             @endif
                         </div>
@@ -90,8 +213,13 @@
                         <div class="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
                             @foreach($product->images as $img)
                             <button onclick="document.getElementById('mainImage').src = '{{ asset('storage/' . $img->image_path) }}'" 
-                                    class="w-16 h-16 rounded-sm shrink-0 border-2 border-transparent hover:border-primary focus:border-primary transition-all overflow-hidden bg-surface-container-low p-0.5 shadow-xs">
-                                <img src="{{ asset('storage/' . $img->image_path) }}" class="w-full h-full object-cover rounded-sm">
+                                    class="w-16 h-16 rounded-sm shrink-0 border-2 border-transparent hover:border-primary focus:border-primary transition-all overflow-hidden bg-surface-container-low p-0.5 shadow-xs"
+                                    title="Lihat screenshot {{ $product->name }} ke-{{ $loop->iteration }}">
+                                <img src="{{ asset('storage/' . $img->image_path) }}" 
+                                     alt="Screenshot {{ $product->name }} ke-{{ $loop->iteration }} - {{ $product->category ? $product->category->name : 'Aplikasi' }}" 
+                                     title="{{ $product->name }} preview {{ $loop->iteration }}" 
+                                     loading="lazy"
+                                     class="w-full h-full object-cover rounded-sm">
                             </button>
                             @endforeach
                         </div>
@@ -528,9 +656,32 @@
                     </div>
 
                     <!-- Long Description Body -->
-                    <div class="prose dark:prose-invert max-w-none text-xs md:text-sm text-on-surface/90 leading-relaxed whitespace-pre-line font-sans">
-                        {{ $product->description }}
+                    <div class="prose dark:prose-invert max-w-none text-xs md:text-sm text-on-surface/90 leading-relaxed font-sans">
+                        @if(strip_tags($product->description) !== $product->description)
+                            {!! $product->description !!}
+                        @else
+                            {!! nl2br(e($product->description)) !!}
+                        @endif
                     </div>
+
+                    <!-- Tags Produk Digital (Clickable to Catalog Search) -->
+                    @if(!empty($product->tags_array))
+                    <div class="mt-6 pt-5 border-t border-outline-variant/60">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="material-symbols-outlined text-primary text-[18px]">sell</span>
+                            <span class="text-xs font-bold uppercase tracking-wider text-on-surface">Tag & Kata Kunci Terkait:</span>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            @foreach($product->tags_array as $tag)
+                            <a href="{{ route('products.index', ['search' => $tag]) }}" 
+                               class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold bg-surface-container hover:bg-primary/10 text-on-surface-variant hover:text-primary border border-outline-variant hover:border-primary/40 transition-all group">
+                                <span class="text-primary font-bold">#</span>
+                                <span class="group-hover:underline underline-offset-2">{{ $tag }}</span>
+                            </a>
+                            @endforeach
+                        </div>
+                    </div>
+                    @endif
 
                     <!-- Fitur Utama & Paket Termasuk -->
                     @php

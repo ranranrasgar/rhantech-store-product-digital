@@ -92,6 +92,7 @@ class ProductController extends Controller
             'product_category_id' => 'nullable|exists:product_categories,id',
             'product_type_id' => 'nullable|exists:product_types,id',
             'help_category_id' => 'nullable|exists:help_categories,id',
+            'tags' => 'nullable|string|max:1000',
             'short_description' => 'nullable|string|max:500',
             'description' => 'required|string',
             'demo_url' => 'nullable|url|max:255',
@@ -124,6 +125,7 @@ class ProductController extends Controller
         $product = Product::create([
             'name' => $validated['name'],
             'slug' => Str::slug($validated['name']) . '-' . Str::random(5),
+            'tags' => $validated['tags'] ?? null,
             'short_description' => $validated['short_description'] ?? null,
             'description' => $validated['description'],
             'product_category_id' => $validated['product_category_id'] ?? null,
@@ -150,8 +152,11 @@ class ProductController extends Controller
         }
 
         if ($request->hasFile('images')) {
+            $baseSlug = Str::slug($product->name . '-source-code');
             foreach ($request->file('images') as $image) {
-                $path = $image->store('products', 'public');
+                $ext = $image->getClientOriginalExtension() ?: 'jpg';
+                $filename = $baseSlug . '-' . Str::random(6) . '.' . $ext;
+                $path = $image->storeAs('products', $filename, 'public');
                 ProductImage::create([
                     'product_id' => $product->id,
                     'image_path' => $path
@@ -183,6 +188,7 @@ class ProductController extends Controller
             'product_category_id' => 'nullable|exists:product_categories,id',
             'product_type_id' => 'nullable|exists:product_types,id',
             'help_category_id' => 'nullable|exists:help_categories,id',
+            'tags' => 'nullable|string|max:1000',
             'short_description' => 'nullable|string|max:500',
             'description' => 'required|string',
             'demo_url' => 'nullable|url|max:255',
@@ -213,6 +219,7 @@ class ProductController extends Controller
 
         $product->update([
             'name' => $validated['name'],
+            'tags' => $validated['tags'] ?? null,
             'short_description' => $validated['short_description'] ?? null,
             'description' => $validated['description'],
             'product_category_id' => $validated['product_category_id'] ?? null,
@@ -249,8 +256,11 @@ class ProductController extends Controller
                 return back()->withErrors(['images' => 'Maximum 5 images allowed total.'])->withInput();
             }
 
+            $baseSlug = Str::slug($product->name . '-source-code');
             foreach ($request->file('images') as $image) {
-                $path = $image->store('products', 'public');
+                $ext = $image->getClientOriginalExtension() ?: 'jpg';
+                $filename = $baseSlug . '-' . Str::random(6) . '.' . $ext;
+                $path = $image->storeAs('products', $filename, 'public');
                 ProductImage::create([
                     'product_id' => $product->id,
                     'image_path' => $path

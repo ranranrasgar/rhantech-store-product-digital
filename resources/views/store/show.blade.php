@@ -441,7 +441,7 @@
                         $shortDesc = $product->short_description ?: Str::limit(strip_tags($product->description ?? ''), 55);
                         $hasDiscount = $product->discount_price && $product->discount_price > 0 && $product->discount_price < $product->price;
                     @endphp
-                    <a href="{{ route('products.show', $product->slug) }}" class="group bg-white border border-outline-variant hover:border-primary rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col relative">
+                    <a href="{{ route('products.show', $product->slug) }}" class="group bg-white dark:bg-surface-container border border-outline-variant hover:border-primary rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col relative">
                         <div class="aspect-square w-full bg-surface-container-high relative overflow-hidden">
                             @if($product->images->count() > 0)
                                 @php $mainImg = $product->images->where('is_main', true)->first() ?? $product->images->first(); @endphp
@@ -762,7 +762,7 @@
                                     $hasDiscount = $product->discount_price && $product->discount_price > 0 && $product->discount_price < $product->price;
                                 @endphp
                                 <!-- Product Card -->
-                                <a href="{{ route('products.show', $product->slug) }}" class="group bg-white border border-slate-200 hover:border-sky-500 rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col relative">
+                                <a href="{{ route('products.show', $product->slug) }}" class="group bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-sky-500 rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col relative">
                                     <div class="aspect-square w-full bg-slate-50 relative overflow-hidden">
                                         @if($product->images->count() > 0)
                                             @php $mainImg = $product->images->where('is_main', true)->first() ?? $product->images->first(); @endphp
@@ -846,7 +846,7 @@
                     $shortDesc = Str::limit(strip_tags($product->description ?? ''), 55);
                     $hasDiscount = $product->discount_price && $product->discount_price > 0 && $product->discount_price < $product->price;
                 @endphp
-                <a href="{{ route('products.show', $product->slug) }}" class="group bg-white border border-outline-variant hover:border-primary rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col relative">
+                <a href="{{ route('products.show', $product->slug) }}" class="group bg-white dark:bg-surface-container border border-outline-variant hover:border-primary rounded-xl overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col relative">
                     <div class="aspect-square w-full bg-slate-50 relative overflow-hidden">
                         @if($product->images->count() > 0)
                             @php $mainImg = $product->images->where('is_main', true)->first() ?? $product->images->first(); @endphp

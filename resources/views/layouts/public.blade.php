@@ -7,12 +7,24 @@
     @include('components.pwa-head')
     <title>@yield('title', ($company->company_name ?? 'rhantech') . ' - We Build Digital Experiences')</title>
     <meta name="description" content="@yield('meta_description', $company->about_text ?? 'We build scalable, modern, and impactful digital solutions for businesses worldwide.')"/>
-    <meta name="keywords" content="digital agency, web development, mobile app development, UI/UX design, cloud infrastructure"/>
+    <meta name="keywords" content="@yield('meta_keywords', 'software house indonesia, jasa pembuatan website, jual source code, web development, mobile app development, UI/UX design')"/>
+    <meta name="author" content="{{ $company->company_name ?? 'rhantech' }}"/>
+    <meta name="robots" content="@yield('meta_robots', 'index, follow, max-image-preview:large')"/>
+    <link rel="canonical" href="@yield('canonical_url', url()->current())" />
+
+    <meta property="og:locale" content="id_ID"/>
+    <meta property="og:type" content="@yield('og_type', 'website')"/>
+    <meta property="og:site_name" content="{{ $company->company_name ?? 'rhantech' }}"/>
     <meta property="og:title" content="@yield('title', ($company->company_name ?? 'rhantech') . ' - We Build Digital Experiences')"/>
     <meta property="og:description" content="@yield('meta_description', $company->about_text ?? 'We build scalable, modern, and impactful digital solutions for businesses worldwide.')"/>
+    <meta property="og:url" content="@yield('canonical_url', url()->current())"/>
     <meta property="og:image" content="@yield('meta_image', isset($company) && $company->logo ? asset('storage/'.$company->logo) : '')"/>
-    <meta property="og:type" content="website"/>
+
     <meta name="twitter:card" content="summary_large_image"/>
+    <meta name="twitter:title" content="@yield('title', ($company->company_name ?? 'rhantech') . ' - We Build Digital Experiences')"/>
+    <meta name="twitter:description" content="@yield('meta_description', $company->about_text ?? 'We build scalable, modern, and impactful digital solutions for businesses worldwide.')"/>
+    <meta name="twitter:image" content="@yield('meta_image', isset($company) && $company->logo ? asset('storage/'.$company->logo) : '')"/>
+    @yield('schema_json_ld')
     <link rel="icon" type="image/png" href="{{ isset($company) && $company->favicon ? '/storage/'.$company->favicon : '/favicon.ico' }}" />
     <link rel="shortcut icon" type="image/png" href="{{ isset($company) && $company->favicon ? '/storage/'.$company->favicon : '/favicon.ico' }}" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>

@@ -20,6 +20,17 @@ class Product extends Model
         'faqs' => 'array',
     ];
 
+    /**
+     * Parse comma-separated tags into a clean array
+     */
+    public function getTagsArrayAttribute(): array
+    {
+        if (empty($this->tags)) {
+            return [];
+        }
+        return array_values(array_filter(array_map('trim', explode(',', $this->tags))));
+    }
+
     public function images()
     {
         return $this->hasMany(ProductImage::class);

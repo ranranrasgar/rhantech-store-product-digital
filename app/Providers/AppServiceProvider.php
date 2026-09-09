@@ -72,6 +72,10 @@ class AppServiceProvider extends ServiceProvider
             $view->with('company', CompanyProfile::first(['*']));
         });
 
+        View::composer(['layouts.shopee', 'products.*'], function ($view) {
+            $view->with('popularSearches', \App\Models\ProductSearch::getPopular(7));
+        });
+
         View::composer(['layouts.admin', 'admin.*'], function ($view) {
             $pendingPayoutsCount = PayoutRequest::where('status', 'pending')->count();
             $pendingPayoutsList = PayoutRequest::with('store')

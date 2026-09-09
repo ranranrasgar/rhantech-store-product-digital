@@ -172,6 +172,10 @@
 <span class="material-symbols-outlined text-[1rem]">style</span>
                     Types
                 </a>
+<a class="font-label-md text-label-md {{ request()->routeIs('admin.searches.*') ? 'bg-surface-variant font-semibold before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[3px] before:bg-[#58a6ff] before:rounded-r-md relative' : 'text-on-surface hover:bg-surface-variant/50 hover:underline' }} pl-9 pr-3 py-1.5 flex items-center gap-2 transition-all rounded-md text-sm" href="{{ route('admin.searches.index') }}" wire:navigate>
+<span class="material-symbols-outlined text-[1rem]">insights</span>
+                    Pencarian Pembeli
+                </a>
 <a class="font-label-md text-label-md {{ request()->routeIs('admin.orders.*') ? 'bg-surface-variant font-semibold before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[3px] before:bg-[#58a6ff] before:rounded-r-md relative' : 'text-on-surface hover:bg-surface-variant/50 hover:underline' }} px-3 py-1.5 flex items-center gap-2 transition-all rounded-md" href="{{ route('admin.orders.index') }}" wire:navigate>
 <span class="material-symbols-outlined text-[1rem]">receipt_long</span>
                     Sales Orders

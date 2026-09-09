@@ -49,6 +49,76 @@
             </div>
         </div>
 
+        <!-- Cuplikan Tren Pembeli (Classic Ticker di Bawah Card Banner) -->
+        <div class="bg-white dark:bg-[#161b22] border border-slate-200/80 dark:border-slate-800 rounded-2xl p-3 sm:px-5 sm:py-3">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                
+                <!-- Label / Icon -->
+                <div class="flex items-center gap-2 shrink-0">
+                    <span class="w-7 h-7 rounded-lg bg-amber-500/10 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined text-[18px]">local_fire_department</span>
+                    </span>
+                    <span class="text-xs font-bold text-slate-800 dark:text-slate-200 whitespace-nowrap">
+                        Tren Dicari Pembeli:
+                    </span>
+                </div>
+
+                <!-- Scrolling Marquee Ticker -->
+                <div class="flex-1 overflow-hidden relative py-0.5 mask-fade-edges">
+                    @if(isset($trendingSearches) && $trendingSearches->isNotEmpty())
+                    <div class="marquee-track flex items-center gap-2">
+                        @for($i = 0; $i < 2; $i++)
+                            @foreach($trendingSearches as $search)
+                            <a href="{{ route('products.index', ['search' => $search->keyword]) }}" target="_blank" 
+                               title="Lihat persaingan katalog: {{ $search->keyword }}"
+                               class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/80 dark:hover:bg-slate-700/80 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs font-medium transition-colors shrink-0 group">
+                                <span class="text-amber-500 font-bold text-xs">#</span>
+                                <span class="font-bold text-slate-900 dark:text-white whitespace-nowrap">{{ $search->keyword }}</span>
+                                <span class="text-[11px] text-slate-500 dark:text-slate-400 whitespace-nowrap">({{ $search->hits }}x dicari)</span>
+                                @if($search->results_count === 0)
+                                <span class="text-[9px] font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/60 px-1.5 py-0.5 rounded whitespace-nowrap">
+                                    Peluang Emas
+                                </span>
+                                @endif
+                                <span class="material-symbols-outlined text-[12px] text-slate-400 group-hover:text-sky-600 dark:group-hover:text-sky-400">open_in_new</span>
+                            </a>
+                            @endforeach
+                        @endfor
+                    </div>
+                    @else
+                    <span class="text-xs text-slate-400 italic">Belum ada data pencarian pembeli.</span>
+                    @endif
+                </div>
+
+                <!-- CTA Action Link -->
+                <div class="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                    <a href="{{ route('tenant.products.create') }}" class="text-xs font-bold text-[#00838f] dark:text-teal-400 hover:underline flex items-center gap-1">
+                        <span>+ Buat Produk</span>
+                        <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+        <style>
+            @keyframes marquee-scroll-horizontal {
+                0% { transform: translateX(0); }
+                100% { transform: translateX(-50%); }
+            }
+            .marquee-track {
+                width: max-content;
+                animation: marquee-scroll-horizontal 28s linear infinite;
+            }
+            .marquee-track:hover {
+                animation-play-state: paused;
+            }
+            .mask-fade-edges {
+                mask-image: linear-gradient(to right, transparent 0%, black 2%, black 98%, transparent 100%);
+                -webkit-mask-image: linear-gradient(to right, transparent 0%, black 2%, black 98%, transparent 100%);
+            }
+        </style>
+
         @if($store)
         @php
             $storeSlug = $store->slug ?: 'toko-' . $store->id;

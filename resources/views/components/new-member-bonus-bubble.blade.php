@@ -2,35 +2,21 @@
 <!-- Floating Promotional Bubble: New Member Welcome Bonus (Rp 25.000) -->
 <div x-data="{
         showCard: false,
-        showBubbleBtn: false,
-        init() {
-            const dismissed = sessionStorage.getItem('new_member_bonus_dismissed');
-            if (!dismissed) {
-                // Muncul otomatis setelah 800ms ketika pertama kali dibuka
-                setTimeout(() => {
-                    this.showCard = true;
-                }, 800);
-            } else {
-                // Jika sudah pernah ditutup dalam sesi ini, tampilkan bubble icon kecil
-                this.showBubbleBtn = true;
-            }
-        },
+        showBubbleBtn: true,
         dismiss() {
             this.showCard = false;
             this.showBubbleBtn = true;
-            sessionStorage.setItem('new_member_bonus_dismissed', '1');
         },
         expand() {
             this.showBubbleBtn = false;
             this.showCard = true;
         }
     }"
-    class="pointer-events-none fixed bottom-4 right-4 left-4 sm:left-auto sm:right-6 sm:bottom-6 z-50 flex flex-col items-end max-w-sm sm:max-w-[390px]"
-    style="display: none;"
-    x-show="showCard || showBubbleBtn">
+    class="pointer-events-none fixed bottom-5 right-4 sm:right-6 sm:bottom-6 z-50 flex flex-col items-end max-w-sm sm:max-w-[390px]">
 
-    <!-- 1. Expanded Promo Bubble / Card -->
+    <!-- 1. Expanded Promo Bubble / Card (Opens when icon clicked) -->
     <div x-show="showCard"
+         @click.outside="dismiss()"
          x-transition:enter="transition ease-out duration-300 transform"
          x-transition:enter-start="opacity-0 translate-y-8 scale-95"
          x-transition:enter-end="opacity-100 translate-y-0 scale-100"
@@ -102,7 +88,7 @@
         </div>
     </div>
 
-    <!-- 2. Minimized Floating Bubble Launcher (Appears when closed/dismissed) -->
+    <!-- 2. Compact Floating Icon Launcher (Default state: Hanya Icon Saja) -->
     <button type="button"
             x-show="showBubbleBtn"
             @click="expand()"
@@ -112,12 +98,20 @@
             x-transition:leave="transition ease-in duration-200 transform"
             x-transition:leave-start="opacity-100 translate-y-0 scale-100"
             x-transition:leave-end="opacity-0 translate-y-4 scale-75"
-            class="pointer-events-auto self-end inline-flex items-center gap-2 py-2.5 px-4 rounded-full bg-gradient-to-r from-amber-500 via-amber-500 to-primary text-white font-black text-xs shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 group border-2 border-white/30 dark:border-white/20 cursor-pointer"
-            style="display: none;"
-            title="Klaim Bonus Saldo Rp 25.000">
-        <span class="text-base group-hover:scale-125 transition-transform">🎁</span>
-        <span class="tracking-tight">Klaim Saldo Rp 25.000</span>
-        <span class="w-2 h-2 rounded-full bg-white animate-ping"></span>
+            class="pointer-events-auto relative flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-tr from-amber-500 via-orange-500 to-amber-600 text-white shadow-xl hover:shadow-2xl shadow-amber-500/30 hover:shadow-amber-500/50 transition-all duration-300 hover:scale-110 active:scale-95 group border-2 border-white/60 dark:border-white/30 cursor-pointer"
+            title="Klaim Bonus Pengguna Baru Rp 25.000"
+            aria-label="Klaim Bonus Pengguna Baru Rp 25.000">
+
+        <!-- Gift Icon with subtle hover wiggle -->
+        <span class="text-2xl sm:text-[26px] group-hover:rotate-12 group-hover:scale-110 transition-transform duration-300 select-none">🎁</span>
+
+        <!-- Badge 25K Notification -->
+        <span class="absolute -top-1 -right-1 flex items-center justify-center bg-rose-500 text-white text-[9px] sm:text-[10px] font-black px-1.5 py-0.5 rounded-full shadow border-2 border-white dark:border-slate-900 leading-none">
+            25K
+        </span>
+
+        <!-- Ripple ping indicator -->
+        <span class="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-amber-300 animate-ping pointer-events-none opacity-75"></span>
     </button>
 </div>
 @endguest

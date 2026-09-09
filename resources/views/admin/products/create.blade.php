@@ -68,6 +68,176 @@
                 @error('description')<span class="text-error text-xs">{{ $message }}</span>@enderror
             </div>
 
+            <!-- Tags / Kata Kunci Pencarian & Auto-Generator -->
+            <div x-data="{
+                tagsString: '{{ addslashes(old('tags', '')) }}',
+                tagsList: [],
+                generating: false,
+                init() {
+                    this.updateList();
+                    this.$watch('tagsString', () => this.updateList());
+                },
+                updateList() {
+                    if (!this.tagsString) {
+                        this.tagsList = [];
+                        return;
+                    }
+                    this.tagsList = this.tagsString.split(',')
+                        .map(t => t.trim())
+                        .filter(t => t.length > 0);
+                },
+                removeTag(index) {
+                    this.tagsList.splice(index, 1);
+                    this.tagsString = this.tagsList.join(', ');
+                },
+                addTag(tag) {
+                    tag = tag.trim().replace(/^#+/, '');
+                    if (!tag) return;
+                    if (!this.tagsList.map(t => t.toLowerCase()).includes(tag.toLowerCase())) {
+                        this.tagsList.push(tag);
+                        this.tagsString = this.tagsList.join(', ');
+                    }
+                },
+                generateTags() {
+                    const nameInput = document.querySelector('input[name=\'name\']')?.value || '';
+                    const shortDesc = document.querySelector('textarea[name=\'short_description\']')?.value || '';
+                    const descInput = document.querySelector('input[name=\'description\']')?.value || document.querySelector('textarea[name=\'description\']')?.value || '';
+                    const catSelect = document.querySelector('select[name=\'product_category_id\']');
+                    const catText = catSelect && catSelect.selectedIndex > 0 ? catSelect.options[catSelect.selectedIndex].text.replace(/\(.*\)/, '').trim() : '';
+                    const typeSelect = document.querySelector('select[name=\'product_type_id\']');
+                    const typeText = typeSelect && typeSelect.selectedIndex > 0 ? typeSelect.options[typeSelect.selectedIndex].text.replace(/\(.*\)/, '').trim() : '';
+
+                    if (!nameInput.trim() && !shortDesc.trim() && !descInput.trim()) {
+                        alert('Silakan isi minimal Nama Produk, Ringkasan, atau Deskripsi terlebih dahulu untuk men-generate tags otomatis.');
+                        return;
+                    }
+
+                    this.generating = true;
+
+                    const combined = `${nameInput} ${catText} ${typeText} ${shortDesc} ${descInput}`;
+                    
+                    const techDictionary = [
+                        'Laravel', 'PHP', 'CodeIgniter', 'Vue', 'React', 'React Native', 'Flutter',
+                        'Tailwind CSS', 'Bootstrap', 'Node.js', 'Python', 'Django', 'Flask', 'WordPress',
+                        'HTML5', 'CSS3', 'JavaScript', 'TypeScript', 'MySQL', 'PostgreSQL', 'SQLite',
+                        'REST API', 'Inertia.js', 'Livewire', 'Alpine.js', 'Android', 'iOS', 'PWA'
+                    ];
+
+                    const businessDictionary = [
+                        'Aplikasi Kasir', 'Point of Sale', 'POS', 'Toko Online', 'E-Commerce', 'Marketplace',
+                        'Sistem Informasi', 'Sistem Informasi Sekolah', 'SIAKAD', 'Manajemen Sekolah',
+                        'Aplikasi Keuangan', 'Akuntansi', 'Koperasi', 'Simpan Pinjam', 'Manajemen Kas',
+                        'Aplikasi Bengkel', 'Aplikasi Dealer', 'Manajemen Inventaris', 'Stok Barang',
+                        'Absensi Online', 'Presensi Pegawai', 'HRIS', 'Payroll', 'Penggajian',
+                        'Aplikasi Rumah Sakit', 'Klinik', 'Apotek', 'Manajemen Rekam Medis',
+                        'Aplikasi Restoran', 'Cafe', 'Pemesanan Menu', 'Food Ordering',
+                        'Company Profile', 'Portofolio', 'Landing Page', 'Admin Template', 'Dashboard',
+                        'CRM', 'ERP', 'Ticketing', 'Helpdesk', 'Rental Mobil', 'Sistem Pakar',
+                        'Source Code Web', 'Source Code Mobile', 'Source Code'
+                    ];
+
+                    const stopwords = new Set([
+                        'dan', 'atau', 'yang', 'untuk', 'dengan', 'pada', 'dari', 'dalam', 'bisa', 'akan',
+                        'adalah', 'fitur', 'lengkap', 'gratis', 'terbaru', 'berbasis', 'sistem', 'aplikasi',
+                        'source', 'code', 'web', 'jual', 'beli', 'murah', 'pro', 'v1', 'v2', 'v3', 'new',
+                        'full', 'paket', 'cara', 'oleh', 'ke', 'di', 'ini', 'itu', 'juga', 'serta', 'bagi',
+                        'tentang', 'seperti', 'kami', 'anda', 'kamu', 'saya', 'kita', 'mereka'
+                    ]);
+
+                    const extractedTags = new Set();
+
+                    techDictionary.forEach(term => {
+                        const regex = new RegExp('\\b' + term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i');
+                        if (regex.test(combined)) {
+                            extractedTags.add(term);
+                        }
+                    });
+
+                    businessDictionary.forEach(term => {
+                        const regex = new RegExp('\\b' + term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i');
+                        if (regex.test(combined)) {
+                            extractedTags.add(term);
+                        }
+                    });
+
+                    if (nameInput.trim()) {
+                        const words = nameInput
+                            .replace(/[^\w\s-]/gi, ' ')
+                            .split(/\s+/)
+                            .map(w => w.trim())
+                            .filter(w => w.length >= 3 && !stopwords.has(w.toLowerCase()) && !/^\d+$/.test(w));
+
+                        words.forEach(w => {
+                            const formatted = w.charAt(0).toUpperCase() + w.slice(1);
+                            extractedTags.add(formatted);
+                        });
+
+                        for (let i = 0; i < words.length - 1; i++) {
+                            const phrase = (words[i].charAt(0).toUpperCase() + words[i].slice(1)) + ' ' +
+                                           (words[i+1].charAt(0).toUpperCase() + words[i+1].slice(1));
+                            if (phrase.length <= 25) {
+                                extractedTags.add(phrase);
+                            }
+                        }
+                    }
+
+                    if (catText && !stopwords.has(catText.toLowerCase())) extractedTags.add(catText);
+                    if (typeText && !stopwords.has(typeText.toLowerCase())) extractedTags.add(typeText);
+
+                    const finalTags = Array.from(extractedTags).slice(0, 10);
+                    finalTags.forEach(t => this.addTag(t));
+
+                    setTimeout(() => {
+                        this.generating = false;
+                    }, 350);
+                }
+            }">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-xs">
+                    <div>
+                        <label class="block font-label-md text-on-surface font-bold">
+                            Tags / Kata Kunci Pencarian (SEO)
+                        </label>
+                        <p class="text-xs text-on-surface-variant">
+                            Pisahkan dengan koma. Kata kunci ini dicocokkan saat calon pembeli mencari di katalog.
+                        </p>
+                    </div>
+
+                    <button type="button" 
+                            @click="generateTags()" 
+                            :disabled="generating"
+                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-700 text-xs font-bold transition-all shrink-0">
+                        <span class="material-symbols-outlined text-[16px] text-amber-600 dark:text-amber-400" :class="{ 'animate-spin': generating }">
+                            auto_awesome
+                        </span>
+                        <span x-text="generating ? 'Menganalisis Teks...' : '⚡ Generate Tags Otomatis'"></span>
+                    </button>
+                </div>
+
+                <input type="text" 
+                       name="tags" 
+                       x-model="tagsString"
+                       placeholder="Contoh: Aplikasi Kasir, POS, Toko Online, Laravel 11, PHP MySQL" 
+                       class="w-full pl-4 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-secondary focus:ring-1 focus:ring-secondary/20 text-xs md:text-sm">
+                @error('tags')<span class="text-error text-xs">{{ $message }}</span>@enderror
+
+                <div class="mt-2 flex flex-wrap items-center gap-1.5 min-h-[28px]" x-show="tagsList.length > 0">
+                    <span class="text-[11px] text-on-surface-variant font-medium mr-1">Preview Tag:</span>
+                    <template x-for="(tag, index) in tagsList" :key="index">
+                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/20">
+                            <span class="text-primary/70">#</span>
+                            <span x-text="tag"></span>
+                            <button type="button" @click="removeTag(index)" class="hover:text-error text-on-surface-variant ml-0.5" title="Hapus tag">
+                                <span class="material-symbols-outlined text-[14px]">close</span>
+                            </button>
+                        </span>
+                    </template>
+                </div>
+
+                <div class="mt-1.5 flex items-center justify-between text-[11px] text-on-surface-variant">
+                    <span>💡 <em>Tips: Klik tombol <strong>Generate Tags Otomatis</strong> setelah mengisi Nama atau Deskripsi untuk menghasilkan tags relevan secara instan.</em></span>
+                </div>
+            </div>
+
             <div>
                 <label class="block font-label-md text-on-surface mb-xs">Demo URL (Optional)</label>
                 <input type="url" name="demo_url" value="{{ old('demo_url') }}" placeholder="https://..." class="w-full pl-4 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-secondary focus:ring-1 focus:ring-secondary/20">

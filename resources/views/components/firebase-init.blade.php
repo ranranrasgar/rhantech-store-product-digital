@@ -8,10 +8,10 @@
             fcmToken: null,
             initFirebase() {
                 const firebaseConfig = {
-                    apiKey: "{{ env('FIREBASE_API_KEY') }}",
-                    projectId: "{{ env('FIREBASE_PROJECT_ID') }}",
-                    messagingSenderId: "{{ env('FIREBASE_MESSAGING_SENDER_ID') }}",
-                    appId: "{{ env('FIREBASE_APP_ID') }}"
+                    apiKey: "{{ config('services.firebase.api_key') ?: env('FIREBASE_API_KEY') }}",
+                    projectId: "{{ config('services.firebase.project_id') ?: env('FIREBASE_PROJECT_ID') }}",
+                    messagingSenderId: "{{ config('services.firebase.messaging_sender_id') ?: env('FIREBASE_MESSAGING_SENDER_ID') }}",
+                    appId: "{{ config('services.firebase.app_id') ?: env('FIREBASE_APP_ID') }}"
                 };
 
                 if (!firebaseConfig.apiKey || typeof firebase === 'undefined') return;
@@ -29,7 +29,7 @@
                         Notification.requestPermission().then((permission) => {
                             if (permission === 'granted') {
                                 messaging.getToken({ 
-                                    vapidKey: "{{ env('FIREBASE_VAPID_KEY') }}",
+                                    vapidKey: "{{ config('services.firebase.vapid_key') ?: env('FIREBASE_VAPID_KEY') }}",
                                     serviceWorkerRegistration: registration 
                                 }).then((currentToken) => {
                                     if (currentToken) {
