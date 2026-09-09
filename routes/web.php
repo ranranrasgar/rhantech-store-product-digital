@@ -35,6 +35,9 @@ Route::post('/cart/remove', [\App\Http\Controllers\CartController::class, 'remov
 Route::get('/checkout', [\App\Http\Controllers\CheckoutController::class, 'index'])->name('checkout.index');
 Route::post('/checkout', [\App\Http\Controllers\CheckoutController::class, 'process'])->name('checkout.process')->middleware('throttle:checkout');
 Route::post('/checkout/select', [\App\Http\Controllers\CheckoutController::class, 'selectItems'])->name('checkout.select');
+Route::post('/checkout/apply-voucher', [\App\Http\Controllers\CheckoutController::class, 'applyVoucher'])->name('checkout.apply_voucher');
+Route::post('/checkout/remove-voucher', [\App\Http\Controllers\CheckoutController::class, 'removeVoucher'])->name('checkout.remove_voucher');
+Route::get('/checkout/store-vouchers', [\App\Http\Controllers\CheckoutController::class, 'getStoreVouchers'])->name('checkout.store_vouchers');
 Route::get('/payment/{invoice_number}', [\App\Http\Controllers\CheckoutController::class, 'payment'])->name('checkout.payment');
 Route::get('/checkout/finish/{invoice_number}', [\App\Http\Controllers\CheckoutController::class, 'checkStatus'])->name('checkout.finish');
 Route::get('/toko/{slug}', [\App\Http\Controllers\PublicStoreController::class, 'show'])->name('store.show');
@@ -103,6 +106,7 @@ Route::middleware(['auth', 'verified', 'is_tenant'])->prefix('dashboard')->name(
     Route::get('/purchases', [\App\Http\Controllers\Tenant\PurchaseController::class, 'index'])->name('purchases.index');
     
     Route::resource('products', \App\Http\Controllers\Tenant\ProductController::class);
+    Route::delete('products/{product}/images/delete-all', [\App\Http\Controllers\Tenant\ProductController::class, 'destroyAllImages'])->name('products.images.destroy_all');
     Route::delete('products/image/{image}', [\App\Http\Controllers\Tenant\ProductController::class, 'destroyImage'])->name('products.image.destroy');
     Route::patch('products/{product}/toggle-active', [\App\Http\Controllers\Tenant\ProductController::class, 'toggleActive'])->name('products.toggle_active');
     Route::patch('products/image/{image}/set-main', [\App\Http\Controllers\Tenant\ProductController::class, 'setMainImage'])->name('products.image.set_main');
@@ -127,6 +131,14 @@ Route::middleware(['auth', 'verified', 'is_tenant'])->prefix('dashboard')->name(
     Route::get('showcase', [\App\Http\Controllers\Tenant\ShowcaseController::class, 'index'])->name('showcase.index');
     Route::post('showcase/{product}/toggle', [\App\Http\Controllers\Tenant\ShowcaseController::class, 'toggle'])->name('showcase.toggle');
     
+    Route::get('pro', [\App\Http\Controllers\Tenant\ProController::class, 'index'])->name('pro.index');
+    Route::post('pro/upgrade', [\App\Http\Controllers\Tenant\ProController::class, 'upgrade'])->name('pro.upgrade');
+
+    Route::get('broadcast', [\App\Http\Controllers\Tenant\BroadcastController::class, 'index'])->name('broadcast.index');
+    Route::post('broadcast/send', [\App\Http\Controllers\Tenant\BroadcastController::class, 'send'])->name('broadcast.send');
+
+    Route::resource('projects', \App\Http\Controllers\Tenant\TenantProjectController::class);
+
     // Kategori & Tipe Custom Toko Tenant
     Route::post('categories/quick-store', [\App\Http\Controllers\Tenant\ProductController::class, 'quickStoreCategory'])->name('categories.quick-store');
     Route::post('types/quick-store', [\App\Http\Controllers\Tenant\ProductController::class, 'quickStoreType'])->name('types.quick-store');
@@ -183,6 +195,7 @@ Route::middleware(['auth', 'is_admin'])->prefix('admin')->name('admin.')->group(
     Route::resource('products', ProductController::class);
     Route::patch('products/{product}/approve', [ProductController::class, 'approve'])->name('products.approve');
     Route::patch('products/{product}/reject', [ProductController::class, 'reject'])->name('products.reject');
+    Route::delete('products/{product}/images/delete-all', [ProductController::class, 'destroyAllImages'])->name('products.images.destroy_all');
     Route::delete('products/image/{image}', [ProductController::class, 'destroyImage'])->name('products.image.destroy');
     Route::patch('products/{product}/toggle-active', [ProductController::class, 'toggleActive'])->name('products.toggle_active');
     Route::patch('products/image/{image}/set-main', [ProductController::class, 'setMainImage'])->name('products.image.set_main');
@@ -209,6 +222,7 @@ Route::middleware(['auth', 'is_admin'])->prefix('admin')->name('admin.')->group(
     
     // Multi-tenant features
     Route::get('stores', [\App\Http\Controllers\Admin\StoreController::class, 'index'])->name('stores.index');
+    Route::patch('stores/{store}', [\App\Http\Controllers\Admin\StoreController::class, 'update'])->name('stores.update');
     Route::get('payouts', [\App\Http\Controllers\Admin\PayoutController::class, 'index'])->name('payouts.index');
     Route::patch('payouts/{payout}', [\App\Http\Controllers\Admin\PayoutController::class, 'update'])->name('payouts.update');
     Route::get('ads', [\App\Http\Controllers\Admin\AdController::class, 'index'])->name('ads.index');

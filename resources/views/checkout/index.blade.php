@@ -151,7 +151,85 @@
                 <!-- Order Total Bar -->
                 <div class="p-4 md:p-6 bg-surface flex justify-between items-center border-t border-outline-variant">
                     <div class="text-xs md:text-sm text-on-surface-variant">Total Dipesan ({{ count($cart) }} Produk):</div>
-                    <div class="text-lg md:text-xl font-black text-primary">Rp{{ number_format($totalAmount, 0, ',', '.') }}</div>
+                    <div class="text-lg md:text-xl font-black text-primary">Rp{{ number_format($subtotal ?? $totalAmount, 0, ',', '.') }}</div>
+                </div>
+            </div>
+
+            <!-- Voucher & Kupon Toko Section -->
+            <div class="bg-surface rounded-sm border border-outline-variant shadow-xs mb-6 overflow-hidden" id="voucherSection">
+                <div class="p-4 md:p-6 border-b border-outline-variant flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div class="flex items-center gap-2 text-primary font-bold">
+                        <span class="material-symbols-outlined text-[22px]">confirmation_number</span>
+                        <h2 class="text-base text-on-surface">Voucher & Kupon Promo Toko</h2>
+                    </div>
+                    @if(isset($availableVouchers) && $availableVouchers->count() > 0)
+                        <button type="button" 
+                                onclick="openVoucherModal()" 
+                                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-sm bg-primary/10 hover:bg-primary/20 text-primary text-xs font-bold transition-colors cursor-pointer self-start sm:self-auto border border-primary/20">
+                            <span class="material-symbols-outlined text-[16px]">sell</span>
+                            <span>Pilih Dari {{ $availableVouchers->count() }} Kupon Tersedia</span>
+                        </button>
+                    @endif
+                </div>
+
+                <div class="p-4 md:p-6">
+                    <!-- Voucher Input Form -->
+                    <div class="max-w-md">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-1.5">Punya Kode Voucher?</label>
+                        <div class="flex gap-2">
+                            <input type="text" 
+                                   id="voucherInputText" 
+                                   placeholder="Contoh: MERDEKA100, DISKON50" 
+                                   value="{{ $appliedVoucher['code'] ?? '' }}"
+                                   class="flex-1 text-sm bg-surface-container-low border border-outline-variant rounded-sm px-3.5 py-2.5 text-on-surface font-mono font-bold uppercase focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary/50"
+                                   {{ !empty($appliedVoucher) ? 'readonly' : '' }}>
+                            
+                            <button type="button" 
+                                    id="btnApplyVoucher" 
+                                    onclick="handleApplyInput()" 
+                                    class="px-5 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-sm text-xs font-bold transition-all shadow-xs shrink-0 cursor-pointer {{ !empty($appliedVoucher) ? 'hidden' : '' }}">
+                                Terapkan
+                            </button>
+
+                            <button type="button" 
+                                    id="btnRemoveVoucher" 
+                                    onclick="removeVoucher()" 
+                                    class="px-4 py-2.5 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800 rounded-sm text-xs font-bold transition-colors shrink-0 cursor-pointer {{ empty($appliedVoucher) ? 'hidden' : '' }}">
+                                Hapus
+                            </button>
+                        </div>
+                        <input type="hidden" name="voucher_code" id="hiddenVoucherCode" value="{{ $appliedVoucher['code'] ?? '' }}">
+                    </div>
+
+                    <!-- Applied Voucher Status Alert -->
+                    <div id="voucherAlertSuccess" class="mt-3 {{ empty($appliedVoucher) ? 'hidden' : '' }}">
+                        <div class="p-3 rounded-sm bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 flex items-center justify-between text-xs">
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-[20px] text-emerald-600 dark:text-emerald-400">check_circle</span>
+                                <div>
+                                    <span class="font-bold" id="voucherSuccessTitle">
+                                        Kupon <span class="font-mono underline">{{ $appliedVoucher['code'] ?? '' }}</span> Berhasil Digunakan!
+                                    </span>
+                                    <span class="block text-[11px] text-emerald-700 dark:text-emerald-400" id="voucherSuccessDesc">
+                                        @if(!empty($appliedVoucher['is_free']))
+                                            🎉 Diskon 100% — Total Belanja Menjadi GRATIS (Rp 0)!
+                                        @elseif(!empty($appliedVoucher))
+                                            Hemat Rp {{ number_format($discountAmount ?? 0, 0, ',', '.') }} untuk pesanan ini.
+                                        @endif
+                                    </span>
+                                </div>
+                            </div>
+                            <button type="button" onclick="removeVoucher()" class="text-xs font-bold text-rose-600 hover:underline ml-2 shrink-0">Batal</button>
+                        </div>
+                    </div>
+
+                    <!-- Voucher Alert Error -->
+                    <div id="voucherAlertError" class="mt-3 hidden">
+                        <div class="p-3 rounded-sm bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 flex items-center gap-2 text-xs">
+                            <span class="material-symbols-outlined text-[18px] text-rose-500">error</span>
+                            <span id="voucherErrorMsg">Kode voucher tidak valid.</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -160,50 +238,255 @@
                 <div class="p-4 md:p-6 border-b border-outline-variant flex flex-col md:flex-row md:items-center justify-between gap-3">
                     <div>
                         <h2 class="text-base font-bold text-on-surface">Metode Pembayaran</h2>
-                        <p class="text-xs text-on-surface-variant mt-0.5">Pilih sistem gerbang pembayaran terverifikasi otomatis.</p>
+                        <p class="text-xs text-on-surface-variant mt-0.5" id="paymentMethodSubtitle">
+                            Pilih sistem gerbang pembayaran terverifikasi otomatis.
+                        </p>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <div class="border-2 border-primary text-primary bg-primary/5 px-3 py-1.5 text-xs rounded-sm font-bold flex items-center gap-1.5">
-                            <span class="material-symbols-outlined text-[16px]">qr_code_scanner</span>
-                            <span>QRIS / Bank Transfer / E-Wallet (Midtrans)</span>
-                        </div>
+                    <div class="flex items-center gap-2" id="paymentMethodBadge">
+                        @if(!empty($appliedVoucher['is_free']) || (isset($finalAmount) && $finalAmount <= 0))
+                            <div class="border-2 border-emerald-500 text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 px-3 py-1.5 text-xs rounded-sm font-bold flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-[16px]">redeem</span>
+                                <span>GRATIS 100% (Aktivasi Langsung Tanpa Bayar)</span>
+                            </div>
+                        @else
+                            <div class="border-2 border-primary text-primary bg-primary/5 px-3 py-1.5 text-xs rounded-sm font-bold flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-[16px]">qr_code_scanner</span>
+                                <span>QRIS / Bank Transfer / E-Wallet (Midtrans)</span>
+                            </div>
+                        @endif
                     </div>
                 </div>
                 
                 <!-- Calculation Breakdown & Submit -->
                 <div class="p-4 md:p-6 bg-surface-container-low">
-                    <div class="flex flex-col items-end gap-2.5 text-xs md:text-sm text-on-surface-variant mb-6">
-                        <div class="flex w-full md:w-72 justify-between">
+                    <div class="flex flex-col items-end gap-2 text-xs md:text-sm text-on-surface-variant mb-6">
+                        <div class="flex w-full md:w-80 justify-between">
                             <span>Subtotal Produk:</span>
-                            <span class="font-bold text-on-surface">Rp{{ number_format($totalAmount, 0, ',', '.') }}</span>
+                            <span class="font-bold text-on-surface" id="summarySubtotal">Rp{{ number_format($subtotal ?? $totalAmount, 0, ',', '.') }}</span>
                         </div>
-                        <div class="flex w-full md:w-72 justify-between">
-                            <span>Biaya Pengiriman Digital:</span>
-                            <span class="font-bold text-emerald-600 dark:text-emerald-400">Rp0</span>
+
+                        <!-- Voucher Discount Row -->
+                        <div class="flex w-full md:w-80 justify-between text-emerald-600 dark:text-emerald-400 font-bold {{ empty($discountAmount) || $discountAmount <= 0 ? 'hidden' : '' }}" id="rowDiscount">
+                            <span class="flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[14px]">sell</span>
+                                Diskon Kupon:
+                            </span>
+                            <span id="summaryDiscount">-Rp{{ number_format($discountAmount ?? 0, 0, ',', '.') }}</span>
                         </div>
-                        <div class="flex w-full md:w-72 justify-between">
-                            <span>Biaya Layanan Gerbang:</span>
-                            <span class="font-bold text-on-surface">Rp0</span>
-                        </div>
-                        <div class="flex w-full md:w-72 justify-between items-baseline mt-2 pt-3 border-t border-outline-variant">
+
+
+                        <div class="flex w-full md:w-80 justify-between items-baseline mt-2 pt-3 border-t border-outline-variant">
                             <span class="text-sm font-extrabold text-on-surface">Total Pembayaran:</span>
-                            <span class="text-2xl md:text-3xl font-black text-primary">Rp{{ number_format($totalAmount, 0, ',', '.') }}</span>
+                            <div class="text-right">
+                                <span class="text-2xl md:text-3xl font-black {{ (!empty($appliedVoucher['is_free']) || (isset($finalAmount) && $finalAmount <= 0)) ? 'text-emerald-600 dark:text-emerald-400' : 'text-primary' }}" id="summaryTotal">
+                                    @if(!empty($appliedVoucher['is_free']) || (isset($finalAmount) && $finalAmount <= 0))
+                                        GRATIS (Rp 0)
+                                    @else
+                                        Rp{{ number_format($finalAmount ?? $totalAmount, 0, ',', '.') }}
+                                    @endif
+                                </span>
+                            </div>
                         </div>
                     </div>
                     
                     <div class="flex flex-col md:flex-row justify-between items-center border-t border-outline-variant pt-5 gap-4">
-                        <p class="text-xs text-on-surface-variant w-full md:w-2/3 text-center md:text-left leading-relaxed">
-                            Dengan mengklik tombol <span class="font-bold text-on-surface">"Buat Pesanan"</span>, Anda menyetujui ketentuan transaksi produk digital kami. Invoice dan QR pembayaran otomatis diterbitkan melalui payment gateway Midtrans.
+                        <p class="text-xs text-on-surface-variant w-full md:w-2/3 text-center md:text-left leading-relaxed" id="checkoutNoteText">
+                            @if(!empty($appliedVoucher['is_free']) || (isset($finalAmount) && $finalAmount <= 0))
+                                Kupon 100% diterapkan! Klik <span class="font-bold text-on-surface">"Klaim Produk Gratis"</span> untuk langsung mendapatkan akses file unduhan ke akun Anda.
+                            @else
+                                Dengan mengklik tombol <span class="font-bold text-on-surface">"Buat Pesanan"</span>, Anda menyetujui ketentuan transaksi produk digital kami. Invoice dan QR pembayaran otomatis diterbitkan melalui payment gateway Midtrans.
+                            @endif
                         </p>
-                        <button type="submit" class="w-full md:w-auto px-8 md:px-12 py-3.5 bg-primary hover:brightness-110 text-white rounded-sm text-sm font-bold transition-all shadow-md shadow-primary/20 flex items-center justify-center gap-2 shrink-0 cursor-pointer">
-                            <span class="material-symbols-outlined text-[18px]">lock</span>
-                            <span>Buat Pesanan</span>
+                        <button type="submit" id="btnSubmitOrder" class="w-full md:w-auto px-8 md:px-12 py-3.5 {{ (!empty($appliedVoucher['is_free']) || (isset($finalAmount) && $finalAmount <= 0)) ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-primary hover:brightness-110' }} text-white rounded-sm text-sm font-bold transition-all shadow-md shadow-primary/20 flex items-center justify-center gap-2 shrink-0 cursor-pointer">
+                            <span class="material-symbols-outlined text-[18px]" id="btnSubmitIcon">{{ (!empty($appliedVoucher['is_free']) || (isset($finalAmount) && $finalAmount <= 0)) ? 'redeem' : 'lock' }}</span>
+                            <span id="btnSubmitLabel">{{ (!empty($appliedVoucher['is_free']) || (isset($finalAmount) && $finalAmount <= 0)) ? 'Klaim Produk Gratis' : 'Buat Pesanan' }}</span>
                         </button>
                     </div>
                 </div>
             </div>
         </form>
     </div>
+
+    <!-- Tokopedia Style Voucher Modal -->
+    <div id="voucherModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs hidden">
+        <div class="bg-white dark:bg-[#161b22] w-full max-w-2xl rounded-2xl shadow-2xl border border-gray-200 dark:border-[#30363d] overflow-hidden flex flex-col max-h-[85vh] animate-in fade-in zoom-in-95 duration-200">
+            <!-- Modal Header -->
+            <div class="p-4 sm:p-5 border-b border-gray-200 dark:border-[#30363d] flex items-center justify-between bg-surface-container-low">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary text-[24px]">confirmation_number</span>
+                    <div>
+                        <h3 class="text-base font-bold text-on-surface">Kupon Toko Tersedia</h3>
+                        <p class="text-xs text-on-surface-variant">Pilih kupon diskon spesial untuk pesanan produk Anda</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeVoucherModal()" class="w-8 h-8 rounded-full hover:bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer">
+                    <span class="material-symbols-outlined text-[20px]">close</span>
+                </button>
+            </div>
+
+            <!-- Modal Content (List of Tokopedia Ticket Cards) -->
+            <div class="p-4 sm:p-6 overflow-y-auto flex-1 divide-y divide-transparent space-y-4">
+                @if(isset($availableVouchers) && $availableVouchers->count() > 0)
+                    @foreach($availableVouchers as $v)
+                        <x-voucher-card :campaign="$v" mode="checkout" :applied="!empty($appliedVoucher) && $appliedVoucher['id'] == $v->id" :hasUsed="in_array($v->id, $usedCampaignIds ?? [])" />
+                    @endforeach
+                @else
+                    <div class="text-center py-10 text-on-surface-variant">
+                        <span class="material-symbols-outlined text-5xl text-outline-variant mb-2">loyalty</span>
+                        <p class="text-sm font-semibold">Tidak ada kupon voucher aktif saat ini.</p>
+                        <p class="text-xs mt-1">Anda tetap bisa memasukkan kode kupon secara manual jika memilikinya.</p>
+                    </div>
+                @endif
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="p-4 border-t border-gray-200 dark:border-[#30363d] bg-surface-container-low flex justify-end">
+                <button type="button" onclick="closeVoucherModal()" class="px-5 py-2 rounded-xl bg-surface border border-outline-variant hover:bg-surface-container text-xs font-bold text-on-surface transition-colors cursor-pointer">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
 </main>
+
+<script>
+    function openVoucherModal() {
+        document.getElementById('voucherModal').classList.remove('hidden');
+    }
+
+    function closeVoucherModal() {
+        document.getElementById('voucherModal').classList.add('hidden');
+    }
+
+    function handleApplyInput() {
+        const code = document.getElementById('voucherInputText').value.trim();
+        if (!code) {
+            showVoucherError('Silakan masukkan kode voucher terlebih dahulu.');
+            return;
+        }
+        applyVoucherCode(code);
+    }
+
+    function applyVoucherCode(code) {
+        hideVoucherAlerts();
+        const btn = document.getElementById('btnApplyVoucher');
+        if (btn) btn.disabled = true;
+
+        const emailInput = document.querySelector('input[name="customer_email"]');
+        const emailVal = emailInput ? emailInput.value.trim() : '';
+
+        fetch('{{ route("checkout.apply_voucher") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({ code: code, email: emailVal })
+        })
+        .then(r => r.json())
+        .then(res => {
+            if (btn) btn.disabled = false;
+            if (res.success) {
+                // Update UI elements
+                document.getElementById('voucherInputText').value = res.voucher.code;
+                document.getElementById('voucherInputText').readOnly = true;
+                document.getElementById('hiddenVoucherCode').value = res.voucher.code;
+                document.getElementById('btnApplyVoucher').classList.add('hidden');
+                document.getElementById('btnRemoveVoucher').classList.remove('hidden');
+
+                // Alert success
+                document.getElementById('voucherAlertSuccess').classList.remove('hidden');
+                document.getElementById('voucherSuccessTitle').innerHTML = `Kupon <span class="font-mono underline">${res.voucher.code}</span> Berhasil Digunakan!`;
+                
+                if (res.is_free) {
+                    document.getElementById('voucherSuccessDesc').innerText = '🎉 Diskon 100% — Total Belanja Menjadi GRATIS (Rp 0)!';
+                } else {
+                    document.getElementById('voucherSuccessDesc').innerText = `Hemat ${res.discount_amount_formatted} untuk pesanan ini.`;
+                }
+
+                // Update calculation breakdown
+                document.getElementById('rowDiscount').classList.remove('hidden');
+                document.getElementById('summaryDiscount').innerText = `-${res.discount_amount_formatted}`;
+                document.getElementById('summaryTotal').innerText = res.final_total_formatted;
+
+                if (res.is_free) {
+                    document.getElementById('summaryTotal').className = 'text-2xl md:text-3xl font-black text-emerald-600 dark:text-emerald-400';
+                    document.getElementById('paymentMethodBadge').innerHTML = `
+                        <div class="border-2 border-emerald-500 text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 px-3 py-1.5 text-xs rounded-sm font-bold flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-[16px]">redeem</span>
+                            <span>GRATIS 100% (Aktivasi Langsung Tanpa Bayar)</span>
+                        </div>
+                    `;
+                    document.getElementById('btnSubmitOrder').className = 'w-full md:w-auto px-8 md:px-12 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-sm text-sm font-bold transition-all shadow-md flex items-center justify-center gap-2 shrink-0 cursor-pointer';
+                    document.getElementById('btnSubmitIcon').innerText = 'redeem';
+                    document.getElementById('btnSubmitLabel').innerText = 'Klaim Produk Gratis';
+                    document.getElementById('checkoutNoteText').innerHTML = 'Kupon 100% diterapkan! Klik <span class="font-bold text-on-surface">"Klaim Produk Gratis"</span> untuk langsung mendapatkan akses file unduhan ke akun Anda.';
+                } else {
+                    document.getElementById('summaryTotal').className = 'text-2xl md:text-3xl font-black text-primary';
+                }
+
+                closeVoucherModal();
+            } else {
+                showVoucherError(res.message || 'Gagal menerapkan kupon.');
+            }
+        })
+        .catch(err => {
+            if (btn) btn.disabled = false;
+            showVoucherError('Terjadi kesalahan jaringan saat menerapkan kupon.');
+        });
+    }
+
+    function removeVoucher() {
+        fetch('{{ route("checkout.remove_voucher") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(r => r.json())
+        .then(res => {
+            // Reset input
+            document.getElementById('voucherInputText').value = '';
+            document.getElementById('voucherInputText').readOnly = false;
+            document.getElementById('hiddenVoucherCode').value = '';
+            document.getElementById('btnApplyVoucher').classList.remove('hidden');
+            document.getElementById('btnRemoveVoucher').classList.add('hidden');
+
+            // Hide alert & discount row
+            document.getElementById('voucherAlertSuccess').classList.add('hidden');
+            document.getElementById('voucherAlertError').classList.add('hidden');
+            document.getElementById('rowDiscount').classList.add('hidden');
+
+            // Reset summary
+            document.getElementById('summaryTotal').innerText = res.final_total_formatted;
+            document.getElementById('summaryTotal').className = 'text-2xl md:text-3xl font-black text-primary';
+
+            document.getElementById('paymentMethodBadge').innerHTML = `
+                <div class="border-2 border-primary text-primary bg-primary/5 px-3 py-1.5 text-xs rounded-sm font-bold flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[16px]">qr_code_scanner</span>
+                    <span>QRIS / Bank Transfer / E-Wallet (Midtrans)</span>
+                </div>
+            `;
+            document.getElementById('btnSubmitOrder').className = 'w-full md:w-auto px-8 md:px-12 py-3.5 bg-primary hover:brightness-110 text-white rounded-sm text-sm font-bold transition-all shadow-md shadow-primary/20 flex items-center justify-center gap-2 shrink-0 cursor-pointer';
+            document.getElementById('btnSubmitIcon').innerText = 'lock';
+            document.getElementById('btnSubmitLabel').innerText = 'Buat Pesanan';
+            document.getElementById('checkoutNoteText').innerHTML = 'Dengan mengklik tombol <span class="font-bold text-on-surface">"Buat Pesanan"</span>, Anda menyetujui ketentuan transaksi produk digital kami. Invoice dan QR pembayaran otomatis diterbitkan melalui payment gateway Midtrans.';
+        });
+    }
+
+    function showVoucherError(msg) {
+        document.getElementById('voucherAlertError').classList.remove('hidden');
+        document.getElementById('voucherErrorMsg').innerText = msg;
+    }
+
+    function hideVoucherAlerts() {
+        document.getElementById('voucherAlertError').classList.add('hidden');
+    }
+</script>
 @endsection
 

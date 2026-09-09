@@ -14,18 +14,26 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // 1. Basic counts for Digital Marketplace
-        $totalOrders = Order::query()->whereIn('status', ['paid', 'downloaded'])->count('*');
-        $totalRevenue = Order::query()->whereIn('status', ['paid', 'downloaded'])->sum('amount');
-        $totalStores = Store::query()->count('*');
-        $totalProducts = Product::query()->where('is_active', true)->count('*');
-        $newMessages = ContactMessage::query()->where('read_at', null)->count('*');
+        // 1 & 2. Consolidated basic counts & order breakdown in ONE single aggregated query
+        $orderStats = Order::query()
+            ->selectRaw("
+                SUM(CASE WHEN status IN ('paid', 'downloaded') THEN 1 ELSE 0 END) as success_count,
+                SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) as pending_count,
+                SUM(CASE WHEN status = 'failed' THEN 1 ELSE 0 END) as failed_count,
+                SUM(CASE WHEN status IN ('paid', 'downloaded') THEN amount ELSE 0 END) as total_revenue
+            ")
+            ->first();
 
-        // 2. Order status breakdown
-        $orderPending = Order::query()->where('status', 'pending')->count('*');
-        $orderSuccess = Order::query()->whereIn('status', ['paid', 'downloaded'])->count('*');
-        $orderFailed = Order::query()->where('status', 'failed')->count('*');
+        $orderSuccess = (int) ($orderStats->success_count ?? 0);
+        $orderPending = (int) ($orderStats->pending_count ?? 0);
+        $orderFailed = (int) ($orderStats->failed_count ?? 0);
+        $totalOrders = $orderSuccess;
+        $totalRevenue = (float) ($orderStats->total_revenue ?? 0);
         $allOrdersCount = $orderPending + $orderSuccess + $orderFailed;
+
+        $totalStores = Store::query()->count();
+        $totalProducts = Product::query()->where('is_active', true)->count();
+        $newMessages = ContactMessage::query()->where('read_at', null)->count();
 
         // Percentages
         $projTotal = max(1, $allOrdersCount);
@@ -33,25 +41,44 @@ class DashboardController extends Controller
         $percentPending = $allOrdersCount > 0 ? round(($orderPending / $projTotal) * 100) : 0;
         $percentFailed = $allOrdersCount > 0 ? (100 - $percentSuccess - $percentPending) : 0;
 
-        // 3. Monthly Revenue (Past 6 Months)
+        // 3. Monthly Revenue (Past 6 Months) consolidated into ONE single query
+        $sixMonthsAgo = now()->subMonths(5)->startOfMonth();
+        $monthlyAggregated = Order::query()
+            ->whereIn('status', ['paid', 'downloaded'])
+            ->where('created_at', '>=', $sixMonthsAgo)
+            ->selectRaw("DATE_FORMAT(created_at, '%Y-%m') as ym, SUM(amount) as total")
+            ->groupBy('ym')
+            ->pluck('total', 'ym');
+
         $monthlyRevenue = [];
         $monthLabels = [];
         for ($i = 5; $i >= 0; $i--) {
             $date = now()->subMonths($i);
             $monthKey = $date->format('Y-m');
-            $monthName = $date->format('M');
-            $monthLabels[] = $monthName;
+            $monthLabels[] = $date->format('M');
+            $monthlyRevenue[] = (float) ($monthlyAggregated[$monthKey] ?? 0);
+        }
 
-            $rev = Order::query()->whereIn('status', ['paid', 'downloaded'])
-                ->whereYear('created_at', $date->year)
-                ->whereMonth('created_at', $date->month)
-                ->sum('amount');
+        // 3b. Daily Revenue for Current Month (Bulan Berjalan)
+        $daysInCurrentMonth = now()->daysInMonth;
+        $currentMonthName = now()->locale('id')->translatedFormat('F Y');
+        $currentMonthOrders = Order::query()
+            ->whereIn('status', ['paid', 'downloaded'])
+            ->whereYear('created_at', now()->year)
+            ->whereMonth('created_at', now()->month)
+            ->selectRaw('DAY(created_at) as day, SUM(amount) as total')
+            ->groupBy('day')
+            ->pluck('total', 'day');
 
-            $monthlyRevenue[] = (float) $rev;
+        $dailyRevenue = [];
+        $dailyLabels = [];
+        for ($d = 1; $d <= $daysInCurrentMonth; $d++) {
+            $dailyLabels[] = (string) $d;
+            $dailyRevenue[] = (float) ($currentMonthOrders[$d] ?? 0);
         }
 
         // 4. Recent Transactions (Orders)
-        // Menampilkan 6 transaksi terbaru untuk tabel
+        // Menampilkan 6 transaksi terbaru untuk tabel dengan relasi yang dipilih
         $recentTransactions = Order::query()->with('orderItems.product.store')->latest()->take(6)->get();
 
         // 5. Recent Activity Feed (Recent messages)
@@ -86,6 +113,9 @@ class DashboardController extends Controller
             'percentFailed',
             'monthLabels',
             'monthlyRevenue',
+            'dailyLabels',
+            'dailyRevenue',
+            'currentMonthName',
             'recentTransactions',
             'recentMessages',
             'mapData'
@@ -114,8 +144,12 @@ class DashboardController extends Controller
             'semarang' => ['lat' => -6.966667, 'lng' => 110.416664, 'city' => 'Semarang, Jawa Tengah'],
         ];
 
-        // 1. Toko / Merchant Stores
-        $stores = Store::with(['user', 'products'])->get();
+        // 1. Toko / Merchant Stores (Optimasi: selective columns & withCount products)
+        $stores = Store::with(['user:id,name,email'])
+            ->withCount(['products' => function($q) {
+                $q->published();
+            }])
+            ->get(['id', 'user_id', 'name', 'slug', 'address', 'maps_location', 'logo']);
         $storeMarkers = [];
 
         foreach ($stores as $s) {
@@ -169,31 +203,31 @@ class DashboardController extends Controller
                 'address' => $locationLabel,
                 'lat' => $lat,
                 'lng' => $lng,
-                'products_count' => $s->products->count(),
+                'products_count' => (int) ($s->products_count ?? 0),
                 'maps_url' => $s->maps_location ?: "https://www.google.com/maps?q={$lat},{$lng}",
                 'store_url' => $s->slug ? route('store.show', $s->slug) : null,
                 'logo_url' => $s->logo ? asset('storage/' . $s->logo) : null,
             ];
         }
 
-        // 2. Customers / Pelanggan from Orders
-        $orders = Order::all();
-        $customerGroups = [];
+        // 2. Customers / Pelanggan from Orders (Optimasi: agregasi langsung via database alih-alih Order::all())
+        $customerGroupsRaw = Order::query()
+            ->whereNotNull('customer_email')
+            ->selectRaw('customer_email, MAX(customer_name) as customer_name, MAX(customer_phone) as customer_phone, COUNT(*) as orders_count, SUM(amount) as total_spent, MAX(created_at) as last_order_at')
+            ->groupBy('customer_email')
+            ->get();
 
-        foreach ($orders as $o) {
-            $email = strtolower(trim($o->customer_email));
-            if (!isset($customerGroups[$email])) {
-                $customerGroups[$email] = [
-                    'name' => $o->customer_name,
-                    'email' => $o->customer_email,
-                    'phone' => $o->customer_phone,
-                    'orders_count' => 0,
-                    'total_spent' => 0,
-                    'last_order' => $o->created_at ? $o->created_at->format('d M Y') : '-',
-                ];
-            }
-            $customerGroups[$email]['orders_count']++;
-            $customerGroups[$email]['total_spent'] += (float) $o->amount;
+        $customerGroups = [];
+        foreach ($customerGroupsRaw as $row) {
+            $email = strtolower(trim($row->customer_email));
+            $customerGroups[$email] = [
+                'name' => $row->customer_name ?: 'Pelanggan',
+                'email' => $row->customer_email,
+                'phone' => $row->customer_phone ?: '-',
+                'orders_count' => (int) $row->orders_count,
+                'total_spent' => (float) $row->total_spent,
+                'last_order' => $row->last_order_at ? \Carbon\Carbon::parse($row->last_order_at)->format('d M Y') : '-',
+            ];
         }
 
         $customerLocations = [

@@ -34,13 +34,19 @@ class AdController extends Controller
         // Total saldo iklan beredar di akun seluruh tenant
         $totalAdBalanceInCirculation = Store::sum('ad_balance');
 
-        // Total kampanye iklan aktif & total tayangan / klik
-        $activeAdsCount = SellerAd::where('status', 'active')->count();
-        $totalAdImpressions = SellerAd::sum('views_count');
-        $totalAdClicks = SellerAd::sum('clicks_count');
+        // Total kampanye iklan aktif & total tayangan / klik (consolidated in 1 single query)
+        $adStats = SellerAd::selectRaw("
+            SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) as active_count,
+            SUM(views_count) as total_impressions,
+            SUM(clicks_count) as total_clicks
+        ")->first();
+
+        $activeAdsCount = (int) ($adStats->active_count ?? 0);
+        $totalAdImpressions = (int) ($adStats->total_impressions ?? 0);
+        $totalAdClicks = (int) ($adStats->total_clicks ?? 0);
 
         // 2. Query Transaksi Top-Up Saldo Iklan
-        $txQuery = AdTransaction::with('store')->latest();
+        $txQuery = AdTransaction::with('store:id,name,slug,logo')->latest();
 
         if ($search) {
             $txQuery->where(function ($q) use ($search) {

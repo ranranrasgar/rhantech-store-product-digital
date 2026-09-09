@@ -29,8 +29,10 @@
     <!-- Search & Filter Card -->
     <div class="bg-surface rounded-xl border border-outline-variant p-4 mb-6 shadow-xs">
         <form method="GET" action="{{ route('admin.users.index') }}" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-            <div class="flex-1 relative">
-                <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
+            <div class="flex-1 relative flex items-center">
+                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-on-surface-variant">
+                    <span class="material-symbols-outlined text-[18px] leading-none">search</span>
+                </div>
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama, email, no. HP, atau nama toko..." class="w-full pl-10 pr-4 py-2 text-xs md:text-sm bg-surface-container-lowest border border-outline-variant rounded-xl text-on-surface focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all">
             </div>
 

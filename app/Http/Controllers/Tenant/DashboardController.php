@@ -20,36 +20,49 @@ class DashboardController extends Controller
             return view('tenant.dashboard_buyer', compact('trendingSearches', 'topProducts'));
         }
 
-        // Hitung total produk & produk aktif
-        $totalProducts = $store->products()->count();
-        $activeProducts = $store->products()->where('is_active', true)->count();
+        // Hitung total produk, produk aktif, dan views dalam 1 kueri agregasi
+        $productStats = $store->products()->selectRaw("
+            COUNT(*) as total,
+            SUM(CASE WHEN is_active = 1 THEN 1 ELSE 0 END) as active,
+            SUM(views) as total_views
+        ")->first();
+        $totalProducts = (int) ($productStats->total ?? 0);
+        $activeProducts = (int) ($productStats->active ?? 0);
+        $productViews = (int) ($productStats->total_views ?? 0);
 
         // Pesanan terkait produk toko
         $ordersQuery = \App\Models\Order::where(function ($q) use ($store) {
             $q->whereHas('orderItems.product', function ($sub) use ($store) {
-                $sub->where('store_id', $store->id);
+                $sub->where('products.store_id', $store->id);
             })->orWhereHas('product', function ($sub) use ($store) {
-                $sub->where('store_id', $store->id);
+                $sub->where('products.store_id', $store->id);
             });
         });
 
-        $totalOrdersCount = (clone $ordersQuery)->count();
-        $pendingOrdersCount = (clone $ordersQuery)->where('status', 'pending')->count();
-        $completedOrdersCount = (clone $ordersQuery)->whereIn('status', ['paid', 'downloaded'])->count();
+        // Hitung status pesanan dalam 1 kueri agregasi
+        $orderCounts = (clone $ordersQuery)
+            ->selectRaw("
+                COUNT(*) as total,
+                SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) as pending,
+                SUM(CASE WHEN status IN ('paid', 'downloaded') THEN 1 ELSE 0 END) as completed
+            ")->first();
+
+        $totalOrdersCount = (int) ($orderCounts->total ?? 0);
+        $pendingOrdersCount = (int) ($orderCounts->pending ?? 0);
+        $completedOrdersCount = (int) ($orderCounts->completed ?? 0);
 
         // Total penghasilan toko
         $totalSales = $store->balance;
 
         // Total Pengunjung / Visitor (Kunjungan profil toko + seluruh view katalog produk)
         $storeViews = (int) ($store->views ?? 0);
-        $productViews = (int) $store->products()->sum('views');
         $totalVisitors = $storeViews + $productViews;
 
         // 5 Pesanan Terbaru
-        $recentOrders = (clone $ordersQuery)->with(['orderItems.product', 'product'])->latest()->take(5)->get();
+        $recentOrders = (clone $ordersQuery)->with(['orderItems.product.images', 'product.images'])->latest()->take(5)->get();
 
         // Produk Unggulan / Terpopuler Toko
-        $topProducts = $store->products()->with(['images'])->latest()->take(4)->get();
+        $topProducts = $store->products()->with(['images'])->select(['id', 'store_id', 'name', 'slug', 'price', 'discount_price', 'views', 'sales_count'])->latest()->take(4)->get();
 
         // Kata Kunci & Tags Paling Banyak Dicari Pembeli di Platform (Insight Pasar)
         $trendingSearches = \App\Models\ProductSearch::orderByDesc('hits')
@@ -63,6 +76,49 @@ class DashboardController extends Controller
         $hasClaimedWelcomeVoucher = \App\Models\AdTransaction::where('store_id', $store->id)
             ->where('payment_method', 'promo_voucher')
             ->exists();
+
+        // 1 & 2. Grafik Penjualan Bulanan & Harian (Optimasi: 1 kueri tunggal untuk 6 bulan terakhir)
+        $sixMonthsAgo = now()->subMonths(5)->startOfMonth();
+        $recentPaidOrders = (clone $ordersQuery)
+            ->whereIn('orders.status', ['paid', 'downloaded'])
+            ->where('orders.created_at', '>=', $sixMonthsAgo)
+            ->with(['product:id,store_id', 'orderItems.product:id,store_id'])
+            ->get(['orders.id', 'orders.amount', 'orders.created_at']);
+
+        // Kelompokkan per bulan (Y-m) dan per hari di bulan berjalan di memori tanpa kueri tambahan
+        $currentMonthKey = now()->format('Y-m');
+        $monthlyTotals = [];
+        $dailyTotals = [];
+
+        foreach ($recentPaidOrders as $o) {
+            $ym = $o->created_at->format('Y-m');
+            $tenantItems = $o->orderItems->filter(fn($item) => $item->product && $item->product->store_id == $store->id);
+            $amount = $tenantItems->isNotEmpty() ? $tenantItems->sum(fn($it) => $it->price * $it->quantity) : (float) $o->amount;
+
+            $monthlyTotals[$ym] = ($monthlyTotals[$ym] ?? 0) + $amount;
+
+            if ($ym === $currentMonthKey) {
+                $day = (int) $o->created_at->format('j');
+                $dailyTotals[$day] = ($dailyTotals[$day] ?? 0) + $amount;
+            }
+        }
+
+        $monthlySales = [];
+        $monthLabels = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $date = now()->subMonths($i);
+            $monthLabels[] = $date->format('M');
+            $monthlySales[] = (float) ($monthlyTotals[$date->format('Y-m')] ?? 0);
+        }
+
+        $daysInCurrentMonth = now()->daysInMonth;
+        $currentMonthName = now()->locale('id')->translatedFormat('F Y');
+        $dailySales = [];
+        $dailyLabels = [];
+        for ($d = 1; $d <= $daysInCurrentMonth; $d++) {
+            $dailyLabels[] = (string) $d;
+            $dailySales[] = (float) ($dailyTotals[$d] ?? 0);
+        }
 
         return view('tenant.dashboard', compact(
             'store',
@@ -80,7 +136,12 @@ class DashboardController extends Controller
             'trendingSearches',
             'adBalance',
             'activeAdsCount',
-            'hasClaimedWelcomeVoucher'
+            'hasClaimedWelcomeVoucher',
+            'monthlySales',
+            'monthLabels',
+            'dailySales',
+            'dailyLabels',
+            'currentMonthName'
         ));
     }
 }

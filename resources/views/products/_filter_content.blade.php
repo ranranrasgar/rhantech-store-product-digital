@@ -21,23 +21,25 @@
             <label for="product-search-{{ $suffix ?? 'desktop' }}" class="block text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2">
                 Pencarian Produk
             </label>
-            <div class="relative">
+            <div class="relative flex items-center">
                 <input type="text" 
                        id="product-search-{{ $suffix ?? 'desktop' }}" 
                        x-model="search"
                        @input="onSearchInput()" 
                        placeholder="Cari nama produk, toko..." 
                        class="w-full pl-9 pr-8 py-2 text-xs md:text-sm bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-lg border border-gray-200 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">
-                <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-base">
-                    search
-                </span>
+                <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-gray-400">
+                    <span class="material-symbols-outlined text-base leading-none">
+                        search
+                    </span>
+                </div>
                 <button type="button"
                         x-show="search" 
                         x-cloak
                         @click="clearSearch()" 
-                        class="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-rose-500 transition-colors"
+                        class="absolute inset-y-0 right-0 pr-2.5 flex items-center text-gray-400 hover:text-rose-500 transition-colors"
                         title="Hapus pencarian">
-                    <span class="material-symbols-outlined text-sm">close</span>
+                    <span class="material-symbols-outlined text-sm leading-none">close</span>
                 </button>
             </div>
         </div>

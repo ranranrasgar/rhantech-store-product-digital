@@ -122,7 +122,7 @@ class Product extends Model
             if ($avg) return round((float)$avg, 1);
         }
 
-        return 4.9;
+        return 0.0;
     }
 
     /**

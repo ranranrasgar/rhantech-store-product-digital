@@ -99,16 +99,20 @@
             <div class="md:hidden flex-1 min-w-0 mr-2">
                 <form action="{{ route('store.show', $store->slug) }}" method="GET" class="relative flex items-center w-full">
                     <div class="relative w-full flex items-center">
-                        <span class="material-symbols-outlined absolute left-3 text-[18px] text-primary pointer-events-none">search</span>
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-primary">
+                            <span class="material-symbols-outlined text-[18px] leading-none">search</span>
+                        </div>
                         <input type="text" 
                                name="q" 
                                value="{{ request('q', request('search', '')) }}"
                                placeholder="Cari produk di {{ $store->name }}..." 
                                class="w-full pl-9 pr-8 py-2 text-xs bg-surface-container/90 dark:bg-slate-800/90 border border-outline-variant rounded-full text-on-surface placeholder:text-on-surface-variant/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-medium shadow-2xs">
                         @if(request('q') || request('search'))
-                            <a href="{{ route('store.show', $store->slug) }}" class="absolute right-2.5 text-on-surface-variant hover:text-error flex items-center justify-center" title="Hapus">
-                                <span class="material-symbols-outlined text-[16px]">cancel</span>
-                            </a>
+                            <div class="absolute inset-y-0 right-0 pr-2.5 flex items-center">
+                                <a href="{{ route('store.show', $store->slug) }}" class="text-on-surface-variant hover:text-error flex items-center justify-center" title="Hapus">
+                                    <span class="material-symbols-outlined text-[16px] leading-none">cancel</span>
+                                </a>
+                            </div>
                         @endif
                     </div>
                 </form>

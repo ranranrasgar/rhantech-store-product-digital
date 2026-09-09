@@ -256,24 +256,31 @@
                         <!-- Ratings & Stats -->
                         @php 
                             $realPaidOrdersCount = $product->orders()->whereIn('status', ['paid', 'downloaded'])->count();
-                            $rating = $product->effective_rating;
-                            $sold = $product->sales_count ?: $realPaidOrdersCount;
-                            $reviews = $product->effective_reviews_count;
+                            $rating = (float)$product->effective_rating;
+                            $sold = (int)($product->sales_count ?: $realPaidOrdersCount);
+                            $reviews = (int)$product->effective_reviews_count;
                         @endphp
                         <div class="flex flex-wrap items-center gap-3 md:gap-4 text-xs md:text-sm mb-4 pb-4 border-b border-outline-variant/60">
                             <div class="flex items-center gap-1.5 text-amber-500 font-bold">
-                                <span class="underline underline-offset-4">{{ number_format($rating, 1) }}</span>
-                                <div class="flex items-center text-amber-500">
-                                    @for($i = 1; $i <= 5; $i++)
-                                        @if($rating >= $i)
-                                            <span class="material-symbols-outlined text-[15px] fill-current">star</span>
-                                        @elseif($rating >= $i - 0.5)
-                                            <span class="material-symbols-outlined text-[15px] fill-current">star_half</span>
-                                        @else
-                                            <span class="material-symbols-outlined text-[15px] text-slate-300">star</span>
-                                        @endif
-                                    @endfor
-                                </div>
+                                @if($rating > 0)
+                                    <span class="underline underline-offset-4">{{ number_format($rating, 1) }}</span>
+                                    <div class="flex items-center text-amber-500">
+                                        @for($i = 1; $i <= 5; $i++)
+                                            @if($rating >= $i)
+                                                <span class="material-symbols-outlined text-[15px] fill-current">star</span>
+                                            @elseif($rating >= $i - 0.5)
+                                                <span class="material-symbols-outlined text-[15px] fill-current">star_half</span>
+                                            @else
+                                                <span class="material-symbols-outlined text-[15px] text-slate-300">star</span>
+                                            @endif
+                                        @endfor
+                                    </div>
+                                @else
+                                    <span class="text-on-surface-variant font-medium text-xs flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-[15px] text-slate-300">star</span>
+                                        Belum ada rating
+                                    </span>
+                                @endif
                             </div>
                             <div class="h-3.5 w-px bg-outline-variant"></div>
                             <div class="text-on-surface-variant">
@@ -398,6 +405,60 @@
                                 </div>
                             @endforeach
                         </div>
+
+                        <!-- Kupon Diskon & Voucher Toko (Tokopedia Style) -->
+                        @php
+                            $pStoreId = $product->store_id;
+                            $storeVouchers = \App\Models\Campaign::active()
+                                ->where(function($q) use ($pStoreId) {
+                                    if ($pStoreId) {
+                                        $q->where('store_id', $pStoreId);
+                                    } else {
+                                        $q->whereNull('store_id')->orWhere('store_id', 1);
+                                    }
+                                })
+                                ->where(function($q) {
+                                    $q->where('type', 'voucher')->orWhereNull('type');
+                                })
+                                ->whereNotNull('code')
+                                ->where('code', '!=', '')
+                                ->take(4)
+                                ->get();
+
+                            $usedCampaignIds = [];
+                            if (auth()->check()) {
+                                $uEmail = auth()->user()->email;
+                                $uIds = \App\Models\Order::where('customer_email', $uEmail)
+                                    ->whereIn('status', ['paid', 'downloaded', 'pending'])
+                                    ->whereNotNull('campaign_id')
+                                    ->pluck('campaign_id')
+                                    ->toArray();
+                                $uCodes = \App\Models\Order::where('customer_email', $uEmail)
+                                    ->whereIn('status', ['paid', 'downloaded', 'pending'])
+                                    ->whereNotNull('voucher_code')
+                                    ->pluck('voucher_code')
+                                    ->toArray();
+                                $cIds = \App\Models\Campaign::whereIn('code', $uCodes)->pluck('id')->toArray();
+                                $usedCampaignIds = array_values(array_unique(array_merge($uIds, $cIds)));
+                            }
+                        @endphp
+
+                        @if($storeVouchers->count() > 0)
+                            <div class="mb-5 p-3.5 rounded-xl bg-surface-container-low border border-outline-variant/70 shadow-xs">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex items-center gap-1.5 text-primary text-xs font-bold">
+                                        <span class="material-symbols-outlined text-[18px]">confirmation_number</span>
+                                        <span>Kupon Toko Tersedia ({{ $storeVouchers->count() }})</span>
+                                    </div>
+                                    <span class="text-[11px] text-on-surface-variant font-medium">1x pakai per akun pembeli</span>
+                                </div>
+                                <div class="space-y-3">
+                                    @foreach($storeVouchers as $v)
+                                        <x-voucher-card :campaign="$v" mode="browse" :hasUsed="in_array($v->id, $usedCampaignIds)" />
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
 
                         <!-- Cart & Checkout Interactive Form -->
                         <div x-data="{
@@ -1251,6 +1312,18 @@ function resetZoomImage() {
     const img = document.getElementById('mainImage');
     if (!img) return;
     img.style.transformOrigin = 'center center';
+}
+
+function copyVoucherCode(code) {
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(code).then(() => {
+            showCartToast('Kode kupon ' + code + ' berhasil disalin! Gunakan saat checkout.');
+        }).catch(() => {
+            showCartToast('Kode: ' + code);
+        });
+    } else {
+        prompt('Salin kode kupon ini:', code);
+    }
 }
 </script>
 @endsection

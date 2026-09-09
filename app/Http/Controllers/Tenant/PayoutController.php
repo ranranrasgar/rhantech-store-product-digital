@@ -13,7 +13,7 @@ class PayoutController extends Controller
      */
     public function index(Request $request)
     {
-        $store = auth()->user()->store;
+        $store = $request->user()->store;
         if (!$store) return redirect()->route('tenant.store.index');
 
         $tab = $request->get('tab', 'semua');
@@ -81,7 +81,7 @@ class PayoutController extends Controller
 
     public function store(Request $request)
     {
-        $store = auth()->user()->store;
+        $store = $request->user()->store;
         if (!$store) return redirect()->route('tenant.store.index');
 
         $request->validate([
@@ -96,12 +96,20 @@ class PayoutController extends Controller
             return back()->with('error', 'Please update your bank account info in the Store Profile before requesting a payout.');
         }
 
+        // Calculate fees
+        $feePercentage = $store->getPayoutFeePercentage();
+        $feeAmount = $request->amount * ($feePercentage / 100);
+        $netAmount = $request->amount - $feeAmount;
+
         // Deduct balance
         $store->decrement('balance', $request->amount);
 
         // Create payout request
         $store->payoutRequests()->create([
             'amount' => $request->amount,
+            'fee_percentage' => $feePercentage,
+            'fee_amount' => $feeAmount,
+            'net_amount' => $netAmount,
             'status' => 'pending'
         ]);
 

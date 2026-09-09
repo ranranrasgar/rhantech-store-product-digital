@@ -103,16 +103,16 @@
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
                     <label class="block text-xs font-semibold text-on-surface mb-1">Rating Bintang (1.0 - 5.0)</label>
-                    <input type="number" step="0.1" min="1" max="5" name="rating_override" value="{{ old('rating_override', $productItem?->rating_override ?? '4.9') }}" placeholder="cth: 4.9" class="w-full px-3 py-2 bg-surface border border-outline-variant rounded-lg font-body-sm text-xs">
+                    <input type="number" step="0.1" min="1" max="5" name="rating_override" value="{{ old('rating_override', $productItem?->rating_override) }}" placeholder="0 (Biarkan kosong untuk nilai ril)" class="w-full px-3 py-2 bg-surface border border-outline-variant rounded-lg font-body-sm text-xs">
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-on-surface mb-1">Jumlah Ulasan / Penilaian</label>
-                    <input type="number" min="0" name="reviews_count" value="{{ old('reviews_count', $productItem?->reviews_count ?? '42') }}" placeholder="cth: 42" class="w-full px-3 py-2 bg-surface border border-outline-variant rounded-lg font-body-sm text-xs">
-                    <span class="text-[10px] text-emerald-600 dark:text-emerald-400 mt-1 block">Otomatis generate ulasan random bahasa Indonesia sesuai judul produk</span>
+                    <input type="number" min="0" name="reviews_count" value="{{ old('reviews_count', $productItem?->reviews_count) }}" placeholder="0 (Biarkan kosong untuk nilai ril)" class="w-full px-3 py-2 bg-surface border border-outline-variant rounded-lg font-body-sm text-xs">
+                    <span class="text-[10px] text-on-surface-variant mt-1 block">Biarkan kosong agar sesuai dengan ulasan ril pembeli.</span>
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-on-surface mb-1">Jumlah Produk Terjual</label>
-                    <input type="number" min="0" name="sales_count" value="{{ old('sales_count', $productItem?->sales_count ?? '85') }}" placeholder="cth: 85" class="w-full px-3 py-2 bg-surface border border-outline-variant rounded-lg font-body-sm text-xs">
+                    <input type="number" min="0" name="sales_count" value="{{ old('sales_count', $productItem?->sales_count) }}" placeholder="0 (Biarkan kosong untuk nilai ril)" class="w-full px-3 py-2 bg-surface border border-outline-variant rounded-lg font-body-sm text-xs">
                 </div>
             </div>
         </div>

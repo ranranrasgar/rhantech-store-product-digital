@@ -41,36 +41,39 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
             
             <!-- Executive Balance Card -->
-            <div class="md:col-span-2 relative overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white rounded-3xl p-6 md:p-8 border border-slate-800 shadow-xl flex flex-col justify-between">
-                <div class="absolute -right-8 -bottom-8 w-48 h-48 bg-sky-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="md:col-span-2 bg-white dark:bg-[#111726] rounded-3xl p-6 md:p-8 border border-slate-200/80 dark:border-[#222f49] shadow-sm flex flex-col justify-between relative overflow-hidden">
+                <!-- Subtle background accent -->
+                <div class="absolute -right-8 -bottom-8 w-48 h-48 bg-sky-50 dark:bg-sky-900/10 rounded-full blur-3xl pointer-events-none"></div>
                 
-                <div>
+                <div class="relative z-10">
                     <div class="flex items-center justify-between mb-4">
-                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-white/10 backdrop-blur-md border border-white/20 text-sky-300 flex items-center gap-1.5">
-                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Saldo Aktif
+                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800/30 text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Saldo Aktif
                         </span>
-                        <span class="material-symbols-outlined text-white/30 text-[28px]">payments</span>
+                        <div class="w-10 h-10 rounded-xl bg-sky-50 dark:bg-sky-900/20 text-sky-500 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[20px]">payments</span>
+                        </div>
                     </div>
 
                     <div class="space-y-1">
-                        <div class="text-xs font-medium text-slate-300">Total Saldo Tersedia</div>
-                        <div class="text-3xl md:text-5xl font-black tracking-tight text-white">
+                        <div class="text-xs font-medium text-slate-500 dark:text-slate-400">Total Saldo Tersedia</div>
+                        <div class="text-3xl md:text-5xl font-black tracking-tight text-slate-900 dark:text-white">
                             Rp {{ number_format($store->balance, 0, ',', '.') }}
                         </div>
                     </div>
                 </div>
 
                 <!-- Fast Payout Button Row -->
-                <div class="mt-8 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-                    <div class="text-xs text-slate-300">
-                        Minimal penarikan saldo adalah <span class="font-bold text-white">Rp 10.000</span>
+                <div class="mt-8 pt-6 border-t border-slate-100 dark:border-[#1d273d] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 relative z-10">
+                    <div class="text-xs text-slate-500 dark:text-slate-400">
+                        Minimal penarikan saldo adalah <span class="font-bold text-slate-800 dark:text-white">Rp 10.000</span>
                     </div>
                     <form action="{{ route('tenant.payouts.store') }}" method="POST">
                         @csrf
                         <input type="hidden" name="amount" value="{{ $store->balance }}">
-                        <button type="submit" class="w-full sm:w-auto px-5 py-2.5 text-xs md:text-sm font-bold bg-sky-500 hover:bg-sky-400 text-white rounded-xl shadow-lg shadow-sky-500/30 transition-all flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer" {{ $store->balance < 10000 ? 'disabled' : '' }}>
+                        <button type="submit" class="w-full sm:w-auto px-6 py-3 text-sm font-bold bg-sky-500 hover:bg-sky-600 text-white rounded-xl shadow-md shadow-sky-500/20 transition-all flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed" {{ $store->balance < 10000 ? 'disabled' : '' }}>
                             <span>Tarik Semua Saldo</span>
-                            <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+                            <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
                         </button>
                     </form>
                 </div>

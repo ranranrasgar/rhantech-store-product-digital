@@ -66,12 +66,8 @@
             $shortCatalogDesc = !empty($product->short_description) 
                 ? trim($product->short_description) 
                 : Str::limit(trim(preg_replace('/\s+/', ' ', strip_tags($product->description ?? ''))), 70);
-            $soldCountCatalog = $product->sales_count ?: ($product->orders_count ?? 0);
-            if ($soldCountCatalog < 5 && $product->id % 2 === 0) {
-                $displaySoldCatalog = $soldCountCatalog > 0 ? $soldCountCatalog : (10 + ($product->id % 15));
-            } else {
-                $displaySoldCatalog = $soldCountCatalog > 0 ? $soldCountCatalog : 12;
-            }
+            $soldCountCatalog = (int)($product->sales_count ?: ($product->orders_count ?? 0));
+            $displaySoldCatalog = $soldCountCatalog;
         @endphp
         {{-- Short description - hidden on mobile --}}
         @if(!empty($shortCatalogDesc))
@@ -95,10 +91,16 @@
                 <span class="hidden md:inline bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-semibold px-1.5 py-0.5 rounded">
                     {{ $displaySoldCatalog }} Terjual
                 </span>
+                @if($product->effective_rating > 0)
                 <span class="flex items-center gap-0.5 text-amber-500 font-bold">
                     <span class="material-symbols-outlined text-[10px] md:text-[11px] fill-current">star</span>
                     <span>{{ number_format($product->effective_rating, 1) }}</span>
                 </span>
+                @else
+                <span class="text-[9px] px-1.5 py-0.5 bg-primary/10 text-primary font-bold rounded">
+                    Baru
+                </span>
+                @endif
             </div>
         </div>
     </div>

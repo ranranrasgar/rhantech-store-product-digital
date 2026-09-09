@@ -72,7 +72,13 @@ class SocialiteController extends Controller
             // 3. Log in the user
             Auth::login($user, true);
 
-            // 4. Redirect based on role
+            // 4. Prevent redirecting into raw JSON chat/api endpoints
+            $intended = session()->get('url.intended');
+            if ($intended && (str_contains($intended, '/chat') || str_contains($intended, '/api'))) {
+                session()->forget('url.intended');
+            }
+
+            // Redirect based on role
             if ($user->role === 'admin') {
                 return redirect()->intended('/admin/dashboard')->with('success', 'Selamat datang kembali, Admin!');
             }

@@ -54,10 +54,12 @@
     <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 shadow-xs">
         <form method="GET" action="{{ route('admin.searches.index') }}" class="flex flex-wrap items-center justify-between gap-3">
             <div class="flex flex-wrap items-center gap-2 flex-1 min-w-[240px]">
-                <div class="relative flex-1 max-w-sm">
+                <div class="relative flex-1 max-w-sm flex items-center">
+                    <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-gray-400">
+                        <span class="material-symbols-outlined text-base leading-none">search</span>
+                    </div>
                     <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari kata kunci..."
                            class="w-full pl-9 pr-3 py-1.5 text-xs bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-800 dark:text-gray-100 focus:ring-1 focus:ring-primary focus:border-primary">
-                    <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-base">search</span>
                 </div>
                 <select name="filter" onchange="this.form.submit()" class="text-xs py-1.5 px-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-200">
                     <option value="">Semua Status</option>

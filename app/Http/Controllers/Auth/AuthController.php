@@ -55,6 +55,12 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
 
+            // Prevent redirecting into raw JSON chat/api endpoints
+            $intended = session()->get('url.intended');
+            if ($intended && (str_contains($intended, '/chat') || str_contains($intended, '/api'))) {
+                session()->forget('url.intended');
+            }
+
             // Redirect based on role
             if (Auth::user()->role === 'Admin') {
                 return redirect()->intended('admin');

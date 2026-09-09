@@ -61,6 +61,7 @@ class CampaignController extends Controller
 
         $validated['store_id'] = $store->id;
         $validated['minimum_spend'] = $validated['minimum_spend'] ?? 0;
+        $validated['code'] = !empty($validated['code']) ? strtoupper(trim($validated['code'])) : null;
 
         if ($validated['applies_to'] === 'all') {
             $validated['category_ids'] = null;
@@ -116,6 +117,7 @@ class CampaignController extends Controller
         ]);
 
         $validated['minimum_spend'] = $validated['minimum_spend'] ?? 0;
+        $validated['code'] = !empty($validated['code']) ? strtoupper(trim($validated['code'])) : null;
 
         if ($validated['applies_to'] === 'all') {
             $validated['category_ids'] = null;

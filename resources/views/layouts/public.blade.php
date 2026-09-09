@@ -213,7 +213,12 @@
     border: none; color: #fff;
     padding: 10px 18px;
     cursor: pointer; transition: opacity 0.2s;
-    display: flex; align-items: center;
+    display: flex; align-items: center; justify-content: center;
+    line-height: 1;
+}
+.search-bar-wrap button .material-symbols-outlined {
+    line-height: 1;
+    display: block;
 }
 .search-bar-wrap button:hover { opacity: 0.85; }
 .header-action-btn {

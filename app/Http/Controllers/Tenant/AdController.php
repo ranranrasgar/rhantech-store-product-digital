@@ -39,9 +39,14 @@ class AdController extends Controller
             ->sum('amount');
 
         $adsQuery = SellerAd::where('store_id', $store->id);
-        $totalAdsCount = (clone $adsQuery)->count();
-        $activeAdsCount = (clone $adsQuery)->where('status', 'active')->count();
-        $pausedAdsCount = (clone $adsQuery)->where('status', 'paused')->count();
+        $adStats = (clone $adsQuery)->selectRaw("
+            COUNT(*) as total,
+            SUM(CASE WHEN status = 'active' THEN 1 ELSE 0 END) as active,
+            SUM(CASE WHEN status = 'paused' THEN 1 ELSE 0 END) as paused
+        ")->first();
+        $totalAdsCount = (int) ($adStats->total ?? 0);
+        $activeAdsCount = (int) ($adStats->active ?? 0);
+        $pausedAdsCount = (int) ($adStats->paused ?? 0);
 
         $ads = (clone $adsQuery)->with(['product.images'])->latest()->paginate(10);
 

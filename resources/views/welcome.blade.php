@@ -77,18 +77,58 @@
                 activeStore: 0,
                 storesCount: {{ $topStores->count() }},
                 timer: null,
+                touchStartX: null,
+                touchStartY: null,
                 init() {
+                    if (this.storesCount > 1) {
+                        this.startAutoPlay();
+                    }
+                },
+                startAutoPlay() {
+                    this.stopAutoPlay();
                     this.timer = setInterval(() => {
-                        this.activeStore = (this.activeStore + 1) % this.storesCount;
-                    }, 4500);
+                        this.next(false);
+                    }, 5000);
                 },
-                next() {
+                stopAutoPlay() {
+                    if (this.timer) {
+                        clearInterval(this.timer);
+                        this.timer = null;
+                    }
+                },
+                next(restart = true) {
                     this.activeStore = (this.activeStore + 1) % this.storesCount;
+                    if (restart && this.storesCount > 1) this.startAutoPlay();
                 },
-                prev() {
+                prev(restart = true) {
                     this.activeStore = (this.activeStore - 1 + this.storesCount) % this.storesCount;
+                    if (restart && this.storesCount > 1) this.startAutoPlay();
+                },
+                goTo(index) {
+                    this.activeStore = index;
+                    if (this.storesCount > 1) this.startAutoPlay();
+                },
+                handleTouchStart(e) {
+                    if (e.target.closest('.overflow-x-auto')) {
+                        this.touchStartX = null;
+                        return;
+                    }
+                    this.touchStartX = e.touches[0].clientX;
+                    this.touchStartY = e.touches[0].clientY;
+                },
+                handleTouchEnd(e) {
+                    if (this.touchStartX === null) return;
+                    const diffX = this.touchStartX - e.changedTouches[0].clientX;
+                    const diffY = this.touchStartY - e.changedTouches[0].clientY;
+                    if (Math.abs(diffX) > 40 && Math.abs(diffX) > Math.abs(diffY)) {
+                        if (diffX > 0) this.next();
+                        else this.prev();
+                    }
+                    this.touchStartX = null;
                 }
-            }">
+            }"
+            @mouseenter="stopAutoPlay()"
+            @mouseleave="storesCount > 1 && startAutoPlay()">
                 <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6 md:mb-8">
                     <div>
                         <span class="inline-flex items-center gap-1.5 py-1 px-3.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-label-md text-xs mb-2.5 md:mb-3 border border-emerald-500/30">
@@ -105,29 +145,27 @@
                     
                     <!-- Controls Nav Slider -->
                     <div class="flex items-center justify-between md:justify-end gap-3 shrink-0 pt-2 md:pt-0">
-                        <button @click="prev()" class="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-surface border border-outline-variant hover:bg-surface-container flex items-center justify-center text-on-surface shadow-xs transition-all cursor-pointer">
-                            <span class="material-symbols-outlined text-[18px] md:text-[20px]">arrow_back</span>
+                        <button @click="prev()" class="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-surface border border-outline-variant hover:bg-surface-container flex items-center justify-center text-on-surface shadow-xs transition-all cursor-pointer" aria-label="Sebelumnya">
+                            <span class="material-symbols-outlined text-[18px] md:text-[20px] leading-none">arrow_back</span>
                         </button>
                         <div class="text-xs font-bold text-on-surface-variant">
                             <span x-text="activeStore + 1" class="text-primary font-black text-sm"></span> / {{ $topStores->count() }}
                         </div>
-                        <button @click="next()" class="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-surface border border-outline-variant hover:bg-surface-container flex items-center justify-center text-on-surface shadow-xs transition-all cursor-pointer">
-                            <span class="material-symbols-outlined text-[18px] md:text-[20px]">arrow_forward</span>
+                        <button @click="next()" class="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-surface border border-outline-variant hover:bg-surface-container flex items-center justify-center text-on-surface shadow-xs transition-all cursor-pointer" aria-label="Berikutnya">
+                            <span class="material-symbols-outlined text-[18px] md:text-[20px] leading-none">arrow_forward</span>
                         </button>
                     </div>
                 </div>
 
-                <!-- Carousel Display Cards -->
-                <div class="relative overflow-hidden rounded-2xl md:rounded-3xl bg-surface-container-low border border-outline-variant p-4 sm:p-6 md:p-8 shadow-sm">
-                    @foreach($topStores as $index => $store)
-                        <div x-show="activeStore === {{ $index }}" 
-                             x-transition:enter="transition ease-out duration-500"
-                             x-transition:enter-start="opacity-0 translate-x-12"
-                             x-transition:enter-end="opacity-100 translate-x-0"
-                             x-transition:leave="transition ease-in duration-300 absolute inset-0"
-                             x-transition:leave-start="opacity-100 translate-x-0"
-                             x-transition:leave-end="opacity-0 -translate-x-12"
-                             class="grid grid-cols-1 md:grid-cols-12 gap-5 md:gap-8 items-center">
+                <!-- Carousel Display Cards (Smooth Sliding Track Viewport) -->
+                <div class="relative overflow-hidden rounded-2xl md:rounded-3xl bg-surface-container-low border border-outline-variant shadow-sm"
+                     @touchstart.passive="handleTouchStart($event)"
+                     @touchend.passive="handleTouchEnd($event)">
+                    <div class="flex items-stretch transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] will-change-transform"
+                         :style="'transform: translateX(-' + (activeStore * 100) + '%);'">
+                        @foreach($topStores as $index => $store)
+                            <div class="w-full shrink-0 p-4 sm:p-6 md:p-8 grid grid-cols-1 md:grid-cols-12 gap-5 md:gap-8 items-center box-border transition-opacity duration-500"
+                                 :class="activeStore === {{ $index }} ? 'opacity-100' : 'opacity-25 pointer-events-none'">
                             
                             <!-- Left Info -->
                             <div class="md:col-span-7 flex flex-col items-start">
@@ -223,9 +261,12 @@
                                             <a href="{{ route('products.show', $tp->slug) }}"
                                                x-show="prodIdx === {{ $pIdx }}"
                                                x-cloak
-                                               x-transition:enter="transition ease-out duration-500"
-                                               x-transition:enter-start="opacity-0 scale-95"
-                                               x-transition:enter-end="opacity-100 scale-100"
+                                               x-transition:enter="transition opacity duration-700 ease-in-out"
+                                               x-transition:enter-start="opacity-0"
+                                               x-transition:enter-end="opacity-100"
+                                               x-transition:leave="transition opacity duration-700 ease-in-out absolute inset-0"
+                                               x-transition:leave-start="opacity-100"
+                                               x-transition:leave-end="opacity-0"
                                                class="absolute inset-0 w-full h-full block group overflow-hidden">
                                                 @if($tpImgUrl)
                                                     <img src="{{ $tpImgUrl }}" 
@@ -299,12 +340,13 @@
                             </div>
                         </div>
                     @endforeach
+                    </div>
                 </div>
 
                 <!-- Dots Indicator -->
                 <div class="flex items-center justify-center gap-1.5 sm:gap-2 mt-4 sm:mt-6">
                     @foreach($topStores as $index => $store)
-                        <button @click="activeStore = {{ $index }}" 
+                        <button @click="goTo({{ $index }})" 
                                 :class="activeStore === {{ $index }} ? 'w-6 sm:w-8 bg-primary' : 'w-2 sm:w-2.5 bg-outline-variant hover:bg-on-surface-variant'" 
                                 class="h-2 sm:h-2.5 rounded-full transition-all cursor-pointer"
                                 title="{{ $store->name }}"></button>
@@ -393,13 +435,21 @@
                                     <div class="rounded-xl overflow-hidden h-40 sm:h-48 border border-outline-variant relative bg-gradient-to-tr from-slate-900 to-primary/80 flex items-center justify-center">
                                         @php
                                             $tBanner = null;
+                                            $tBannerIsStyle = false;
                                             if (!empty($tStore->banner)) {
-                                                $tBanner = Str::startsWith($tStore->banner, 'http') ? $tStore->banner : asset('storage/' . $tStore->banner);
+                                                if (Str::startsWith($tStore->banner, 'linear-gradient') || Str::startsWith($tStore->banner, 'radial-gradient') || Str::startsWith($tStore->banner, '#') || Str::startsWith($tStore->banner, 'rgb')) {
+                                                    $tBanner = $tStore->banner;
+                                                    $tBannerIsStyle = true;
+                                                } else {
+                                                    $tBanner = Str::startsWith($tStore->banner, 'http') ? $tStore->banner : asset('storage/' . $tStore->banner);
+                                                }
                                             } elseif ($tStore->products->first() && $tStore->products->first()->primary_image_url) {
                                                 $tBanner = $tStore->products->first()->primary_image_url;
                                             }
                                         @endphp
-                                        @if($tBanner)
+                                        @if($tBanner && $tBannerIsStyle)
+                                            <div class="w-full h-full" style="background: {{ $tBanner }};"></div>
+                                        @elseif($tBanner)
                                             <img src="{{ $tBanner }}" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                                         @endif
                                         <div class="w-full h-full p-4 flex flex-col justify-center items-center text-center {{ $tBanner ? 'hidden' : 'flex' }}">
@@ -475,11 +525,7 @@
                     $hasDiscount = $prod->discount_price && $prod->discount_price > 0 && $prod->discount_price < $prod->price;
                     $effectivePrice = $hasDiscount ? $prod->discount_price : $prod->price;
                     $soldCount = $prod->sales_count ?: ($prod->orders_count ?? 0);
-                    if ($soldCount < 5 && $prod->id % 2 === 0) {
-                        $displaySold = $soldCount > 0 ? $soldCount : (10 + ($prod->id % 15));
-                    } else {
-                        $displaySold = $soldCount > 0 ? $soldCount : 12;
-                    }
+                    $displaySold = (int)$soldCount;
 
                     // Rating & Reviews count
                     $ratingDisplay = $prod->effective_rating;
@@ -520,6 +566,7 @@
                             <span class="text-[9px] sm:text-[10px] font-black text-primary uppercase tracking-wider truncate">
                                 {{ $prod->category->name ?? ($prod->type->name ?? 'Aplikasi') }}
                             </span>
+                            @if($ratingDisplay > 0)
                             <span class="inline-flex items-center gap-0.5 text-[10px] sm:text-xs font-bold text-amber-500 shrink-0">
                                 <span class="material-symbols-outlined text-[11px] sm:text-[13px] fill-current text-amber-500">star</span>
                                 <span>{{ number_format((float)$ratingDisplay, 1) }}</span>
@@ -527,6 +574,11 @@
                                     <span class="text-[9px] sm:text-[10px] font-normal text-on-surface-variant">({{ $reviewsDisplayCount }})</span>
                                 @endif
                             </span>
+                            @else
+                            <span class="text-[9px] sm:text-[10px] px-1.5 py-0.5 bg-primary/10 text-primary font-bold rounded shrink-0">
+                                Baru
+                            </span>
+                            @endif
                         </div>
 
                         <h3 class="text-xs sm:text-sm font-bold text-on-background dark:text-white line-clamp-2 leading-snug group-hover:text-primary transition-colors mb-1 sm:mb-1.5">

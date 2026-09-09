@@ -39,7 +39,7 @@
     @endif
 
     <div class="bg-surface rounded-md border border-outline-variant  p-lg">
-        <form action="{{ route('tenant.products.update', $product) }}" method="POST" enctype="multipart/form-data" class="flex flex-col gap-lg" x-data="{ submitting: false }" @submit="submitting = true">
+        <form action="{{ route('tenant.products.update', $product) }}" method="POST" enctype="multipart/form-data" class="flex flex-col gap-lg" x-data="{ submitting: false, imageHasError: false }" @image-validation-state.window="imageHasError = $event.detail.hasError" @submit="if(imageHasError) { $event.preventDefault(); alert('Mohon perbaiki foto yang melebihi batas 2 MB terlebih dahulu sebelum menyimpan.'); return false; } submitting = true">
             @csrf @method('PUT')
 
             <div>
@@ -454,71 +454,130 @@
                 </div>
             </div>
 
-            <div x-data="productImageValidator({{ $product->images->count() }})">
-                <div class="flex items-center justify-between mb-xs">
+            @php
+                $initialSavedImages = $product->images->map(function($img) {
+                    return [
+                        'id' => $img->id,
+                        'image_path' => asset('storage/' . $img->image_path),
+                        'is_main' => (bool)$img->is_main,
+                        'deleting' => false,
+                    ];
+                })->values();
+            @endphp
+
+            <div x-data="productImageValidator({{ json_encode($initialSavedImages) }}, {{ $product->id }})">
+                <div class="flex items-center justify-between mb-xs flex-wrap gap-1">
                     <label class="block font-label-md text-on-surface">Tambah Foto Produk Baru</label>
-                    <span class="text-[11px] text-on-surface-variant">Maks. 2 MB per foto (Total maksimal 5 foto)</span>
+                    <span class="text-[11px] text-on-surface-variant flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[14px] text-primary">verified</span>
+                        Maks. <strong>2 MB</strong> per foto (Total maks 5 foto)
+                    </span>
+                </div>
+
+                <!-- Info Ketentuan Ukuran File -->
+                <div class="mb-2 p-2.5 rounded-lg bg-teal-500/10 border border-teal-500/30 text-xs text-teal-800 dark:text-teal-200 flex items-center justify-between gap-2 flex-wrap">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[18px] text-[#00838f] dark:text-teal-400 shrink-0">info</span>
+                        <span><strong>Ketentuan Foto:</strong> Setiap foto maksimal <strong>2 MB</strong> (2.048 KB). Format: JPG, JPEG, PNG, WEBP, GIF.</span>
+                    </div>
+                    <span class="text-[11px] font-semibold text-teal-700 dark:text-teal-300">
+                        Slot tersisa: <strong x-text="remainingSlot"></strong> foto
+                    </span>
                 </div>
                 
                 <div class="relative">
-                    <input type="file" name="images[]" multiple accept=".jpg,.jpeg,.png,.webp,.gif,image/jpeg,image/png,image/webp,image/gif" @change="validateFiles($event)" class="w-full pl-4 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-secondary focus:ring-1 focus:ring-secondary/20 file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer">
+                    <input type="file" name="images[]" multiple accept=".jpg,.jpeg,.png,.webp,.gif,image/jpeg,image/png,image/webp,image/gif" @change="validateFiles($event)" class="w-full pl-4 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-secondary focus:ring-1 focus:ring-secondary/20 file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer" :class="hasOversized ? 'border-rose-500 ring-1 ring-rose-500/30' : ''">
                 </div>
 
-                <!-- Alert Error Validasi File -->
-                <div x-show="errorMessage" x-cloak class="mt-2 p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 rounded-lg flex items-start gap-2 text-rose-700 dark:text-rose-300 text-xs">
-                    <span class="material-symbols-outlined text-[18px] shrink-0 text-rose-600">error</span>
-                    <span x-text="errorMessage"></span>
+                <!-- Alert Error Validasi File Melebihi 2MB / Tidak Valid -->
+                <div x-show="errorMessage" x-cloak class="mt-2.5 p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 rounded-lg flex items-start gap-2.5 text-rose-700 dark:text-rose-300 text-xs leading-relaxed">
+                    <span class="material-symbols-outlined text-[20px] shrink-0 text-rose-600 mt-0.5">warning</span>
+                    <div>
+                        <strong class="font-bold block mb-0.5 text-rose-800 dark:text-rose-200">Peringatan Ukuran Foto:</strong>
+                        <span x-text="errorMessage"></span>
+                    </div>
                 </div>
 
                 <!-- Pratinjau Gambar Tambahan Terpilih -->
                 <div x-show="files.length > 0" x-cloak class="mt-3 p-3 bg-surface-container-low border border-outline-variant rounded-lg">
-                    <p class="text-xs font-semibold text-on-surface mb-2 flex items-center gap-1.5">
-                        <span class="material-symbols-outlined text-sm text-emerald-600">check_circle</span>
-                        <span x-text="files.length + ' foto baru siap diunggah:'"></span>
-                    </p>
+                    <div class="flex items-center justify-between flex-wrap gap-2 mb-2.5">
+                        <p class="text-xs font-semibold text-on-surface flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-sm" :class="hasOversized ? 'text-rose-600' : 'text-emerald-600'" x-text="hasOversized ? 'error' : 'check_circle'"></span>
+                            <span x-text="files.length + ' foto baru dipilih (Total: ' + totalSizeFormatted + '):'"></span>
+                        </p>
+                        <span class="text-[11px] font-bold px-2 py-0.5 rounded"
+                              :class="hasOversized ? 'bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300' : 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300'"
+                              x-text="hasOversized ? '⚠️ Ada foto > 2 MB' : '✓ Semua foto aman (< 2 MB)'"></span>
+                    </div>
                     <div class="flex flex-wrap gap-3">
                         <template x-for="(f, i) in files" :key="i">
-                            <div class="relative group border border-outline-variant rounded-lg overflow-hidden w-20 bg-surface-container-lowest shadow-sm">
-                                <img :src="f.previewUrl" class="w-20 h-20 object-cover">
-                                <div class="p-1 text-[10px] text-on-surface truncate text-center font-mono" x-text="f.size"></div>
+                            <div class="relative group rounded-lg overflow-hidden w-24 bg-surface-container-lowest shadow-sm border"
+                                 :class="f.isOversized ? 'border-2 border-rose-500' : 'border-outline-variant'">
+                                <img :src="f.previewUrl" class="w-24 h-24 object-cover">
+                                
+                                <!-- Status Badge Ukuran -->
+                                <div class="p-1 text-[10px] truncate text-center font-mono font-bold"
+                                     :class="f.isOversized ? 'bg-rose-600 text-white' : 'bg-surface-container-low text-on-surface'"
+                                     :title="f.name + ' (' + f.size + ')'">
+                                    <span x-text="f.isOversized ? '⚠️ ' + f.size : '✓ ' + f.size"></span>
+                                </div>
                             </div>
                         </template>
                     </div>
                 </div>
 
                 <!-- List Foto Produk yang Sudah Tersimpan -->
-                @if($product->images->count() > 0)
-                <div class="mt-3 p-4 bg-surface-container-lowest border border-outline-variant rounded-lg">
-                    <div class="flex items-center justify-between mb-3">
+                <div x-show="savedImages.length > 0" x-cloak class="mt-3 p-4 bg-surface-container-lowest border border-outline-variant rounded-lg">
+                    <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
                         <div class="flex items-center gap-1.5">
                             <span class="material-symbols-outlined text-primary text-base">photo_library</span>
-                            <span class="text-xs font-bold text-on-surface">Foto Tersimpan Sekarang ({{ $product->images->count() }}/5)</span>
+                            <span class="text-xs font-bold text-on-surface">
+                                Foto Tersimpan Sekarang (<span x-text="savedImages.length"></span>/5)
+                            </span>
                         </div>
-                        <span class="text-[11px] text-on-surface-variant">Hover foto untuk jadikan foto utama atau hapus</span>
+                        <div class="flex items-center gap-2">
+                            <span class="text-[11px] text-on-surface-variant hidden sm:inline">Hover foto untuk jadikan foto utama atau hapus</span>
+                            <button type="button" 
+                                    @click="deleteAllImages()" 
+                                    :disabled="deletingAll"
+                                    class="px-2.5 py-1 text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 dark:bg-red-950/40 dark:text-red-300 dark:hover:bg-red-900/40 border border-red-200 dark:border-red-800 rounded-md transition flex items-center gap-1 disabled:opacity-50 cursor-pointer">
+                                <span class="material-symbols-outlined text-sm" :class="deletingAll ? 'animate-spin' : ''" x-text="deletingAll ? 'progress_activity' : 'delete_sweep'"></span>
+                                <span x-text="deletingAll ? 'Menghapus Semua...' : 'Hapus Semua Foto'">Hapus Semua Foto</span>
+                            </button>
+                        </div>
                     </div>
+                    
                     <div class="flex flex-wrap gap-3">
-                        @foreach($product->images as $img)
-                        <div class="relative group w-24 h-24 rounded-lg overflow-hidden border {{ $img->is_main ? 'border-primary border-2 shadow-sm' : 'border-outline-variant' }}">
-                            <img src="{{ asset('storage/' . $img->image_path) }}" class="w-full h-full object-cover">
-                            
-                            <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1.5 p-1">
-                                @if(!$img->is_main)
-                                <button type="button" onclick="setMainImage({{ $img->id }})" class="w-full py-1 bg-white text-black text-[10px] font-bold rounded shadow hover:bg-gray-100 transition">
-                                    Set Utama
-                                </button>
-                                @endif
-                                <button type="button" onclick="deleteImage({{ $img->id }})" class="w-full py-1 bg-error text-white text-[10px] font-bold rounded shadow hover:bg-red-700 transition">
-                                    Hapus
-                                </button>
+                        <template x-for="img in savedImages" :key="img.id">
+                            <div class="relative group w-24 h-24 rounded-lg overflow-hidden border transition-all"
+                                 :class="img.is_main ? 'border-primary border-2 shadow-sm' : 'border-outline-variant'">
+                                <img :src="img.image_path" class="w-full h-full object-cover">
+                                
+                                <!-- Loading overlay saat proses hapus foto berlangsung -->
+                                <div x-show="img.deleting" x-cloak class="absolute inset-0 bg-black/75 flex flex-col items-center justify-center gap-1 text-white p-1">
+                                    <span class="material-symbols-outlined animate-spin text-base">progress_activity</span>
+                                    <span class="text-[9px] font-semibold">Menghapus...</span>
+                                </div>
+
+                                <div x-show="!img.deleting" class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1.5 p-1">
+                                    <button x-show="!img.is_main" 
+                                            type="button" 
+                                            @click="setMainImage(img)" 
+                                            class="w-full py-1 bg-white text-black text-[10px] font-bold rounded shadow hover:bg-gray-100 transition cursor-pointer">
+                                        Set Utama
+                                    </button>
+                                    <button type="button" 
+                                            @click="deleteImage(img)" 
+                                            class="w-full py-1 bg-error text-white text-[10px] font-bold rounded shadow hover:bg-red-700 transition cursor-pointer">
+                                        Hapus
+                                    </button>
+                                </div>
+                                
+                                <div x-show="img.is_main" class="absolute top-0 left-0 bg-primary text-white text-[9px] font-bold px-1.5 py-0.5 rounded-br">UTAMA</div>
                             </div>
-                            @if($img->is_main)
-                                <div class="absolute top-0 left-0 bg-primary text-white text-[9px] font-bold px-1.5 py-0.5 rounded-br">UTAMA</div>
-                            @endif
-                        </div>
-                        @endforeach
+                        </template>
                     </div>
                 </div>
-                @endif
 
                 <p class="text-xs text-on-surface-variant mt-1.5 flex items-center gap-1">
                     <span class="material-symbols-outlined text-xs">info</span>
@@ -537,71 +596,198 @@
                 </label>
             </div>
             
-            <div class="flex justify-end pt-md border-t border-outline-variant">
-                <button type="submit" :disabled="submitting" class="px-md py-2 bg-primary text-white rounded-lg font-label-md font-bold hover:brightness-110 transition shadow flex items-center gap-2 disabled:opacity-75 disabled:cursor-not-allowed">
-                    <span x-show="submitting" x-cloak class="material-symbols-outlined animate-spin text-sm">progress_activity</span>
-                    <span x-text="submitting ? 'Memperbarui Produk...' : 'Update Product'">Update Product</span>
-                </button>
+            <div class="flex items-center justify-between pt-md border-t border-outline-variant flex-wrap gap-2">
+                <div x-show="imageHasError" x-cloak class="text-xs text-rose-600 font-semibold flex items-center gap-1">
+                    <span class="material-symbols-outlined text-sm">error</span>
+                    <span>Ada foto yang melebihi batas 2 MB. Harap ganti foto sebelum menyimpan.</span>
+                </div>
+                <div class="ml-auto">
+                    <button type="submit" :disabled="submitting || imageHasError" class="px-md py-2 bg-primary text-white rounded-lg font-label-md font-bold hover:brightness-110 transition shadow flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed" :class="imageHasError ? 'bg-slate-400 hover:bg-slate-400 cursor-not-allowed' : ''">
+                        <span x-show="submitting" x-cloak class="material-symbols-outlined animate-spin text-sm">progress_activity</span>
+                        <span x-text="submitting ? 'Memperbarui Produk...' : 'Update Product'">Update Product</span>
+                    </button>
+                </div>
             </div>
         </form>
 
-        <!-- Hidden forms for image actions outside main form -->
-        <form id="set-main-form" method="POST" style="display: none;">
-            @csrf @method('PATCH')
-        </form>
-        <form id="delete-image-form" method="POST" style="display: none;">
-            @csrf @method('DELETE')
-        </form>
     </div>
 </div>
 
 <script>
-    function productImageValidator(currentCount) {
+    function productImageValidator(initialImages, productId) {
         return {
+            productId: productId,
+            savedImages: Array.isArray(initialImages) ? initialImages : [],
+            deletingAll: false,
             files: [],
             errorMessage: '',
-            currentImagesCount: currentCount,
+            hasOversized: false,
+            totalSizeFormatted: '0 KB',
+            maxSizePerFile: 2 * 1024 * 1024, // 2MB
+            csrfToken: '{{ csrf_token() }}',
+            get currentImagesCount() {
+                return this.savedImages.length;
+            },
+            get remainingSlot() {
+                return Math.max(0, 5 - this.currentImagesCount);
+            },
+            async deleteImage(img) {
+                if (!confirm('Hapus foto ini?')) return;
+                
+                img.deleting = true;
+                try {
+                    const response = await fetch(`/dashboard/products/image/${img.id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': this.csrfToken,
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+
+                    const data = await response.json();
+                    if (response.ok && data.success) {
+                        this.savedImages = this.savedImages.filter(item => item.id !== img.id);
+                        if (data.new_main_id) {
+                            this.savedImages.forEach(item => {
+                                item.is_main = (item.id === data.new_main_id);
+                            });
+                        }
+                    } else {
+                        alert(data.message || 'Gagal menghapus foto.');
+                        img.deleting = false;
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert('Terjadi kesalahan jaringan saat menghapus foto.');
+                    img.deleting = false;
+                }
+            },
+            async deleteAllImages() {
+                if (this.savedImages.length === 0) return;
+                if (!confirm(`Hapus SEMUA (${this.savedImages.length}) foto produk yang tersimpan?`)) return;
+
+                this.deletingAll = true;
+                try {
+                    const response = await fetch(`/dashboard/products/${this.productId}/images/delete-all`, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': this.csrfToken,
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+
+                    const data = await response.json();
+                    if (response.ok && data.success) {
+                        this.savedImages = [];
+                    } else {
+                        alert(data.message || 'Gagal menghapus semua foto.');
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert('Terjadi kesalahan jaringan saat menghapus semua foto.');
+                } finally {
+                    this.deletingAll = false;
+                }
+            },
+            async setMainImage(img) {
+                try {
+                    const response = await fetch(`/dashboard/products/image/${img.id}/set-main`, {
+                        method: 'PATCH',
+                        headers: {
+                            'X-CSRF-TOKEN': this.csrfToken,
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+
+                    const data = await response.json();
+                    if (response.ok && data.success) {
+                        this.savedImages.forEach(item => {
+                            item.is_main = (item.id === img.id);
+                        });
+                    } else {
+                        alert(data.message || 'Gagal mengubah foto utama.');
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert('Terjadi kesalahan jaringan saat mengubah foto utama.');
+                }
+            },
             validateFiles(event) {
                 const input = event.target;
                 const selectedFiles = Array.from(input.files);
                 this.errorMessage = '';
                 this.files = [];
+                this.hasOversized = false;
 
-                const totalCount = this.currentImagesCount + selectedFiles.length;
-                if (totalCount > 5) {
-                    const remainingSlot = Math.max(0, 5 - this.currentImagesCount);
-                    this.errorMessage = `Total foto produk tidak boleh lebih dari 5! Produk ini sudah memiliki ${this.currentImagesCount} foto, Anda hanya dapat menambah maksimal ${remainingSlot} foto lagi.`;
+                if (selectedFiles.length === 0) {
+                    window.dispatchEvent(new CustomEvent('image-validation-state', { detail: { hasError: false } }));
+                    return;
+                }
+
+                if (selectedFiles.length > this.remainingSlot) {
+                    this.errorMessage = `Total foto produk tidak boleh lebih dari 5! Produk ini sudah memiliki ${this.currentImagesCount} foto tersimpan, Anda hanya dapat menambah maksimal ${this.remainingSlot} foto lagi.`;
+                    this.hasOversized = true;
                     input.value = '';
+                    window.dispatchEvent(new CustomEvent('image-validation-state', { detail: { hasError: true } }));
                     return;
                 }
 
                 const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp', 'image/gif'];
                 const allowedExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
-                const maxSize = 2 * 1024 * 1024; // 2MB
+                let totalBytes = 0;
+                let oversizedList = [];
 
                 for (let file of selectedFiles) {
                     const ext = '.' + file.name.split('.').pop().toLowerCase();
-                    
-                    if (!file.type.startsWith('image/') || !allowedTypes.includes(file.type) || !allowedExtensions.includes(ext)) {
-                        this.errorMessage = `File "${file.name}" bukan file gambar yang valid! Hanya format JPG, JPEG, PNG, WEBP, dan GIF yang diperbolehkan. File selain gambar (.php, video, dll) dilarang.`;
+                    const isTypeValid = (file.type && file.type.startsWith('image/') && allowedTypes.includes(file.type)) || allowedExtensions.includes(ext);
+
+                    if (!isTypeValid) {
+                        this.errorMessage = `File "${file.name}" bukan file gambar yang valid! Hanya format JPG, JPEG, PNG, WEBP, dan GIF yang diperbolehkan.`;
+                        this.hasOversized = true;
                         input.value = '';
                         this.files = [];
+                        window.dispatchEvent(new CustomEvent('image-validation-state', { detail: { hasError: true } }));
                         return;
                     }
 
-                    if (file.size > maxSize) {
-                        this.errorMessage = `Ukuran file "${file.name}" (${(file.size / (1024 * 1024)).toFixed(2)} MB) terlalu besar! Maksimal 2 MB per foto agar proses upload cepat.`;
-                        input.value = '';
-                        this.files = [];
-                        return;
+                    totalBytes += file.size;
+                    const isOver = file.size > this.maxSizePerFile;
+                    const sizeFormatted = file.size >= 1024 * 1024 
+                        ? (file.size / (1024 * 1024)).toFixed(2) + ' MB' 
+                        : (file.size / 1024).toFixed(1) + ' KB';
+
+                    if (isOver) {
+                        oversizedList.push(`"${file.name}" (${sizeFormatted})`);
                     }
 
                     this.files.push({
                         name: file.name,
-                        size: (file.size / 1024).toFixed(1) + ' KB',
+                        size: sizeFormatted,
+                        isOversized: isOver,
                         previewUrl: URL.createObjectURL(file)
                     });
                 }
+
+                this.totalSizeFormatted = totalBytes >= 1024 * 1024 
+                    ? (totalBytes / (1024 * 1024)).toFixed(2) + ' MB' 
+                    : (totalBytes / 1024).toFixed(1) + ' KB';
+
+                if (oversizedList.length > 0) {
+                    this.hasOversized = true;
+                    this.errorMessage = `Ukuran foto melebihi batas 2 MB: ${oversizedList.join(', ')}. Input otomatis dikosongkan agar server tidak error saat disimpan. Mohon kompres foto tersebut atau gunakan foto di bawah 2 MB.`;
+                    input.value = '';
+                    window.dispatchEvent(new CustomEvent('image-validation-state', { detail: { hasError: true } }));
+                    return;
+                }
+
+                this.hasOversized = false;
+                window.dispatchEvent(new CustomEvent('image-validation-state', { detail: { hasError: false } }));
             }
         };
     }
@@ -624,20 +810,6 @@
             </button>
         `;
         container.appendChild(row);
-    }
-
-    function setMainImage(imageId) {
-        const form = document.getElementById('set-main-form');
-        form.action = `/dashboard/products/image/${imageId}/set-main`;
-        form.submit();
-    }
-
-    function deleteImage(imageId) {
-        if (confirm('Hapus foto ini?')) {
-            const form = document.getElementById('delete-image-form');
-            form.action = `/dashboard/products/image/${imageId}`;
-            form.submit();
-        }
     }
 </script>
 

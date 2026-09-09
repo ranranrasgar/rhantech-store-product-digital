@@ -10,6 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script id="tailwind-config">
         tailwind.config = {
           darkMode: "class",
@@ -299,7 +300,12 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
     <a href="{{ url('/') }}" class="sidebar-brand">
         <span class="brand-dot-s"></span>
         <div>
-            <div class="brand-name-s">{{ $company->company_name ?? 'rhantech' }}</div>
+            <div class="brand-name-s" style="display:flex; align-items:center; gap:4px;">
+                {{ $company->company_name ?? 'rhantech' }}
+                @if(auth()->check() && auth()->user()->store && auth()->user()->store->isPro())
+                    <span style="background:linear-gradient(45deg,#f59e0b,#fbbf24); color:#fff; font-size:9px; padding:2px 4px; border-radius:4px; font-weight:800; text-transform:uppercase; box-shadow:0 0 5px rgba(245,158,11,0.5);">PRO</span>
+                @endif
+            </div>
             <div class="brand-sub-s">Seller Center</div>
         </div>
     </a>
@@ -328,6 +334,9 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
         </a>
 
         <div class="nav-section-label">Marketing & Promosi</div>
+        <a href="{{ route('tenant.broadcast.index') }}" class="nav-link {{ request()->routeIs('tenant.broadcast.*') ? 'active' : '' }}">
+            <span class="material-symbols-outlined">send_to_mobile</span> WA Broadcast
+        </a>
         <a href="{{ route('tenant.ads.index') }}" class="nav-link {{ request()->routeIs('tenant.ads.*') ? 'active' : '' }}">
             <span class="material-symbols-outlined">ads_click</span> Iklan Promosi Toko
         </a>
@@ -342,6 +351,12 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
         </a>
 
         <div class="nav-section-label">Toko</div>
+        <a href="{{ route('tenant.pro.index') }}" class="nav-link {{ request()->routeIs('tenant.pro.*') ? 'active' : '' }}">
+            <span class="material-symbols-outlined text-amber-500">stars</span> Layanan Toko PRO
+        </a>
+        <a href="{{ route('tenant.projects.index') }}" class="nav-link {{ request()->routeIs('tenant.projects.*') ? 'active' : '' }}">
+            <span class="material-symbols-outlined">work</span> Portofolio Proyek
+        </a>
         <a href="{{ route('tenant.appearance.index') ?? '#' }}" class="nav-link {{ request()->routeIs('tenant.appearance.*') ? 'active' : '' }}">
             <span class="material-symbols-outlined">storefront</span> Dekorasi Toko
         </a>
@@ -416,7 +431,7 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
         <div style="display:flex; align-items:center; gap:8px;">
             <x-theme-toggle />
             <form action="{{ route('help.index') }}" method="GET" class="topbar-search hidden md:flex" target="_blank">
-                <span class="material-symbols-outlined" style="font-size:16px; color:rgba(255,255,255,0.3);">search</span>
+                <span class="material-symbols-outlined" style="font-size:16px; line-height:1; display:flex; align-items:center; color:rgba(255,255,255,0.3);">search</span>
                 <input type="text" name="q" placeholder="Cari panduan..." autocomplete="off">
             </form>
             <a href="{{ route('help.index') }}" target="_blank" class="topbar-icon-btn" title="Pusat Bantuan & Panduan">
@@ -467,4 +482,5 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
 @include('components.popup-ad-modal')
 @include('components.pwa-install-prompt')
 @livewireScripts
+@stack('scripts')
 </body></html>

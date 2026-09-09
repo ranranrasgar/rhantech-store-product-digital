@@ -30,8 +30,8 @@
                 </div>
                 <div class="p-2 border-b border-outline-variant/30 bg-white">
                     <div class="bg-surface-container rounded-md flex items-center px-2 py-1">
-                        <span class="material-symbols-outlined text-[16px] text-gray-400">search</span>
-                        <input type="text" x-model="searchStoreQuery" placeholder="Cari toko..." class="bg-transparent border-none focus:ring-0 text-xs w-full px-1.5 focus:outline-none">
+                        <span class="material-symbols-outlined text-[16px] text-gray-400 leading-none flex items-center justify-center shrink-0">search</span>
+                        <input type="text" x-model="searchStoreQuery" placeholder="Cari toko..." class="bg-transparent border-none focus:ring-0 text-xs w-full px-1.5 py-0 focus:outline-none leading-normal">
                     </div>
                 </div>
                 <!-- Chat List Items -->
@@ -270,7 +270,12 @@
                 if (this.isFetchingConversations) return;
                 this.isFetchingConversations = true;
 
-                fetch('{{ route("chat.conversations") }}')
+                fetch('{{ route("chat.conversations") }}', {
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
                     .then(r => r.json())
                     .then(res => {
                         this.conversations = res.conversations || [];
@@ -299,7 +304,12 @@
                 if (this.isFetchingMessages) return;
                 this.isFetchingMessages = true;
 
-                fetch('{{ url("chat/messages") }}/' + storeId)
+                fetch('{{ url("chat/messages") }}/' + storeId, {
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
                     .then(r => r.json())
                     .then(res => {
                         this.messages = res.messages || [];

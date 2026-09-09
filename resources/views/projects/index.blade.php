@@ -164,23 +164,25 @@
                         <label for="project-search" class="block text-xs font-semibold uppercase tracking-wider text-on-surface-variant mb-2">
                             Pencarian
                         </label>
-                        <div class="relative">
+                        <div class="relative flex items-center">
                             <input type="text" 
                                    id="project-search" 
                                    x-model="search"
                                    @input="onSearchInput()" 
                                    placeholder="Cari project atau client..." 
                                    class="w-full pl-9 pr-8 py-2 text-sm bg-surface-container-lowest text-on-surface rounded-lg border border-outline-variant focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">
-                            <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">
-                                search
-                            </span>
+                            <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-on-surface-variant">
+                                <span class="material-symbols-outlined text-lg leading-none">
+                                    search
+                                </span>
+                            </div>
                             <button type="button"
                                     x-show="search" 
                                     x-cloak
                                     @click="clearSearch()" 
-                                    class="absolute right-2.5 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-error transition-colors"
+                                    class="absolute inset-y-0 right-0 pr-2.5 flex items-center text-on-surface-variant hover:text-error transition-colors"
                                     title="Hapus pencarian">
-                                <span class="material-symbols-outlined text-sm">close</span>
+                                <span class="material-symbols-outlined text-sm leading-none">close</span>
                             </button>
                         </div>
                         <p class="text-[11px] text-on-surface-variant mt-1.5 leading-relaxed">

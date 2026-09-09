@@ -161,6 +161,8 @@ class CompanyProfileController extends Controller
             CompanyProfile::create($validated);
         }
 
+        \Illuminate\Support\Facades\Cache::forget('site_company_profile');
+
         $activeTab = $request->input('redirect_tab', 'profile');
 
         return redirect()->route('admin.company.index', ['tab' => $activeTab])->with('success', 'Pengaturan berhasil disimpan.');

@@ -20,15 +20,23 @@ class ProductController extends Controller
         $store = Auth::user()->store;
         if (!$store) return redirect()->route('tenant.store.index')->with('warning', 'Please setup your store first.');
 
-        // Get total counts for the tabs
-        $allCount = $store->products()->count();
-        $activeCount = $store->products()->where('is_active', true)->where('approval_status', 'approved')->count();
-        $pendingCount = $store->products()->where('approval_status', 'pending')->count();
-        $rejectedCount = $store->products()->where('approval_status', 'rejected')->count();
-        $inactiveCount = $store->products()->where('is_active', false)->count();
+        // Get total counts for the tabs in 1 consolidated query
+        $tabStats = $store->products()->selectRaw("
+            COUNT(*) as all_count,
+            SUM(CASE WHEN is_active = 1 AND approval_status = 'approved' THEN 1 ELSE 0 END) as active_count,
+            SUM(CASE WHEN approval_status = 'pending' THEN 1 ELSE 0 END) as pending_count,
+            SUM(CASE WHEN approval_status = 'rejected' THEN 1 ELSE 0 END) as rejected_count,
+            SUM(CASE WHEN is_active = 0 THEN 1 ELSE 0 END) as inactive_count
+        ")->first();
 
-        // Query builder for products
-        $query = $store->products();
+        $allCount = (int) ($tabStats->all_count ?? 0);
+        $activeCount = (int) ($tabStats->active_count ?? 0);
+        $pendingCount = (int) ($tabStats->pending_count ?? 0);
+        $rejectedCount = (int) ($tabStats->rejected_count ?? 0);
+        $inactiveCount = (int) ($tabStats->inactive_count ?? 0);
+
+        // Query builder for products with eager loading (eliminates N+1 on images, category, type)
+        $query = $store->products()->with(['images', 'category:id,name', 'type:id,name']);
 
         // 1. Tab filter
         $tab = $request->input('tab', 'all');
@@ -70,7 +78,7 @@ class ProductController extends Controller
         }
 
         $products = $query->paginate(20)->withQueryString();
-        $categories = ProductCategory::orderBy('name', 'asc')->get();
+        $categories = ProductCategory::select(['id', 'name'])->orderBy('name', 'asc')->get();
 
         return view('tenant.products.index', compact('products', 'allCount', 'activeCount', 'pendingCount', 'rejectedCount', 'inactiveCount', 'categories', 'tab'));
     }
@@ -397,9 +405,50 @@ class ProductController extends Controller
     public function destroyImage(ProductImage $image)
     {
         if ($image->product->store_id !== Auth::user()->store->id) abort(403);
+        $productId = $image->product_id;
+        $wasMain = $image->is_main;
         Storage::disk('public')->delete($image->image_path);
         $image->delete();
+
+        $newMainId = null;
+        if ($wasMain) {
+            $nextMain = ProductImage::where('product_id', $productId)->first();
+            if ($nextMain) {
+                $nextMain->update(['is_main' => true]);
+                $newMainId = $nextMain->id;
+            }
+        }
+
+        if (request()->wantsJson() || request()->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Foto produk berhasil dihapus.',
+                'new_main_id' => $newMainId,
+                'remaining_count' => ProductImage::where('product_id', $productId)->count()
+            ]);
+        }
+
         return back()->with('success', 'Image removed.');
+    }
+
+    public function destroyAllImages(Product $product)
+    {
+        if ($product->store_id !== Auth::user()->store->id) abort(403);
+        
+        foreach ($product->images as $image) {
+            Storage::disk('public')->delete($image->image_path);
+            $image->delete();
+        }
+
+        if (request()->wantsJson() || request()->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Semua foto produk berhasil dihapus.',
+                'remaining_count' => 0
+            ]);
+        }
+
+        return back()->with('success', 'Semua foto produk berhasil dihapus.');
     }
 
     public function toggleActive(Product $product)
@@ -416,6 +465,15 @@ class ProductController extends Controller
         ProductImage::where('product_id', $image->product_id)->update(['is_main' => false]);
         // Set this image to main
         $image->update(['is_main' => true]);
+
+        if (request()->wantsJson() || request()->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Foto utama berhasil diperbarui.',
+                'main_image_id' => $image->id
+            ]);
+        }
+
         return back()->with('success', 'Main image updated.');
     }
 

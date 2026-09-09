@@ -8,6 +8,10 @@
     <link rel="shortcut icon" type="image/png" href="{{ isset($company) && $company->favicon ? '/storage/'.$company->favicon : '/favicon.ico' }}" />
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<!-- Global Chart.js & Leaflet Map for Admin Navigation -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script id="tailwind-config">
         tailwind.config = {
@@ -266,9 +270,11 @@
 </div>
 <div class="flex items-center gap-md">
 <x-theme-toggle />
-<div class="relative hidden md:block">
-<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant dark:text-gray-400">search</span>
-<input class="pl-10 pr-4 py-1.5 bg-background dark:bg-white/10 border border-outline-variant dark:border-gray-600 rounded-md font-body-md text-body-md focus:outline-none focus:border-primary dark:focus:border-blue-500 transition-all w-64 text-on-surface dark:text-white placeholder:text-on-surface-variant dark:placeholder:text-gray-400" placeholder="Type / to search" type="text"/>
+<div class="relative hidden md:flex items-center">
+    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+        <span class="material-symbols-outlined text-[18px] leading-none text-on-surface-variant dark:text-gray-400">search</span>
+    </div>
+    <input class="pl-9 pr-4 py-1.5 bg-background dark:bg-white/10 border border-outline-variant dark:border-gray-600 rounded-md font-body-md text-sm focus:outline-none focus:border-primary dark:focus:border-blue-500 transition-all w-64 text-on-surface dark:text-white placeholder:text-on-surface-variant dark:placeholder:text-gray-400" placeholder="Type / to search" type="text"/>
 </div>
 
 <!-- Notification Dropdown -->

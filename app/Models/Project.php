@@ -13,10 +13,15 @@ class Project extends Model
     use HasFactory;
 
     protected $fillable = [
-        'client_id', 'project_category_id', 'project_type_id', 'title', 'slug', 'short_description', 'description',
+        'store_id', 'client_id', 'project_category_id', 'project_type_id', 'title', 'slug', 'short_description', 'description',
         'thumbnail', 'brochure_file', 'project_url', 'order_url', 'technologies', 
         'completed_at', 'is_featured', 'status'
     ];
+
+    public function store()
+    {
+        return $this->belongsTo(Store::class);
+    }
 
     protected $casts = [
         'technologies' => 'array',

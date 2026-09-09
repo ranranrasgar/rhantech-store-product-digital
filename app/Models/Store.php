@@ -12,7 +12,39 @@ class Store extends Model
         'appearance_data' => 'array',
         'social_links' => 'array',
         'terms_accepted_at' => 'datetime',
+        'is_pro' => 'boolean',
+        'pro_expires_at' => 'datetime',
+        'custom_payout_fee_percentage' => 'decimal:2',
     ];
+
+    /**
+     * Check if store has active Pro status
+     */
+    public function isPro(): bool
+    {
+        if (!$this->is_pro) {
+            return false;
+        }
+
+        // If pro_expires_at is null, treat as lifetime Pro
+        if ($this->pro_expires_at === null) {
+            return true;
+        }
+
+        return $this->pro_expires_at->isFuture();
+    }
+
+    /**
+     * Get withdrawal fee percentage (1% for Pro, 2.5% for regular, or admin custom)
+     */
+    public function getPayoutFeePercentage(): float
+    {
+        if ($this->custom_payout_fee_percentage !== null) {
+            return (float) $this->custom_payout_fee_percentage;
+        }
+
+        return $this->isPro() ? 1.00 : 2.50;
+    }
 
     public function user()
     {
@@ -22,6 +54,16 @@ class Store extends Model
     public function products()
     {
         return $this->hasMany(Product::class);
+    }
+
+    public function projects()
+    {
+        return $this->hasMany(Project::class);
+    }
+
+    public function proSubscriptions()
+    {
+        return $this->hasMany(ProSubscription::class);
     }
 
     public function payoutRequests()

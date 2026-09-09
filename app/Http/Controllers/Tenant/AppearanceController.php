@@ -36,7 +36,8 @@ class AppearanceController extends Controller
 
         $store->appearance_data = $request->input('components');
         if ($request->has('header_banner')) {
-            $store->banner = $request->input('header_banner');
+            $bannerVal = trim($request->input('header_banner') ?? '');
+            $store->banner = !empty($bannerVal) ? $bannerVal : null;
         }
         $store->save();
 

@@ -28,8 +28,10 @@
         <div class="w-full md:w-80 lg:w-96 border-r border-slate-200 dark:border-[#30363d] flex flex-col bg-slate-50/50 dark:bg-[#0d1117]/40 flex-shrink-0">
             <!-- Search bar -->
             <div class="p-3 border-b border-slate-200 dark:border-[#30363d] bg-white dark:bg-[#161b22]">
-                <div class="relative">
-                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">search</span>
+                <div class="relative flex items-center">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                        <span class="material-symbols-outlined text-[18px] leading-none">search</span>
+                    </div>
                     <input type="text" x-model="searchQuery" placeholder="Cari nama pelanggan..." class="w-full pl-9 pr-3 py-1.5 text-xs rounded-xl bg-slate-100 dark:bg-[#21262d] border border-transparent focus:border-primary dark:focus:border-blue-500 focus:bg-white dark:focus:bg-[#161b22] focus:outline-none text-slate-800 dark:text-white placeholder:text-slate-400 transition-all">
                 </div>
             </div>
@@ -194,7 +196,12 @@ function tenantChatManager() {
         },
 
         fetchConversations() {
-            fetch('{{ route("tenant.chat.conversations") }}')
+            fetch('{{ route("tenant.chat.conversations") }}', {
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
                 .then(r => r.json())
                 .then(data => {
                     this.conversations = data.conversations || [];
@@ -215,7 +222,12 @@ function tenantChatManager() {
         },
 
         fetchMessages(userId, scrollDown = true) {
-            fetch('{{ url("dashboard/chat/messages") }}/' + userId)
+            fetch('{{ url("dashboard/chat/messages") }}/' + userId, {
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
                 .then(r => r.json())
                 .then(data => {
                     this.messages = data.messages || [];

@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="flex-1 overflow-y-auto p-4 md:p-8 bg-[#f8fafc] dark:bg-[#090d16] text-[#0f172a] dark:text-[#f1f5f9] transition-colors duration-200">
-    <div class="max-w-7xl mx-auto space-y-6">
+    <div class="max-w-7xl mx-auto space-y-6" x-data="{ viewMode: 'cards' }">
         
         <!-- Header -->
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -25,8 +25,98 @@
             </div>
         </div>
 
-        <!-- Main Card Table -->
-        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl shadow-sm overflow-hidden">
+        <!-- View Switcher & Notification -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white dark:bg-[#111726] p-3 rounded-2xl border border-slate-200/80 dark:border-[#222f49] shadow-xs">
+            <div class="flex items-center gap-2">
+                <button type="button" 
+                        @click="viewMode = 'cards'" 
+                        :class="viewMode === 'cards' 
+                            ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30' 
+                            : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'"
+                        class="px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer">
+                    <span class="material-symbols-outlined text-[17px]">confirmation_number</span>
+                    <span>Kartu Tiket Kupon (Gaya Tokopedia)</span>
+                    <span class="px-1.5 py-0.5 rounded-full text-[10px] font-black" :class="viewMode === 'cards' ? 'bg-white/25 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'">
+                        {{ $campaigns->count() }}
+                    </span>
+                </button>
+                <button type="button" 
+                        @click="viewMode = 'table'" 
+                        :class="viewMode === 'table' 
+                            ? 'bg-sky-600 text-white shadow-md shadow-sky-600/30' 
+                            : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'"
+                        class="px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer">
+                    <span class="material-symbols-outlined text-[17px]">table_rows</span>
+                    <span>Tabel Data Rinci</span>
+                </button>
+            </div>
+            <div class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1.5 px-2">
+                <span class="material-symbols-outlined text-emerald-500 text-[16px]">verified</span>
+                <span>Tiket otomatis tampil di halaman toko, produk & checkout pembeli</span>
+            </div>
+        </div>
+
+        <!-- 1. TAMPILAN KARTU TIKET VOUCHER (GAYA TOKOPEDIA) -->
+        <div x-show="viewMode === 'cards'" class="space-y-6">
+            @if($campaigns->count() > 0)
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    @foreach($campaigns as $campaign)
+                        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow">
+                            <!-- Tokopedia Ticket Card Component -->
+                            <x-voucher-card :campaign="$campaign" mode="browse" />
+
+                            <!-- Bottom Seller Actions & Stats -->
+                            <div class="mt-3 pt-3 border-t border-slate-100 dark:border-[#222f49] flex items-center justify-between gap-3 text-xs">
+                                <div class="flex items-center gap-3">
+                                    <span class="inline-flex items-center gap-1 font-semibold {{ $campaign->status === 'active' ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400' }}">
+                                        <span class="w-2 h-2 rounded-full {{ $campaign->status === 'active' ? 'bg-emerald-500' : 'bg-slate-400' }}"></span>
+                                        <span class="capitalize">{{ $campaign->status }}</span>
+                                    </span>
+                                    <span class="text-slate-400">•</span>
+                                    <span class="text-slate-500 dark:text-slate-400">
+                                        Terpakai: <strong>{{ $campaign->used_count ?? 0 }}</strong>
+                                        @if($campaign->usage_limit)
+                                            / {{ $campaign->usage_limit }} kuota
+                                        @else
+                                            (tanpa batas)
+                                        @endif
+                                    </span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <a href="{{ route('tenant.campaigns.edit', $campaign->id) }}" class="px-2.5 py-1 rounded-lg bg-sky-50 dark:bg-sky-950/50 text-sky-600 dark:text-sky-400 hover:bg-sky-100 font-bold text-xs flex items-center gap-1 transition-colors">
+                                        <span class="material-symbols-outlined text-[14px]">edit</span>
+                                        <span>Edit</span>
+                                    </a>
+                                    <form action="{{ route('tenant.campaigns.destroy', $campaign->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus voucher ini?');" class="inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="px-2.5 py-1 rounded-lg bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 hover:bg-rose-100 font-bold text-xs flex items-center gap-1 transition-colors cursor-pointer">
+                                            <span class="material-symbols-outlined text-[14px]">delete</span>
+                                            <span>Hapus</span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <div class="text-center py-12 bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-8">
+                    <div class="w-16 h-16 rounded-2xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center mx-auto mb-4">
+                        <span class="material-symbols-outlined text-[32px]">confirmation_number</span>
+                    </div>
+                    <h3 class="font-bold text-base text-slate-800 dark:text-white mb-1">Belum Ada Kupon Toko</h3>
+                    <p class="text-xs text-slate-400 mb-5 max-w-sm mx-auto">Buat kupon potongan harga atau kupon 100% gratis untuk memikat pembeli berbelanja di tokomu.</p>
+                    <a href="{{ route('tenant.campaigns.create') }}" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg shadow-emerald-600/25 transition-all inline-flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-[16px]">add</span>
+                        <span>Buat Kupon Pertama</span>
+                    </a>
+                </div>
+            @endif
+        </div>
+
+        <!-- 2. TAMPILAN TABEL DATA RINCI -->
+        <div x-show="viewMode === 'table'" class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl shadow-sm overflow-hidden">
             
             <div class="p-5 md:p-6 border-b border-slate-100 dark:border-[#222f49] flex items-center justify-between">
                 <div>

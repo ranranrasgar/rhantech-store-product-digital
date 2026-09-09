@@ -54,16 +54,25 @@ class ProductController extends Controller
             });
         }
 
-        // Counts for quick badges
-        $totalCount = Product::count();
-        $pendingCount = Product::whereNotNull('store_id')->where('approval_status', 'pending')->count();
-        $approvedCount = Product::where('approval_status', 'approved')->count();
-        $rejectedCount = Product::where('approval_status', 'rejected')->count();
-        $internalCount = Product::whereNull('store_id')->count();
-        $tenantCount = Product::whereNotNull('store_id')->count();
+        // Counts for quick badges (consolidated in 1 single query)
+        $badgeStats = Product::selectRaw("
+            COUNT(*) as total,
+            SUM(CASE WHEN store_id IS NOT NULL AND approval_status = 'pending' THEN 1 ELSE 0 END) as pending,
+            SUM(CASE WHEN approval_status = 'approved' THEN 1 ELSE 0 END) as approved,
+            SUM(CASE WHEN approval_status = 'rejected' THEN 1 ELSE 0 END) as rejected,
+            SUM(CASE WHEN store_id IS NULL THEN 1 ELSE 0 END) as internal,
+            SUM(CASE WHEN store_id IS NOT NULL THEN 1 ELSE 0 END) as tenant
+        ")->first();
+
+        $totalCount = (int) ($badgeStats->total ?? 0);
+        $pendingCount = (int) ($badgeStats->pending ?? 0);
+        $approvedCount = (int) ($badgeStats->approved ?? 0);
+        $rejectedCount = (int) ($badgeStats->rejected ?? 0);
+        $internalCount = (int) ($badgeStats->internal ?? 0);
+        $tenantCount = (int) ($badgeStats->tenant ?? 0);
 
         $products = $query->paginate(20)->withQueryString();
-        $stores = Store::orderBy('name', 'asc')->get();
+        $stores = Store::select(['id', 'name'])->orderBy('name', 'asc')->get();
 
         return view('admin.products.index', compact(
             'products', 
@@ -290,9 +299,48 @@ class ProductController extends Controller
 
     public function destroyImage(ProductImage $image)
     {
+        $productId = $image->product_id;
+        $wasMain = $image->is_main;
         Storage::disk('public')->delete($image->image_path);
         $image->delete();
+
+        $newMainId = null;
+        if ($wasMain) {
+            $nextMain = ProductImage::where('product_id', $productId)->first();
+            if ($nextMain) {
+                $nextMain->update(['is_main' => true]);
+                $newMainId = $nextMain->id;
+            }
+        }
+
+        if (request()->wantsJson() || request()->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Foto produk berhasil dihapus.',
+                'new_main_id' => $newMainId,
+                'remaining_count' => ProductImage::where('product_id', $productId)->count()
+            ]);
+        }
+
         return back()->with('success', 'Image removed.');
+    }
+
+    public function destroyAllImages(Product $product)
+    {
+        foreach ($product->images as $image) {
+            Storage::disk('public')->delete($image->image_path);
+            $image->delete();
+        }
+
+        if (request()->wantsJson() || request()->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Semua foto produk berhasil dihapus.',
+                'remaining_count' => 0
+            ]);
+        }
+
+        return back()->with('success', 'Semua foto produk berhasil dihapus.');
     }
 
     public function toggleActive(Product $product)
@@ -307,6 +355,15 @@ class ProductController extends Controller
         ProductImage::where('product_id', $image->product_id)->update(['is_main' => false]);
         // Set this image to main
         $image->update(['is_main' => true]);
+
+        if (request()->wantsJson() || request()->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Foto utama berhasil diperbarui.',
+                'main_image_id' => $image->id
+            ]);
+        }
+
         return back()->with('success', 'Main image updated.');
     }
 

@@ -50,23 +50,23 @@ class PublicStoreController extends Controller
         // Query semua produk (produk sendiri + produk showcase yang dipajang)
         $productsQuery = \App\Models\Product::whereIn('id', $allProductIds)
             ->published()
-            ->with(['store', 'category', 'images', 'type', 'reviews'])
+            ->with(['store:id,name,slug,logo', 'category:id,name', 'images', 'type:id,name', 'reviews:id,product_id,rating,is_visible'])
             ->withCount(['orders' => function($q) {
-                $q->whereIn('status', ['paid', 'downloaded']);
+                $q->whereIn('orders.status', ['paid', 'downloaded']);
             }]);
 
         // Filter search jika ada query param
         if ($request->filled('q') || $request->filled('search')) {
             $keyword = trim($request->query('q', $request->query('search')));
             $productsQuery->where(function($q) use ($keyword) {
-                $q->where('name', 'like', "%{$keyword}%")
-                  ->orWhere('description', 'like', "%{$keyword}%");
+                $q->where('products.name', 'like', "%{$keyword}%")
+                  ->orWhere('products.description', 'like', "%{$keyword}%");
             });
         }
 
         // Filter kategori jika ada query param
         if ($request->filled('category')) {
-            $productsQuery->where('product_category_id', $request->query('category'));
+            $productsQuery->where('products.product_category_id', $request->query('category'));
         }
 
         $products = $productsQuery->latest()->paginate(12)->withQueryString();
@@ -84,10 +84,16 @@ class PublicStoreController extends Controller
         
         // Fetch categories from all displayed products
         $categories = \App\Models\ProductCategory::whereHas('products', function($q) use ($allProductIds) {
-            $q->whereIn('id', $allProductIds)->published();
-        })->get();
+            $q->whereIn('products.id', $allProductIds)->published();
+        })->select(['id', 'name'])->get();
         
-        return view('store.show', compact('store', 'products', 'appearance', 'isFollowing', 'categories'));
+        // Fetch active vouchers/campaigns of the store
+        $campaigns = \App\Models\Campaign::where('store_id', $store->id)
+            ->active()
+            ->latest()
+            ->get(['id', 'store_id', 'code', 'name', 'type', 'discount_type', 'discount_value', 'minimum_spend', 'start_date', 'end_date', 'usage_limit', 'used_count']);
+            
+        return view('store.show', compact('store', 'products', 'appearance', 'isFollowing', 'categories', 'campaigns'));
     }
 
     /**

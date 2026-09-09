@@ -25,7 +25,7 @@
             <form action="{{ route('help.index') }}" method="GET" class="flex-1 max-w-2xl relative">
                 <div class="relative flex items-center w-full h-10 rounded-lg bg-gray-100 overflow-hidden border border-transparent focus-within:bg-white focus-within:shadow-md transition-all">
                     <div class="grid place-items-center h-full w-10 text-gray-500">
-                        <span class="material-symbols-outlined text-[20px]">search</span>
+                        <span class="material-symbols-outlined text-[20px] leading-none">search</span>
                     </div>
                     <input class="peer h-full w-full outline-none text-sm text-gray-700 pr-2 bg-transparent" type="text" name="q" value="{{ $query }}" placeholder="Jelaskan masalah Anda" autocomplete="off" />
                 </div>

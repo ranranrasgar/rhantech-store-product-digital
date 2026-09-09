@@ -85,8 +85,10 @@
         <form method="GET" action="{{ route('admin.products.index') }}" class="flex flex-col md:flex-row items-stretch md:items-center gap-3">
             
             <!-- Search bar -->
-            <div class="flex-1 relative">
-                <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
+            <div class="flex-1 relative flex items-center">
+                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-on-surface-variant">
+                    <span class="material-symbols-outlined text-[18px] leading-none">search</span>
+                </div>
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama produk, slug, atau toko..." class="w-full pl-10 pr-4 py-2.5 text-xs md:text-sm bg-surface-container-lowest border border-outline-variant rounded-xl focus:outline-none focus:ring-1 focus:ring-primary text-on-surface">
             </div>
 

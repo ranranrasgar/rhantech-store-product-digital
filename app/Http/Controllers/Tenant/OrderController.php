@@ -15,17 +15,17 @@ class OrderController extends Controller
         $store = Auth::user()->store;
         if (!$store) return redirect()->route('tenant.store.index');
 
-        // Fetch products for the dropdown filter
-        $products = Product::where('store_id', $store->id)->get();
+        // Fetch products for the dropdown filter (selective columns)
+        $products = Product::where('store_id', $store->id)->select(['id', 'name'])->orderBy('name')->get();
 
         // Build the base query: support both multi-item cart orders and single product orders
         $query = Order::where(function ($q) use ($store) {
             $q->whereHas('orderItems.product', function ($sub) use ($store) {
-                $sub->where('store_id', $store->id);
+                $sub->where('products.store_id', $store->id);
             })->orWhereHas('product', function ($sub) use ($store) {
-                $sub->where('store_id', $store->id);
+                $sub->where('products.store_id', $store->id);
             });
-        })->with(['product', 'orderItems.product.images']);
+        })->with(['product:id,store_id,name', 'orderItems.product:id,store_id,name', 'orderItems.product.images']);
 
         // 1. Tab filter
         $tab = $request->input('tab', 'all');

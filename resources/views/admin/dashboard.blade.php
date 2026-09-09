@@ -3,10 +3,6 @@
 @section('title', 'Overview')
 
 @section('content')
-<!-- Include Chart.js & Leaflet Map -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <style>
 .leaflet-popup-content-wrapper {
     background: #ffffff;
@@ -34,6 +30,20 @@
 .custom-map-pin {
     background: transparent;
     border: none;
+}
+#adminGeoMap {
+    cursor: grab;
+}
+#adminGeoMap:active {
+    cursor: grabbing;
+}
+.leaflet-container {
+    cursor: grab !important;
+}
+.leaflet-container.leaflet-drag-target,
+.leaflet-dragging .leaflet-container,
+.leaflet-dragging .leaflet-grab {
+    cursor: grabbing !important;
 }
 </style>
 
@@ -172,10 +182,25 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-md">
             <!-- Revenue Growth -->
             <div class="lg:col-span-2 bg-surface rounded-md border border-outline-variant p-lg">
-                <div class="flex justify-between items-center mb-lg">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-lg">
                     <div>
                         <h3 class="font-headline-sm text-headline-sm font-bold text-on-surface">Tren Penjualan Produk</h3>
-                        <p class="text-xs text-on-surface-variant">Grafik pendapatan riil 6 bulan terakhir</p>
+                        <p id="trendSubtitle" class="text-xs text-on-surface-variant">Grafik pendapatan riil 6 bulan terakhir</p>
+                    </div>
+                    <!-- Period Toggle (Bulanan vs Harian) -->
+                    <div class="flex items-center gap-1 bg-surface-container p-1 rounded-lg border border-outline-variant shrink-0">
+                        <button type="button" 
+                                id="btnPeriodMonthly"
+                                onclick="switchTrendPeriod('monthly')"
+                                class="px-3 py-1 text-xs font-bold rounded-md transition-all bg-primary text-on-primary shadow-xs cursor-pointer">
+                            Bulanan (6 Bln)
+                        </button>
+                        <button type="button" 
+                                id="btnPeriodDaily"
+                                onclick="switchTrendPeriod('daily')"
+                                class="px-3 py-1 text-xs font-bold rounded-md transition-all text-on-surface hover:bg-surface-variant cursor-pointer">
+                            Harian ({{ $currentMonthName ?? 'Bulan Ini' }})
+                        </button>
                     </div>
                 </div>
                 <!-- Box border for chart area -->
@@ -263,6 +288,11 @@
             <!-- Leaflet Map Container -->
             <div class="relative w-full rounded-xl overflow-hidden border border-outline-variant bg-surface-container-low" style="height: 480px; z-index: 1;">
                 <div id="adminGeoMap" class="w-full h-full"></div>
+                <!-- Controls overlay hint -->
+                <div class="absolute bottom-3 left-3 z-[1000] pointer-events-none bg-slate-950/80 backdrop-blur-xs text-white px-3 py-1.5 rounded-lg text-[11px] font-medium flex items-center gap-1.5 border border-white/15 shadow-md">
+                    <span class="material-symbols-outlined text-[15px] text-sky-400 leading-none">pan_tool</span>
+                    <span>Klik &amp; Geser (Drag) • Scroll Mouse untuk Zoom In/Out</span>
+                </div>
             </div>
 
             <!-- Summary Footnotes -->
@@ -376,193 +406,200 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Revenue Chart (Bar)
-        const ctxRev = document.getElementById('revenueChart').getContext('2d');
-        const revLabels = @json($monthLabels);
-        const revData = @json($monthlyRevenue);
-
-        new Chart(ctxRev, {
-            type: 'bar',
-            data: {
-                labels: revLabels,
-                datasets: [{
-                    label: 'Pendapatan (Rp)',
-                    data: revData,
-                    backgroundColor: '#0284c7', // Sky-600
-                    borderRadius: 4,
-                    borderSkipped: false,
-                    barPercentage: 0.6,
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        backgroundColor: '#0F172A',
-                        padding: 12,
-                        titleFont: { family: 'Geist', size: 13 },
-                        bodyFont: { family: 'Geist', size: 14, weight: 'bold' },
-                        callbacks: {
-                            label: function(context) {
-                                return 'Rp ' + Number(context.parsed.y).toLocaleString('id-ID');
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    x: {
-                        grid: { display: false, drawBorder: false },
-                        ticks: {
-                            font: { family: 'Geist', size: 12 },
-                            color: '#64748B' // slate-500
-                        }
-                    },
-                    y: {
-                        grid: {
-                            color: function(context) {
-                                return document.documentElement.classList.contains('dark') ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
-                            },
-                            drawBorder: false,
-                        },
-                        ticks: {
-                            font: { family: 'Geist', size: 11 },
-                            color: '#64748B',
-                            callback: function(value) {
-                                if (value >= 1000000) return (value / 1000000) + 'M';
-                                if (value >= 1000) return (value / 1000) + 'K';
-                                return value;
-                            }
-                        }
-                    }
-                }
-            }
-        });
-
-        // Status Chart (Doughnut)
-        const ctxStatus = document.getElementById('statusChart').getContext('2d');
-        new Chart(ctxStatus, {
-            type: 'doughnut',
-            data: {
-                labels: ['Sukses', 'Pending', 'Gagal/Batal'],
-                datasets: [{
-                    data: [{{ $orderSuccess }}, {{ $orderPending }}, {{ $orderFailed }}],
-                    backgroundColor: ['#10B981', '#F59E0B', '#EF4444'], // Emerald, Amber, Red
-                    borderWidth: 0,
-                    hoverOffset: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '75%',
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        backgroundColor: '#0F172A',
-                        padding: 12,
-                        titleFont: { family: 'Geist', size: 13 },
-                        bodyFont: { family: 'Geist', size: 14, weight: 'bold' },
-                        callbacks: {
-                            label: function(context) {
-                                let label = context.label || '';
-                                if (label) {
-                                    label += ': ';
-                                }
-                                if (context.parsed !== null) {
-                                    label += context.parsed + ' Pesanan';
-                                }
-                                return label;
-                            }
-                        }
-                    }
-                }
-            }
-        });
-
-        // -------------------------------------------------------------
-        // Leaflet Interactive Geo Map for Stores & Customers
-        // -------------------------------------------------------------
-        const mapRawData = @json($mapData);
+    (function() {
+        let revenueChartInstance = null;
+        let statusChartInstance = null;
         let geoMap = null;
         let mapMarkersLayer = null;
+        const mapRawData = @json($mapData);
 
-        function initAdminGeoMap() {
-            const mapContainer = document.getElementById('adminGeoMap');
-            if (!mapContainer || typeof L === 'undefined') return;
+        let revenuePeriod = 'monthly';
+        const revMonthlyLabels = @json($monthLabels);
+        const revMonthlyData = @json($monthlyRevenue);
+        const revDailyLabels = @json($dailyLabels);
+        const revDailyData = @json($dailyRevenue);
+        const currentMonthName = @json($currentMonthName);
 
-            geoMap = L.map('adminGeoMap', {
-                scrollWheelZoom: false
-            }).setView([-6.92, 107.65], 7);
+        function initRevenueChart() {
+            const canvas = document.getElementById('revenueChart');
+            if (!canvas || typeof Chart === 'undefined') return;
 
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 18,
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors'
-            }).addTo(geoMap);
+            const existing = Chart.getChart(canvas);
+            if (existing) existing.destroy();
+            if (revenueChartInstance) {
+                try { revenueChartInstance.destroy(); } catch(e) {}
+                revenueChartInstance = null;
+            }
 
-            mapMarkersLayer = L.layerGroup().addTo(geoMap);
+            const ctxRev = canvas.getContext('2d');
+            const isDaily = revenuePeriod === 'daily';
+            const labels = isDaily ? revDailyLabels : revMonthlyLabels;
+            const data = isDaily ? revDailyData : revMonthlyData;
+            const barPct = isDaily ? 0.75 : 0.6;
 
-            renderMarkers('all');
+            revenueChartInstance = new Chart(ctxRev, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Pendapatan (Rp)',
+                        data: data,
+                        backgroundColor: isDaily ? '#0ea5e9' : '#0284c7',
+                        borderRadius: isDaily ? 2 : 4,
+                        borderSkipped: false,
+                        barPercentage: barPct,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#0F172A',
+                            padding: 12,
+                            titleFont: { family: 'Geist', size: 13 },
+                            bodyFont: { family: 'Geist', size: 14, weight: 'bold' },
+                            callbacks: {
+                                title: function(items) {
+                                    if (!items.length) return '';
+                                    if (revenuePeriod === 'daily') {
+                                        return 'Tgl ' + items[0].label + ' ' + currentMonthName;
+                                    }
+                                    return 'Bulan ' + items[0].label;
+                                },
+                                label: function(context) {
+                                    return 'Rp ' + Number(context.parsed.y).toLocaleString('id-ID');
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false, drawBorder: false },
+                            ticks: {
+                                autoSkip: true,
+                                maxTicksLimit: isDaily ? 16 : 12,
+                                font: { family: 'Geist', size: 11 },
+                                color: '#64748B'
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: function(ctx) {
+                                    return document.documentElement.classList.contains('dark') ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
+                                },
+                                drawBorder: false
+                            },
+                            ticks: {
+                                font: { family: 'Geist', size: 11 },
+                                color: '#64748B',
+                                callback: function(v) {
+                                    if (v >= 1000000) return (v / 1000000) + 'M';
+                                    if (v >= 1000) return (v / 1000) + 'K';
+                                    return v;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        window.switchTrendPeriod = function(period) {
+            revenuePeriod = period;
+            const btnMonthly = document.getElementById('btnPeriodMonthly');
+            const btnDaily = document.getElementById('btnPeriodDaily');
+            const subtitle = document.getElementById('trendSubtitle');
+
+            const activeClass = "px-3 py-1 text-xs font-bold rounded-md transition-all bg-primary text-on-primary shadow-xs cursor-pointer";
+            const inactiveClass = "px-3 py-1 text-xs font-bold rounded-md transition-all text-on-surface hover:bg-surface-variant cursor-pointer";
+
+            if (period === 'daily') {
+                if (btnDaily) btnDaily.className = activeClass;
+                if (btnMonthly) btnMonthly.className = inactiveClass;
+                if (subtitle) subtitle.textContent = "Grafik pendapatan harian per tanggal di bulan " + currentMonthName;
+            } else {
+                if (btnMonthly) btnMonthly.className = activeClass;
+                if (btnDaily) btnDaily.className = inactiveClass;
+                if (subtitle) subtitle.textContent = "Grafik pendapatan riil 6 bulan terakhir";
+            }
+
+            initRevenueChart();
+        };
+
+        function initStatusChart() {
+            const canvas = document.getElementById('statusChart');
+            if (!canvas || typeof Chart === 'undefined') return;
+
+            const existing = Chart.getChart(canvas);
+            if (existing) existing.destroy();
+            if (statusChartInstance) {
+                try { statusChartInstance.destroy(); } catch(e) {}
+                statusChartInstance = null;
+            }
+
+            statusChartInstance = new Chart(canvas.getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Sukses', 'Pending', 'Gagal/Batal'],
+                    datasets: [{
+                        data: [{{ $orderSuccess }}, {{ $orderPending }}, {{ $orderFailed }}],
+                        backgroundColor: ['#10B981', '#F59E0B', '#EF4444'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '75%',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#0F172A',
+                            padding: 12,
+                            titleFont: { family: 'Geist', size: 13 },
+                            bodyFont: { family: 'Geist', size: 14, weight: 'bold' },
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) label += ': ';
+                                    if (context.parsed !== null) label += context.parsed + ' Pesanan';
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
         }
 
         function createPinIcon(type) {
-            if (type === 'store') {
-                return L.divIcon({
-                    className: 'custom-map-pin',
-                    html: `
-                        <div style="position: relative; display: flex; flex-direction: column; align-items: center; cursor: pointer;">
-                            <div style="width: 34px; height: 34px; border-radius: 50%; background: #00838f; color: white; display: flex; align-items: center; justify-content: center; border: 2px solid #ffffff; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3); font-weight: bold;">
-                                <span class="material-symbols-outlined" style="font-size: 18px;">storefront</span>
-                            </div>
-                            <div style="width: 0; height: 0; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid #00838f; margin-top: -2px;"></div>
+            const color = type === 'store' ? '#00838f' : '#2563eb';
+            const icon = type === 'store' ? 'storefront' : 'person';
+            return L.divIcon({
+                className: 'custom-map-pin',
+                html: `<div style="position: relative; display: flex; flex-direction: column; align-items: center; cursor: pointer;">
+                        <div style="width: 32px; height: 32px; border-radius: 50%; background: ${color}; color: white; display: flex; align-items: center; justify-content: center; border: 2px solid #ffffff; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3);">
+                            <span class="material-symbols-outlined" style="font-size: 16px;">${icon}</span>
                         </div>
-                    `,
-                    iconSize: [34, 40],
-                    iconAnchor: [17, 40],
-                    popupAnchor: [0, -38]
-                });
-            } else {
-                return L.divIcon({
-                    className: 'custom-map-pin',
-                    html: `
-                        <div style="position: relative; display: flex; flex-direction: column; align-items: center; cursor: pointer;">
-                            <div style="width: 32px; height: 32px; border-radius: 50%; background: #2563eb; color: white; display: flex; align-items: center; justify-content: center; border: 2px solid #ffffff; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.3); font-weight: bold;">
-                                <span class="material-symbols-outlined" style="font-size: 16px;">person</span>
-                            </div>
-                            <div style="width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 7px solid #2563eb; margin-top: -2px;"></div>
-                        </div>
-                    `,
-                    iconSize: [32, 37],
-                    iconAnchor: [16, 37],
-                    popupAnchor: [0, -35]
-                });
-            }
+                        <div style="width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 7px solid ${color}; margin-top: -2px;"></div>
+                       </div>`,
+                iconSize: [32, 37],
+                iconAnchor: [16, 37],
+                popupAnchor: [0, -35]
+            });
         }
 
         function renderMarkers(filterType) {
             if (!geoMap || !mapMarkersLayer) return;
             mapMarkersLayer.clearLayers();
-
-            let list = [];
-            if (filterType === 'store') {
-                list = mapRawData.stores || [];
-            } else if (filterType === 'customer') {
-                list = mapRawData.customers || [];
-            } else {
-                list = mapRawData.all || [];
-            }
-
-            const bounds = [];
-
+            let list = (filterType === 'store' ? mapRawData.stores : (filterType === 'customer' ? mapRawData.customers : mapRawData.all)) || [];
+            let bounds = [];
             list.forEach(item => {
                 if (!item.lat || !item.lng) return;
-
-                const marker = L.marker([item.lat, item.lng], {
-                    icon: createPinIcon(item.type)
-                });
-
+                const marker = L.marker([item.lat, item.lng], { icon: createPinIcon(item.type) });
                 let popupContent = '';
                 if (item.type === 'store') {
                     popupContent = `
@@ -604,43 +641,57 @@
                         </div>
                     `;
                 }
-
                 marker.bindPopup(popupContent);
                 mapMarkersLayer.addLayer(marker);
                 bounds.push([item.lat, item.lng]);
             });
+            if (bounds.length > 0) geoMap.fitBounds(bounds, { padding: [40, 40], maxZoom: 12 });
+        }
 
-            if (bounds.length > 0) {
-                geoMap.fitBounds(bounds, { padding: [40, 40], maxZoom: 12 });
-            }
+        function initAdminGeoMap() {
+            const mapContainer = document.getElementById('adminGeoMap');
+            if (!mapContainer || typeof L === 'undefined') return;
+            if (geoMap) { try { geoMap.remove(); } catch(e) {} geoMap = null; }
+            if (mapContainer._leaflet_id) delete mapContainer._leaflet_id;
+            geoMap = L.map('adminGeoMap', {
+                scrollWheelZoom: true,
+                dragging: true,
+                touchZoom: true,
+                doubleClickZoom: true,
+                boxZoom: true,
+                keyboard: true,
+                zoomControl: true
+            }).setView([-6.92, 107.65], 7);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(geoMap);
+            mapMarkersLayer = L.layerGroup().addTo(geoMap);
+            renderMarkers('all');
+            setTimeout(() => { if (geoMap) geoMap.invalidateSize(); }, 250);
         }
 
         window.filterMapMarkers = function(type) {
-            const btnAll = document.getElementById('btnFilterAll');
-            const btnStore = document.getElementById('btnFilterStore');
-            const btnCust = document.getElementById('btnFilterCustomer');
-
-            const resetClass = "px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors cursor-pointer bg-surface border-outline-variant text-on-surface hover:border-outline";
-            if (btnAll) btnAll.className = resetClass;
-            if (btnStore) btnStore.className = resetClass;
-            if (btnCust) btnCust.className = resetClass;
-
-            if (type === 'store') {
-                if (btnStore) btnStore.className = "px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors cursor-pointer bg-[#00838f] text-white border-[#00838f]";
-            } else if (type === 'customer') {
-                if (btnCust) btnCust.className = "px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors cursor-pointer bg-[#2563eb] text-white border-[#2563eb]";
-            } else {
-                if (btnAll) btnAll.className = "px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors cursor-pointer bg-primary text-on-primary border-primary";
-            }
-
+            ['btnFilterAll', 'btnFilterStore', 'btnFilterCustomer'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.className = "px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors cursor-pointer bg-surface border-outline-variant text-on-surface";
+            });
+            const activeId = type === 'store' ? 'btnFilterStore' : (type === 'customer' ? 'btnFilterCustomer' : 'btnFilterAll');
+            const activeEl = document.getElementById(activeId);
+            if (activeEl) activeEl.className = "px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors cursor-pointer bg-primary text-on-primary border-primary";
             renderMarkers(type);
         };
 
-        window.resetMapView = function() {
-            window.filterMapMarkers('all');
-        };
+        window.resetMapView = function() { window.filterMapMarkers('all'); };
 
-        initAdminGeoMap();
-    });
+        function initAllDashboard() {
+            setTimeout(() => {
+                initRevenueChart();
+                initStatusChart();
+                initAdminGeoMap();
+            }, 50);
+        }
+
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initAllDashboard);
+        else initAllDashboard();
+        document.addEventListener('livewire:navigated', initAllDashboard);
+    })();
 </script>
 @endsection

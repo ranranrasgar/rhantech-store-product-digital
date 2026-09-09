@@ -9,56 +9,7 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $categories = \App\Models\ProductCategory::select(['id', 'store_id', 'name'])
-            ->whereHas('products', function ($q) {
-                $q->published();
-            })
-            ->withCount(['products' => function ($q) {
-                $q->published();
-            }])
-            ->with('store:id,name')
-            ->orderByRaw('store_id IS NULL DESC, name ASC')
-            ->get();
-
-        $types = \App\Models\ProductType::select(['id', 'store_id', 'name'])
-            ->whereHas('products', function ($q) {
-                $q->published();
-            })
-            ->withCount(['products' => function ($q) {
-                $q->published();
-            }])
-            ->with('store:id,name')
-            ->orderByRaw('store_id IS NULL DESC, name ASC')
-            ->get();
-
-        $stores = \App\Models\Store::select(['id', 'name', 'slug'])->get();
-        $banners = \App\Models\Banner::where('is_active', true)->get()->keyBy('position');
-
-        // Produk unggulan yang paling banyak diklik / dilihat + relasi store dan image
-        $topProducts = Product::with(['store:id,name,slug', 'images'])
-            ->published()
-            ->orderBy('views', 'desc')
-            ->orderBy('sales_count', 'desc')
-            ->limit(5)
-            ->get();
-
-        // Banner Toko Beriklan (Bergantian / Carousel Slide) beserta produk yang diiklankannya
-        $sponsoredStores = \App\Models\Store::where('ad_balance', '>', 0)
-            ->whereHas('ads', function ($q) {
-                $q->activeAndFunded()->whereNotNull('product_id');
-            })
-            ->with([
-                'ads' => function ($q) {
-                    $q->activeAndFunded()->whereNotNull('product_id')->with(['product.images', 'product.category']);
-                },
-                'products' => function ($q) {
-                    $q->published()->with('images')->latest()->take(10);
-                },
-                'showcaseProducts' => function ($q) {
-                    $q->published()->with('images')->latest()->take(10);
-                }
-            ])
-            ->get();
+        $isAjax = ($request->ajax() || $request->header('X-Requested-With') === 'XMLHttpRequest' || $request->boolean('ajax'));
 
         $query = Product::with(['store:id,name,slug', 'images', 'category:id,name', 'type:id,name', 'activeAd'])
             ->published();
@@ -88,18 +39,18 @@ class ProductController extends Controller
         }
 
         if ($request->filled('store')) {
-            $query->where('store_id', $request->store);
+            $query->where('products.store_id', $request->store);
         }
 
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('tags', 'like', "%{$search}%")
-                    ->orWhere('short_description', 'like', "%{$search}%")
-                    ->orWhere('description', 'like', "%{$search}%")
+                $q->where('products.name', 'like', "%{$search}%")
+                    ->orWhere('products.tags', 'like', "%{$search}%")
+                    ->orWhere('products.short_description', 'like', "%{$search}%")
+                    ->orWhere('products.description', 'like', "%{$search}%")
                     ->orWhereHas('store', function ($sq) use ($search) {
-                        $sq->where('name', 'like', "%{$search}%");
+                        $sq->where('stores.name', 'like', "%{$search}%");
                     });
             });
         }
@@ -150,10 +101,63 @@ class ProductController extends Controller
             \App\Models\ProductSearch::record($request->search, $products->total());
         }
 
-        // Jika AJAX request
-        if ($request->ajax() || $request->header('X-Requested-With') === 'XMLHttpRequest' || $request->boolean('ajax')) {
+        // Jika AJAX request, langsung render list produk tanpa query metadata katalog
+        if ($isAjax) {
             return view('products._list', compact('products'))->render();
         }
+
+        // Metadata hanya dimuat pada saat full page load
+        $categories = \App\Models\ProductCategory::select(['id', 'store_id', 'name'])
+            ->whereHas('products', function ($q) {
+                $q->published();
+            })
+            ->withCount(['products' => function ($q) {
+                $q->published();
+            }])
+            ->with('store:id,name')
+            ->orderByRaw('store_id IS NULL DESC, name ASC')
+            ->get();
+
+        $types = \App\Models\ProductType::select(['id', 'store_id', 'name'])
+            ->whereHas('products', function ($q) {
+                $q->published();
+            })
+            ->withCount(['products' => function ($q) {
+                $q->published();
+            }])
+            ->with('store:id,name')
+            ->orderByRaw('store_id IS NULL DESC, name ASC')
+            ->get();
+
+        $stores = \App\Models\Store::select(['id', 'name', 'slug'])->get();
+        $banners = \App\Models\Banner::where('is_active', true)->get()->keyBy('position');
+
+        // Produk unggulan yang paling banyak diklik / dilihat + relasi store dan image
+        $topProducts = Product::with(['store:id,name,slug', 'images'])
+            ->published()
+            ->select(['id', 'store_id', 'name', 'slug', 'price', 'discount_price', 'views', 'sales_count'])
+            ->orderBy('views', 'desc')
+            ->orderBy('sales_count', 'desc')
+            ->limit(5)
+            ->get();
+
+        // Banner Toko Beriklan (Bergantian / Carousel Slide) beserta produk yang diiklankannya
+        $sponsoredStores = \App\Models\Store::where('ad_balance', '>', 0)
+            ->whereHas('ads', function ($q) {
+                $q->activeAndFunded()->whereNotNull('product_id');
+            })
+            ->with([
+                'ads' => function ($q) {
+                    $q->activeAndFunded()->whereNotNull('product_id')->with(['product.images', 'product.category:id,name']);
+                },
+                'products' => function ($q) {
+                    $q->published()->select(['products.id', 'products.store_id', 'products.name', 'products.slug', 'products.price', 'products.discount_price'])->with('images')->latest('products.created_at')->take(6);
+                },
+                'showcaseProducts' => function ($q) {
+                    $q->published()->select(['products.id', 'products.store_id', 'products.name', 'products.slug', 'products.price', 'products.discount_price'])->with('images')->latest('products.created_at')->take(6);
+                }
+            ])
+            ->get(['id', 'name', 'slug', 'logo', 'ad_balance']);
 
         return view('products.index', compact('products', 'categories', 'types', 'stores', 'banners', 'topProducts', 'sponsoredStores'));
     }

@@ -29,6 +29,10 @@ class ChatController extends Controller
      */
     public function getConversations(Request $request)
     {
+        if (!$request->expectsJson() && !$request->ajax()) {
+            return redirect()->route('tenant.chat.index');
+        }
+
         $store = Auth::user()->store;
         if (!$store) {
             return response()->json(['conversations' => [], 'unread_total' => 0]);
@@ -88,6 +92,10 @@ class ChatController extends Controller
      */
     public function getMessages(Request $request, $userId)
     {
+        if (!$request->expectsJson() && !$request->ajax()) {
+            return redirect()->route('tenant.chat.index');
+        }
+
         $store = Auth::user()->store;
         if (!$store) {
             return response()->json(['error' => 'Store not found'], 404);

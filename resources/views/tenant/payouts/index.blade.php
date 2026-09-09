@@ -43,55 +43,64 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
             
             <!-- Saldo Tersedia Card -->
-            <div class="md:col-span-2 relative overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white rounded-3xl p-6 md:p-8 border border-slate-800 shadow-xl flex flex-col justify-between">
-                <div class="absolute -right-8 -bottom-8 w-48 h-48 bg-sky-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="md:col-span-2 bg-white dark:bg-[#111726] rounded-3xl p-6 md:p-8 border border-slate-200/80 dark:border-[#222f49] shadow-sm flex flex-col justify-between relative overflow-hidden">
+                <!-- Subtle background accent -->
+                <div class="absolute -right-8 -bottom-8 w-48 h-48 bg-sky-50 dark:bg-sky-900/10 rounded-full blur-3xl pointer-events-none"></div>
                 
-                <div>
+                <div class="relative z-10">
                     <div class="flex items-center justify-between mb-4">
-                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-white/10 backdrop-blur-md border border-white/20 text-sky-300 flex items-center gap-1.5">
-                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Saldo Siap Ditarik
+                        <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800/30 text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Saldo Siap Ditarik
                         </span>
-                        <span class="material-symbols-outlined text-white/30 text-[28px]">account_balance_wallet</span>
+                        <div class="w-10 h-10 rounded-xl bg-sky-50 dark:bg-sky-900/20 text-sky-500 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[20px]">account_balance_wallet</span>
+                        </div>
                     </div>
 
                     <div class="space-y-1">
-                        <div class="text-xs font-medium text-slate-300">Total Saldo Dompet Toko</div>
-                        <div class="text-3xl md:text-5xl font-black tracking-tight text-white">
+                        <div class="text-xs font-medium text-slate-500 dark:text-slate-400">Total Saldo Dompet Toko</div>
+                        <div class="text-3xl md:text-5xl font-black tracking-tight text-slate-900 dark:text-white">
                             Rp {{ number_format($store->balance, 0, ',', '.') }}
                         </div>
                     </div>
                 </div>
 
                 <!-- Payout Form Row inside Balance Card -->
-                <div class="mt-8 pt-6 border-t border-white/10">
+                <div class="mt-8 pt-6 border-t border-slate-100 dark:border-[#1d273d] relative z-10">
                     <form action="{{ route('tenant.payouts.store') }}" method="POST" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                         @csrf
                         <div class="relative flex-1">
-                            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">Rp</span>
-                            <input type="number" name="amount" min="10000" max="{{ $store->balance }}" placeholder="Nominal Penarikan (Min. 10.000)" class="w-full pl-10 pr-4 py-2.5 text-xs md:text-sm bg-white/10 border border-white/20 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-400 text-white placeholder-slate-400 transition-all backdrop-blur-sm" required {{ $store->balance < 10000 ? 'disabled' : '' }}>
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-500 dark:text-slate-400">Rp</span>
+                            <input type="number" name="amount" min="10000" max="{{ $store->balance }}" placeholder="Nominal Penarikan (Min. 10.000)" class="w-full pl-12 pr-4 py-3 text-sm bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500/50 text-slate-900 dark:text-white placeholder-slate-400 transition-all" required {{ $store->balance < 10000 ? 'disabled' : '' }}>
                         </div>
-                        <button type="submit" class="px-6 py-2.5 text-xs md:text-sm font-bold bg-sky-500 hover:bg-sky-400 text-white rounded-xl shadow-lg shadow-sky-500/30 hover:shadow-sky-500/50 transition-all flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer" {{ $store->balance < 10000 ? 'disabled' : '' }}>
-                            <span>Ajukan Penarikan</span>
-                            <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+                        <button type="submit" class="px-6 py-3 text-sm font-bold bg-sky-500 hover:bg-sky-600 text-white rounded-xl shadow-md shadow-sky-500/20 transition-all flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed" {{ $store->balance < 10000 ? 'disabled' : '' }}>
+                            <span>Tarik Dana</span>
+                            <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
                         </button>
                     </form>
                     
                     @error('amount')
-                        <p class="text-rose-400 text-xs mt-2">{{ $message }}</p>
+                        <p class="text-rose-500 text-xs mt-2 font-medium">{{ $message }}</p>
                     @enderror
 
                     <!-- Summary Rules Note -->
-                    <div class="mt-3.5 pt-3 border-t border-white/10 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-300">
-                        <div class="flex flex-wrap items-center gap-2">
-                            <span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-[13px] text-emerald-400">check_circle</span> Min. Rp10.000</span>
-                            <span class="opacity-40">•</span>
-                            <span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-[13px] text-amber-400">schedule</span> Cair maks. 1x24 jam (hari kerja)</span>
-                            <span class="opacity-40">•</span>
-                            <span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-[13px] text-sky-400">percent</span> Fee platform 2,5%</span>
+                    <div class="mt-4 pt-4 border-t border-slate-100 dark:border-[#1d273d] flex flex-wrap items-center justify-between gap-3 text-[11px] text-slate-500 dark:text-slate-400">
+                        <div class="flex flex-wrap items-center gap-3">
+                            <span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-[14px] text-emerald-500">check_circle</span> Min. Rp10.000</span>
+                            <span class="hidden sm:block opacity-30">•</span>
+                            <span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-[14px] text-amber-500">schedule</span> Maks. 1x24 jam kerja</span>
+                            <span class="hidden sm:block opacity-30">•</span>
+                            <span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-[14px] text-sky-500">percent</span> Fee platform {{ $store->getPayoutFeePercentage() }}% 
+                                @if($store->isPro())
+                                    <span class="ml-1 px-1.5 py-0.5 rounded text-[9px] bg-amber-500 text-white font-bold flex items-center gap-0.5"><span class="material-symbols-outlined text-[10px]">star</span> VIP</span>
+                                @else
+                                    <a href="{{ route('tenant.pro.index') }}" class="ml-1 text-[10px] text-amber-500 hover:text-amber-600 dark:text-amber-400 underline">(Diskon 1% dgn PRO)</a>
+                                @endif
+                            </span>
                         </div>
-                        <a href="{{ route('help.show', 'panduan-lengkap-penarikan-saldo-penjualan-toko-payout-withdraw') }}" target="_blank" class="text-sky-300 hover:text-white underline flex items-center gap-1">
-                            <span>Baca Panduan & Aturan Payout</span>
-                            <span class="material-symbols-outlined text-[12px]">open_in_new</span>
+                        <a href="{{ route('help.show', 'panduan-lengkap-penarikan-saldo-penjualan-toko-payout-withdraw') }}" target="_blank" class="text-sky-600 dark:text-sky-400 hover:underline flex items-center gap-1 font-medium">
+                            <span>Info Penarikan</span>
+                            <span class="material-symbols-outlined text-[14px]">open_in_new</span>
                         </a>
                     </div>
                 </div>

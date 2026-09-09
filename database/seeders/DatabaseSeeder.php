@@ -38,17 +38,17 @@ class DatabaseSeeder extends Seeder
 
         if (app()->environment('local') || class_exists(\Faker\Factory::class)) {
             // Seed exact amounts requested if not already present
-            if (\App\Models\Client::count() === 0) {
+            if (\App\Models\Client::count('id') === 0) {
                 $this->command->info('Seeding Clients...');
-                \App\Models\Client::factory(500)->create();
+                \App\Models\Client::factory(10)->create();
             }
 
-            if (\App\Models\Service::count() === 0) {
+            if (\App\Models\Service::count('id') === 0) {
                 $this->command->info('Seeding Services...');
                 \App\Models\Service::factory(10)->create();
             }
 
-            if (\App\Models\Project::count() === 0) {
+            if (\App\Models\Project::count('id') === 0) {
                 $this->command->info('Seeding Projects...');
                 // We chunk it into batches to avoid memory bloat
                 for ($i = 0; $i < 10; $i++) {
@@ -56,21 +56,21 @@ class DatabaseSeeder extends Seeder
                 }
             }
 
-            if (\App\Models\ProjectImage::count() === 0) {
+            if (\App\Models\ProjectImage::count('id') === 0) {
                 $this->command->info('Seeding Project Images...');
                 for ($i = 0; $i < 10; $i++) {
                     \App\Models\ProjectImage::factory(10)->create();
                 }
             }
 
-            if (\App\Models\Testimonial::count() === 0) {
+            if (\App\Models\Testimonial::count('id') === 0) {
                 $this->command->info('Seeding Testimonials...');
                 \App\Models\Testimonial::factory(50)->create();
             }
 
-            if (\App\Models\ContactMessage::count() === 0) {
+            if (\App\Models\ContactMessage::count('id') === 0) {
                 $this->command->info('Seeding Contact Messages...');
-                \App\Models\ContactMessage::factory(100)->create();
+                \App\Models\ContactMessage::factory(5)->create();
             }
         } else {
             $this->command->info('Skipping dummy factory data in production (Faker is not installed).');

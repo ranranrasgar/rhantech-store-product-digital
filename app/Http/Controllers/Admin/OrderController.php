@@ -84,9 +84,9 @@ class OrderController extends Controller
 
         $orders = $query->latest()->paginate(20)->withQueryString();
 
-        // Get stores and products list for dropdown filters
-        $stores = Store::orderBy('name')->get();
-        $productsQuery = Product::query();
+        // Get stores and products list for dropdown filters (selective columns)
+        $stores = Store::select(['id', 'name'])->orderBy('name')->get();
+        $productsQuery = Product::select(['id', 'name']);
         if ($request->filled('store_id')) {
             $productsQuery->where('store_id', $request->input('store_id'));
         }

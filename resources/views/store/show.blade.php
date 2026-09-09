@@ -3,7 +3,21 @@
 @section('title', $store->name)
 
 @php
-    $headerBgUrl = $store->banner ?: 'https://images.unsplash.com/photo-1557683316-973673baf926?w=1200&h=400&fit=crop';
+    $banner = $store->banner;
+    $isCustomColorOrGradient = $banner && (
+        str_starts_with($banner, 'linear-gradient') || 
+        str_starts_with($banner, 'radial-gradient') || 
+        str_starts_with($banner, '#') || 
+        str_starts_with($banner, 'rgb')
+    );
+    $headerBgStyle = '';
+    if ($isCustomColorOrGradient) {
+        $headerBgStyle = "background: {$banner};";
+    } elseif (!empty($banner)) {
+        $headerBgStyle = "background-image: url('{$banner}'); background-size: cover; background-position: center;";
+    } else {
+        $headerBgStyle = "background-image: url('https://images.unsplash.com/photo-1557683316-973673baf926?w=1200&h=400&fit=crop'); background-size: cover; background-position: center;";
+    }
 @endphp
 
 @section('content')
@@ -74,8 +88,10 @@
                 @if(request('category'))
                     <input type="hidden" name="category" value="{{ request('category') }}">
                 @endif
-                <div class="relative flex-1">
-                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[18px] text-on-surface-variant">search</span>
+                <div class="relative flex-1 flex items-center">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-on-surface-variant">
+                        <span class="material-symbols-outlined text-[18px] leading-none">search</span>
+                    </div>
                     <input type="text" 
                            name="q" 
                            x-ref="mobileSearchInput"
@@ -83,9 +99,11 @@
                            placeholder="Ketik nama produk yang dicari..." 
                            class="w-full pl-9 pr-9 py-2.5 text-xs bg-surface-container border border-outline-variant rounded-xl text-on-surface placeholder:text-on-surface-variant/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-medium">
                     @if(request('q') || request('search'))
-                        <a href="{{ route('store.show', $store->slug) }}" class="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-error" title="Reset pencarian">
-                            <span class="material-symbols-outlined text-[16px]">cancel</span>
-                        </a>
+                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                            <a href="{{ route('store.show', $store->slug) }}" class="text-on-surface-variant hover:text-error flex items-center justify-center" title="Reset pencarian">
+                                <span class="material-symbols-outlined text-[16px] leading-none">cancel</span>
+                            </a>
+                        </div>
                     @endif
                 </div>
                 <button type="submit" class="px-4 py-2.5 rounded-xl bg-primary text-white text-xs font-bold shadow-md shadow-primary/25 hover:bg-primary/90 transition-all cursor-pointer">
@@ -121,14 +139,14 @@
 
     <!-- 1. DESKTOP STORE HEADER BANNER (Layout desktop dipertahankan utuh) -->
     <div class="hidden md:block relative w-full min-h-[350px] bg-[#1a1a1a]">
-        <!-- Background Image -->
-        <div class="absolute inset-0 bg-cover bg-center opacity-80" style="background-image: url('{{ $headerBgUrl }}');"></div>
-        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+        <!-- Background Banner (Image / Gradient / Color) -->
+        <div class="absolute inset-0 bg-cover bg-center opacity-85" style="{{ $headerBgStyle }}"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col justify-end pt-24 pb-8 relative z-10">
             <div class="flex flex-row items-end gap-6">
                 <!-- Avatar -->
-                <div class="w-32 h-32 rounded-full border-4 border-white shadow-lg overflow-hidden bg-white shrink-0">
+                <div class="w-32 h-32 rounded-full border-4 {{ $store->isPro() ? 'border-amber-400 ring-4 ring-amber-500/30' : 'border-white' }} shadow-lg overflow-hidden bg-white shrink-0">
                     @if($store->logo)
                         <img src="{{ asset('storage/' . $store->logo) }}" alt="{{ $store->name }}" class="w-full h-full object-cover">
                     @else
@@ -138,7 +156,14 @@
                 
                 <!-- Info -->
                 <div class="flex-1 text-white">
-                    <h1 class="text-3xl font-bold mb-2 drop-shadow-md">{{ $store->name }}</h1>
+                    <h1 class="text-3xl font-bold mb-2 drop-shadow-md flex items-center gap-2 flex-wrap">
+                        {{ $store->name }}
+                        @if($store->isPro())
+                            <span class="bg-gradient-to-r from-amber-400 to-amber-600 text-white text-xs px-2 py-0.5 rounded-full font-black shadow-lg flex items-center gap-1 border border-amber-300">
+                                <span class="material-symbols-outlined text-[14px]">stars</span> PRO
+                            </span>
+                        @endif
+                    </h1>
                     <div class="flex items-center gap-4 text-sm drop-shadow-md opacity-90">
                         <span class="flex items-center gap-1"><span class="text-yellow-400 text-lg">★</span> 4.8</span>
                         <span>•</span>
@@ -203,8 +228,8 @@
 
     <!-- 2. MOBILE INTERACTIVE STORE HEADER (Khusus Versi Mobile) -->
     <div class="md:hidden relative w-full bg-[#0d1322] overflow-hidden text-white">
-        <!-- Banner Background with Gradient Overlay -->
-        <div class="absolute inset-0 bg-cover bg-center opacity-65 scale-105" style="background-image: url('{{ $headerBgUrl }}');"></div>
+        <!-- Banner Background (Image / Gradient / Color) -->
+        <div class="absolute inset-0 bg-cover bg-center opacity-85 scale-105" style="{{ $headerBgStyle }}"></div>
         <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-slate-950/75 to-[#0d1322]"></div>
         
         <div class="relative z-10 px-4 pt-5 pb-5 space-y-3">
@@ -212,7 +237,7 @@
             <div class="flex items-start gap-3.5">
                 <!-- Avatar with Glossy Border -->
                 <div class="relative shrink-0 w-[68px] h-[68px]">
-                    <div class="w-[68px] h-[68px] rounded-2xl border-2 border-white/80 shadow-xl overflow-hidden bg-white p-0.5 flex items-center justify-center">
+                    <div class="w-[68px] h-[68px] rounded-2xl border-2 {{ $store->isPro() ? 'border-amber-400 ring-2 ring-amber-500/30' : 'border-white/80' }} shadow-xl overflow-hidden bg-white p-0.5 flex items-center justify-center">
                         @if($store->logo)
                             <img src="{{ asset('storage/' . $store->logo) }}" alt="{{ $store->name }}" class="w-full h-full object-cover rounded-[14px]">
                         @else
@@ -228,6 +253,11 @@
                 <div class="flex-1 min-w-0 pt-0.5">
                     <h1 class="text-base font-extrabold text-white leading-tight line-clamp-2 drop-shadow-md">
                         {{ $store->name }}
+                        @if($store->isPro())
+                            <span class="inline-flex bg-gradient-to-r from-amber-400 to-amber-600 text-white text-[9px] px-1.5 py-0.5 rounded-md font-black shadow-lg items-center gap-0.5 border border-amber-300 align-middle ml-1">
+                                <span class="material-symbols-outlined text-[10px]">stars</span> PRO
+                            </span>
+                        @endif
                     </h1>
                     
                     @if(!empty($store->description))
@@ -339,6 +369,9 @@
             <button @click="activeTab = 'beranda'" :class="activeTab === 'beranda' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant hover:text-primary'" class="px-6 py-4 font-bold border-b-2 border-transparent transition-colors whitespace-nowrap cursor-pointer">Beranda Toko</button>
             <button @click="activeTab = 'produk'" :class="activeTab === 'produk' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant hover:text-primary'" class="px-6 py-4 font-bold border-b-2 border-transparent transition-colors whitespace-nowrap cursor-pointer">Semua Produk</button>
             <button @click="activeTab = 'kategori'" :class="activeTab === 'kategori' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant hover:text-primary'" class="px-6 py-4 font-bold border-b-2 border-transparent transition-colors whitespace-nowrap cursor-pointer">Kategori</button>
+            @if($store->isPro())
+            <button @click="activeTab = 'proyek'" :class="activeTab === 'proyek' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant hover:text-primary'" class="px-6 py-4 font-bold border-b-2 border-transparent transition-colors whitespace-nowrap cursor-pointer">Portofolio</button>
+            @endif
             <button @click="activeTab = 'profil'" :class="activeTab === 'profil' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant hover:text-primary'" class="px-6 py-4 font-bold border-b-2 border-transparent transition-colors whitespace-nowrap cursor-pointer">Profil Toko</button>
         </div>
     </div>
@@ -378,6 +411,16 @@
                     {{ $categories->count() }}
                 </span>
             </button>
+            @if($store->isPro())
+            <button @click="activeTab = 'proyek'" 
+                    :class="activeTab === 'proyek' 
+                        ? 'bg-primary text-white shadow-sm shadow-primary/30 font-bold' 
+                        : 'bg-surface-container text-on-surface-variant hover:text-on-surface font-semibold'" 
+                    class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs whitespace-nowrap transition-all active:scale-95 cursor-pointer shrink-0">
+                <span class="material-symbols-outlined text-[16px]">work</span>
+                <span>Portofolio</span>
+            </button>
+            @endif
             <button @click="activeTab = 'profil'" 
                     :class="activeTab === 'profil' 
                         ? 'bg-primary text-white shadow-sm shadow-primary/30 font-bold' 
@@ -408,10 +451,34 @@
     <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-5 md:py-8 space-y-6 md:space-y-8">
         
         <!-- Tab 1: Beranda -->
-        <div x-show="activeTab === 'beranda'">
-
+        <div x-show="activeTab === 'beranda'" class="space-y-6 md:space-y-8">
         
         @if(empty($appearance))
+            <!-- FALLBACK DEFAULT VIEW -->
+            @if(isset($campaigns) && $campaigns->isNotEmpty())
+                <!-- KUPON & VOUCHER TOKO (Fallback) -->
+                <div class="mb-6 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-primary/5 via-emerald-500/5 to-amber-500/5 border border-primary/20 shadow-xs">
+                    <div class="flex items-center justify-between gap-3 mb-3.5">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-8 h-8 rounded-xl bg-primary text-white flex items-center justify-center shadow-xs">
+                                <span class="material-symbols-outlined text-[18px]">confirmation_number</span>
+                            </div>
+                            <div>
+                                <h2 class="text-sm sm:text-base font-black text-on-surface flex items-center gap-1.5">
+                                    <span>Kupon & Voucher Toko</span>
+                                    <span class="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-extrabold">{{ $campaigns->count() }} Tersedia</span>
+                                </h2>
+                                <p class="text-[11px] text-on-surface-variant font-medium">Salin kode voucher di bawah dan gunakan saat checkout untuk klaim potongan harga</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                        @foreach($campaigns as $campaign)
+                            <x-voucher-card :campaign="$campaign" mode="browse" />
+                        @endforeach
+                    </div>
+                </div>
+            @endif
             <!-- FALLBACK DEFAULT VIEW -->
             <div>
                 <div class="flex items-center justify-between mb-6">
@@ -430,14 +497,9 @@
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
                     @forelse($products as $product)
                     @php
-                        $soldCount = $product->sales_count ?? ($product->orders_count ?? 0);
-                        if ($soldCount < 5 && $product->id % 2 === 0) {
-                            // Angka visual daya tarik minimal
-                            $displaySold = $soldCount > 0 ? $soldCount : (10 + ($product->id % 15));
-                        } else {
-                            $displaySold = $soldCount > 0 ? $soldCount : 12;
-                        }
-                        $avgRating = $product->effective_rating;
+                        $soldCount = (int)($product->sales_count ?? ($product->orders_count ?? 0));
+                        $displaySold = $soldCount;
+                        $avgRating = (float)$product->effective_rating;
                         $shortDesc = $product->short_description ?: Str::limit(strip_tags($product->description ?? ''), 55);
                         $hasDiscount = $product->discount_price && $product->discount_price > 0 && $product->discount_price < $product->price;
                     @endphp
@@ -482,11 +544,17 @@
                                 @endif
                                 
                                 <div class="flex items-center justify-between gap-1 mt-2 text-[10px] text-on-surface-variant font-medium">
+                                    @if($avgRating > 0)
                                     <span class="flex items-center gap-0.5 text-amber-500 font-bold">
                                         <span class="material-symbols-outlined text-[13px] fill-current">star</span>
                                         {{ number_format($avgRating, 1) }}
                                     </span>
-                                    <span class="bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded text-[10px] font-bold">
+                                    @else
+                                    <span class="text-[9px] px-1.5 py-0.5 bg-primary/10 text-primary font-bold rounded">
+                                        Baru
+                                    </span>
+                                    @endif
+                                    <span class="bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-1.5 py-0.5 rounded text-[10px] font-bold">
                                         {{ $displaySold }} Terjual
                                     </span>
                                 </div>
@@ -701,39 +769,74 @@
 
                 @elseif($block['type'] === 'voucher')
                     @php $vouchers = $data['vouchers'] ?? []; @endphp
-                    @if(count($vouchers) > 0)
-                    <div class="w-full">
-                        <div class="flex items-center gap-2 mb-4">
-                            <span class="material-symbols-outlined text-rose-500">confirmation_number</span>
-                            <h2 class="text-lg font-bold text-slate-800">Kupon Tersedia</h2>
-                        </div>
-                        <div class="flex gap-4 overflow-x-auto hide-scrollbar pb-2 snap-x snap-mandatory">
-                            @foreach($vouchers as $v)
-                                @php
-                                    $theme = $v['theme'] ?? 'rose';
-                                    $themeColors = match($theme) {
-                                        'emerald' => ['bg' => 'from-emerald-50 to-teal-50', 'border' => 'border-emerald-200', 'main' => 'bg-emerald-500', 'text' => 'text-emerald-600', 'hover' => 'hover:bg-emerald-600'],
-                                        'amber' => ['bg' => 'from-amber-50 to-yellow-50', 'border' => 'border-amber-200', 'main' => 'bg-amber-500', 'text' => 'text-amber-600', 'hover' => 'hover:bg-amber-600'],
-                                        'sky' => ['bg' => 'from-sky-50 to-blue-50', 'border' => 'border-sky-200', 'main' => 'bg-sky-500', 'text' => 'text-sky-600', 'hover' => 'hover:bg-sky-600'],
-                                        'violet' => ['bg' => 'from-violet-50 to-purple-50', 'border' => 'border-violet-200', 'main' => 'bg-violet-500', 'text' => 'text-violet-600', 'hover' => 'hover:bg-violet-600'],
-                                        default => ['bg' => 'from-rose-50 to-orange-50', 'border' => 'border-rose-200', 'main' => 'bg-rose-500', 'text' => 'text-rose-600', 'hover' => 'hover:bg-rose-600']
-                                    };
-                                @endphp
-                                <div class="snap-start shrink-0 w-[280px] h-24 bg-gradient-to-br {{ $themeColors['bg'] }} border {{ $themeColors['border'] }} rounded-xl flex items-center relative overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-                                    <div class="w-8 h-full {{ $themeColors['main'] }} border-r-2 border-dashed border-white/50 flex flex-col items-center justify-center text-white text-[8px] font-bold tracking-widest" style="writing-mode: vertical-rl; transform: rotate(180deg);">KUPON</div>
-                                    <div class="p-4 flex-1">
-                                        <h4 class="font-bold {{ $themeColors['text'] }} text-sm mb-0.5 line-clamp-1">{{ $v['title'] ?? 'Diskon' }}</h4>
-                                        <p class="text-[10px] text-slate-500 line-clamp-1">{{ $v['subtitle'] ?? '' }}</p>
+                    @if(isset($campaigns) && $campaigns->isNotEmpty())
+                        <!-- REAL STORE CAMPAIGNS / VOUCHERS -->
+                        <div class="w-full p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-primary/5 via-emerald-500/5 to-amber-500/5 border border-primary/20 shadow-xs">
+                            <div class="flex items-center justify-between gap-3 mb-3.5">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-8 h-8 rounded-xl bg-primary text-white flex items-center justify-center shadow-xs">
+                                        <span class="material-symbols-outlined text-[18px]">confirmation_number</span>
                                     </div>
-                                    <div class="mr-3">
-                                        <button class="px-4 py-1.5 {{ $themeColors['main'] }} text-white text-[10px] font-bold rounded-lg {{ $themeColors['hover'] }} shadow-sm transition-colors" onclick="alert('Kode Kupon Berhasil Diklaim!')">KLAIM</button>
+                                    <div>
+                                        <h2 class="text-sm sm:text-base font-black text-on-surface flex items-center gap-1.5">
+                                            <span>Kupon & Voucher Toko</span>
+                                            <span class="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-extrabold">{{ $campaigns->count() }} Tersedia</span>
+                                        </h2>
+                                        <p class="text-[11px] text-on-surface-variant font-medium">Salin kode voucher di bawah dan gunakan saat checkout untuk klaim potongan harga</p>
                                     </div>
-                                    <div class="absolute -top-3 -right-3 w-6 h-6 bg-[#f8fafc] rounded-full shadow-inner border border-slate-200/50"></div>
-                                    <div class="absolute -bottom-3 -right-3 w-6 h-6 bg-[#f8fafc] rounded-full shadow-inner border border-slate-200/50"></div>
                                 </div>
-                            @endforeach
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                                @foreach($campaigns as $campaign)
+                                    <x-voucher-card :campaign="$campaign" mode="browse" />
+                                @endforeach
+                            </div>
                         </div>
-                    </div>
+                    @elseif(count($vouchers) > 0)
+                        <!-- CUSTOM CONFIGURED VOUCHERS -->
+                        <div class="w-full">
+                            <div class="flex items-center gap-2 mb-4">
+                                <span class="material-symbols-outlined text-rose-500">confirmation_number</span>
+                                <h2 class="text-lg font-bold text-slate-800 dark:text-white">Kupon Tersedia</h2>
+                            </div>
+                            <div class="flex gap-4 overflow-x-auto hide-scrollbar pb-2 snap-x snap-mandatory">
+                                @foreach($vouchers as $v)
+                                    @php
+                                        $theme = $v['theme'] ?? 'rose';
+                                        $themeColors = match($theme) {
+                                            'emerald' => ['bg' => 'from-emerald-50 to-teal-50', 'border' => 'border-emerald-200', 'main' => 'bg-emerald-500', 'text' => 'text-emerald-600', 'hover' => 'hover:bg-emerald-600'],
+                                            'amber' => ['bg' => 'from-amber-50 to-yellow-50', 'border' => 'border-amber-200', 'main' => 'bg-amber-500', 'text' => 'text-amber-600', 'hover' => 'hover:bg-amber-600'],
+                                            'sky' => ['bg' => 'from-sky-50 to-blue-50', 'border' => 'border-sky-200', 'main' => 'bg-sky-500', 'text' => 'text-sky-600', 'hover' => 'hover:bg-sky-600'],
+                                            'violet' => ['bg' => 'from-violet-50 to-purple-50', 'border' => 'border-violet-200', 'main' => 'bg-violet-500', 'text' => 'text-violet-600', 'hover' => 'hover:bg-violet-600'],
+                                            default => ['bg' => 'from-rose-50 to-orange-50', 'border' => 'border-rose-200', 'main' => 'bg-rose-500', 'text' => 'text-rose-600', 'hover' => 'hover:bg-rose-600']
+                                        };
+                                    @endphp
+                                    <div class="snap-start shrink-0 w-[280px] h-24 bg-gradient-to-br {{ $themeColors['bg'] }} border {{ $themeColors['border'] }} rounded-xl flex items-center relative overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                                        <div class="w-8 h-full {{ $themeColors['main'] }} border-r-2 border-dashed border-white/50 flex flex-col items-center justify-center text-white text-[8px] font-bold tracking-widest" style="writing-mode: vertical-rl; transform: rotate(180deg);">KUPON</div>
+                                        <div class="p-4 flex-1">
+                                            <h4 class="font-bold {{ $themeColors['text'] }} text-sm mb-0.5 line-clamp-1">{{ $v['title'] ?? 'Diskon' }}</h4>
+                                            <p class="text-[10px] text-slate-500 line-clamp-1">{{ $v['subtitle'] ?? '' }}</p>
+                                        </div>
+                                        <div class="mr-3">
+                                            <button class="px-4 py-1.5 {{ $themeColors['main'] }} text-white text-[10px] font-bold rounded-lg {{ $themeColors['hover'] }} shadow-sm transition-colors" onclick="alert('Kode Kupon Berhasil Diklaim!')">KLAIM</button>
+                                        </div>
+                                        <div class="absolute -top-3 -right-3 w-6 h-6 bg-[#f8fafc] rounded-full shadow-inner border border-slate-200/50"></div>
+                                        <div class="absolute -bottom-3 -right-3 w-6 h-6 bg-[#f8fafc] rounded-full shadow-inner border border-slate-200/50"></div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @else
+                        <!-- Placeholder when no coupons yet -->
+                        <div class="w-full p-4 rounded-2xl bg-gradient-to-r from-rose-500/5 to-amber-500/5 border border-rose-200/50 dark:border-rose-900/30 flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-rose-500/10 text-rose-500 flex items-center justify-center shrink-0">
+                                <span class="material-symbols-outlined text-[20px]">confirmation_number</span>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-800 dark:text-white">Kupon & Voucher Belanja</h4>
+                                <p class="text-[11px] text-slate-400">Nantikan voucher promo dan diskon spesial dari toko kami segera.</p>
+                            </div>
+                        </div>
                     @endif
 
                 @elseif($block['type'] === 'products')
@@ -751,13 +854,9 @@
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
                             @forelse($displayProducts as $product)
                                 @php
-                                    $soldCount = $product->sales_count ?? ($product->orders_count ?? 0);
-                                    if ($soldCount < 5 && $product->id % 2 === 0) {
-                                        $displaySold = $soldCount > 0 ? $soldCount : (10 + ($product->id % 15));
-                                    } else {
-                                        $displaySold = $soldCount > 0 ? $soldCount : 12;
-                                    }
-                                    $avgRating = $product->effective_rating;
+                                    $soldCount = (int)($product->sales_count ?? ($product->orders_count ?? 0));
+                                    $displaySold = $soldCount;
+                                    $avgRating = (float)$product->effective_rating;
                                     $shortDesc = Str::limit(strip_tags($product->description ?? ''), 55);
                                     $hasDiscount = $product->discount_price && $product->discount_price > 0 && $product->discount_price < $product->price;
                                 @endphp
@@ -802,11 +901,17 @@
                                             @endif
                                             
                                             <div class="flex items-center justify-between gap-1 mt-2 text-[10px] text-slate-500 font-medium">
+                                                @if($avgRating > 0)
                                                 <span class="flex items-center gap-0.5 text-amber-500 font-bold">
                                                     <span class="material-symbols-outlined text-[13px] fill-current">star</span>
                                                     {{ number_format($avgRating, 1) }}
                                                 </span>
-                                                <span class="bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded text-[10px] font-bold">
+                                                @else
+                                                <span class="text-[9px] px-1.5 py-0.5 bg-primary/10 text-primary font-bold rounded">
+                                                    Baru
+                                                </span>
+                                                @endif
+                                                <span class="bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-1.5 py-0.5 rounded text-[10px] font-bold">
                                                     {{ $displaySold }} Terjual
                                                 </span>
                                             </div>
@@ -836,13 +941,9 @@
             <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
                 @forelse($products as $product)
                 @php
-                    $soldCount = $product->sales_count ?? ($product->orders_count ?? 0);
-                    if ($soldCount < 5 && $product->id % 2 === 0) {
-                        $displaySold = $soldCount > 0 ? $soldCount : (10 + ($product->id % 15));
-                    } else {
-                        $displaySold = $soldCount > 0 ? $soldCount : 12;
-                    }
-                    $avgRating = $product->effective_rating;
+                    $soldCount = (int)($product->sales_count ?? ($product->orders_count ?? 0));
+                    $displaySold = $soldCount;
+                    $avgRating = (float)$product->effective_rating;
                     $shortDesc = Str::limit(strip_tags($product->description ?? ''), 55);
                     $hasDiscount = $product->discount_price && $product->discount_price > 0 && $product->discount_price < $product->price;
                 @endphp
@@ -886,12 +987,18 @@
                                 <div class="font-black text-primary text-sm md:text-base">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
                             @endif
                             
-                            <div class="flex items-center justify-between gap-1 mt-2 text-[10px] text-slate-500 font-medium">
+                            <div class="flex items-center justify-between gap-1 mt-2 text-[10px] text-on-surface-variant font-medium">
+                                @if($avgRating > 0)
                                 <span class="flex items-center gap-0.5 text-amber-500 font-bold">
                                     <span class="material-symbols-outlined text-[13px] fill-current">star</span>
                                     {{ number_format($avgRating, 1) }}
                                 </span>
-                                <span class="bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded text-[10px] font-bold">
+                                @else
+                                <span class="text-[9px] px-1.5 py-0.5 bg-primary/10 text-primary font-bold rounded">
+                                    Baru
+                                </span>
+                                @endif
+                                <span class="bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-1.5 py-0.5 rounded text-[10px] font-bold">
                                     {{ $displaySold }} Terjual
                                 </span>
                             </div>
@@ -930,6 +1037,35 @@
             </div>
         </div>
         
+        <!-- Tab: Portofolio Proyek -->
+        @if($store->isPro())
+        <div x-show="activeTab === 'proyek'" x-cloak class="space-y-6">
+            <h2 class="text-xl font-bold text-on-surface border-l-4 border-amber-500 pl-3">Portofolio Proyek</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                @forelse($store->projects()->latest()->get() as $project)
+                <a href="{{ route('projects.show', $project->slug) }}" class="group block bg-surface-container rounded-2xl overflow-hidden border border-outline-variant hover:border-amber-400 transition-colors shadow-sm">
+                    @if($project->thumbnail)
+                    <img src="{{ asset('storage/'.$project->thumbnail) }}" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300">
+                    @else
+                    <div class="w-full h-48 bg-slate-100 flex items-center justify-center text-slate-300 group-hover:scale-105 transition-transform duration-300">
+                        <span class="material-symbols-outlined text-5xl">image</span>
+                    </div>
+                    @endif
+                    <div class="p-4 bg-surface-container relative z-10">
+                        <h3 class="font-bold text-on-surface group-hover:text-amber-600 transition-colors line-clamp-1">{{ $project->title }}</h3>
+                        <p class="text-xs text-on-surface-variant mt-1 line-clamp-2">{{ $project->short_description ?? 'Lihat detail proyek ini.' }}</p>
+                    </div>
+                </a>
+                @empty
+                <div class="col-span-full py-10 text-center text-on-surface-variant">
+                    <span class="material-symbols-outlined text-4xl opacity-50 block mb-2">work_off</span>
+                    <p>Toko ini belum menambahkan portofolio proyek.</p>
+                </div>
+                @endforelse
+            </div>
+        </div>
+        @endif
+
         <!-- Tab 4: Profil Toko -->
         <div x-show="activeTab === 'profil'" x-cloak>
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 md:p-8">

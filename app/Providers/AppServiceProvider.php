@@ -69,7 +69,11 @@ class AppServiceProvider extends ServiceProvider
             return Limit::perMinute(10)->by($request->user()?->id ?: $request->ip());
         });
         View::composer('*', function ($view) {
-            $view->with('company', CompanyProfile::first(['*']));
+            static $cachedCompany = null;
+            if ($cachedCompany === null) {
+                $cachedCompany = CompanyProfile::first(['*']);
+            }
+            $view->with('company', $cachedCompany);
         });
 
         View::composer(['layouts.shopee', 'products.*'], function ($view) {
@@ -81,17 +85,22 @@ class AppServiceProvider extends ServiceProvider
         });
 
         View::composer(['layouts.admin', 'admin.*'], function ($view) {
-            $pendingPayoutsCount = PayoutRequest::where('status', 'pending')->count();
-            $pendingPayoutsList = PayoutRequest::with('store')
-                ->where('status', 'pending')
-                ->latest()
-                ->take(5)
-                ->get();
+            static $adminPendingPayouts = null;
+            if ($adminPendingPayouts === null) {
+                $pendingPayoutsCount = PayoutRequest::where('status', 'pending')->count();
+                $pendingPayoutsList = PayoutRequest::with('store:id,name,slug,logo')
+                    ->where('status', 'pending')
+                    ->latest()
+                    ->take(5)
+                    ->get(['id', 'store_id', 'amount', 'status', 'created_at']);
 
-            $view->with([
-                'pendingPayoutsCount' => $pendingPayoutsCount,
-                'pendingPayoutsList' => $pendingPayoutsList,
-            ]);
+                $adminPendingPayouts = [
+                    'pendingPayoutsCount' => $pendingPayoutsCount,
+                    'pendingPayoutsList' => $pendingPayoutsList,
+                ];
+            }
+
+            $view->with($adminPendingPayouts);
         });
 
         VerifyEmail::toMailUsing(function (object $notifiable, string $url) {

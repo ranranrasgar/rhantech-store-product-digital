@@ -15,6 +15,10 @@ class ChatController extends Controller
      */
     public function getConversations(Request $request)
     {
+        if (!$request->expectsJson() && !$request->ajax()) {
+            return redirect('/');
+        }
+
         if (!Auth::check()) {
             return response()->json(['conversations' => [], 'unread_total' => 0]);
         }
@@ -78,6 +82,10 @@ class ChatController extends Controller
      */
     public function getMessages(Request $request, $storeId)
     {
+        if (!$request->expectsJson() && !$request->ajax()) {
+            return redirect('/');
+        }
+
         if (!Auth::check()) {
             return response()->json(['error' => 'Unauthenticated'], 401);
         }

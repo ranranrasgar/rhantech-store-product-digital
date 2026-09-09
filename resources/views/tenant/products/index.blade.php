@@ -52,8 +52,10 @@
                 <form method="GET" action="{{ route('tenant.products.index') }}" id="filterForm" class="flex flex-col md:flex-row items-stretch md:items-center gap-3">
                     <input type="hidden" name="tab" value="{{ $tab }}">
                     
-                    <div class="flex-1 relative">
-                        <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">search</span>
+                    <div class="flex-1 relative flex items-center">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                            <span class="material-symbols-outlined text-[18px] leading-none">search</span>
+                        </div>
                         <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama produk digital atau SKU..." class="w-full pl-10 pr-4 py-2.5 text-xs md:text-sm bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 text-slate-900 dark:text-white transition-all" onkeydown="if(event.key === 'Enter'){this.form.submit();}">
                     </div>
 

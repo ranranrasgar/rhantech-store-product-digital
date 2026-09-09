@@ -105,9 +105,11 @@
             <!-- Search & Filter Form -->
             <form action="{{ route('admin.ads.index') }}" method="GET" class="flex items-center gap-2 py-2">
                 <input type="hidden" name="tab" value="{{ $tab }}">
-                <div class="relative">
+                <div class="relative flex items-center">
+                    <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-on-surface-variant">
+                        <span class="material-symbols-outlined text-[16px] leading-none">search</span>
+                    </div>
                     <input type="text" name="search" value="{{ $search }}" placeholder="Cari invoice/toko..." class="pl-8 pr-3 py-1.5 text-xs bg-surface border border-outline-variant rounded-lg text-on-surface focus:outline-none focus:border-primary">
-                    <span class="material-symbols-outlined text-[16px] text-on-surface-variant absolute left-2.5 top-1/2 -translate-y-1/2">search</span>
                 </div>
                 @if($tab === 'transaksi')
                 <select name="status" onchange="this.form.submit()" class="text-xs bg-surface border border-outline-variant rounded-lg px-2.5 py-1.5 text-on-surface focus:outline-none focus:border-primary">

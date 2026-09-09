@@ -53,8 +53,20 @@
 
                 <!-- Nilai Diskon -->
                 <div>
-                    <label class="block text-sm font-semibold mb-2">Besar Potongan <span class="text-error">*</span></label>
-                    <input type="number" name="discount_value" value="{{ old('discount_value', rtrim(rtrim($campaign->discount_value, '0'), '.')) }}" class="w-full px-3 py-2 border border-gray-300 dark:border-[#30363d] rounded text-sm bg-white dark:bg-[#0d1117] focus:outline-none focus:border-[#00b3cc]" min="0" step="0.01" required>
+                    <div class="flex items-center justify-between mb-2">
+                        <label class="block text-sm font-semibold">Besar Potongan <span class="text-error">*</span></label>
+                        <div class="flex items-center gap-1 text-[11px]">
+                            <span class="text-slate-400">Preset:</span>
+                            <button type="button" onclick="setDiscount(10, 'percentage')" class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 font-bold">10%</button>
+                            <button type="button" onclick="setDiscount(25, 'percentage')" class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 font-bold">25%</button>
+                            <button type="button" onclick="setDiscount(50, 'percentage')" class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 font-bold">50%</button>
+                            <button type="button" onclick="setDiscount(100, 'percentage')" class="px-1.5 py-0.5 rounded bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold shadow-xs">100% GRATIS</button>
+                        </div>
+                    </div>
+                    <input type="number" id="discountValueInput" name="discount_value" value="{{ old('discount_value', rtrim(rtrim($campaign->discount_value, '0'), '.')) }}" class="w-full px-3 py-2 border border-gray-300 dark:border-[#30363d] rounded text-sm bg-white dark:bg-[#0d1117] focus:outline-none focus:border-[#00b3cc]" min="0" step="0.01" required>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+                        💡 <strong>Tips Voucher Gratis</strong>: Isi <strong>100</strong> dengan tipe <strong>Persentase (%)</strong> jika ingin pesanan menjadi <strong>GRATIS 100% (Rp 0)</strong>. Pembeli dapat langsung mendownload produk tanpa bayar.
+                    </p>
                     @error('discount_value') <span class="text-error text-xs">{{ $message }}</span> @enderror
                 </div>
 
@@ -184,4 +196,14 @@
         </form>
     </div>
 </div>
+
+<script>
+    function setDiscount(val, type) {
+        document.getElementById('discountValueInput').value = val;
+        const typeSelect = document.querySelector('select[name="discount_type"]');
+        if (typeSelect) {
+            typeSelect.value = type;
+        }
+    }
+</script>
 @endsection

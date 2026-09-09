@@ -36,7 +36,7 @@
         <form action="{{ route('help.index') }}" method="GET" class="max-w-2xl mx-auto relative">
             <div class="relative flex items-center w-full h-12 rounded-full shadow-md bg-white overflow-hidden border border-transparent focus-within:border-sky-500 transition-colors">
                 <div class="grid place-items-center h-full w-12 text-gray-400">
-                    <span class="material-symbols-outlined">search</span>
+                    <span class="material-symbols-outlined leading-none">search</span>
                 </div>
                 <input class="peer h-full w-full outline-none text-sm text-gray-700 pr-4 bg-transparent" type="text" name="q" placeholder="Cari topik panduan (misal: saldo iklan, 500rb, kunjungan 30%, buka toko, upload source code)..." autocomplete="off" />
             </div>

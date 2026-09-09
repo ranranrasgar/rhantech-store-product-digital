@@ -23,21 +23,34 @@ class PerformanceController extends Controller
         // Query orders belonging to this store
         $ordersQuery = Order::where(function ($q) use ($store) {
             $q->whereHas('orderItems.product', function ($sub) use ($store) {
-                $sub->where('store_id', $store->id);
+                $sub->where('products.store_id', $store->id);
             })->orWhereHas('product', function ($sub) use ($store) {
-                $sub->where('store_id', $store->id);
+                $sub->where('products.store_id', $store->id);
             });
         });
 
-        // Basic order & sales metrics
-        $totalSales = $store->balance ?? 0;
-        $totalOrders = (clone $ordersQuery)->whereIn('status', ['paid', 'downloaded'])->count();
-        $pendingOrders = (clone $ordersQuery)->where('status', 'pending')->count();
-        $allOrdersCount = (clone $ordersQuery)->count();
+        // Basic order & sales metrics (consolidated in 1 query)
+        $totalSales = (float) ($store->balance ?? 0);
+        $orderStats = (clone $ordersQuery)->selectRaw("
+            COUNT(*) as total,
+            SUM(CASE WHEN status IN ('paid', 'downloaded') THEN 1 ELSE 0 END) as completed,
+            SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) as pending
+        ")->first();
 
-        // Products stats
-        $totalProducts = $store->products()->count();
-        $activeProducts = $store->products()->where('is_active', true)->count();
+        $allOrdersCount = (int) ($orderStats->total ?? 0);
+        $totalOrders = (int) ($orderStats->completed ?? 0);
+        $pendingOrders = (int) ($orderStats->pending ?? 0);
+
+        // Products stats (consolidated in 1 query)
+        $productStats = $store->products()->selectRaw("
+            COUNT(*) as total,
+            SUM(CASE WHEN is_active = 1 THEN 1 ELSE 0 END) as active,
+            SUM(views) as total_views
+        ")->first();
+
+        $totalProducts = (int) ($productStats->total ?? 0);
+        $activeProducts = (int) ($productStats->active ?? 0);
+        $productViews = (int) ($productStats->total_views ?? 0);
 
         // Top performing products
         $topProducts = $store->products()
@@ -48,7 +61,6 @@ class PerformanceController extends Controller
 
         // Total Pengunjung / Visitor (Toko + Produk)
         $storeViews = (int) ($store->views ?? 0);
-        $productViews = (int) $store->products()->sum('views');
         $totalVisitors = $storeViews + $productViews;
 
         // Conversion calculation (mock calculation based on actual paid vs total)

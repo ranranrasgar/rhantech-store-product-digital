@@ -48,8 +48,10 @@
                 <!-- Form Search -->
                 <form method="GET" action="{{ route('tenant.showcase.index') }}" class="flex items-center gap-2">
                     <input type="hidden" name="tab" value="{{ $tab }}">
-                    <div class="relative w-full sm:w-64">
-                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">search</span>
+                    <div class="relative w-full sm:w-64 flex items-center">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                            <span class="material-symbols-outlined text-[18px] leading-none">search</span>
+                        </div>
                         <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama produk / toko..." class="w-full pl-9 pr-4 py-2 rounded-xl text-xs bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition">
                     </div>
                     <button type="submit" class="px-4 py-2 text-xs font-bold bg-sky-500 hover:bg-sky-400 text-white rounded-xl shadow-xs transition">

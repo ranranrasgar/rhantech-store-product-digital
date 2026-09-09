@@ -24,8 +24,11 @@ class PublicController extends Controller
 
         // Aplikasi / produk digital rekomendasi: Adil antar toko, rating terbaik, dan acak/random setiap refresh
         $candidateProducts = Product::query()
-            ->with(['images', 'category', 'type', 'store', 'reviews'])
+            ->with(['images', 'category:id,name', 'type:id,name', 'store:id,name,slug', 'reviews:id,product_id,rating,is_visible'])
             ->published()
+            ->select(['id', 'store_id', 'product_category_id', 'product_type_id', 'name', 'slug', 'price', 'discount_price', 'views', 'sales_count', 'is_active', 'approval_status'])
+            ->orderByDesc('views')
+            ->take(30)
             ->get();
 
         // Urutkan berdasarkan rating efektif tertinggi terlebih dahulu
@@ -62,30 +65,34 @@ class PublicController extends Controller
         // Acak urutan tampilan setiap kali refresh halaman dan ambil 4 item
         $popularProducts = $fairPool->shuffle()->take(4);
 
-        // 10 Toko Terfavorit & Terlaris (Berdasarkan total penjualan berhasil / produk)
+        // 10 Toko Terfavorit & Terlaris (Optimasi: Agregasi langsung dalam 2 kueri efisien, cegah N+1)
+        $storeSalesCounts = \App\Models\Order::query()
+            ->whereIn('orders.status', ['paid', 'downloaded'])
+            ->join('products', 'products.id', '=', 'orders.product_id')
+            ->whereNotNull('products.store_id')
+            ->selectRaw('products.store_id, count(orders.id) as sales_count')
+            ->groupBy('products.store_id')
+            ->pluck('sales_count', 'products.store_id');
+
+        $storeAvgRatings = \App\Models\ProductReview::query()
+            ->where('product_reviews.is_visible', true)
+            ->join('products', 'products.id', '=', 'product_reviews.product_id')
+            ->whereNotNull('products.store_id')
+            ->selectRaw('products.store_id, round(avg(product_reviews.rating), 1) as avg_rating')
+            ->groupBy('products.store_id')
+            ->pluck('avg_rating', 'products.store_id');
+
         $topStores = \App\Models\Store::query()
             ->withCount(['products' => function ($q) {
                 $q->published();
             }])
             ->with(['products' => function ($q) {
-                $q->published()->with('images');
+                $q->published()->with('images')->take(4);
             }])
             ->get()
-            ->map(function ($store) {
-                $productIds = $store->products->pluck('id');
-                
-                // Total order berhasil untuk toko ini
-                $store->sales_count = \App\Models\Order::whereIn('product_id', $productIds)
-                    ->whereIn('status', ['paid', 'downloaded'])
-                    ->count();
-
-                // Rating toko
-                $avgRating = \App\Models\ProductReview::whereIn('product_id', $productIds)
-                    ->where('is_visible', true)
-                    ->avg('rating');
-
-                $store->rating = $avgRating ? round((float)$avgRating, 1) : 4.9;
-
+            ->map(function ($store) use ($storeSalesCounts, $storeAvgRatings) {
+                $store->sales_count = (int) ($storeSalesCounts[$store->id] ?? 0);
+                $store->rating = (float) ($storeAvgRatings[$store->id] ?? 4.9);
                 return $store;
             })
             ->sortByDesc('sales_count')
