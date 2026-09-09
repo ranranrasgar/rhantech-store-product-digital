@@ -226,6 +226,21 @@
 }
 .search-tag:hover { color: #00d4ff; }
 .search-tag-sep { color: rgba(255,255,255,0.2); margin: 0 2px; }
+
+/* Responsive fallbacks to prevent header elements duplication before Tailwind CDN loads */
+@media (min-width: 768px) {
+    .site-header .md\:hidden,
+    .header-action-btn.md\:hidden,
+    .md\:hidden {
+        display: none !important;
+    }
+}
+@media (max-width: 767px) {
+    .site-header .hidden.md\:flex,
+    .hidden.md\:flex {
+        display: none !important;
+    }
+}
 </style>
 </head>
 <body class="bg-[#f8fafc] dark:bg-[#0a1628] text-gray-800 dark:text-gray-100 font-body-md antialiased flex flex-col min-h-screen">

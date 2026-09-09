@@ -66,6 +66,20 @@
         display: none;
     }
 
+    /* Responsive utility fallbacks - prevents desktop/mobile component duplication before Tailwind JS loads */
+    @media (min-width: 768px) {
+        .md\:hidden, [class*="md:hidden"] {
+            display: none !important;
+        }
+    }
+    @media (max-width: 767px) {
+        .hidden.md\:flex, [class~="hidden"][class*="md:flex"],
+        .hidden.md\:block, [class~="hidden"][class*="md:block"],
+        .hidden.md\:grid, [class~="hidden"][class*="md:grid"] {
+            display: none !important;
+        }
+    }
+
     .sr-only {
         position: absolute !important;
         width: 1px !important;
