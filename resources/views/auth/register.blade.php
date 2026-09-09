@@ -7,12 +7,25 @@
     @include('components.pwa-head')
     <title>Daftar Buka Toko — {{ $company->company_name ?? 'Rhantech' }}</title>
     <link rel="icon" type="image/png" href="{{ isset($company) && $company->favicon ? '/storage/'.$company->favicon : '/favicon.ico' }}" />
-    <script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
                     colors: {
+                        primary: "rgb(var(--theme-primary, 0 179 204) / <alpha-value>)",
+                        secondary: "rgb(var(--theme-secondary, 0 104 122) / <alpha-value>)",
+                        surface: "rgb(var(--theme-surface, 255 255 255) / <alpha-value>)",
+                        "on-surface": "rgb(var(--theme-on-surface, 27 28 30) / <alpha-value>)",
+                        "on-surface-variant": "rgb(var(--theme-on-surface-variant, 90 95 102) / <alpha-value>)",
+                        "surface-container": "rgb(var(--theme-surface-container, 243 244 246) / <alpha-value>)",
+                        "surface-container-high": "rgb(var(--theme-surface-high, 230 234 238) / <alpha-value>)",
+                        "surface-container-low": "rgb(var(--theme-surface-low, 248 249 250) / <alpha-value>)",
+                        "surface-container-lowest": "rgb(var(--theme-surface-lowest, 255 255 255) / <alpha-value>)",
+                        "outline-variant": "rgb(var(--theme-outline-variant, 226 232 240) / <alpha-value>)",
+                        background: "rgb(var(--theme-background, 248 250 252) / <alpha-value>)",
+                        "on-background": "rgb(var(--theme-on-background, 15 23 42) / <alpha-value>)",
                         brand: {
                             50: '#e6f7f9',
                             100: '#cceef3',
@@ -24,10 +37,8 @@
                     }
                 }
             }
-        }
+        };
     </script>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    @vite(['resources/css/app.css'])
     @include('components.theme-styles')
     <!-- Cloudflare Turnstile -->
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
