@@ -27,6 +27,7 @@ class PopupAdController extends Controller
             'description' => 'nullable|string',
             'link_url' => 'nullable|url|max:255',
             'link_text' => 'nullable|string|max:255',
+            'target_audience' => 'required|string|in:all,guest,customer,tenant',
             'is_active' => 'boolean',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
@@ -41,6 +42,7 @@ class PopupAdController extends Controller
 
         $validated['images'] = !empty($imagePaths) ? $imagePaths : null;
         $validated['is_active'] = $request->has('is_active');
+        $validated['target_audience'] = $request->input('target_audience', 'all');
 
         PopupAd::create($validated);
 
@@ -59,6 +61,7 @@ class PopupAdController extends Controller
             'description' => 'nullable|string',
             'link_url' => 'nullable|url|max:255',
             'link_text' => 'nullable|string|max:255',
+            'target_audience' => 'required|string|in:all,guest,customer,tenant',
             'is_active' => 'boolean',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
@@ -86,6 +89,7 @@ class PopupAdController extends Controller
 
         $validated['images'] = !empty($imagePaths) ? $imagePaths : null;
         $validated['is_active'] = $request->has('is_active');
+        $validated['target_audience'] = $request->input('target_audience', 'all');
 
         $popupAd->update($validated);
 

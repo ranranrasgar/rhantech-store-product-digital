@@ -1,5 +1,23 @@
-@if((request()->routeIs('home') || request()->is('/') || request()->has('preview_ad')) && isset($popupAd) && $popupAd && ($popupAd->is_active || request()->has('preview_ad')))
-<!-- Popup Ad Modal: Promosi & Pengumuman Halaman Utama -->
+@php
+    $canShowOnCurrentPage = request()->routeIs('home') 
+        || request()->is('/') 
+        || request()->routeIs('tenant.dashboard') 
+        || request()->is('dashboard')
+        || request()->has('preview_ad');
+@endphp
+
+@if($canShowOnCurrentPage && isset($popupAd) && $popupAd && ($popupAd->is_active || request()->has('preview_ad')))
+@php
+    $target = $popupAd->target_audience ?? 'all';
+    $targetBadge = [
+        'tenant' => ['label' => 'KHUSUS MITRA TOKO', 'sub' => 'Pengumuman Penting untuk Penjual', 'icon' => 'storefront', 'bg' => 'bg-purple-500/15 text-purple-700 dark:text-purple-300'],
+        'guest' => ['label' => 'PENGUNJUNG BARU', 'sub' => 'Penawaran Spesial Pendaftaran Akun', 'icon' => 'person_add', 'bg' => 'bg-amber-500/15 text-amber-700 dark:text-amber-300'],
+        'customer' => ['label' => 'MEMBER SPESIAL', 'sub' => 'Promo Eksklusif Pengguna Terdaftar', 'icon' => 'shopping_bag', 'bg' => 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300'],
+        'all' => ['label' => 'PENGUMUMAN RESMI', 'sub' => 'Informasi & Penawaran Spesial', 'icon' => 'campaign', 'bg' => 'bg-primary/15 text-primary dark:text-cyan-300'],
+    ][$target] ?? ['label' => 'PENGUMUMAN RESMI', 'sub' => 'Informasi & Penawaran Spesial', 'icon' => 'campaign', 'bg' => 'bg-primary/15 text-primary dark:text-cyan-300'];
+@endphp
+
+<!-- Popup Ad Modal: Promosi & Pengumuman -->
 <div x-data="{
         isOpen: false,
         activeImageIndex: 0,
@@ -69,6 +87,14 @@
         <!-- Banner / Image Area -->
         @if($popupAd->images && count($popupAd->images) > 0)
             <div class="relative bg-slate-100 dark:bg-slate-800 overflow-hidden">
+                <!-- Target pill on top of image -->
+                <div class="absolute top-3.5 left-3.5 z-10">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black tracking-wider uppercase backdrop-blur-md bg-black/50 text-white border border-white/20">
+                        <span class="material-symbols-outlined text-[13px]">{{ $targetBadge['icon'] }}</span>
+                        {{ $targetBadge['label'] }}
+                    </span>
+                </div>
+
                 @if(count($popupAd->images) === 1)
                     <img src="{{ asset('storage/' . $popupAd->images[0]) }}"
                          alt="{{ $popupAd->title }}"
@@ -123,14 +149,14 @@
 
                 <div class="relative z-10 flex items-center gap-3">
                     <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-primary to-secondary text-white flex items-center justify-center shadow-lg shadow-primary/25 shrink-0">
-                        <span class="material-symbols-outlined text-[26px]">campaign</span>
+                        <span class="material-symbols-outlined text-[26px]">{{ $targetBadge['icon'] }}</span>
                     </div>
                     <div>
-                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black tracking-wider uppercase bg-primary/15 text-primary dark:bg-primary/25 dark:text-cyan-300 mb-1">
-                            <span class="inline-block w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span>
-                            PENGUMUMAN RESMI
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black tracking-wider uppercase {{ $targetBadge['bg'] }} mb-1">
+                            <span class="inline-block w-1.5 h-1.5 rounded-full bg-current animate-ping"></span>
+                            {{ $targetBadge['label'] }}
                         </span>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">Informasi & Penawaran Spesial</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">{{ $targetBadge['sub'] }}</p>
                     </div>
                 </div>
             </div>

@@ -19,7 +19,7 @@ class PublicController extends Controller
         $projects = Project::query()->with('projectCategory')->where('status', 'published')->latest()->take(3)->get();
         $clients = Client::query()->where('is_active', true)->get();
         $testimonials = Testimonial::query()->with('client')->where('is_active', true)->latest()->get();
-        $popupAd = \App\Models\PopupAd::query()->where('is_active', true)->latest()->first();
+        $popupAd = \App\Models\PopupAd::getActiveForCurrentUser();
 
         // Aplikasi / produk digital rekomendasi: Adil antar toko, rating terbaik, dan acak/random setiap refresh
         $candidateProducts = Product::query()

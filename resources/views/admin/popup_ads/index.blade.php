@@ -25,6 +25,7 @@
                 <thead>
                     <tr class="bg-gray-50 dark:bg-slate-900 border-b border-gray-100 dark:border-slate-700">
                         <th class="py-4 px-6 font-semibold text-sm text-gray-600 dark:text-gray-300">Judul</th>
+                        <th class="py-4 px-6 font-semibold text-sm text-gray-600 dark:text-gray-300">Sasaran (Tujuan)</th>
                         <th class="py-4 px-6 font-semibold text-sm text-gray-600 dark:text-gray-300">Status</th>
                         <th class="py-4 px-6 font-semibold text-sm text-gray-600 dark:text-gray-300">Tautan</th>
                         <th class="py-4 px-6 font-semibold text-sm text-gray-600 dark:text-gray-300 text-right">Aksi</th>
@@ -36,6 +37,25 @@
                         <td class="py-4 px-6">
                             <div class="font-medium text-gray-800 dark:text-gray-200">{{ $ad->title }}</div>
                             <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">{{ Str::limit($ad->description, 50) }}</div>
+                        </td>
+                        <td class="py-4 px-6">
+                            @if(($ad->target_audience ?? 'all') === 'guest')
+                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+                                    <span class="material-symbols-outlined text-[14px]">person_add</span> Calon Member
+                                </span>
+                            @elseif(($ad->target_audience ?? 'all') === 'customer')
+                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                                    <span class="material-symbols-outlined text-[14px]">shopping_bag</span> Member
+                                </span>
+                            @elseif(($ad->target_audience ?? 'all') === 'tenant')
+                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
+                                    <span class="material-symbols-outlined text-[14px]">storefront</span> Mitra Toko
+                                </span>
+                            @else
+                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+                                    <span class="material-symbols-outlined text-[14px]">public</span> Semua Pengguna
+                                </span>
+                            @endif
                         </td>
                         <td class="py-4 px-6">
                             @if($ad->is_active)
@@ -58,7 +78,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="4" class="py-8 px-6 text-center text-gray-500 dark:text-gray-400">
+                        <td colspan="5" class="py-8 px-6 text-center text-gray-500 dark:text-gray-400">
                             Belum ada data iklan pop-up.
                         </td>
                     </tr>

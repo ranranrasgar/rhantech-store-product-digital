@@ -464,6 +464,7 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
 @include('components.firebase-init')
 <div x-data="firebaseManager" x-init="initFirebase()" style="display:none;"></div>
 @include('components.theme-manager')
+@include('components.popup-ad-modal')
 @include('components.pwa-install-prompt')
 @livewireScripts
 </body></html>
