@@ -146,8 +146,8 @@
             </div>
         @endif
 
-        <!-- Banner Visual Promosi Biru Langit -->
-        <div class="rounded-2xl bg-gradient-to-r from-sky-500/10 via-blue-500/10 to-cyan-500/10 dark:from-sky-950/20 dark:to-slate-800/40 border border-sky-200/80 dark:border-slate-800 p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <!-- Banner Informasi Promosi -->
+        <div class="rounded-2xl bg-white dark:bg-[#161b22] border border-slate-200/90 dark:border-slate-800 p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xs">
             <div>
                 <h2 class="text-base md:text-lg font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
                     <span class="material-symbols-outlined text-[#0284c7] text-[22px]">rocket_launch</span>
@@ -558,50 +558,51 @@
             </div>
 
             <!-- 4. RINGKASAN ESTIMASI BIAYA & KLIK (Kalkulator CPC) -->
-            <div class="rounded-2xl bg-gradient-to-br from-slate-900 via-[#0c1322] to-slate-950 text-white p-6 md:p-7 shadow-lg border border-slate-800 space-y-4">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-3">
-                    <div class="flex items-center gap-2.5">
-                        <div class="w-8 h-8 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center shrink-0">
-                            <span class="material-symbols-outlined text-[20px]">calculate</span>
-                        </div>
-                        <div>
-                            <h4 class="text-sm font-bold text-white">Ringkasan & Estimasi Biaya Iklan</h4>
-                            <p class="text-[11px] text-slate-400">Sistem CPC (Cost Per Click) — Hanya dipotong saat produk Anda diklik calon pembeli.</p>
-                        </div>
+            <div class="bg-white dark:bg-[#161b22] rounded-2xl border border-slate-200/90 dark:border-slate-800 p-6 md:p-7 space-y-5 shadow-xs">
+                <div class="border-b border-slate-100 dark:border-slate-800 pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2 h-4 bg-[#0284c7] rounded-full"></span>
+                        <h3 class="text-sm md:text-base font-bold text-slate-900 dark:text-white">
+                            Ringkasan & Estimasi Biaya Iklan
+                        </h3>
                     </div>
-                    <span class="text-xs px-3 py-1 rounded-full bg-sky-500/20 text-sky-300 font-bold border border-sky-500/30 self-start sm:self-center"
+                    <span class="text-xs px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold border border-slate-200 dark:border-slate-700 self-start sm:self-center"
                           x-text="selectedProducts.length + ' Produk Terpilih'"></span>
                 </div>
 
+                <p class="text-xs text-slate-500 dark:text-slate-400 -mt-2">
+                    Sistem CPC (Cost Per Click) — Biaya hanya dipotong saat produk Anda diklik oleh calon pembeli. Impresi pencarian gratis.
+                </p>
+
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
                     <!-- Stat 1: Biaya per Klik -->
-                    <div class="p-3.5 rounded-xl bg-white/5 border border-white/10 space-y-1">
-                        <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Biaya Per Klik (CPC)</span>
-                        <div class="text-base font-black text-sky-400 font-mono" x-text="'Rp' + Number(currentCpc).toLocaleString('id-ID') + ' / klik'"></div>
-                        <p class="text-[10px] text-slate-400">Tampilan/impresi 100% gratis</p>
+                    <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/80 space-y-1">
+                        <span class="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 tracking-wider">Biaya Per Klik (CPC)</span>
+                        <div class="text-base sm:text-lg font-bold text-[#0284c7] dark:text-sky-400" x-text="'Rp' + Number(currentCpc).toLocaleString('id-ID') + ' / klik'"></div>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400">Tampilan/impresi gratis</p>
                     </div>
 
                     <!-- Stat 2: Alokasi Modal -->
-                    <div class="p-3.5 rounded-xl bg-white/5 border border-white/10 space-y-1">
-                        <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Batas Modal Harian</span>
-                        <div class="text-base font-black text-white font-mono" 
+                    <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/80 space-y-1">
+                        <span class="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 tracking-wider">Batas Modal Harian</span>
+                        <div class="text-base sm:text-lg font-bold text-slate-900 dark:text-white" 
                              x-text="budgetType === 'daily' ? ('Rp' + Number(totalDailyBudget).toLocaleString('id-ID') + ' / hari') : 'Tak Terbatas'"></div>
-                        <p class="text-[10px] text-slate-400" 
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400" 
                            x-text="budgetType === 'daily' ? ('(Rp' + Number(dailyBudget).toLocaleString('id-ID') + ' × ' + selectedProducts.length + ' produk)') : 'Berjalan sampai saldo habis'"></p>
                     </div>
 
                     <!-- Stat 3: Estimasi Klik -->
-                    <div class="p-3.5 rounded-xl bg-white/5 border border-white/10 space-y-1">
-                        <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Potensi Trafik Klik</span>
-                        <div class="text-base font-black text-emerald-400 font-mono" 
+                    <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/80 dark:border-slate-700/80 space-y-1">
+                        <span class="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 tracking-wider">Potensi Trafik Klik</span>
+                        <div class="text-base sm:text-lg font-bold text-slate-900 dark:text-white" 
                              x-text="'~' + estDailyClicks.toLocaleString('id-ID') + ' Klik' + (budgetType === 'daily' ? ' / hari' : '')"></div>
-                        <p class="text-[10px] text-slate-400">Pengunjung potensial ke produk Anda</p>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400">Estimasi kunjungan pembeli</p>
                     </div>
                 </div>
 
-                <div class="flex items-center gap-2 text-[11px] text-slate-400 bg-white/5 p-3 rounded-xl border border-white/5">
-                    <span class="material-symbols-outlined text-[16px] text-amber-400 shrink-0">verified_user</span>
-                    <span><strong>Proteksi Saldo:</strong> Dilengkapi proteksi anti-spam klik. Jika saldo iklan toko mencapai Rp0, seluruh iklan otomatis dijeda sehingga saldo Anda tidak akan pernah minus.</span>
+                <div class="flex items-start sm:items-center gap-2.5 text-xs text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/40 p-3.5 rounded-xl border border-slate-200/80 dark:border-slate-700/80">
+                    <span class="material-symbols-outlined text-[18px] text-slate-500 dark:text-slate-400 shrink-0">verified_user</span>
+                    <span><strong>Proteksi Saldo:</strong> Dilengkapi proteksi anti-spam klik. Jika saldo iklan toko mencapai Rp0, iklan otomatis dijeda sehingga saldo Anda tidak akan pernah minus.</span>
                 </div>
             </div>
 
