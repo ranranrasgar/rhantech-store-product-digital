@@ -229,6 +229,10 @@ Route::middleware(['auth', 'is_admin'])->prefix('admin')->name('admin.')->group(
     Route::patch('payouts/{payout}', [\App\Http\Controllers\Admin\PayoutController::class, 'update'])->name('payouts.update');
     Route::get('ads', [\App\Http\Controllers\Admin\AdController::class, 'index'])->name('ads.index');
 
+    // Manajemen Paket Toko PRO
+    Route::patch('pro_plans/{pro_plan}/toggle-active', [\App\Http\Controllers\Admin\ProPlanController::class, 'toggleActive'])->name('pro_plans.toggle-active');
+    Route::resource('pro_plans', \App\Http\Controllers\Admin\ProPlanController::class);
+
     // Buyer Search Analytics
     Route::get('searches', [\App\Http\Controllers\Admin\SearchAnalyticsController::class, 'index'])->name('searches.index');
     Route::delete('searches/{search}', [\App\Http\Controllers\Admin\SearchAnalyticsController::class, 'destroy'])->name('searches.destroy');

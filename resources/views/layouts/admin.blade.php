@@ -233,6 +233,10 @@
     <span class="material-symbols-outlined text-[1rem]">campaign</span>
     Iklan & Saldo Tenant
 </a>
+<a class="font-label-md text-label-md {{ request()->routeIs('admin.pro_plans.*') ? 'bg-surface-variant font-semibold before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[3px] before:bg-[#58a6ff] before:rounded-r-md relative' : 'text-on-surface hover:bg-surface-variant/50 hover:underline' }} px-3 py-1.5 flex items-center gap-2 transition-all rounded-md" href="{{ route('admin.pro_plans.index') }}" wire:navigate>
+    <span class="material-symbols-outlined text-[1rem]">workspace_premium</span>
+    Paket Toko PRO
+</a>
 <a class="font-label-md text-label-md {{ request()->routeIs('admin.gateway_apps.*') ? 'bg-surface-variant font-semibold before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[3px] before:bg-[#58a6ff] before:rounded-r-md relative' : 'text-on-surface hover:bg-surface-variant/50 hover:underline' }} px-3 py-1.5 flex items-center gap-2 transition-all rounded-md" href="{{ route('admin.gateway_apps.index') }}" wire:navigate>
 <span class="material-symbols-outlined text-[1rem]">api</span>
                     Gateway Apps

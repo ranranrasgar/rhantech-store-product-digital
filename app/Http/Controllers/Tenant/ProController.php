@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Tenant;
 use App\Http\Controllers\Controller;
 use App\Models\Store;
 use App\Models\ProSubscription;
+use App\Models\ProPlan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
@@ -26,8 +27,51 @@ class ProController extends Controller
         }
 
         $subscriptions = $store->proSubscriptions()->latest()->paginate(10);
+        $plans = ProPlan::where('is_active', true)->orderBy('sort_order')->get();
 
-        return view('tenant.pro.index', compact('store', 'subscriptions'));
+        // Fallback default jika tabel pro_plans belum ada / kosong
+        if ($plans->isEmpty()) {
+            $plans = collect([
+                (object)[
+                    'id' => 1,
+                    'name' => 'Bulanan',
+                    'slug' => 'monthly',
+                    'price' => 49000,
+                    'duration_days' => 30,
+                    'duration_label' => '/ 30 hari',
+                    'badge' => 'Paket Fleksibel',
+                    'description' => 'Cocok untuk mencoba seluruh fitur PRO tanpa komitmen jangka panjang.',
+                    'features_list' => ['Fee payout 1% aktif 30 hari', 'Badge Toko PRO Terverifikasi', 'Kirim WA Broadcast ke Pelanggan', 'Modul Portofolio & Proyek'],
+                    'is_popular' => false,
+                ],
+                (object)[
+                    'id' => 2,
+                    'name' => 'Tahunan',
+                    'slug' => 'yearly',
+                    'price' => 399000,
+                    'duration_days' => 365,
+                    'duration_label' => '/ 1 tahun',
+                    'badge' => 'Paling Hemat (Diskon 32%)',
+                    'description' => 'Hanya ~Rp 33.000 / bulan. Sangat hemat untuk pemilik toko aktif.',
+                    'features_list' => ['Fee payout 1% aktif penuh 365 hari', 'Badge Toko PRO Terverifikasi', 'Kirim WA Broadcast ke Pelanggan', 'Modul Portofolio & Proyek', 'Prioritas Dukungan Admin'],
+                    'is_popular' => true,
+                ],
+                (object)[
+                    'id' => 3,
+                    'name' => 'Lifetime',
+                    'slug' => 'lifetime',
+                    'price' => 799000,
+                    'duration_days' => null,
+                    'duration_label' => '/ sekali bayar',
+                    'badge' => 'Akses Selamanya',
+                    'description' => 'Bayar 1x dan nikmati seluruh benefit PRO selamanya tanpa batas waktu.',
+                    'features_list' => ['Akses PRO seumur hidup', 'Fee penarikan saldo 1% permanen', 'WA Broadcast tanpa batas waktu', 'Modul Portofolio & Galeri Karya', 'Badge Emas Eksklusif PRO'],
+                    'is_popular' => false,
+                ]
+            ]);
+        }
+
+        return view('tenant.pro.index', compact('store', 'subscriptions', 'plans'));
     }
 
     public function upgrade(Request $request)
@@ -38,19 +82,32 @@ class ProController extends Controller
         }
 
         $request->validate([
-            'plan' => 'required|in:monthly,yearly,lifetime',
+            'plan' => 'required|string',
             'payment_source' => 'required|in:qris,midtrans,balance',
         ]);
 
-        $plan = $request->input('plan');
-        $pricing = [
-            'monthly' => ['amount' => 49000, 'duration_days' => 30, 'label' => 'Bulanan (1 Bulan)'],
-            'yearly' => ['amount' => 399000, 'duration_days' => 365, 'label' => 'Tahunan (1 Tahun)'],
-            'lifetime' => ['amount' => 799000, 'duration_days' => null, 'label' => 'Lifetime (Selamanya)'],
+        $planSlug = $request->input('plan');
+        $plan = ProPlan::where('slug', $planSlug)->where('is_active', true)->first();
+
+        $defaultPricing = [
+            'monthly' => ['name' => 'Bulanan', 'amount' => 49000, 'duration_days' => 30, 'label' => 'Bulanan (1 Bulan)'],
+            'yearly' => ['name' => 'Tahunan', 'amount' => 399000, 'duration_days' => 365, 'label' => 'Tahunan (1 Tahun)'],
+            'lifetime' => ['name' => 'Lifetime', 'amount' => 799000, 'duration_days' => null, 'label' => 'Lifetime (Selamanya)'],
         ];
 
-        $selectedPlan = $pricing[$plan];
-        $amount = $selectedPlan['amount'];
+        if ($plan) {
+            $amount = (float) $plan->price;
+            $durationDays = $plan->duration_days;
+            $planLabel = $plan->name . ($plan->duration_label ? ' (' . $plan->duration_label . ')' : '');
+        } elseif (isset($defaultPricing[$planSlug])) {
+            $def = $defaultPricing[$planSlug];
+            $amount = (float) $def['amount'];
+            $durationDays = $def['duration_days'];
+            $planLabel = $def['label'];
+        } else {
+            return back()->with('error', 'Paket langganan tidak valid atau sedang dinonaktifkan.');
+        }
+
         $paymentSource = $request->input('payment_source');
 
         // Nomor invoice diawali dengan RHN- (wajib untuk pencocokan callback Midtrans lokal di rhantech.com)
@@ -58,7 +115,7 @@ class ProController extends Controller
 
         // Hitung masa berlaku
         $currentExpiry = ($store->isPro() && $store->pro_expires_at) ? $store->pro_expires_at : now();
-        $expiresAt = $selectedPlan['duration_days'] ? $currentExpiry->copy()->addDays($selectedPlan['duration_days']) : null;
+        $expiresAt = $durationDays ? $currentExpiry->copy()->addDays($durationDays) : null;
 
         // 1. Opsi Pembayaran Potong Saldo Penjualan Toko
         if ($paymentSource === 'balance') {
@@ -72,7 +129,7 @@ class ProController extends Controller
                 'store_id' => $store->id,
                 'user_id' => Auth::id(),
                 'reference_no' => $referenceNo,
-                'plan' => $plan,
+                'plan' => $planSlug,
                 'amount' => $amount,
                 'payment_method' => 'Saldo Toko',
                 'payment_status' => 'paid',
@@ -84,7 +141,7 @@ class ProController extends Controller
             $store->update([
                 'is_pro' => true,
                 'pro_expires_at' => $expiresAt,
-                'pro_plan' => $plan,
+                'pro_plan' => $planSlug,
             ]);
 
             return redirect()->route('tenant.pro.index')->with('success', '🎉 Selamat! Toko Anda kini telah resmi menjadi Toko PRO! Semua fitur eksklusif dan fee penarikan 1% telah aktif.');
@@ -109,10 +166,10 @@ class ProController extends Controller
             ],
             'item_details' => [
                 [
-                    'id' => 'PRO_' . strtoupper($plan),
+                    'id' => 'PRO_' . strtoupper($planSlug),
                     'price' => (int) $amount,
                     'quantity' => 1,
-                    'name' => 'Upgrade Toko PRO - ' . $selectedPlan['label'],
+                    'name' => 'Upgrade Toko PRO - ' . $planLabel,
                 ]
             ],
             'override_notification_urls' => [
@@ -127,7 +184,7 @@ class ProController extends Controller
                 'store_id' => $store->id,
                 'user_id' => Auth::id(),
                 'reference_no' => $referenceNo,
-                'plan' => $plan,
+                'plan' => $planSlug,
                 'amount' => $amount,
                 'payment_method' => 'Midtrans (QRIS / Instant)',
                 'payment_status' => 'pending',

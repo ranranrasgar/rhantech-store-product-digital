@@ -109,63 +109,49 @@
                         <span class="text-xs text-emerald-600 dark:text-emerald-400 font-semibold">Tersedia 3 Pilihan Fleksibel</span>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <!-- Paket Bulanan -->
-                        <label class="relative border-2 border-slate-200 dark:border-[#222f49] rounded-2xl p-5 cursor-pointer hover:border-amber-500 dark:hover:border-amber-500 transition-all flex flex-col justify-between plan-card" id="card_monthly">
-                            <input type="radio" name="plan" value="monthly" class="sr-only" onchange="updatePlan('monthly', 49000)">
-                            <div>
-                                <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Paket Fleksibel</div>
-                                <h3 class="text-lg font-black text-slate-900 dark:text-white">Bulanan</h3>
-                                <div class="mt-3 flex items-baseline gap-1">
-                                    <span class="text-2xl font-black text-slate-900 dark:text-white">Rp 49.000</span>
-                                    <span class="text-xs text-slate-400">/ 30 hari</span>
+                    <div class="grid grid-cols-1 md:grid-cols-{{ min(max(count($plans), 1), 3) }} gap-4">
+                        @php
+                            $defaultPlan = $plans->where('is_popular', true)->first() ?? $plans->first();
+                        @endphp
+                        @foreach($plans as $plan)
+                            @php
+                                $isSelected = $defaultPlan && $defaultPlan->slug === $plan->slug;
+                            @endphp
+                            <label class="relative border-2 {{ $isSelected ? 'border-amber-500 bg-amber-50/20 dark:bg-amber-950/10 ring-2 ring-amber-500/20' : 'border-slate-200 dark:border-[#222f49]' }} rounded-2xl p-5 cursor-pointer hover:border-amber-500 dark:hover:border-amber-500 transition-all flex flex-col justify-between plan-card" id="card_{{ $plan->slug }}">
+                                @if($plan->badge)
+                                    <div class="absolute -top-3 right-4 bg-amber-500 text-slate-950 text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full shadow-sm">
+                                        {{ $plan->badge }}
+                                    </div>
+                                @endif
+                                <input type="radio" name="plan" value="{{ $plan->slug }}" class="sr-only" {{ $isSelected ? 'checked' : '' }} onchange="updatePlan('{{ $plan->slug }}', {{ (int)$plan->price }})">
+                                <div>
+                                    <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">
+                                        {{ $plan->is_popular ? 'Paling Populer' : 'Paket Pilihan' }}
+                                    </div>
+                                    <h3 class="text-lg font-black text-slate-900 dark:text-white">{{ $plan->name }}</h3>
+                                    <div class="mt-3 flex items-baseline gap-1">
+                                        <span class="text-2xl font-black text-slate-900 dark:text-white">Rp {{ number_format($plan->price, 0, ',', '.') }}</span>
+                                        <span class="text-xs text-slate-400">{{ $plan->duration_label ?? ($plan->duration_days ? '/ ' . $plan->duration_days . ' hari' : '/ selamanya') }}</span>
+                                    </div>
+                                    @if($plan->description)
+                                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">{{ $plan->description }}</p>
+                                    @endif
                                 </div>
-                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">Cocok untuk mencoba seluruh fitur PRO tanpa komitmen jangka panjang.</p>
-                            </div>
-                            <div class="mt-4 pt-3 border-t border-slate-100 dark:border-[#1d273d] flex items-center text-xs text-slate-600 dark:text-slate-300 font-medium">
-                                <span class="material-symbols-outlined text-[16px] text-emerald-500 mr-1.5">check_circle</span>
-                                Fee payout 1% aktif 30 hari
-                            </div>
-                        </label>
-
-                        <!-- Paket Tahunan (Rekomendasi) -->
-                        <label class="relative border-2 border-amber-500 rounded-2xl p-5 cursor-pointer bg-amber-50/20 dark:bg-amber-950/10 hover:border-amber-500 transition-all flex flex-col justify-between plan-card ring-2 ring-amber-500/20" id="card_yearly">
-                            <div class="absolute -top-3 right-4 bg-amber-500 text-slate-950 text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full shadow-sm">
-                                Paling Hemat (Diskon 32%)
-                            </div>
-                            <input type="radio" name="plan" value="yearly" class="sr-only" checked onchange="updatePlan('yearly', 399000)">
-                            <div>
-                                <div class="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider mb-1">Paling Populer</div>
-                                <h3 class="text-lg font-black text-slate-900 dark:text-white">Tahunan</h3>
-                                <div class="mt-3 flex items-baseline gap-1">
-                                    <span class="text-2xl font-black text-slate-900 dark:text-white">Rp 399.000</span>
-                                    <span class="text-xs text-slate-400">/ 1 tahun</span>
+                                <div class="mt-4 pt-3 border-t border-slate-100 dark:border-[#1d273d] space-y-1.5">
+                                    @forelse($plan->features_list as $feature)
+                                        <div class="flex items-center text-xs text-slate-600 dark:text-slate-300 font-medium">
+                                            <span class="material-symbols-outlined text-[16px] text-emerald-500 mr-1.5 shrink-0">check_circle</span>
+                                            <span>{{ $feature }}</span>
+                                        </div>
+                                    @empty
+                                        <div class="flex items-center text-xs text-slate-600 dark:text-slate-300 font-medium">
+                                            <span class="material-symbols-outlined text-[16px] text-emerald-500 mr-1.5 shrink-0">check_circle</span>
+                                            <span>Fee payout 1% & Fitur PRO Aktif</span>
+                                        </div>
+                                    @endforelse
                                 </div>
-                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">Hanya ~Rp 33.000 / bulan. Sangat hemat untuk pemilik toko aktif.</p>
-                            </div>
-                            <div class="mt-4 pt-3 border-t border-amber-200/40 dark:border-[#1d273d] flex items-center text-xs text-slate-600 dark:text-slate-300 font-medium">
-                                <span class="material-symbols-outlined text-[16px] text-emerald-500 mr-1.5">check_circle</span>
-                                Aktif penuh selama 365 hari
-                            </div>
-                        </label>
-
-                        <!-- Paket Lifetime -->
-                        <label class="relative border-2 border-slate-200 dark:border-[#222f49] rounded-2xl p-5 cursor-pointer hover:border-amber-500 dark:hover:border-amber-500 transition-all flex flex-col justify-between plan-card" id="card_lifetime">
-                            <input type="radio" name="plan" value="lifetime" class="sr-only" onchange="updatePlan('lifetime', 799000)">
-                            <div>
-                                <div class="text-xs font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider mb-1">Akses Selamanya</div>
-                                <h3 class="text-lg font-black text-slate-900 dark:text-white">Lifetime</h3>
-                                <div class="mt-3 flex items-baseline gap-1">
-                                    <span class="text-2xl font-black text-slate-900 dark:text-white">Rp 799.000</span>
-                                    <span class="text-xs text-slate-400">/ sekali bayar</span>
-                                </div>
-                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-2">Bayar 1x dan nikmati seluruh benefit PRO selamanya tanpa batas waktu.</p>
-                            </div>
-                            <div class="mt-4 pt-3 border-t border-slate-100 dark:border-[#1d273d] flex items-center text-xs text-slate-600 dark:text-slate-300 font-medium">
-                                <span class="material-symbols-outlined text-[16px] text-emerald-500 mr-1.5">check_circle</span>
-                                Bebas perpanjangan selamanya
-                            </div>
-                        </label>
+                            </label>
+                        @endforeach
                     </div>
                 </div>
 
@@ -323,29 +309,34 @@
 </div>
 
 <script>
-    let currentPlan = 'yearly';
-    let currentAmount = 399000;
-    let currentSource = 'qris';
+    const plansData = @json($plans->mapWithKeys(function($p) {
+        return [$p->slug => [
+            'name' => $p->name,
+            'price' => (int)$p->price,
+            'duration' => $p->duration_label ?? ($p->duration_days ? '/ ' . $p->duration_days . ' hari' : '/ selamanya'),
+            'label' => $p->name . ' (' . ($p->duration_label ?? ($p->duration_days ? $p->duration_days . ' Hari' : 'Selamanya')) . ')'
+        ]];
+    }));
 
-    const planLabels = {
-        'monthly': 'Paket Bulanan (1 Bulan)',
-        'yearly': 'Paket Tahunan (1 Tahun)',
-        'lifetime': 'Paket Lifetime (Selamanya)'
-    };
+    let currentPlan = "{{ $defaultPlan->slug ?? 'yearly' }}";
+    let currentAmount = {{ (int)($defaultPlan->price ?? 399000) }};
+    let currentSource = 'qris';
 
     function updatePlan(plan, amount) {
         currentPlan = plan;
         currentAmount = amount;
 
         // Update card visual
-        ['monthly', 'yearly', 'lifetime'].forEach(p => {
+        Object.keys(plansData).forEach(p => {
             const card = document.getElementById('card_' + p);
-            if (p === plan) {
-                card.classList.add('border-amber-500', 'ring-2', 'ring-amber-500/20');
-                card.classList.remove('border-slate-200', 'dark:border-[#222f49]');
-            } else {
-                card.classList.remove('border-amber-500', 'ring-2', 'ring-amber-500/20');
-                card.classList.add('border-slate-200', 'dark:border-[#222f49]');
+            if (card) {
+                if (p === plan) {
+                    card.classList.add('border-amber-500', 'ring-2', 'ring-amber-500/20');
+                    card.classList.remove('border-slate-200', 'dark:border-[#222f49]');
+                } else {
+                    card.classList.remove('border-amber-500', 'ring-2', 'ring-amber-500/20');
+                    card.classList.add('border-slate-200', 'dark:border-[#222f49]');
+                }
             }
         });
 
@@ -377,8 +368,12 @@
 
     function renderDisplay() {
         document.getElementById('displayTotal').innerText = 'Rp ' + currentAmount.toLocaleString('id-ID');
+        const planInfo = plansData[currentPlan] ? plansData[currentPlan].label : currentPlan;
         const sourceLabel = currentSource === 'qris' ? 'Pembayaran QRIS Midtrans Instan' : 'Pembayaran Saldo Penjualan';
-        document.getElementById('displayPlanLabel').innerText = planLabels[currentPlan] + ' • ' + sourceLabel;
+        document.getElementById('displayPlanLabel').innerText = planInfo + ' • ' + sourceLabel;
     }
+
+    // Inisialisasi tampilan awal
+    renderDisplay();
 </script>
 @endsection
