@@ -415,8 +415,12 @@
                                         $hasDisc = $p->discount_price && $p->discount_price > 0 && $p->discount_price < $p->price;
                                         $pPrice = $hasDisc ? $p->discount_price : $p->price;
                                         $isAd = $adProductIds->contains($p->id);
+                                        $activeAd = $isAd ? $spStore->ads->firstWhere('product_id', $p->id) : null;
+                                        $pLink = ($activeAd && $activeAd->status === 'active')
+                                            ? route('products.show', ['slug' => $p->slug, 'ad_id' => $activeAd->id])
+                                            : route('products.show', $p->slug);
                                     @endphp
-                                    <a href="{{ route('products.show', $p->slug) }}" 
+                                    <a href="{{ $pLink }}" 
                                        class="group/pmini flex items-center gap-2 p-1.5 pr-2.5 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 hover:border-sky-400 dark:hover:border-sky-500 transition-all shadow-2xs hover:shadow-xs shrink-0 w-[130px] sm:w-[140px] xl:w-[155px] min-w-0 relative">
                                         
                                         <!-- Thumbnail -->

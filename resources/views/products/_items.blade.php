@@ -5,8 +5,12 @@
     $price = $hasDiscount ? $product->discount_price : $product->price;
     $catName = $product->category ? $product->category->name : 'Aplikasi';
     $imgAlt = 'Jual ' . $product->name . ' - Source Code ' . $catName . ' Siap Pakai';
+    $isAdActive = $product->relationLoaded('activeAd') && $product->activeAd;
+    $productLink = $isAdActive 
+        ? route('products.show', ['slug' => $product->slug, 'ad_id' => $product->activeAd->id]) 
+        : route('products.show', $product->slug);
 @endphp
-<a href="{{ route('products.show', $product->slug) }}" class="prod-card group bg-white dark:bg-[#1e293b] border border-gray-100 dark:border-slate-700/60">
+<a href="{{ $productLink }}" class="prod-card group bg-white dark:bg-[#1e293b] border border-gray-100 dark:border-slate-700/60">
 
     {{-- Image --}}
     <div class="img-wrap">

@@ -373,6 +373,8 @@ class AdController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'product_ids' => 'nullable|array|min:1',
+            'product_ids.*' => 'nullable|exists:products,id',
             'product_id' => 'nullable|exists:products,id',
             'type' => 'required|in:product,store',
             'budget_type' => 'required|in:unlimited,daily',
@@ -387,14 +389,25 @@ class AdController extends Controller
             'display_mode' => 'required|in:auto,manual',
         ]);
 
-        // Pastikan product milik toko sendiri ATAU ada di etalase showcase afiliasi toko
-        if (!empty($validated['product_id'])) {
-            $isOwnProduct = $store->products()->where('id', $validated['product_id'])->exists();
-            $isShowcaseProduct = $store->showcaseProducts()->where('products.id', $validated['product_id'])->exists();
-            
-            if (!$isOwnProduct && !$isShowcaseProduct) {
-                return back()->with('error', 'Produk yang dipilih tidak valid atau belum ditambahkan ke etalase tokomu.');
-            }
+        // Kumpulkan ID produk yang dipilih (bisa dari product_ids array atau product_id tunggal)
+        $selectedProductIds = [];
+        if (!empty($validated['product_ids'])) {
+            $selectedProductIds = array_values(array_filter(array_unique($validated['product_ids'])));
+        } elseif (!empty($validated['product_id'])) {
+            $selectedProductIds = [$validated['product_id']];
+        }
+
+        if (empty($selectedProductIds)) {
+            return back()->with('error', 'Silakan pilih setidaknya satu produk untuk diiklankan.')->withInput();
+        }
+
+        // Validasi: pastikan produk yang dipilih adalah milik toko sendiri ATAU ada di etalase showcase afiliasi toko
+        $ownProductIds = $store->products()->whereIn('id', $selectedProductIds)->pluck('id')->toArray();
+        $showcaseProductIds = $store->showcaseProducts()->whereIn('products.id', $selectedProductIds)->pluck('products.id')->toArray();
+        $validProductIds = array_unique(array_merge($ownProductIds, $showcaseProductIds));
+
+        if (empty($validProductIds)) {
+            return back()->with('error', 'Produk yang dipilih tidak valid atau belum ditambahkan ke etalase tokomu.')->withInput();
         }
 
         // Tentukan status: jika saldo iklan 0, status paused
@@ -416,28 +429,39 @@ class AdController extends Controller
                 : \Carbon\Carbon::parse($validated['start_date'])->addDays(30)->endOfDay();
         }
 
-        $ad = SellerAd::create([
-            'store_id' => $store->id,
-            'product_id' => $validated['product_id'] ?? null,
-            'name' => $validated['name'],
-            'type' => $validated['type'],
-            'budget_type' => $validated['budget_type'],
-            'daily_budget' => $validated['budget_type'] === 'daily' ? ($validated['daily_budget'] ?? null) : null,
-            'period_type' => $validated['period_type'],
-            'start_date' => $startDate,
-            'end_date' => $endDate,
-            'bidding_mode' => $validated['bidding_mode'],
-            'bid_price' => $validated['bid_price'] ?? 500,
-            'target_keywords' => $keywords,
-            'display_mode' => $validated['display_mode'],
-            'status' => $status,
-        ]);
+        $products = \App\Models\Product::whereIn('id', $validProductIds)->get()->keyBy('id');
+        $isMultiple = count($validProductIds) > 1;
+        $createdCount = 0;
 
-        if ($adBalance <= 0) {
-            return redirect()->route('tenant.ads.index')->with('warning', 'Iklan berhasil dibuat, namun statusnya DIJEDA karena Saldo Iklan Anda Rp0. Silakan isi saldo agar iklan langsung tampil.');
+        foreach ($validProductIds as $pId) {
+            $product = $products->get($pId);
+            $productName = $product ? \Illuminate\Support\Str::limit($product->name, 40) : ('Produk #' . $pId);
+            $adName = $isMultiple ? ($validated['name'] . ' - ' . $productName) : $validated['name'];
+
+            SellerAd::create([
+                'store_id' => $store->id,
+                'product_id' => $pId,
+                'name' => $adName,
+                'type' => $validated['type'],
+                'budget_type' => $validated['budget_type'],
+                'daily_budget' => $validated['budget_type'] === 'daily' ? ($validated['daily_budget'] ?? null) : null,
+                'period_type' => $validated['period_type'],
+                'start_date' => $startDate,
+                'end_date' => $endDate,
+                'bidding_mode' => $validated['bidding_mode'],
+                'bid_price' => $validated['bid_price'] ?? 500,
+                'target_keywords' => $keywords,
+                'display_mode' => $validated['display_mode'],
+                'status' => $status,
+            ]);
+            $createdCount++;
         }
 
-        return redirect()->route('tenant.ads.index')->with('success', 'Iklan berhasil dibuat dan saat ini AKTIF dipromosikan di platform!');
+        if ($adBalance <= 0) {
+            return redirect()->route('tenant.ads.index')->with('warning', "Berhasil membuat {$createdCount} kampanye iklan produk! Namun statusnya DIJEDA karena Saldo Iklan Anda Rp0. Silakan isi saldo agar iklan langsung tampil.");
+        }
+
+        return redirect()->route('tenant.ads.index')->with('success', "🎉 Berhasil membuat {$createdCount} kampanye iklan produk! Iklan telah AKTIF dipromosikan di platform.");
     }
 
     /**

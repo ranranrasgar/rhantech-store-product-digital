@@ -191,6 +191,69 @@ class ProductController extends Controller
         // Increment views count saat produk dibuka
         $product->increment('views');
 
+        // Rekam & proses pemotongan saldo CPC iklan bersponsor (?ad_id=...)
+        if ($request->filled('ad_id')) {
+            $adId = $request->query('ad_id');
+            $ad = \App\Models\SellerAd::with('store')->find($adId);
+
+            if ($ad && $ad->status === 'active' && $ad->store) {
+                $currentUserId = \Illuminate\Support\Facades\Auth::id();
+                $isOwner = $currentUserId && ($ad->store->user_id === $currentUserId);
+                $sessionKey = 'ad_click_charged_' . $ad->id;
+
+                // Proteksi anti-fraud & gratis klik bagi pemilik toko sendiri
+                if (!$isOwner && !session()->has($sessionKey)) {
+                    session([$sessionKey => true]);
+
+                    // Cek batas alokasi modal harian jika jenis budget adalah 'daily'
+                    $canCharge = true;
+                    if ($ad->budget_type === 'daily' && $ad->daily_budget > 0) {
+                        $todaySpent = \App\Models\AdTransaction::where('store_id', $ad->store_id)
+                            ->where('type', 'deduction')
+                            ->where('description', 'like', '%#AD-' . $ad->id . '%')
+                            ->whereDate('created_at', \Carbon\Carbon::today())
+                            ->sum('amount');
+
+                        if ($todaySpent >= (float) $ad->daily_budget) {
+                            $canCharge = false;
+                        }
+                    }
+
+                    $cpcCost = (float) ($ad->bid_price ?: 500);
+                    $currentBalance = (float) ($ad->store->ad_balance ?? 0);
+                    $actualDeduct = $canCharge ? min($cpcCost, max(0, $currentBalance)) : 0;
+
+                    if ($actualDeduct > 0) {
+                        $ad->store->decrement('ad_balance', $actualDeduct);
+
+                        // Catat mutasi transaksi pemotongan saldo iklan
+                        \App\Models\AdTransaction::create([
+                            'store_id' => $ad->store_id,
+                            'reference_no' => 'ADCLK-' . $ad->id . '-' . strtoupper(\Illuminate\Support\Str::random(4)) . '-' . time(),
+                            'type' => 'deduction',
+                            'amount' => $actualDeduct,
+                            'tax_amount' => 0,
+                            'total_amount' => $actualDeduct,
+                            'payment_method' => 'ad_balance',
+                            'status' => 'completed',
+                            'description' => 'Biaya Klik Iklan (CPC #AD-' . $ad->id . ') - ' . \Illuminate\Support\Str::limit($product->name, 40),
+                        ]);
+                    }
+
+                    // Update statistik klik & akumulasi pengeluaran iklan
+                    $ad->increment('clicks_count');
+                    if ($actualDeduct > 0) {
+                        $ad->increment('spent_amount', $actualDeduct);
+                    }
+
+                    // Jika saldo toko telah habis (<= 0), otomatis jeda (pause) iklan agar saldo tidak pernah minus
+                    if (($currentBalance - $actualDeduct) <= 0) {
+                        $ad->update(['status' => 'paused']);
+                    }
+                }
+            }
+        }
+
         $hasPurchased = false;
         $userReview = null;
         $userOrder = null;
