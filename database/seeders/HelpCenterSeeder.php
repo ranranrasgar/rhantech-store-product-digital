@@ -892,6 +892,178 @@ class HelpCenterSeeder extends Seeder
                         '
                     ]
                 ]
+            ],
+            [
+                'name' => 'Layanan Toko PRO & Langganan',
+                'icon' => 'workspace_premium',
+                'description' => 'Panduan lengkap fitur Toko PRO, fee penarikan hanya 1%, WhatsApp Broadcast, portofolio proyek, pembayaran instan QRIS Midtrans, serta panduan manajemen paket untuk admin.',
+                'sort_order' => 9,
+                'articles' => [
+                    [
+                        'title' => 'Panduan Lengkap Layanan Toko PRO: Keuntungan dan Fitur Eksklusif',
+                        'content' => '
+                            <h2>Apa itu Layanan Toko PRO di Rhantech?</h2>
+                            <p><strong>Toko PRO</strong> adalah program keanggotaan (membership) premium resmi di platform Rhantech yang dirancang khusus bagi para kreator, pengembang web/aplikasi, dan pemilik agensi digital yang ingin memaksimalkan keuntungan serta membangun reputasi profesional dalam memasarkan source code dan produk digital.</p>
+                            
+                            <p>Dengan meningkatkan status toko Anda ke level PRO, Anda akan mendapatkan berbagai keistimewaan eksklusif mulai dari penghematan biaya penarikan, fitur otomasi pemasaran via WhatsApp, hingga lencana kepercayaan resmi yang membedakan toko Anda dari penjual biasa.</p>
+
+                            <h3>Tabel Perbandingan: Toko Reguler vs Toko PRO</h3>
+                            <table class="w-full border border-gray-200 text-sm my-4 rounded-xl overflow-hidden shadow-sm">
+                                <thead class="bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-200 font-bold">
+                                    <tr>
+                                        <th class="p-3 border-b text-left">Fitur & Fasilitas</th>
+                                        <th class="p-3 border-b text-center">Toko Reguler (Gratis)</th>
+                                        <th class="p-3 border-b text-center bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 font-black">Toko PRO (Premium)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200 dark:divide-slate-700">
+                                    <tr>
+                                        <td class="p-3 font-semibold">Biaya Penarikan Dana (Payout Fee)</td>
+                                        <td class="p-3 text-center text-rose-600 font-semibold">2.5% per penarikan</td>
+                                        <td class="p-3 text-center text-emerald-600 bg-amber-50/50 dark:bg-amber-950/20 font-black">Hanya 1.0% (Hemat 60%!)</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 font-semibold">Lencana Toko Terverifikasi</td>
+                                        <td class="p-3 text-center text-gray-400">Standar</td>
+                                        <td class="p-3 text-center text-amber-600 bg-amber-50/50 dark:bg-amber-950/20 font-bold">Badge Emas "PRO SELLER"</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 font-semibold">WhatsApp Broadcast Pelanggan</td>
+                                        <td class="p-3 text-center text-gray-400">Terkunci / Nonaktif</td>
+                                        <td class="p-3 text-center text-emerald-600 bg-amber-50/50 dark:bg-amber-950/20 font-bold">Aktif Tanpa Batas</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 font-semibold">Modul Portofolio & Proyek Kustom</td>
+                                        <td class="p-3 text-center text-gray-400">Tidak Tersedia</td>
+                                        <td class="p-3 text-center text-emerald-600 bg-amber-50/50 dark:bg-amber-950/20 font-bold">Showcase Publik Terbuka</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 font-semibold">Prioritas Penanganan Bantuan CS</td>
+                                        <td class="p-3 text-center text-gray-500">Antrean Normal</td>
+                                        <td class="p-3 text-center text-purple-600 bg-amber-50/50 dark:bg-amber-950/20 font-bold">Fast-Track Prioritas Utama</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 font-semibold">Dukungan Rekomendasi Algoritma</td>
+                                        <td class="p-3 text-center text-gray-500">Standar</td>
+                                        <td class="p-3 text-center text-sky-600 bg-amber-50/50 dark:bg-amber-950/20 font-bold">Prioritas Tampil di Rekomendasi</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <h3>Rincian Keuntungan Utama Toko PRO</h3>
+
+                            <h4>1. Penghematan Luar Biasa Fee Penarikan Dana (Fee 1.0%)</h4>
+                            <p>Sebagai penjual aktif, keuntungan bersih Anda adalah prioritas nomor satu. Pada akun reguler, platform mengenakan biaya operasional dan pemrosesan penarikan sebesar <strong>2.5%</strong>. Namun bagi pemilik <strong>Toko PRO</strong>, biaya penarikan dipangkas drastis menjadi hanya <strong>1.0%</strong>.</p>
+                            <blockquote>
+                                <strong>Simulasi Keuntungan Finansial:</strong><br>
+                                Jika toko Anda melakukan penarikan omzet sebesar <strong>Rp10.000.000</strong>:<br>
+                                &bull; Akun Reguler (2.5%): Biaya potongan = Rp250.000.<br>
+                                &bull; Akun PRO (1.0%): Biaya potongan = Rp100.000.<br>
+                                <strong>Anda menghemat Rp150.000 dalam satu kali transaksi penarikan saja!</strong> Nilai penghematan ini sudah langsung menutupi biaya paket langganan bulanan Anda.
+                            </blockquote>
+
+                            <h4>2. Fitur WhatsApp Broadcast Pelanggan</h4>
+                            <p>Pembeli yang pernah membeli source code di toko Anda adalah audiens dengan konversi pembelian ulang (repeat order) tertinggi. Fitur <strong>WA Broadcast</strong> memungkinkan Anda mengirimkan notifikasi update rilis versi baru, pengumuman voucher diskon eksklusif, maupun penawaran jasa instalasi langsung ke nomor WhatsApp pelanggan secara resmi dan tertarget.</p>
+
+                            <h4>3. Modul Portofolio & Jasa Pembuatan Proyek Publik</h4>
+                            <p>Banyak pembeli produk digital yang juga mencari developer handal untuk memodifikasi atau membuat aplikasi kustom (custom development). Halaman toko PRO Anda dilengkapi modul portofolio interaktif untuk memajang karya terbaik, tangkapan layar sistem, dan studi kasus proyek yang pernah Anda kerjakan, membuka peluang bisnis proyek bernilai jutaan rupiah di luar penjualan produk template.</p>
+
+                            <h4>4. Lencana Verifikasi Emas "PRO SELLER"</h4>
+                            <p>Di pasar produk digital, kredibilitas source code dan layanan pasca-jual adalah pertimbangan utama calon pembeli. Lencana emas resmi <em>"PRO SELLER"</em> yang disematkan pada nama toko dan kartu produk Anda di halaman utama marketplace terbukti meningkatkan rasa aman pembeli dan mendongkrak tingkat konversi penjualan hingga 2x lipat.</p>
+                        '
+                    ],
+                    [
+                        'title' => 'Panduan Cara Upgrade Toko PRO: Pembayaran QRIS dan Potong Saldo',
+                        'content' => '
+                            <h2>Langkah demi Langkah Upgrade ke Akun Toko PRO</h2>
+                            <p>Proses upgrade akun ke Toko PRO di Rhantech sangat cepat, praktis, dan 100% otomatis. Anda tidak perlu menunggu konfirmasi manual atau mengirim bukti struk transfer.</p>
+
+                            <h3>Langkah 1: Masuk ke Menu Layanan PRO</h3>
+                            <p>Buka <strong>Dashboard Penjual</strong> Anda, lalu klik menu <strong>Layanan PRO</strong> pada bilah navigasi kiri, atau akses langsung melalui URL <code>/dashboard/pro</code> (atau <code>/tenant/pro</code>).</p>
+
+                            <h3>Langkah 2: Pilih Paket Berlangganan yang Sesuai</h3>
+                            <p>Pilih paket langganan yang paling menguntungkan untuk model bisnis Anda:</p>
+                            <ul>
+                                <li><strong>Paket Bulanan (Monthly):</strong> Pilihan ideal untuk uji coba atau bagi toko baru yang ingin merasakan akselerasi penjualan dan penghematan fee penarikan.</li>
+                                <li><strong>Paket Tahunan (Yearly):</strong> Paling hemat dan direkomendasikan! Mendapatkan diskon harga signifikan dibandingkan membayar bulanan secara terpisah selama 365 hari.</li>
+                                <li><strong>Paket Selamanya (Lifetime):</strong> Bayar sekali untuk akses permanen seumur hidup tanpa biaya langganan berulang selamanya.</li>
+                            </ul>
+
+                            <h3>Langkah 3: Memilih Metode Pembayaran</h3>
+                            <p>Tersedia 2 opsi pembayaran fleksibel:</p>
+
+                            <h4>Metode A: Pembayaran Instan QRIS / Midtrans (Rekomendasi Utama)</h4>
+                            <ol>
+                                <li>Pilih opsi radio <strong>"QRIS / Midtrans (Instan & Otomatis)"</strong>.</li>
+                                <li>Klik tombol <strong>"Konfirmasi & Bayar Upgrade"</strong>.</li>
+                                <li>Layar akan otomatis menampilkan pop-up pembayaran <strong>Midtrans Snap</strong> dengan kode QRIS resmi berstandar Bank Indonesia.</li>
+                                <li>Buka aplikasi e-wallet Anda (GoPay, OVO, DANA, ShopeePay, AstraPay, LinkAja) atau aplikasi Mobile Banking pilihan Anda (BCA Mobile, Livin by Mandiri, BRImo, BNI Mobile, Seabank, Bank Jago, dll).</li>
+                                <li>Pindai (scan) kode QR yang tampil di layar dan lakukan konfirmasi pembayaran.</li>
+                                <li><strong>Aktivasi Otomatis Real-time:</strong> Sistem transaksi Rhantech menggunakan kode invoice berawalan <code>RHN-</code> (contoh: <code>RHN-PRO-2609-XXXXX</code>) yang terhubung langsung dengan webhook payment gateway. Begitu dana terdebet dari rekening Anda, sistem dalam hitungan detik langsung mengaktifkan status PRO toko Anda tanpa jeda!</li>
+                            </ol>
+
+                            <h4>Metode B: Potong Saldo Toko (Wallet Internal)</h4>
+                            <ol>
+                                <li>Jika toko Anda telah memiliki akumulasi saldo penjualan yang mencukupi dari transaksi produk digital Anda, Anda dapat memilih opsi <strong>"Potong Saldo Toko"</strong>.</li>
+                                <li>Klik tombol <strong>"Konfirmasi & Bayar Upgrade"</strong>.</li>
+                                <li>Sistem secara otomatis mendebit saldo dompet toko Anda sesuai nominal paket tanpa biaya transfer tambahan, dan akun PRO Anda langsung aktif saat itu juga.</li>
+                            </ol>
+
+                            <h3>Pertanyaan Umum (FAQ) Seputar Upgrade PRO</h3>
+                            <p><strong>Q: Apakah masa aktif PRO saya diakumulasikan jika saya memperpanjang sebelum kedaluwarsa?</strong><br>
+                            <em>A: Ya! Jika Anda saat ini memiliki sisa 10 hari dan membeli paket 30 hari lagi, total masa aktif toko Anda akan otomatis terakumulasi menjadi 40 hari.</em></p>
+
+                            <p><strong>Q: Di mana saya bisa melihat sisa masa aktif langganan saya?</strong><br>
+                            <em>A: Anda dapat melihat tanggal berakhirnya langganan secara transparan di kartu banner atas halaman <code>/dashboard/pro</code> kapan saja.</em></p>
+
+                            <p><strong>Q: Apa yang terjadi jika masa aktif PRO saya berakhir?</strong><br>
+                            <em>A: Toko Anda akan kembali ke tarif penarikan standar (2.5%) dan fitur premium dinonaktifkan sementara hingga Anda melakukan perpanjangan paket kembali. Seluruh data produk dan portofolio Anda tetap aman tersimpan.</em></p>
+                        '
+                    ],
+                    [
+                        'title' => 'Panduan Admin: Manajemen Paket Langganan Toko PRO',
+                        'content' => '
+                            <h2>Mengelola Paket Toko PRO bagi Administrator Platform</h2>
+                            <p>Sebagai Pengelola Platform (Admin), Anda memiliki kendali penuh untuk membuat paket baru, mengatur durasi, menentukan tarif biaya, menambahkan label promo, dan menyusun daftar fitur penawaran secara dinamis melalui antarmuka Admin Panel tanpa perlu menyentuh kode program.</p>
+
+                            <h3>Lokasi Menu Manajemen Paket PRO</h3>
+                            <p>Buka <strong>Admin Panel</strong> &rarr; pilih menu <strong>Tenant</strong> pada sidebar &rarr; klik submenu <strong>Paket Toko PRO</strong> (URL: <code>/admin/pro_plans</code>).</p>
+
+                            <h3>Panduan Menambahkan Paket PRO Baru</h3>
+                            <p>Klik tombol <strong>+ Tambah Paket PRO</strong> di pojok kanan atas untuk membuka formulir pembuatan paket baru:</p>
+                            <ol>
+                                <li><strong>Nama Paket:</strong> Masukkan nama komersial paket yang ramah dibaca (contoh: <em>Paket Bulanan</em>, <em>Paket Semesteran 6 Bulan</em>, <em>Paket Tahunan Juara</em>).</li>
+                                <li><strong>Slug / Kode Unik:</strong> Identifikasi internal sistem dalam huruf kecil dan garis bawah (contoh: <code>monthly</code>, <code>semi_annual</code>, <code>yearly</code>, <code>lifetime</code>). Pastikan slug ini belum pernah digunakan oleh paket lain.</li>
+                                <li><strong>Durasi Hari:</strong> Masukkan angka jumlah hari masa aktif langganan:
+                                    <ul>
+                                        <li>Isi <code>30</code> untuk durasi 1 bulan.</li>
+                                        <li>Isi <code>180</code> untuk durasi 6 bulan.</li>
+                                        <li>Isi <code>365</code> untuk durasi 1 tahun.</li>
+                                        <li>Isi <code>0</code> untuk durasi Lifetime (Akses Selamanya tanpa batas waktu).</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Harga (IDR):</strong> Masukkan tarif harga dalam bentuk angka tanpa titik atau koma (contoh: <code>99000</code> untuk Rp99.000).</li>
+                                <li><strong>Badge / Label Promo (Opsional):</strong> Masukkan teks pemanis marketing untuk menarik perhatian calon seller (contoh: <em>HEMAT 25%</em>, <em>BEST SELLER</em>, <em>POPULER</em>).</li>
+                                <li><strong>Tandai Sebagai Paling Populer (Checkbox):</strong> Jika dicentang, paket ini akan terpilih secara otomatis (default selection) saat penjual membuka halaman upgrade PRO.</li>
+                                <li><strong>Deskripsi Singkat:</strong> Ringkasan keuntungan atau target penjual untuk paket tersebut.</li>
+                                <li><strong>Daftar Fitur & Keuntungan (Per Baris):</strong> Tuliskan poin-poin keuntungan paket di textarea, dengan <strong>satu poin per baris</strong>. Sistem akan secara otomatis mengonversi setiap baris teks menjadi ikon centang hijau yang estetik pada kartu pilihan tenant.</li>
+                                <li><strong>Urutan Tampilan:</strong> Nomor urut urutan kartu dari kiri ke kanan (angka terkecil tampil paling depan).</li>
+                                <li><strong>Status Aktif:</strong> Pastikan opsi status berada dalam kondisi <em>Aktif</em> agar paket segera terlihat di halaman tenant.</li>
+                            </ol>
+
+                            <h3>Tindakan Cepat pada Daftar Paket (Tabel Admin)</h3>
+                            <ul>
+                                <li><strong>Toggle Aktif / Nonaktif Sekali Klik:</strong> Anda dapat mengaktifkan atau menonaktifkan suatu paket secara instan langsung dari tabel data tanpa memuat ulang (reload) halaman. Paket yang dinonaktifkan tidak akan lagi muncul di dashboard penjual.</li>
+                                <li><strong>Edit Paket:</strong> Klik tombol ikon pensil untuk mengubah harga, merevisi teks fitur, atau mengganti badge promo sewaktu-waktu (misalnya saat menggelar program flash sale bulanan).</li>
+                                <li><strong>Hapus Paket:</strong> Hapus paket yang sudah usang atau tidak lagi ditawarkan.</li>
+                                <li><strong>Lihat di Dashboard Tenant:</strong> Tombol pintasan langsung untuk meninjau secara nyata tampilan kartu paket yang dilihat oleh para penjual.</li>
+                            </ul>
+
+                            <h3>Standar Keamanan Transaksi QRIS Platform</h3>
+                            <p>Sistem langganan Toko PRO terintegrasi dengan Payment Gateway berstandar industri dengan pengamanan invoice berawalan <code>RHN-</code>. Setiap transaksi dicatat secara lengkap pada riwayat transaksi langganan dan histori akun toko, menjamin rekonsiliasi keuangan platform selalu akurat dan terverifikasi.</p>
+                        '
+                    ]
+                ]
             ]
         ];
 

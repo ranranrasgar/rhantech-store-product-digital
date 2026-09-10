@@ -3,14 +3,20 @@
 
 @section('content')
 <div class="p-lg max-w-4xl mx-auto">
-    <div class="flex items-center gap-4 mb-lg">
-        <a href="{{ route('admin.pro_plans.index') }}" class="p-2 bg-surface-container-low text-on-surface-variant hover:bg-surface-variant rounded-full transition-colors flex items-center justify-center" wire:navigate>
-            <span class="material-symbols-outlined">arrow_back</span>
-        </a>
-        <div>
-            <h2 class="font-headline-sm font-bold text-on-surface">Edit Paket Toko PRO: {{ $proPlan->name }}</h2>
-            <p class="text-sm text-on-surface-variant">Ubah informasi tarif, masa aktif, dan keuntungan paket PRO ini.</p>
+    <div class="flex items-center justify-between gap-4 mb-lg">
+        <div class="flex items-center gap-4">
+            <a href="{{ route('admin.pro_plans.index') }}" class="p-2 bg-surface-container-low text-on-surface-variant hover:bg-surface-variant rounded-full transition-colors flex items-center justify-center" wire:navigate>
+                <span class="material-symbols-outlined">arrow_back</span>
+            </a>
+            <div>
+                <h2 class="font-headline-sm font-bold text-on-surface">Edit Paket Toko PRO: {{ $proPlan->name }}</h2>
+                <p class="text-sm text-on-surface-variant">Ubah informasi tarif, masa aktif, dan keuntungan paket PRO ini.</p>
+            </div>
         </div>
+        <a href="{{ route('help.show', 'panduan-admin-manajemen-paket-langganan-toko-pro') }}" target="_blank" class="px-3 py-1.5 rounded-lg border border-amber-300 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-300 font-semibold text-xs transition flex items-center gap-1.5 hover:bg-amber-100 shrink-0">
+            <span class="material-symbols-outlined text-[16px]">menu_book</span>
+            Buku Panduan
+        </a>
     </div>
 
     <form action="{{ route('admin.pro_plans.update', $proPlan->id) }}" method="POST" class="bg-surface-container-lowest p-lg rounded-xl border border-outline-variant flex flex-col gap-6 shadow-sm">

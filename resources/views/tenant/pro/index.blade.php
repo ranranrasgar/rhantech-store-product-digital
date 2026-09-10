@@ -35,6 +35,16 @@
                     <p class="text-slate-950/80 text-sm md:text-base font-medium max-w-xl">
                         Selamat! Toko Anda menikmati prioritas penarikan dengan fee platform 1%, WA Broadcast tanpa batas, dan modul portofolio proyek.
                     </p>
+                    <div class="flex flex-wrap items-center gap-2.5 mt-4">
+                        <a href="{{ route('help.show', 'panduan-lengkap-layanan-toko-pro-keuntungan-dan-fitur-eksklusif') }}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-950/15 hover:bg-slate-950/25 text-slate-950 font-bold text-xs border border-slate-950/20 transition shadow-sm">
+                            <span class="material-symbols-outlined text-[16px]">menu_book</span>
+                            <span>Buku Panduan Layanan PRO</span>
+                        </a>
+                        <a href="{{ route('help.show', 'panduan-cara-upgrade-toko-pro-pembayaran-qris-dan-potong-saldo') }}" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-950/15 hover:bg-slate-950/25 text-slate-950 font-bold text-xs border border-slate-950/20 transition shadow-sm">
+                            <span class="material-symbols-outlined text-[16px]">qr_code_2</span>
+                            <span>Panduan Pembayaran QRIS</span>
+                        </a>
+                    </div>
                 </div>
 
                 <div class="bg-slate-950/10 backdrop-blur-sm border border-slate-950/20 p-5 rounded-2xl text-slate-950 min-w-[240px]">
@@ -92,6 +102,16 @@
             <p class="text-slate-500 dark:text-slate-400 text-sm md:text-base">
                 Buka seluruh potensi bisnis Anda. Nikmati potongan fee payout hanya 1%, fitur WA Broadcast, modul portofolio, dan verifikasi lencana PRO.
             </p>
+            <div class="flex flex-wrap items-center justify-center gap-2.5 pt-2">
+                <a href="{{ route('help.show', 'panduan-lengkap-layanan-toko-pro-keuntungan-dan-fitur-eksklusif') }}" target="_blank" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800 font-bold text-xs hover:bg-amber-100 dark:hover:bg-amber-900/50 transition shadow-sm">
+                    <span class="material-symbols-outlined text-[16px]">menu_book</span>
+                    <span>Buku Panduan Layanan PRO</span>
+                </a>
+                <a href="{{ route('help.show', 'panduan-cara-upgrade-toko-pro-pembayaran-qris-dan-potong-saldo') }}" target="_blank" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 font-semibold text-xs hover:bg-slate-200 dark:hover:bg-slate-700 transition">
+                    <span class="material-symbols-outlined text-[16px]">qr_code_scanner</span>
+                    <span>Panduan Pembayaran QRIS</span>
+                </a>
+            </div>
         </div>
 
         <!-- Formulir & Paket Pilihan Upgrade PRO -->
@@ -106,7 +126,7 @@
                             <span class="w-5 h-5 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-[11px] font-black flex items-center justify-center">1</span>
                             Pilih Paket Berlangganan
                         </label>
-                        <span class="text-xs text-emerald-600 dark:text-emerald-400 font-semibold">Tersedia 3 Pilihan Fleksibel</span>
+                        <span class="text-xs text-emerald-600 dark:text-emerald-400 font-semibold">Tersedia {{ count($plans) }} Pilihan Fleksibel</span>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-{{ min(max(count($plans), 1), 3) }} gap-4">
@@ -157,10 +177,16 @@
 
                 <!-- Langkah 2: Pilih Metode Pembayaran -->
                 <div class="space-y-4 pt-4 border-t border-slate-100 dark:border-[#1d273d]">
-                    <label class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-2">
-                        <span class="w-5 h-5 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-[11px] font-black flex items-center justify-center">2</span>
-                        Pilih Metode Pembayaran
-                    </label>
+                    <div class="flex items-center justify-between">
+                        <label class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-[11px] font-black flex items-center justify-center">2</span>
+                            Pilih Metode Pembayaran
+                        </label>
+                        <a href="{{ route('help.show', 'panduan-cara-upgrade-toko-pro-pembayaran-qris-dan-potong-saldo') }}" target="_blank" class="text-xs text-amber-600 dark:text-amber-400 hover:underline flex items-center gap-1 font-bold">
+                            <span class="material-symbols-outlined text-[15px]">help</span>
+                            Panduan Cara Bayar
+                        </a>
+                    </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <!-- Pilihan 1: QRIS / Midtrans Instan -->

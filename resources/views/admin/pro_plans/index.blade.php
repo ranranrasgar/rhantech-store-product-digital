@@ -13,8 +13,12 @@
                 Atur paket langganan, tarif biaya, masa aktif, dan keuntungan Toko PRO yang tampil di halaman seller (/dashboard/pro).
             </p>
         </div>
-        <div class="flex items-center gap-3">
-            <a href="{{ route('tenant.pro.index') }}" target="_blank" class="px-4 py-2 rounded-lg border border-outline-variant bg-surface-container-low hover:bg-surface-variant text-on-surface font-bold text-sm transition flex items-center gap-1.5">
+        <div class="flex items-center gap-2.5 flex-wrap">
+            <a href="{{ route('help.show', 'panduan-admin-manajemen-paket-langganan-toko-pro') }}" target="_blank" class="px-3.5 py-2 rounded-lg border border-amber-300 dark:border-amber-800 bg-amber-50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-300 font-bold text-sm transition flex items-center gap-1.5 hover:bg-amber-100">
+                <span class="material-symbols-outlined text-[18px]">menu_book</span>
+                Panduan Paket PRO
+            </a>
+            <a href="{{ route('tenant.pro.index') }}" target="_blank" class="px-3.5 py-2 rounded-lg border border-outline-variant bg-surface-container-low hover:bg-surface-variant text-on-surface font-bold text-sm transition flex items-center gap-1.5">
                 <span class="material-symbols-outlined text-[18px]">visibility</span>
                 Lihat di Dashboard Tenant
             </a>
