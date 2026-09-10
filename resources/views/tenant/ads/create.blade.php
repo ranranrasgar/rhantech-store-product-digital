@@ -680,6 +680,30 @@
                             </ul>
                         </div>
 
+                        <div class="space-y-1.5 pt-2 border-t border-slate-200/80 dark:border-slate-800">
+                            <div class="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-[16px] text-purple-500">leaderboard</span>
+                                Apa Bedanya Bid Rp100, Rp500, vs Rp1.000? (Sistem Lelang Iklan / Ad Rank)
+                            </div>
+                            <p class="text-slate-600 dark:text-slate-400 text-[11px] leading-relaxed">
+                                Semakin tinggi tawaran bid Anda, semakin tinggi prioritas produk Anda ditempatkan di <strong>Posisi #1 Paling Depan</strong> pencarian. Toko dengan bid Rp100 tetap diiklankan, tetapi harus mengantre di urutan bawah setelah produk beriklan dengan tawaran lebih tinggi:
+                            </p>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-0.5 text-[11px]">
+                                <div class="p-2.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                                    <div class="font-bold text-amber-600 dark:text-amber-400">🥇 Bid Tinggi (&ge;Rp1.000)</div>
+                                    <div class="text-slate-500 text-[10px] mt-0.5">Posisi #1 Paling Depan, pengunjung datang sangat cepat & memenangkan lelang kata kunci.</div>
+                                </div>
+                                <div class="p-2.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                                    <div class="font-bold text-sky-600 dark:text-sky-400">🥈 Bid Standar (~Rp500)</div>
+                                    <div class="text-slate-500 text-[10px] mt-0.5">Posisi strategis rekomendasi tepat di bawah bid teratas, trafik optimal & stabil.</div>
+                                </div>
+                                <div class="p-2.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                                    <div class="font-bold text-slate-700 dark:text-slate-300">🥉 Bid Hemat (Rp100-200)</div>
+                                    <div class="text-slate-500 text-[10px] mt-0.5">Paling hemat saldo, namun berada di urutan bawah / mengantre setelah kompetitor.</div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="pt-2 border-t border-slate-200/80 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                             <span class="text-[10px] text-slate-400">Proteksi Anti-Spam: Klik berkali-kali dari orang yang sama hanya dipotong 1x.</span>
                             <a href="{{ route('help.show', 'panduan-rumus-modal-iklan-harga-bid-per-klik-cpc-sistem-pemotongan-saldo') }}" 

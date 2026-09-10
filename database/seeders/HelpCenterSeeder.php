@@ -209,6 +209,30 @@ class HelpCenterSeeder extends Seeder
 
                             <hr>
 
+                            <h2>Perbedaan Bid Rp100, Rp500, vs Rp1.000 (Sistem Lelang / Ad Auction)</h2>
+                            <p>Banyak penjual bertanya: <em>"Jika penjual bisa mengatur bid kustom misalnya Rp100 per klik, apakah tidak adil bagi yang pasang Rp500 atau Rp1.000?"</em></p>
+                            <p>Justru di sinilah letak <strong>keadilan dan transparansi Sistem Lelang Iklan (Ad Auction)</strong>, yang berjalan persis seperti Shopee Ads, Tokopedia TopAds, dan Google Search Ads:</p>
+
+                            <h3>1. Urutan Posisi Tampil di Hasil Pencarian (Ad Rank)</h3>
+                            <p>Algoritma platform secara otomatis mengurutkan produk beriklan berdasarkan <strong>Nilai Bid Tertinggi</strong>:</p>
+                            <ul>
+                                <li><strong>🥇 Bid Tinggi (Rp1.000 / klik):</strong> Mendapatkan <strong>Posisi #1 Terdepan</strong> di baris pertama hasil pencarian marketplace. Sangat mencolok dan langsung dilihat calon pembeli pertama kali.</li>
+                                <li><strong>🥈 Bid Rekomendasi (Rp500 / klik):</strong> Mendapatkan posisi strategis tepat di bawah bid tertinggi.</li>
+                                <li><strong>🥉 Bid Minimum (Rp100 - Rp200 / klik):</strong> Tetap dipromosikan, tetapi harus rela <strong>mengantre di urutan bawah</strong> setelah kompetitor dengan bid lebih tinggi.</li>
+                                <li><strong>⚪ Produk Non-Iklan:</strong> Tampil paling belakang setelah seluruh produk beriklan.</li>
+                            </ul>
+
+                            <h3>2. Peluang Menang Bersaing (Win Rate)</h3>
+                            <p>Jika ada 2 atau lebih toko mengiklankan produk pada kata kunci yang sama (contoh: <em>"Aplikasi Kasir"</em>), toko dengan tawaran bid lebih tinggi yang akan memenangkan slot penayangan utama.</p>
+
+                            <h3>3. Kecepatan Mendapatkan Pembeli</h3>
+                            <ul>
+                                <li><strong>Bid Lebih Tinggi:</strong> Pengunjung datang <strong>sangat cepat & banyak</strong> karena produk berada di etalase terdepan. Sangat cocok saat baru rilis produk atau mengejar penjualan cepat.</li>
+                                <li><strong>Bid Lebih Kecil:</strong> Biaya saldo per klik sangat hemat, tetapi pengunjung datang <strong>lebih lambat</strong> dan harus sabar menunggu giliran tampil.</li>
+                            </ul>
+
+                            <hr>
+
                             <h2>Sistem Keamanan & Proteksi Saldo Penjual (Anti-Fraud)</h2>
                             <ol>
                                 <li><strong>Klik Pemilik Toko 100% Gratis:</strong> Jika Anda mengklik produk Anda sendiri, sistem mendeteksi akun toko Anda dan saldo tidak akan pernah dipotong.</li>
