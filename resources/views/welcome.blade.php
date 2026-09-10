@@ -57,15 +57,15 @@
         
         @php
             $heroMode = $company->hero_mode ?? 'custom';
-            $heroBadge = $company->hero_badge ?? 'Innovative Digital Solutions';
-            $heroTitle = $company->hero_title ?? 'We Build Digital Experiences';
-            $heroSubtitle = $company->hero_subtitle ?? 'Helping businesses build scalable, modern, and impactful digital solutions. We combine engineering excellence with compelling design to propel your brand forward.';
-            $heroBtnPrimaryText = $company->hero_btn_primary_text ?? 'View Our Work';
-            $heroBtnPrimaryUrl = $company->hero_btn_primary_url ?? url('/projects');
-            $heroBtnSecondaryText = $company->hero_btn_secondary_text ?? "Let's Talk";
+            $heroBadge = $company->hero_badge ?? 'Marketplace Produk Digital';
+            $heroTitle = $company->hero_title ?? 'Katalog Developer & Aplikasi Siap Pakai';
+            $heroSubtitle = $company->hero_subtitle ?? 'Temukan source code siap deploy, template aplikasi, dan sistem digital berkualitas langsung dari developer terverifikasi untuk mempercepat proyek Anda.';
+            $heroBtnPrimaryText = $company->hero_btn_primary_text ?? 'Jelajahi Produk';
+            $heroBtnPrimaryUrl = $company->hero_btn_primary_url ?? url('/products');
+            $heroBtnSecondaryText = $company->hero_btn_secondary_text ?? "Hubungi Kami";
             $heroBtnSecondaryUrl = $company->hero_btn_secondary_url ?? url('/contact');
             $heroStatsVal = $company->hero_stats_val ?? '99%';
-            $heroStatsLabel = $company->hero_stats_label ?? 'Project Success Rate';
+            $heroStatsLabel = $company->hero_stats_label ?? 'Kepuasan Pengguna';
             $heroImageUrl = !empty($company->hero_image) 
                 ? asset('storage/' . $company->hero_image) 
                 : 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80';
@@ -131,15 +131,26 @@
             @mouseleave="storesCount > 1 && startAutoPlay()">
                 <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6 md:mb-8">
                     <div>
-                        <span class="inline-flex items-center gap-1.5 py-1 px-3.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-label-md text-xs mb-2.5 md:mb-3 border border-emerald-500/30">
+                        <span class="inline-flex items-center gap-1.5 py-1 px-3.5 rounded-full bg-primary/10 text-primary font-bold text-xs mb-2.5 md:mb-3 border border-primary/20">
                             <span class="material-symbols-outlined text-[15px]">verified</span>
-                            {{ $heroBadge ?: 'Pilihan Komunitas & Platform' }}
+                            {{ $heroBadge ?: 'Marketplace Produk Digital' }}
                         </span>
-                        <h1 class="text-2xl sm:text-3xl md:text-display-lg font-black text-on-background dark:text-white text-balance leading-tight">
-                            Brand &amp; Developer <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-[#06B6D4]">Aplikasi Digital Terbaik</span>
+                        <h1 class="text-2xl sm:text-3xl md:text-display-lg font-black text-on-background dark:text-white text-balance leading-tight tracking-tight">
+                            @if(!empty($heroTitle) && $heroTitle !== 'We Build Digital Experiences' && $heroTitle !== 'Brand & Developer Aplikasi Digital Terbaik')
+                                @if(Str::contains($heroTitle, '&'))
+                                    @php
+                                        $parts = explode('&', $heroTitle, 2);
+                                    @endphp
+                                    {{ trim($parts[0]) }} &amp; <span class="text-primary font-black">{{ trim($parts[1]) }}</span>
+                                @else
+                                    {{ $heroTitle }}
+                                @endif
+                            @else
+                                Developer &amp; <span class="text-primary font-black">Aplikasi Siap Pakai</span>
+                            @endif
                         </h1>
-                        <p class="text-xs sm:text-sm md:text-body-lg text-on-surface-variant max-w-2xl mt-2 text-balance">
-                            {{ $heroSubtitle ?: 'Jelajahi brand developer dan toko software resmi dengan produk aplikasi pilihan & reputasi terpercaya.' }}
+                        <p class="text-xs sm:text-sm md:text-body-lg text-on-surface-variant max-w-2xl mt-2 text-balance leading-relaxed">
+                            {{ (!empty($heroSubtitle) && !Str::contains($heroSubtitle, 'engineering excellence') && !Str::contains($heroSubtitle, 'keunggulan dalam bidang engineering')) ? $heroSubtitle : 'Temukan source code siap deploy, template aplikasi, dan sistem digital berkualitas langsung dari developer terverifikasi untuk mempercepat proyek Anda.' }}
                         </p>
                     </div>
                     
@@ -188,7 +199,7 @@
                                     @if($store->logo)
                                         <img src="{{ asset('storage/' . $store->logo) }}" alt="{{ $store->name }}" class="w-13 h-13 md:w-16 md:h-16 rounded-xl md:rounded-2xl object-cover border-2 border-primary/30 shadow-md">
                                     @else
-                                        <div class="w-13 h-13 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-gradient-to-tr from-primary to-[#06B6D4] text-white flex items-center justify-center font-black text-xl md:text-2xl shadow-md">
+                                        <div class="w-13 h-13 md:w-16 md:h-16 rounded-xl md:rounded-2xl bg-primary text-white flex items-center justify-center font-black text-xl md:text-2xl shadow-md">
                                             {{ strtoupper(substr($store->name, 0, 1)) }}
                                         </div>
                                     @endif
@@ -223,7 +234,7 @@
                                 @endif
 
                                 <div class="flex items-center gap-2.5 md:gap-3 w-full sm:w-auto">
-                                    <a href="{{ route('store.show', $store->slug) }}" class="flex-1 sm:flex-none justify-center px-4 md:px-6 py-2.5 md:py-3 bg-gradient-to-r from-emerald-500 to-[#06B6D4] text-white rounded-xl font-label-md text-xs md:text-sm hover:opacity-90 transition-all shadow-md flex items-center gap-1.5 md:gap-2 font-bold">
+                                    <a href="{{ route('store.show', $store->slug) }}" class="flex-1 sm:flex-none justify-center px-4 md:px-6 py-2.5 md:py-3 bg-primary hover:bg-primary/90 text-white rounded-xl font-label-md text-xs md:text-sm transition-all shadow-sm hover:shadow flex items-center gap-1.5 md:gap-2 font-bold">
                                         <span class="material-symbols-outlined text-[16px] md:text-[18px]">storefront</span>
                                         Kunjungi Toko
                                     </a>
@@ -364,21 +375,26 @@
                     </span>
                     @endif
 
-                    <h1 class="text-3xl sm:text-4xl md:text-display-lg font-black text-on-background dark:text-white mb-4 md:mb-6 text-balance leading-tight">
-                        @if(Str::contains($heroTitle, 'Digital'))
-                            {!! Str::replace('Digital', '<span class="text-transparent bg-clip-text bg-gradient-to-r from-[#06B6D4] to-blue-500">Digital</span>', e($heroTitle)) !!}
+                    <h1 class="text-3xl sm:text-4xl md:text-display-lg font-black text-on-background dark:text-white mb-4 md:mb-6 text-balance leading-tight tracking-tight">
+                        @if(Str::contains($heroTitle, '&'))
+                            @php
+                                $parts = explode('&', $heroTitle, 2);
+                            @endphp
+                            {{ trim($parts[0]) }} &amp; <span class="text-primary font-black">{{ trim($parts[1]) }}</span>
+                        @elseif(Str::contains($heroTitle, 'Digital'))
+                            {!! Str::replace('Digital', '<span class="text-primary font-black">Digital</span>', e($heroTitle)) !!}
                         @else
                             {{ $heroTitle }}
                         @endif
                     </h1>
 
                     <p class="text-sm md:text-body-lg text-on-surface-variant mb-6 md:mb-xl max-w-2xl text-balance leading-relaxed">
-                        {{ $heroSubtitle }}
+                        {{ (!empty($heroSubtitle) && !Str::contains($heroSubtitle, 'engineering excellence') && !Str::contains($heroSubtitle, 'keunggulan dalam bidang engineering')) ? $heroSubtitle : 'Temukan source code siap deploy, template aplikasi, dan sistem digital berkualitas langsung dari developer terverifikasi untuk mempercepat proyek Anda.' }}
                     </p>
 
                     <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 md:gap-4 w-full sm:w-auto">
                         @if($heroBtnPrimaryText)
-                        <a class="w-full sm:w-auto text-center px-6 md:px-8 py-3.5 md:py-4 bg-gradient-to-r from-[#06B6D4] to-blue-500 text-white rounded-xl md:rounded-lg font-label-md text-xs sm:text-label-md hover:opacity-90 transition-all shadow-lg hover:-translate-y-0.5 border-0 font-bold" href="{{ $heroBtnPrimaryUrl }}" wire:navigate>
+                        <a class="w-full sm:w-auto text-center px-6 md:px-8 py-3.5 md:py-4 bg-primary hover:bg-primary/90 text-white rounded-xl md:rounded-lg font-label-md text-xs sm:text-label-md transition-all shadow-md hover:-translate-y-0.5 border-0 font-bold" href="{{ $heroBtnPrimaryUrl }}" wire:navigate>
                             {{ $heroBtnPrimaryText }}
                         </a>
                         @endif

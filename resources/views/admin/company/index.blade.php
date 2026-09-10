@@ -414,25 +414,25 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-xs font-bold text-on-surface uppercase tracking-wider mb-2">Badge Text (Label Kecil Di Atas Judul)</label>
-                        <input type="text" name="hero_badge" value="{{ old('hero_badge', $profile->hero_badge ?? 'Innovative Digital Solutions') }}" 
+                        <input type="text" name="hero_badge" value="{{ old('hero_badge', $profile->hero_badge ?? 'Marketplace Produk Digital') }}" 
                                class="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline-variant rounded-xl text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
-                               placeholder="Contoh: Innovative Digital Solutions atau Pusat Produk Digital Terlengkap">
+                               placeholder="Contoh: Marketplace Produk Digital atau Pilihan Komunitas & Platform">
                         <p class="text-[11px] text-on-surface-variant mt-1">Muncul sebagai kapsul kecil tepat di atas judul besar.</p>
                     </div>
 
                     <div>
                         <label class="block text-xs font-bold text-on-surface uppercase tracking-wider mb-2">Judul Utama (Headline)</label>
-                        <input type="text" name="hero_title" value="{{ old('hero_title', $profile->hero_title ?? 'We Build Digital Experiences') }}" 
+                        <input type="text" name="hero_title" value="{{ old('hero_title', $profile->hero_title ?? 'Katalog Developer & Aplikasi Siap Pakai') }}" 
                                class="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline-variant rounded-xl text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
-                               placeholder="Contoh: We Build Digital Experiences">
-                        <p class="text-[11px] text-on-surface-variant mt-1">Kata 'Digital' otomatis diberi warna gradient highlight.</p>
+                               placeholder="Contoh: Katalog Developer & Aplikasi Siap Pakai">
+                        <p class="text-[11px] text-on-surface-variant mt-1">Teks setelah tanda '&' atau kata 'Digital' otomatis diberi warna aksen tema.</p>
                     </div>
 
                     <div class="md:col-span-2">
                         <label class="block text-xs font-bold text-on-surface uppercase tracking-wider mb-2">Deskripsi / Sub-judul Hero</label>
                         <textarea name="hero_subtitle" rows="3" 
                                   class="w-full px-4 py-2.5 bg-surface-container-lowest border border-outline-variant rounded-xl text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
-                                  placeholder="Tuliskan ringkasan solusi atau nilai lebih platform...">{{ old('hero_subtitle', $profile->hero_subtitle ?? 'Helping businesses build scalable, modern, and impactful digital solutions. We combine engineering excellence with compelling design to propel your brand forward.') }}</textarea>
+                                  placeholder="Tuliskan deskripsi hero yang natural dan komunikatif...">{{ old('hero_subtitle', $profile->hero_subtitle ?? 'Temukan source code siap deploy, template aplikasi, dan sistem digital berkualitas langsung dari developer terverifikasi untuk mempercepat proyek Anda.') }}</textarea>
                     </div>
                 </div>
             </div>
