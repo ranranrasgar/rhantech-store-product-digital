@@ -407,16 +407,25 @@ class AdController extends Controller
             $keywords = array_values(array_filter(array_unique($request->target_keywords)));
         }
 
+        $startDate = null;
+        $endDate = null;
+        if ($validated['period_type'] === 'custom' && !empty($validated['start_date'])) {
+            $startDate = \Carbon\Carbon::parse($validated['start_date'])->startOfDay();
+            $endDate = !empty($validated['end_date'])
+                ? \Carbon\Carbon::parse($validated['end_date'])->endOfDay()
+                : \Carbon\Carbon::parse($validated['start_date'])->addDays(30)->endOfDay();
+        }
+
         $ad = SellerAd::create([
             'store_id' => $store->id,
             'product_id' => $validated['product_id'] ?? null,
             'name' => $validated['name'],
             'type' => $validated['type'],
             'budget_type' => $validated['budget_type'],
-            'daily_budget' => $validated['daily_budget'] ?? null,
+            'daily_budget' => $validated['budget_type'] === 'daily' ? ($validated['daily_budget'] ?? null) : null,
             'period_type' => $validated['period_type'],
-            'start_date' => $validated['start_date'] ?? null,
-            'end_date' => $validated['end_date'] ?? null,
+            'start_date' => $startDate,
+            'end_date' => $endDate,
             'bidding_mode' => $validated['bidding_mode'],
             'bid_price' => $validated['bid_price'] ?? 500,
             'target_keywords' => $keywords,

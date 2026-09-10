@@ -356,6 +356,14 @@
                                 <div class="text-[11px] text-slate-400">
                                     Terpakai: Rp{{ number_format($ad->spent_amount, 0, ',', '.') }}
                                 </div>
+                                <div class="text-[10px] text-slate-400 mt-0.5 flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-[13px] text-sky-500">date_range</span>
+                                    @if($ad->period_type === 'custom' && $ad->start_date && $ad->end_date)
+                                        <span>{{ \Carbon\Carbon::parse($ad->start_date)->format('d/m/y') }} - {{ \Carbon\Carbon::parse($ad->end_date)->format('d/m/y') }}</span>
+                                    @else
+                                        <span>Periode Tanpa Batas</span>
+                                    @endif
+                                </div>
                             </td>
                             <td class="py-4 px-4">
                                 @if($ad->status === 'active')

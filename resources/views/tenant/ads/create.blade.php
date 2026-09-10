@@ -5,13 +5,32 @@
 @section('content')
 <div class="flex-1 overflow-y-auto p-4 md:p-8 bg-[#f5f6f8] dark:bg-[#090d16] text-[#0f172a] dark:text-[#f1f5f9] transition-colors duration-200"
      x-data="{
-        biddingMode: 'auto',
-        bidPrice: 500,
-        budgetType: 'unlimited',
-        dailyBudget: 25000,
-        displayMode: 'auto',
-        keywords: [],
+        biddingMode: '{{ old('bidding_mode', 'auto') }}',
+        bidPrice: {{ old('bid_price', 500) }},
+        budgetType: '{{ old('budget_type', 'unlimited') }}',
+        dailyBudget: {{ old('daily_budget', 25000) }},
+        periodType: '{{ old('period_type', 'unlimited') }}',
+        startDate: '{{ old('start_date', date('Y-m-d')) }}',
+        endDate: '{{ old('end_date', date('Y-m-d', strtotime('+30 days'))) }}',
+        today: '{{ date('Y-m-d') }}',
+        displayMode: '{{ old('display_mode', 'auto') }}',
+        keywords: {{ json_encode(old('target_keywords', [])) }},
         newKeyword: '',
+        setPeriodPreset(days) {
+            this.periodType = 'custom';
+            const now = new Date();
+            const yyyy = now.getFullYear();
+            const mm = String(now.getMonth() + 1).padStart(2, '0');
+            const dd = String(now.getDate()).padStart(2, '0');
+            this.startDate = `${yyyy}-${mm}-${dd}`;
+
+            const target = new Date();
+            target.setDate(target.getDate() + days);
+            const tYyyy = target.getFullYear();
+            const tMm = String(target.getMonth() + 1).padStart(2, '0');
+            const tDd = String(target.getDate()).padStart(2, '0');
+            this.endDate = `${tYyyy}-${tMm}-${tDd}`;
+        },
         addKeyword(kw) {
             kw = (kw || '').trim();
             if (kw && !this.keywords.includes(kw)) {
@@ -172,8 +191,8 @@
                 </div>
 
                 <!-- Periode Iklan -->
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">
+                <div class="space-y-3">
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">
                         Periode Iklan
                     </label>
                     <div class="flex flex-wrap items-center gap-6">
@@ -187,14 +206,60 @@
                         </label>
                     </div>
 
-                    <div x-show="periodType === 'custom'" x-transition class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-md">
-                        <div>
-                            <label class="text-[11px] text-slate-500">Mulai Tanggal</label>
-                            <input type="date" name="start_date" class="w-full px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 text-xs bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200">
+                    <!-- Date Range Selection Container -->
+                    <div x-show="periodType === 'custom'" x-transition class="p-4 rounded-xl bg-slate-50 dark:bg-[#0e1526] border border-slate-200 dark:border-[#222f49] space-y-3.5 max-w-lg shadow-xs">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Preset Durasi:</span>
+                            <button type="button" @click="setPeriodPreset(7)" class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-white dark:bg-[#161f33] border border-slate-200 dark:border-[#263554] hover:border-sky-500 hover:text-sky-500 text-slate-700 dark:text-slate-300 transition-all cursor-pointer shadow-2xs">
+                                7 Hari
+                            </button>
+                            <button type="button" @click="setPeriodPreset(14)" class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-white dark:bg-[#161f33] border border-slate-200 dark:border-[#263554] hover:border-sky-500 hover:text-sky-500 text-slate-700 dark:text-slate-300 transition-all cursor-pointer shadow-2xs">
+                                14 Hari
+                            </button>
+                            <button type="button" @click="setPeriodPreset(30)" class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-white dark:bg-[#161f33] border border-slate-200 dark:border-[#263554] hover:border-sky-500 hover:text-sky-500 text-slate-700 dark:text-slate-300 transition-all cursor-pointer shadow-2xs">
+                                30 Hari
+                            </button>
                         </div>
-                        <div>
-                            <label class="text-[11px] text-slate-500">Selesai Tanggal</label>
-                            <input type="date" name="end_date" class="w-full px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 text-xs bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200">
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-[11px] font-bold uppercase text-slate-600 dark:text-slate-400 mb-1">
+                                    Mulai Tanggal <span class="text-rose-500">*</span>
+                                </label>
+                                <div class="relative flex items-center">
+                                    <span class="material-symbols-outlined absolute left-2.5 text-[17px] text-sky-500 pointer-events-none">calendar_today</span>
+                                    <input type="date" 
+                                           name="start_date" 
+                                           x-model="startDate"
+                                           :min="today"
+                                           @change="if(endDate && endDate < startDate) endDate = startDate"
+                                           class="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-[#0c1220] text-slate-800 dark:text-slate-200 font-semibold focus:outline-none focus:ring-2 focus:ring-sky-500">
+                                </div>
+                                @error('start_date')
+                                    <span class="text-rose-500 text-[11px] mt-1 block">{{ $message }}</span>
+                                @enderror
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold uppercase text-slate-600 dark:text-slate-400 mb-1">
+                                    Selesai Tanggal <span class="text-rose-500">*</span>
+                                </label>
+                                <div class="relative flex items-center">
+                                    <span class="material-symbols-outlined absolute left-2.5 text-[17px] text-sky-500 pointer-events-none">event</span>
+                                    <input type="date" 
+                                           name="end_date" 
+                                           x-model="endDate"
+                                           :min="startDate || today"
+                                           class="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-[#0c1220] text-slate-800 dark:text-slate-200 font-semibold focus:outline-none focus:ring-2 focus:ring-sky-500">
+                                </div>
+                                @error('end_date')
+                                    <span class="text-rose-500 text-[11px] mt-1 block">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1.5 pt-1">
+                            <span class="material-symbols-outlined text-[15px] text-sky-500 shrink-0">info</span>
+                            <span>Iklan akan tayang mulai <strong class="text-slate-800 dark:text-slate-200" x-text="startDate"></strong> sampai pukul 23:59 WIB pada <strong class="text-slate-800 dark:text-slate-200" x-text="endDate"></strong>.</span>
                         </div>
                     </div>
                 </div>
