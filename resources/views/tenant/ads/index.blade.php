@@ -129,6 +129,10 @@
                         <span class="material-symbols-outlined text-[18px] text-amber-500">card_giftcard</span>
                         Panduan & Promo Spesial
                     </button>
+                    <a href="{{ route('help.show', 'panduan-rumus-modal-iklan-harga-bid-per-klik-cpc-sistem-pemotongan-saldo') }}" target="_blank" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs sm:text-sm font-semibold rounded-xl transition-all flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-[18px] text-[#0284c7]">menu_book</span>
+                        Buku Panduan Iklan
+                    </a>
                 </div>
             </div>
 

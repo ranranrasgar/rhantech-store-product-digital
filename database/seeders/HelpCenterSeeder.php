@@ -155,6 +155,67 @@ class HelpCenterSeeder extends Seeder
                                 <li>Selesaikan pembayaran. Saldo iklan Anda akan langsung bertambah dan seluruh iklan yang sempat dijeda akan otomatis berjalan kembali.</li>
                             </ol>
                         '
+                    ],
+                    [
+                        'title' => 'Panduan Rumus Modal Iklan, Harga Bid Per Klik (CPC) & Sistem Pemotongan Saldo',
+                        'content' => '
+                            <h2>Kapan Saldo Iklan Dipotong? (Ketika Diklik atau Ketika Dibeli?)</h2>
+                            <p>Banyak penjual menanyakan: <em>"Apakah saldo iklan dipotong saat produk saya diklik atau saat ada orang yang membeli?"</em></p>
+                            <p><strong>Jawabannya:</strong> Saldo iklan dipotong <strong>ketika produk DIKLIK oleh calon pembeli</strong> (bukan saat dibeli).</p>
+                            <p>Sistem ini merupakan standar resmi industri e-commerce global (seperti Shopee Ads, Tokopedia TopAds, dan Google Search Ads) yang dikenal dengan istilah <strong>CPC (Cost Per Click)</strong>.</p>
+
+                            <h3>Tabel Perbandingan Aksi Pengunjung:</h3>
+                            <ul>
+                                <li><strong>Hanya Melihat (Impresi):</strong> 100% GRATIS. Produk Anda tampil di hasil pencarian dilihat ribuan orang tanpa biaya sepeser pun (Rp0).</li>
+                                <li><strong>Mengklik Produk:</strong> YA, Saldo Dipotong. Calon pembeli tertarik dan membuka detail produk Anda. Saldo dipotong sesuai harga bid yang Anda tentukan (misal Rp500 / klik).</li>
+                                <li><strong>Membeli Produk:</strong> TIDAK DIPOTONG LAGI. Uang hasil penjualan produk sepenuhnya masuk ke saldo penghasilan toko Anda tanpa ada potongan iklan ganda.</li>
+                            </ul>
+
+                            <h3>Mengapa Sistem Menggunakan Per-Klik (CPC), Bukan Per-Pembelian?</h3>
+                            <p>Platform periklanan bertugas mengantarkan <strong>pengunjung potensial (traffic)</strong> yang sedang aktif mencari produk ke halaman tokomu. Sementara keputusan pembeli untuk bertransaksi dipengaruhi oleh daya tarik produk (kelengkapan source code, tangkapan layar/screenshot, link demo langsung, dan harga kompetitif).</p>
+                            <p><em>Jika pemotongan biaya hanya terjadi saat produk terjual, sistem tersebut disebut sebagai <strong>Komisi Afiliasi (CPA)</strong>, bukan iklan pencarian bersponsor.</em></p>
+
+                            <hr>
+
+                            <h2>Rumus Harga Bid Per Klik & Modal Iklan</h2>
+
+                            <h3>1. Harga Bid Per Klik (CPC)</h3>
+                            <p>Besaran nominal saldo yang akan dipotong setiap kali ada 1 pengunjung unik mengklik produk beriklan Anda.</p>
+                            <ul>
+                                <li><strong>Mode Otomatis (Rekomendasi):</strong> Sistem menetapkan tarif default optimal yaitu <strong>Rp500 / klik</strong>.</li>
+                                <li><strong>Mode Manual:</strong> Anda bebas mengatur besaran bid (minimal Rp100 / klik). Semakin tinggi bid, semakin besar prioritas produk Anda di posisi teratas.</li>
+                            </ul>
+
+                            <h3>2. Rumus Modal Iklan (Budget)</h3>
+                            
+                            <h4>A. Mode Modal Tak Terbatas (Unlimited)</h4>
+                            <p>Iklan berjalan terus-menerus selama Saldo Iklan toko masih mencukupi.</p>
+                            <p><strong>Rumus Estimasi Total Pengunjung (Klik):</strong><br>
+                            <code>Total Pengunjung = Saldo Iklan / Harga Bid</code></p>
+                            <p><em>Contoh:</em> Saldo Iklan Rp500.000, Harga Bid Rp500 / klik.<br>
+                            <code>Rp500.000 / Rp500 = 1.000 Pengunjung</code> siap mendatangi produk Anda.</p>
+
+                            <h4>B. Mode Modal Harian (Daily Budget)</h4>
+                            <p>Digunakan jika Anda ingin membatasi pengeluaran per hari agar saldo iklan tidak langsung habis dalam satu hari.</p>
+                            <p>Jika Anda mengiklankan <strong>lebih dari 1 produk sekaligus</strong>:</p>
+                            <p><strong>Rumus Batas Modal Harian Total:</strong><br>
+                            <code>Total Modal Harian = Modal Harian per Produk &times; Jumlah Produk yang Dipilih</code></p>
+                            <p><strong>Rumus Estimasi Klik per Hari:</strong><br>
+                            <code>Estimasi Klik per Hari = Total Modal Harian / Harga Bid</code></p>
+                            <p><em>Contoh Kasus:</em> Anda memilih <strong>4 produk</strong>, modal harian <strong>Rp25.000/produk</strong>, bid <strong>Rp500/klik</strong>.<br>
+                            - Kuota Pengeluaran per Hari = <code>Rp25.000 &times; 4 = Rp100.000 / hari</code><br>
+                            - Potensi Trafik per Hari = <code>Rp100.000 / Rp500 = 200 Klik / hari</code></p>
+                            <p>Jika kuota 200 klik tercapai pada hari itu, penayangan iklan otomatis istirahat sementara dan akan aktif kembali esok hari.</p>
+
+                            <hr>
+
+                            <h2>Sistem Keamanan & Proteksi Saldo Penjual (Anti-Fraud)</h2>
+                            <ol>
+                                <li><strong>Klik Pemilik Toko 100% Gratis:</strong> Jika Anda mengklik produk Anda sendiri, sistem mendeteksi akun toko Anda dan saldo tidak akan pernah dipotong.</li>
+                                <li><strong>Proteksi Anti-Spam (Session Deduplication):</strong> Klik berulang dari pengunjung yang sama dalam satu sesi browsing hanya dipotong 1 kali saja.</li>
+                                <li><strong>Proteksi Saldo Minus:</strong> Jika saldo iklan tersisa Rp0, seluruh iklan otomatis dijeda (paused) sehingga saldo toko tidak akan pernah menjadi negatif / minus.</li>
+                            </ol>
+                        '
                     ]
                 ]
             ],

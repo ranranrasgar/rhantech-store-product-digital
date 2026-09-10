@@ -604,6 +604,67 @@
                     <span class="material-symbols-outlined text-[18px] text-slate-500 dark:text-slate-400 shrink-0">verified_user</span>
                     <span><strong>Proteksi Saldo:</strong> Dilengkapi proteksi anti-spam klik. Jika saldo iklan toko mencapai Rp0, iklan otomatis dijeda sehingga saldo Anda tidak akan pernah minus.</span>
                 </div>
+
+                <!-- Buku Panduan & Tanya Jawab Rumus Modal & CPC (Bisa Dibuka/Tutup) -->
+                <div x-data="{ openGuide: false }" class="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden bg-slate-50/50 dark:bg-[#111622]">
+                    <button type="button" 
+                            @click="openGuide = !openGuide" 
+                            class="w-full px-4 py-3 text-left flex items-center justify-between text-xs font-bold text-slate-800 dark:text-slate-200 hover:bg-slate-100/70 dark:hover:bg-slate-800/60 transition-colors">
+                        <span class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[#0284c7] text-[18px]">menu_book</span>
+                            <span>Buku Panduan: Kapan saldo dipotong & bagaimana rumus modal dihitung?</span>
+                        </span>
+                        <span class="material-symbols-outlined text-[18px] text-slate-400 transition-transform duration-200"
+                              :class="openGuide ? 'rotate-180 text-[#0284c7]' : ''">expand_more</span>
+                    </button>
+
+                    <div x-show="openGuide" x-transition class="px-4 pb-4 pt-1 text-xs text-slate-600 dark:text-slate-300 space-y-3 border-t border-slate-200/80 dark:border-slate-800">
+                        <div class="space-y-1.5 pt-1">
+                            <div class="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-[16px] text-[#0284c7]">ads_click</span>
+                                Kapan Saldo Dipotong? (Ketika Diklik vs Ketika Ada yang Membeli)
+                            </div>
+                            <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-[11px]">
+                                <strong>Jawabannya:</strong> Saldo dipotong <strong>ketika produk DIKLIK</strong> oleh calon pembeli (bukan saat dibeli). Ini adalah sistem standar industri e-commerce global bernama <strong>CPC (Cost Per Click)</strong>.
+                            </p>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 text-[11px]">
+                                <div class="p-2.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                                    <div class="font-bold text-emerald-600 dark:text-emerald-400">1. Melihat (Impresi)</div>
+                                    <div class="text-slate-500 text-[10px] mt-0.5">100% GRATIS dilihat ribuan orang di hasil pencarian.</div>
+                                </div>
+                                <div class="p-2.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                                    <div class="font-bold text-sky-600 dark:text-sky-400">2. Mengklik Produk</div>
+                                    <div class="text-slate-500 text-[10px] mt-0.5">Saldo dipotong sesuai tarif bid (misal Rp500 / klik).</div>
+                                </div>
+                                <div class="p-2.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                                    <div class="font-bold text-slate-800 dark:text-slate-200">3. Membeli Produk</div>
+                                    <div class="text-slate-500 text-[10px] mt-0.5">TIDAK dipotong lagi. Uang penjualan seutuhnya hak tokomu.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-1.5 pt-2 border-t border-slate-200/80 dark:border-slate-800">
+                            <div class="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                                <span class="material-symbols-outlined text-[16px] text-amber-500">functions</span>
+                                Rumus Perhitungan Modal Iklan & Estimasi Trafik
+                            </div>
+                            <ul class="space-y-1 text-[11px] text-slate-600 dark:text-slate-400">
+                                <li>&bull; <strong>Modal Tak Terbatas:</strong> <code>Estimasi Klik = Saldo Iklan &divide; Harga Bid</code> (Contoh: Saldo Rp500.000 &divide; Rp500 = ~1.000 Pengunjung).</li>
+                                <li>&bull; <strong>Modal Harian:</strong> <code>Total Batas Harian = Modal per Produk &times; Jumlah Produk Dipilih</code>. Iklan otomatis istirahat sementara saat kuota harian tercapai agar saldo tidak boncos.</li>
+                            </ul>
+                        </div>
+
+                        <div class="pt-2 border-t border-slate-200/80 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <span class="text-[10px] text-slate-400">Proteksi Anti-Spam: Klik berkali-kali dari orang yang sama hanya dipotong 1x.</span>
+                            <a href="{{ route('help.show', 'panduan-rumus-modal-iklan-harga-bid-per-klik-cpc-sistem-pemotongan-saldo') }}" 
+                               target="_blank" 
+                               class="text-[11px] font-bold text-[#0284c7] hover:underline flex items-center gap-1 shrink-0">
+                                Baca Panduan Lengkap di Buku Panduan
+                                <span class="material-symbols-outlined text-[14px]">open_in_new</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Tombol Aksi Bawah -->
