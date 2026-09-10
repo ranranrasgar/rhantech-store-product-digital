@@ -194,6 +194,17 @@ class WebhookController extends Controller
                                 $refStore->increment('balance', $order->affiliate_commission);
                             }
                         }
+
+                        // Update statistik mitra affiliate jika ada
+                        if ($order->affiliate_id) {
+                            $affRecord = \App\Models\Affiliate::find($order->affiliate_id);
+                            if ($affRecord) {
+                                $affRecord->increment('orders_count');
+                                $currSales = (float) preg_replace('/[^0-9]/', '', $affRecord->sales_range ?? '0');
+                                $newSales = $currSales + $order->amount;
+                                $affRecord->update(['sales_range' => 'Rp ' . number_format($newSales, 0, ',', '.')]);
+                            }
+                        }
                     } catch (\Throwable $storeEx) {
                         Log::error("Failed to increment store balance for Order {$orderId}: " . $storeEx->getMessage());
                     }

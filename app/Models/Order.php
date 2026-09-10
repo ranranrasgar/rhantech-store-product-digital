@@ -31,6 +31,11 @@ class Order extends Model
         return $this->belongsTo(Store::class, 'referrer_store_id');
     }
 
+    public function affiliate()
+    {
+        return $this->belongsTo(Affiliate::class);
+    }
+
     public function campaign()
     {
         return $this->belongsTo(Campaign::class);

@@ -117,6 +117,17 @@ class OrderController extends Controller
                 }
             }
 
+            // Update statistik mitra affiliate jika ada
+            if ($order->affiliate_id) {
+                $affRecord = \App\Models\Affiliate::find($order->affiliate_id);
+                if ($affRecord) {
+                    $affRecord->increment('orders_count');
+                    $currSales = (float) preg_replace('/[^0-9]/', '', $affRecord->sales_range ?? '0');
+                    $newSales = $currSales + $order->amount;
+                    $affRecord->update(['sales_range' => 'Rp ' . number_format($newSales, 0, ',', '.')]);
+                }
+            }
+
             // Kirim email notifikasi pembelian ke customer
             try {
                 \Illuminate\Support\Facades\Mail::to($order->customer_email)->send(new \App\Mail\OrderPaidMail($order));
@@ -164,6 +175,17 @@ class OrderController extends Controller
                             $refStore = \App\Models\Store::find($order->referrer_store_id);
                             if ($refStore) {
                                 $refStore->increment('balance', $order->affiliate_commission);
+                            }
+                        }
+
+                        // Update statistik mitra affiliate jika ada
+                        if ($order->affiliate_id) {
+                            $affRecord = \App\Models\Affiliate::find($order->affiliate_id);
+                            if ($affRecord) {
+                                $affRecord->increment('orders_count');
+                                $currSales = (float) preg_replace('/[^0-9]/', '', $affRecord->sales_range ?? '0');
+                                $newSales = $currSales + $order->amount;
+                                $affRecord->update(['sales_range' => 'Rp ' . number_format($newSales, 0, ',', '.')]);
                             }
                         }
 

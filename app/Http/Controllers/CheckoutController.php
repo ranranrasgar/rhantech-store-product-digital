@@ -434,26 +434,26 @@ class CheckoutController extends Controller
 
         // Check if there is an affiliate referrer in session
         $referrerStoreId = null;
+        $affiliateId = null;
         $affiliateCommission = 0;
         $affiliateRef = session('affiliate_ref');
         if ($affiliateRef && $finalTotal > 0) {
             $affiliateRecord = \App\Models\Affiliate::where('referral_code', $affiliateRef)->first();
             if ($affiliateRecord) {
+                $affiliateId = $affiliateRecord->id;
                 // Cari store milik pemilik referral
                 $refStore = null;
                 if ($affiliateRecord->affiliate_store_id) {
                     $refStore = \App\Models\Store::find($affiliateRecord->affiliate_store_id);
                 } elseif ($affiliateRecord->user_id) {
                     $refStore = \App\Models\Store::where('user_id', $affiliateRecord->user_id)->first();
-                } elseif ($affiliateRecord->store_id) {
-                    $refStore = \App\Models\Store::find($affiliateRecord->store_id);
                 }
 
                 if ($refStore) {
                     $referrerStoreId = $refStore->id;
-                    $commRate = $affiliateRecord->commission_rate ?? 10;
-                    $affiliateCommission = round(($finalTotal * $commRate) / 100, 2);
                 }
+                $commRate = $affiliateRecord->commission_rate ?? 10;
+                $affiliateCommission = round(($finalTotal * $commRate) / 100, 2);
             } else {
                 // Cek jika referral berupa store slug
                 $refStoreBySlug = \App\Models\Store::where('slug', $affiliateRef)->first();
@@ -467,6 +467,7 @@ class CheckoutController extends Controller
         $order = Order::create([
             'invoice_number' => 'RHN-' . date('ym') . '-' . Str::random(5),
             'referrer_store_id' => $referrerStoreId,
+            'affiliate_id' => $affiliateId,
             'affiliate_commission' => $affiliateCommission,
             'customer_name' => $validated['customer_name'],
             'customer_email' => $validated['customer_email'],
@@ -608,6 +609,17 @@ class CheckoutController extends Controller
                             $refStore = \App\Models\Store::find($order->referrer_store_id);
                             if ($refStore) {
                                 $refStore->increment('balance', $order->affiliate_commission);
+                            }
+                        }
+
+                        // Update statistik mitra affiliate jika ada
+                        if ($order->affiliate_id) {
+                            $affRecord = \App\Models\Affiliate::find($order->affiliate_id);
+                            if ($affRecord) {
+                                $affRecord->increment('orders_count');
+                                $currSales = (float) preg_replace('/[^0-9]/', '', $affRecord->sales_range ?? '0');
+                                $newSales = $currSales + $order->amount;
+                                $affRecord->update(['sales_range' => 'Rp ' . number_format($newSales, 0, ',', '.')]);
                             }
                         }
 
