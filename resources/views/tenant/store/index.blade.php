@@ -175,28 +175,6 @@
                                     class="w-full px-4 py-2.5 text-xs md:text-sm bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 text-slate-900 dark:text-white transition-all" placeholder="Kota, Provinsi, Indonesia">{{ old('address', $store->address ?? '') }}</textarea>
                                 @error('address') <span class="text-xs text-rose-500 mt-1 block">{{ $message }}</span> @enderror
                             </div>
-
-                            <!-- Hidden Geolocation Coordinates for Auto-Maps -->
-                            <input type="hidden" name="latitude" id="geo-lat" value="">
-                            <input type="hidden" name="longitude" id="geo-lng" value="">
-
-                            <!-- Info Lokasi Otomatis (Readonly untuk Keamanan Superadmin) -->
-                            <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] flex items-start gap-3">
-                                <span class="material-symbols-outlined text-[20px] text-sky-500 shrink-0 mt-0.5">my_location</span>
-                                <div class="text-xs">
-                                    <span class="font-bold text-slate-800 dark:text-slate-200 block mb-0.5">Titik Lokasi Google Maps Otomatis</span>
-                                    <p class="text-slate-500 dark:text-slate-400 text-[11px] leading-relaxed">
-                                        Koordinat dan tautan Google Maps akan otomatis digenerate oleh sistem saat formulir disimpan berdasarkan izin lokasi browser atau alamat yang Anda isi.
-                                    </p>
-                                    @if(isset($store) && $store->maps_location)
-                                    <div class="mt-2">
-                                        <a href="{{ $store->maps_location }}" target="_blank" class="inline-flex items-center gap-1 font-bold text-sky-600 dark:text-sky-400 hover:underline text-[11px]">
-                                            <span class="material-symbols-outlined text-[14px]">open_in_new</span> Lihat Titik Lokasi Tersimpan
-                                        </a>
-                                    </div>
-                                    @endif
-                                </div>
-                            </div>
                         </div>
                     </div>
 
@@ -449,22 +427,5 @@ function previewImage(event) {
     };
     reader.readAsDataURL(event.target.files[0]);
 }
-
-// Otomatis deteksi koordinat browser saat halaman dibuka
-document.addEventListener('DOMContentLoaded', function() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-            const latInput = document.getElementById('geo-lat');
-            const lngInput = document.getElementById('geo-lng');
-            if (latInput && lngInput) {
-                latInput.value = position.coords.latitude;
-                lngInput.value = position.coords.longitude;
-            }
-        }, function(error) {
-            // Geolocation fallback to address
-            console.log('Geolocation permission skipped or unavailable:', error.message);
-        });
-    }
-});
 </script>
 @endsection
