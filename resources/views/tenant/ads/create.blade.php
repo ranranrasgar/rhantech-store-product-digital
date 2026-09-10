@@ -185,8 +185,11 @@
                 <div class="space-y-3">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">
-                                Pilih Produk yang Diiklankan <span class="text-rose-500">*</span>
+                            <label class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300">
+                                <span>Pilih Produk yang Diiklankan <span class="text-rose-500">*</span></span>
+                                <a href="{{ route('help.show', 'panduan-lengkap-pusat-iklan-toko-rhantech-ads') }}" target="_blank" class="text-slate-400 hover:text-[#0284c7] transition-colors" title="Buka Panduan Pemilihan Produk Iklan">
+                                    <span class="material-symbols-outlined text-[15px] align-middle">help</span>
+                                </a>
                             </label>
                             <p class="text-[11px] text-slate-500 dark:text-slate-400">
                                 Anda dapat mencentang 1 atau banyak produk sekaligus untuk diiklankan secara serentak.
@@ -298,8 +301,11 @@
 
                 <!-- Modal / Budget -->
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">
-                        Modal Iklan
+                    <label class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">
+                        <span>Modal Iklan</span>
+                        <a href="{{ route('help.show', 'panduan-rumus-modal-iklan-harga-bid-per-klik-cpc-sistem-pemotongan-saldo') }}" target="_blank" class="text-slate-400 hover:text-[#0284c7] transition-colors" title="Buka Panduan Rumus Perhitungan Modal Iklan">
+                            <span class="material-symbols-outlined text-[15px] align-middle">help</span>
+                        </a>
                     </label>
                     <div class="flex flex-wrap items-center gap-6">
                         <label class="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-300 cursor-pointer">
@@ -328,8 +334,11 @@
 
                 <!-- Periode Iklan -->
                 <div class="space-y-3">
-                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">
-                        Periode Iklan
+                    <label class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300">
+                        <span>Periode Iklan</span>
+                        <a href="{{ route('help.show', 'panduan-lengkap-pusat-iklan-toko-rhantech-ads') }}" target="_blank" class="text-slate-400 hover:text-[#0284c7] transition-colors" title="Buka Panduan Pengaturan Periode Iklan">
+                            <span class="material-symbols-outlined text-[15px] align-middle">help</span>
+                        </a>
                     </label>
                     <div class="flex flex-wrap items-center gap-6">
                         <label class="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-300 cursor-pointer">
@@ -412,7 +421,12 @@
 
                 <!-- Mode Bidding Selector -->
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">Mode Bidding</label>
+                    <label class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">
+                        <span>Mode Bidding</span>
+                        <a href="{{ route('help.show', 'panduan-memasang-iklan-produk-bidding-manual-vs-otomatis') }}" target="_blank" class="text-slate-400 hover:text-[#0284c7] transition-colors" title="Buka Panduan Bidding Manual vs Otomatis">
+                            <span class="material-symbols-outlined text-[15px] align-middle">help</span>
+                        </a>
+                    </label>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         
                         <!-- Manual Card -->
@@ -447,8 +461,11 @@
 
                 <!-- Biaya Bid Per Klik -->
                 <div x-show="biddingMode === 'manual'" x-transition class="max-w-xs">
-                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                        Harga Bid Per Klik
+                    <label class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                        <span>Harga Bid Per Klik (CPC)</span>
+                        <a href="{{ route('help.show', 'panduan-rumus-modal-iklan-harga-bid-per-klik-cpc-sistem-pemotongan-saldo') }}" target="_blank" class="text-slate-400 hover:text-[#0284c7] transition-colors" title="Buka Panduan Cara Hitung Biaya Per Klik">
+                            <span class="material-symbols-outlined text-[15px] align-middle">help</span>
+                        </a>
                     </label>
                     <div class="relative">
                         <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">Rp</span>
@@ -464,8 +481,11 @@
 
                 <!-- Tetapkan Kata Pencarian (Persis Screenshot 5) -->
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                        Tetapkan Kata Pencarian
+                    <label class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                        <span>Tetapkan Kata Pencarian</span>
+                        <a href="{{ route('help.show', 'panduan-memasang-iklan-produk-bidding-manual-vs-otomatis') }}" target="_blank" class="text-slate-400 hover:text-[#0284c7] transition-colors" title="Buka Panduan Pemilihan Kata Kunci Populer">
+                            <span class="material-symbols-outlined text-[15px] align-middle">help</span>
+                        </a>
                     </label>
                     <p class="text-[11px] text-slate-500 dark:text-slate-400 mb-3">
                         Iklanmu akan tampil ketika pembeli mencari kata-kata berikut di platform:
@@ -528,7 +548,10 @@
                 <div class="border-b border-slate-100 dark:border-slate-800 pb-3">
                     <h3 class="text-sm md:text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
                         <span class="w-2 h-4 bg-[#0284c7] rounded-full"></span>
-                        Pengaturan Tampilan Iklan
+                        <span>Pengaturan Tampilan Iklan</span>
+                        <a href="{{ route('help.show', 'panduan-lengkap-pusat-iklan-toko-rhantech-ads') }}" target="_blank" class="text-slate-400 hover:text-[#0284c7] transition-colors font-normal" title="Buka Panduan Tampilan Iklan">
+                            <span class="material-symbols-outlined text-[16px] align-middle">help</span>
+                        </a>
                     </h3>
                 </div>
 
@@ -562,8 +585,11 @@
                 <div class="border-b border-slate-100 dark:border-slate-800 pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <div class="flex items-center gap-2">
                         <span class="w-2 h-4 bg-[#0284c7] rounded-full"></span>
-                        <h3 class="text-sm md:text-base font-bold text-slate-900 dark:text-white">
-                            Ringkasan & Estimasi Biaya Iklan
+                        <h3 class="text-sm md:text-base font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                            <span>Ringkasan & Estimasi Biaya Iklan</span>
+                            <a href="{{ route('help.show', 'panduan-rumus-modal-iklan-harga-bid-per-klik-cpc-sistem-pemotongan-saldo') }}" target="_blank" class="text-slate-400 hover:text-[#0284c7] transition-colors font-normal" title="Buka Buku Panduan Rumus Modal & Biaya CPC">
+                                <span class="material-symbols-outlined text-[16px] align-middle">help</span>
+                            </a>
                         </h3>
                     </div>
                     <span class="text-xs px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold border border-slate-200 dark:border-slate-700 self-start sm:self-center"

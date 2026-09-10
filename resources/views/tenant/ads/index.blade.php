@@ -93,8 +93,10 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-4 mb-4 border-b border-slate-100 dark:border-slate-800">
                     <div>
                         <div class="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
-                            Saldo Iklan
-                            <span class="material-symbols-outlined text-[14px] text-slate-400" title="Saldo yang digunakan untuk menampilkan iklan produk Anda di pencarian">info</span>
+                            <span>Saldo Iklan</span>
+                            <a href="{{ route('help.show', 'cara-kerja-saldo-iklan-bonus-saldo-rp500000') }}" target="_blank" class="text-slate-400 hover:text-[#0284c7] transition-colors" title="Pelajari cara kerja saldo iklan & bonus Rp500.000">
+                                <span class="material-symbols-outlined text-[14px]">help</span>
+                            </a>
                         </div>
                         <div class="text-2xl sm:text-3xl font-black {{ $adBalance <= 0 ? 'text-rose-600 dark:text-rose-400' : 'text-slate-900 dark:text-white' }} mt-1">
                             Rp{{ number_format($adBalance, 0, ',', '.') }}
@@ -308,10 +310,31 @@
                     <thead>
                         <tr class="bg-slate-50/80 dark:bg-slate-900/80 border-b border-slate-200/80 dark:border-slate-800 text-slate-600 dark:text-slate-400 font-bold uppercase tracking-wider">
                             <th class="py-3.5 px-5">Iklan / Produk</th>
-                            <th class="py-3.5 px-4">Tipe & Target</th>
-                            <th class="py-3.5 px-4">Modal / Biaya</th>
+                            <th class="py-3.5 px-4">
+                                <div class="flex items-center gap-1">
+                                    <span>Tipe & Target</span>
+                                    <a href="{{ route('help.show', 'panduan-memasang-iklan-produk-bidding-manual-vs-otomatis') }}" target="_blank" class="text-slate-400 hover:text-[#0284c7] transition-colors" title="Buka Panduan Bidding & Kata Kunci">
+                                        <span class="material-symbols-outlined text-[14px] align-middle">help</span>
+                                    </a>
+                                </div>
+                            </th>
+                            <th class="py-3.5 px-4">
+                                <div class="flex items-center gap-1">
+                                    <span>Modal / Biaya</span>
+                                    <a href="{{ route('help.show', 'panduan-rumus-modal-iklan-harga-bid-per-klik-cpc-sistem-pemotongan-saldo') }}" target="_blank" class="text-slate-400 hover:text-[#0284c7] transition-colors" title="Buka Panduan Rumus Modal & Pemotongan Biaya">
+                                        <span class="material-symbols-outlined text-[14px] align-middle">help</span>
+                                    </a>
+                                </div>
+                            </th>
                             <th class="py-3.5 px-4">Status</th>
-                            <th class="py-3.5 px-4">Impresi / Klik</th>
+                            <th class="py-3.5 px-4">
+                                <div class="flex items-center gap-1">
+                                    <span>Impresi / Klik</span>
+                                    <a href="{{ route('help.show', 'panduan-rumus-modal-iklan-harga-bid-per-klik-cpc-sistem-pemotongan-saldo') }}" target="_blank" class="text-slate-400 hover:text-[#0284c7] transition-colors" title="Buka Panduan Impresi Gratis & Biaya Klik (CPC)">
+                                        <span class="material-symbols-outlined text-[14px] align-middle">help</span>
+                                    </a>
+                                </div>
+                            </th>
                             <th class="py-3.5 px-5 text-right">Aksi</th>
                         </tr>
                     </thead>
