@@ -27,7 +27,12 @@ class ProController extends Controller
         }
 
         $subscriptions = $store->proSubscriptions()->latest()->paginate(10);
-        $plans = ProPlan::where('is_active', true)->orderBy('sort_order')->get();
+        
+        try {
+            $plans = ProPlan::where('is_active', true)->orderBy('sort_order')->get();
+        } catch (\Throwable $e) {
+            $plans = collect();
+        }
 
         // Fallback default jika tabel pro_plans belum ada / kosong
         if ($plans->isEmpty()) {
@@ -71,7 +76,21 @@ class ProController extends Controller
             ]);
         }
 
-        return view('tenant.pro.index', compact('store', 'subscriptions', 'plans'));
+        $defaultPlan = $plans->where('is_popular', true)->first() ?? $plans->first();
+
+        $plansData = [];
+        foreach ($plans as $p) {
+            $duration = $p->duration_label ?? ($p->duration_days ? '/ ' . $p->duration_days . ' hari' : '/ selamanya');
+            $labelSuffix = $p->duration_label ?? ($p->duration_days ? $p->duration_days . ' Hari' : 'Selamanya');
+            $plansData[$p->slug] = [
+                'name' => $p->name,
+                'price' => (int)$p->price,
+                'duration' => $duration,
+                'label' => $p->name . ' (' . $labelSuffix . ')',
+            ];
+        }
+
+        return view('tenant.pro.index', compact('store', 'subscriptions', 'plans', 'defaultPlan', 'plansData'));
     }
 
     public function upgrade(Request $request)

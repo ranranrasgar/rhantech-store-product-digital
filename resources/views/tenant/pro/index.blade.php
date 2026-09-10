@@ -335,14 +335,7 @@
 </div>
 
 <script>
-    const plansData = @json($plans->mapWithKeys(function($p) {
-        return [$p->slug => [
-            'name' => $p->name,
-            'price' => (int)$p->price,
-            'duration' => $p->duration_label ?? ($p->duration_days ? '/ ' . $p->duration_days . ' hari' : '/ selamanya'),
-            'label' => $p->name . ' (' . ($p->duration_label ?? ($p->duration_days ? $p->duration_days . ' Hari' : 'Selamanya')) . ')'
-        ]];
-    }));
+    const plansData = {!! json_encode($plansData ?? []) !!};
 
     let currentPlan = "{{ $defaultPlan->slug ?? 'yearly' }}";
     let currentAmount = {{ (int)($defaultPlan->price ?? 399000) }};
