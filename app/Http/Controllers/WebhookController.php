@@ -30,10 +30,11 @@ class WebhookController extends Controller
                 return response()->json(['message' => 'Test notification received successfully'], 200);
             }
 
-            // 1. Prioritaskan jika order ini milik aplikasi ini sendiri (ada di tabel orders atau ad_transactions)
+            // 1. Prioritaskan jika order ini milik aplikasi ini sendiri (ada di tabel orders, ad_transactions, atau pro_subscriptions)
             $localOrderExists = Order::where('invoice_number', $orderId)->exists();
             $adTopUpExists = \App\Models\AdTransaction::where('reference_no', $orderId)->exists();
-            if ($localOrderExists || $adTopUpExists) {
+            $proSubExists = \App\Models\ProSubscription::where('reference_no', $orderId)->exists();
+            if ($localOrderExists || $adTopUpExists || $proSubExists) {
                 return $this->processLocal($request);
             }
 
@@ -155,6 +156,32 @@ class WebhookController extends Controller
                 }
 
                 return response()->json(['message' => 'ad topup processed', 'status' => $adTransaction->fresh()->status], 200);
+            }
+
+            // Periksa apakah ini transaksi Upgrade Toko PRO
+            $proSubscription = \App\Models\ProSubscription::where('reference_no', $orderId)->first();
+            if ($proSubscription) {
+                if ($trxStatus === 'capture' || $trxStatus === 'settlement') {
+                    if ($proSubscription->payment_status !== 'paid') {
+                        $proSubscription->update([
+                            'payment_status' => 'paid',
+                            'paid_at' => now(),
+                        ]);
+
+                        // Aktifkan status Toko PRO
+                        $proSubscription->store->update([
+                            'is_pro' => true,
+                            'pro_expires_at' => $proSubscription->expires_at,
+                            'pro_plan' => $proSubscription->plan,
+                        ]);
+
+                        Log::info("Pro Subscription #{$orderId} settled successfully via webhook! Store #{$proSubscription->store_id} is now PRO ({$proSubscription->plan}).");
+                    }
+                } elseif (in_array($trxStatus, ['cancel', 'deny', 'expire'])) {
+                    $proSubscription->update(['payment_status' => 'failed']);
+                }
+
+                return response()->json(['message' => 'pro subscription processed', 'status' => $proSubscription->fresh()->payment_status], 200);
             }
 
             $order = Order::with('orderItems.product.store')->where('invoice_number', $orderId)->first();

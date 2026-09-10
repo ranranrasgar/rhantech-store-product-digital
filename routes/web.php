@@ -133,6 +133,8 @@ Route::middleware(['auth', 'verified', 'is_tenant'])->prefix('dashboard')->name(
     
     Route::get('pro', [\App\Http\Controllers\Tenant\ProController::class, 'index'])->name('pro.index');
     Route::post('pro/upgrade', [\App\Http\Controllers\Tenant\ProController::class, 'upgrade'])->name('pro.upgrade');
+    Route::get('pro/payment/{reference_no}', [\App\Http\Controllers\Tenant\ProController::class, 'payment'])->name('pro.payment');
+    Route::get('pro/finish/{reference_no}', [\App\Http\Controllers\Tenant\ProController::class, 'finishPayment'])->name('pro.finish-payment');
 
     Route::get('broadcast', [\App\Http\Controllers\Tenant\BroadcastController::class, 'index'])->name('broadcast.index');
     Route::post('broadcast/send', [\App\Http\Controllers\Tenant\BroadcastController::class, 'send'])->name('broadcast.send');
