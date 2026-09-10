@@ -114,11 +114,12 @@ class CompanyProfileController extends Controller
             'vision'            => 'nullable|string',
             'mission'           => 'nullable|string',
             'founded_year'      => 'nullable|string|max:10',
-            'facebook'          => 'nullable|url',
-            'instagram'         => 'nullable|url',
-            'linkedin'          => 'nullable|url',
-            'website'           => 'nullable|url',
-            'youtube'           => 'nullable|url',
+            'facebook'          => 'nullable|string',
+            'instagram'         => 'nullable|string',
+            'linkedin'          => 'nullable|string',
+            'website'           => 'nullable|string',
+            'youtube'           => 'nullable|string',
+            'social_links'      => 'nullable|array',
             'logo'              => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,ico|max:2048',
             'favicon'           => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,ico|max:1024',
             'hero_mode'         => 'nullable|string|in:custom,top_stores,both',
@@ -133,6 +134,51 @@ class CompanyProfileController extends Controller
             'hero_stats_val'    => 'nullable|string|max:50',
             'hero_stats_label'  => 'nullable|string|max:100',
         ]);
+
+        // Process and normalize social_links repeater
+        if ($request->has('social_links') && is_array($request->social_links)) {
+            $socialLinks = [];
+            $socialMap = [
+                'facebook'  => null,
+                'instagram' => null,
+                'linkedin'  => null,
+                'youtube'   => null,
+                'website'   => null,
+            ];
+
+            foreach ($request->social_links as $item) {
+                if (is_array($item) && !empty(trim($item['url'] ?? ''))) {
+                    $platform = trim($item['platform'] ?? 'custom');
+                    $name = !empty(trim($item['name'] ?? '')) ? trim($item['name']) : ucfirst($platform);
+                    $url = trim($item['url']);
+
+                    if ($platform === 'whatsapp' && !str_starts_with($url, 'http://') && !str_starts_with($url, 'https://')) {
+                        $cleanPhone = preg_replace('/[^0-9]/', '', $url);
+                        if (str_starts_with($cleanPhone, '0')) {
+                            $cleanPhone = '62' . substr($cleanPhone, 1);
+                        }
+                        $url = "https://wa.me/{$cleanPhone}";
+                    } elseif (!str_starts_with($url, 'http://') && !str_starts_with($url, 'https://') && !str_starts_with($url, 'mailto:')) {
+                        $url = 'https://' . $url;
+                    }
+
+                    $socialLinks[] = [
+                        'platform' => $platform,
+                        'name'     => $name,
+                        'url'      => $url,
+                    ];
+
+                    if (array_key_exists($platform, $socialMap) && empty($socialMap[$platform])) {
+                        $socialMap[$platform] = $url;
+                    }
+                }
+            }
+
+            $validated['social_links'] = $socialLinks;
+            foreach ($socialMap as $col => $val) {
+                $validated[$col] = $val;
+            }
+        }
 
         $profile = CompanyProfile::query()->first();
 
