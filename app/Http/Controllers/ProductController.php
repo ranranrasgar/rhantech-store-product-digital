@@ -63,9 +63,11 @@ class ProductController extends Controller
             $query->whereRaw('COALESCE(discount_price, price) <= ?', [$request->max_price]);
         }
 
-        // Prioritaskan produk beriklan aktif (Shopee Sponsored Products)
-        $query->orderByRaw('EXISTS (
-            SELECT 1 FROM seller_ads 
+        // Prioritaskan produk beriklan aktif berdasarkan BID TERTINGGI (Ad Auction / Peringkat Iklan)
+        // Bid lebih tinggi (misal Rp1.000 vs Rp100) otomatis menempati posisi nomor 1 teratas
+        $query->orderByRaw('(
+            SELECT COALESCE(MAX(seller_ads.bid_price), 0) 
+            FROM seller_ads 
             JOIN stores ON stores.id = seller_ads.store_id 
             WHERE seller_ads.product_id = products.id 
               AND seller_ads.status = "active" 
@@ -148,7 +150,7 @@ class ProductController extends Controller
             })
             ->with([
                 'ads' => function ($q) {
-                    $q->activeAndFunded()->whereNotNull('product_id')->with(['product.images', 'product.category:id,name']);
+                    $q->activeAndFunded()->whereNotNull('product_id')->with(['product.images', 'product.category:id,name'])->orderBy('bid_price', 'desc');
                 },
                 'products' => function ($q) {
                     $q->published()->select(['products.id', 'products.store_id', 'products.name', 'products.slug', 'products.price', 'products.discount_price'])->with('images')->latest('products.created_at')->take(6);
