@@ -18,6 +18,10 @@
             </div>
             
             <div class="flex flex-wrap items-center gap-3">
+                <a href="{{ route('help.show', 'panduan-lengkap-cara-kerja-program-afiliasi-toko-mitra-toko-vs-etalase-afiliasi') }}" target="_blank" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs md:text-sm font-semibold rounded-xl transition-all flex items-center gap-1.5 shadow-sm">
+                    <span class="material-symbols-outlined text-[18px] text-sky-500">menu_book</span>
+                    Buku Panduan Afiliasi
+                </a>
                 <a href="{{ route('tenant.affiliates.create') }}" class="px-5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs md:text-sm font-bold shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 transition-all duration-200 flex items-center gap-2">
                     <span class="material-symbols-outlined text-[18px]">person_add</span>
                     Tambah Mitra Affiliate
@@ -78,10 +82,38 @@
                     <thead class="bg-slate-50/80 dark:bg-[#0c1220]/80 border-b border-slate-100 dark:border-[#222f49] text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider text-[11px]">
                         <tr>
                             <th class="p-4 md:px-6 min-w-[260px]">Profil Mitra</th>
-                            <th class="p-4 md:px-6 min-w-[220px]">Link Referral Toko</th>
-                            <th class="p-4 md:px-6">Bagi Hasil</th>
-                            <th class="p-4 md:px-6">Jumlah Klik</th>
-                            <th class="p-4 md:px-6">Pesanan Sukses</th>
+                            <th class="p-4 md:px-6 min-w-[220px]">
+                                <div class="flex items-center gap-1">
+                                    <span>Link Referral Toko</span>
+                                    <a href="{{ route('help.show', 'panduan-cara-merekrut-mitra-afiliasi-pengaturan-bagi-hasil-komisi') }}" target="_blank" class="text-slate-400 hover:text-sky-500 transition-colors" title="Buka Panduan Link Referral">
+                                        <span class="material-symbols-outlined text-[15px]">help</span>
+                                    </a>
+                                </div>
+                            </th>
+                            <th class="p-4 md:px-6">
+                                <div class="flex items-center gap-1">
+                                    <span>Bagi Hasil</span>
+                                    <a href="{{ route('help.show', 'panduan-cara-merekrut-mitra-afiliasi-pengaturan-bagi-hasil-komisi') }}" target="_blank" class="text-slate-400 hover:text-sky-500 transition-colors" title="Buka Panduan Aturan Bagi Hasil Komisi">
+                                        <span class="material-symbols-outlined text-[15px]">help</span>
+                                    </a>
+                                </div>
+                            </th>
+                            <th class="p-4 md:px-6">
+                                <div class="flex items-center gap-1">
+                                    <span>Jumlah Klik</span>
+                                    <a href="{{ route('help.show', 'panduan-teknis-pelacakan-klik-otomatisasi-saldo-komisi-penarikan-dana-mitra') }}" target="_blank" class="text-slate-400 hover:text-sky-500 transition-colors" title="Buka Panduan Pelacakan Kunjungan (Klik)">
+                                        <span class="material-symbols-outlined text-[15px]">help</span>
+                                    </a>
+                                </div>
+                            </th>
+                            <th class="p-4 md:px-6">
+                                <div class="flex items-center gap-1">
+                                    <span>Pesanan Sukses</span>
+                                    <a href="{{ route('help.show', 'panduan-teknis-pelacakan-klik-otomatisasi-saldo-komisi-penarikan-dana-mitra') }}" target="_blank" class="text-slate-400 hover:text-sky-500 transition-colors" title="Buka Panduan Otomatisasi Saldo Komisi Penjualan">
+                                        <span class="material-symbols-outlined text-[15px]">help</span>
+                                    </a>
+                                </div>
+                            </th>
                             <th class="p-4 md:px-6 text-right pr-8">Aksi</th>
                         </tr>
                     </thead>
@@ -215,6 +247,94 @@
             </div>
             @endif
 
+        </div>
+
+        <!-- Panduan & FAQ Singkat Cara Kerja Afiliasi -->
+        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-6 md:p-8 shadow-sm space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 dark:border-[#222f49] pb-5">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-sky-50 dark:bg-sky-950/40 text-sky-500 flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined text-[22px]">help_outline</span>
+                    </div>
+                    <div>
+                        <h2 class="text-base font-bold text-slate-900 dark:text-white">Panduan Cara Main & Alur Komisi Afiliasi</h2>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Pahami alur otomatisasi dari klik referral hingga uang komisi masuk ke saldo mitra.</p>
+                    </div>
+                </div>
+                <a href="{{ route('help.show', 'panduan-lengkap-cara-kerja-program-afiliasi-toko-mitra-toko-vs-etalase-afiliasi') }}" target="_blank" class="text-xs font-bold text-sky-600 dark:text-sky-400 hover:underline inline-flex items-center gap-1">
+                    Baca Buku Panduan Lengkap
+                    <span class="material-symbols-outlined text-[15px]">arrow_forward</span>
+                </a>
+            </div>
+
+            <!-- 3 Langkah Alur Kerja -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <div class="p-5 rounded-xl border border-slate-200/80 dark:border-[#222f49] bg-slate-50/50 dark:bg-[#0c1220]/50 space-y-2">
+                    <div class="flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-sky-500 text-white font-black text-xs flex items-center justify-center shrink-0">1</span>
+                        <h3 class="font-bold text-sm text-slate-900 dark:text-white">Hubungkan & Bagikan Link</h3>
+                    </div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                        Pilih akun teman/influencer, tetapkan persen bagi hasil (misal: 10%), lalu salin link referral (<code class="text-sky-600 dark:text-sky-400">?ref=KODE</code>) untuk dibagikan ke WhatsApp atau medsos.
+                    </p>
+                </div>
+
+                <div class="p-5 rounded-xl border border-slate-200/80 dark:border-[#222f49] bg-slate-50/50 dark:bg-[#0c1220]/50 space-y-2">
+                    <div class="flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-sky-500 text-white font-black text-xs flex items-center justify-center shrink-0">2</span>
+                        <h3 class="font-bold text-sm text-slate-900 dark:text-white">Pelacakan Kunjungan Otomatis</h3>
+                    </div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                        Saat pembeli membuka link tersebut, sistem otomatis menaikkan counter <strong>Jumlah Klik</strong> dan mengikat sesi belanja calon pembeli dengan ID mitra referral.
+                    </p>
+                </div>
+
+                <div class="p-5 rounded-xl border border-slate-200/80 dark:border-[#222f49] bg-slate-50/50 dark:bg-[#0c1220]/50 space-y-2">
+                    <div class="flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-full bg-emerald-500 text-white font-black text-xs flex items-center justify-center shrink-0">3</span>
+                        <h3 class="font-bold text-sm text-slate-900 dark:text-white">Komisi Masuk & Bisa Ditarik</h3>
+                    </div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                        Saat pesanan berhasil dibayar, dana komisi seketika masuk ke <strong>Saldo Toko Mitra</strong> (<code class="text-emerald-600 dark:text-emerald-400">balance</code>) dan mitra bisa langsung mencairkannya ke rekening bank via menu Keuangan!
+                    </p>
+                </div>
+            </div>
+
+            <!-- Tanya Jawab Cepat -->
+            <div class="border-t border-slate-100 dark:border-[#222f49] pt-5 space-y-3">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400">Pertanyaan Umum (FAQ)</h4>
+                
+                <details class="group rounded-xl border border-slate-200/80 dark:border-[#222f49] p-4 [&_summary::-webkit-details-marker]:hidden bg-white dark:bg-[#111726]">
+                    <summary class="flex items-center justify-between cursor-pointer font-bold text-xs sm:text-sm text-slate-800 dark:text-slate-200">
+                        <span>Apakah saldo toko yang terafiliasi akan otomatis bertambah saat ada transaksi?</span>
+                        <span class="material-symbols-outlined text-[18px] text-slate-400 group-open:rotate-180 transition-transform">expand_more</span>
+                    </summary>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
+                        <strong>Ya, 100% otomatis!</strong> Ketika pembeli membayar pesanan (baik via QRIS, Virtual Account, e-Wallet, maupun konfirmasi manual admin), sistem secara real-time menambahkan komisi ke saldo akun toko mitra dan mencatat kenaikan jumlah pesanan sukses.
+                    </p>
+                </details>
+
+                <details class="group rounded-xl border border-slate-200/80 dark:border-[#222f49] p-4 [&_summary::-webkit-details-marker]:hidden bg-white dark:bg-[#111726]">
+                    <summary class="flex items-center justify-between cursor-pointer font-bold text-xs sm:text-sm text-slate-800 dark:text-slate-200">
+                        <span>Apa bedanya "Mitra Affiliate" (/tenant/affiliates) dengan "Etalase Afiliasi" (/tenant/showcase)?</span>
+                        <span class="material-symbols-outlined text-[18px] text-slate-400 group-open:rotate-180 transition-transform">expand_more</span>
+                    </summary>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
+                        <strong>Mitra Affiliate:</strong> Tempat Anda mengajak orang lain menjadi tim penjual untuk produk toko Anda sendiri.<br>
+                        <strong>Etalase Afiliasi (Showcase):</strong> Tempat Anda memilih produk milik orang lain/platform untuk dipajang di etalase toko Anda sendiri agar Anda mendapat komisi saat produk tersebut laku terjual.
+                    </p>
+                </details>
+
+                <details class="group rounded-xl border border-slate-200/80 dark:border-[#222f49] p-4 [&_summary::-webkit-details-marker]:hidden bg-white dark:bg-[#111726]">
+                    <summary class="flex items-center justify-between cursor-pointer font-bold text-xs sm:text-sm text-slate-800 dark:text-slate-200">
+                        <span>Bagaimana cara mitra menarik (withdraw) uang komisinya?</span>
+                        <span class="material-symbols-outlined text-[18px] text-slate-400 group-open:rotate-180 transition-transform">expand_more</span>
+                    </summary>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
+                        Mitra cukup membuka menu <strong>Pusat Keuangan & Penghasilan</strong> (<code>/tenant/payouts</code>), lalu memasukkan nominal penarikan (minimal Rp 10.000). Dana akan ditransfer oleh tim platform ke rekening bank mitra dalam 1x24 jam kerja.
+                    </p>
+                </details>
+            </div>
         </div>
 
     </div>

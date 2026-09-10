@@ -18,6 +18,10 @@
             </div>
 
             <div class="flex items-center gap-2">
+                <a href="{{ route('help.show', 'panduan-memasang-produk-toko-lain-di-etalase-toko-saya-showcase') }}" target="_blank" class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-[#222f49] bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 transition flex items-center gap-1.5 shadow-sm">
+                    <span class="material-symbols-outlined text-[16px] text-sky-500">menu_book</span>
+                    Panduan Etalase Afiliasi
+                </a>
                 <a href="{{ route('store.show', $store->slug) }}" target="_blank" class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-[#222f49] bg-white dark:bg-[#111726] hover:bg-slate-50 dark:hover:bg-[#161f33] text-xs font-bold text-slate-700 dark:text-slate-200 transition flex items-center gap-1.5 shadow-sm">
                     <span class="material-symbols-outlined text-[16px]">visibility</span>
                     Lihat Etalase Toko Saya
@@ -128,9 +132,10 @@
 
                             <!-- Perkiraan Komisi -->
                             <div class="text-right">
-                                <span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200/60 dark:border-amber-800/40">
+                                <a href="{{ route('help.show', 'panduan-memasang-produk-toko-lain-di-etalase-toko-saya-showcase') }}" target="_blank" class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200/60 dark:border-amber-800/40 hover:bg-amber-100 transition" title="Pelajari cara kerja bagi hasil komisi showcase">
                                     Komisi Afiliasi
-                                </span>
+                                    <span class="material-symbols-outlined text-[12px]">help</span>
+                                </a>
                             </div>
                         </div>
 

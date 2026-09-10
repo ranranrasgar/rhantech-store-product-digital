@@ -592,21 +592,149 @@ class HelpCenterSeeder extends Seeder
             [
                 'name' => 'Program Afiliasi',
                 'icon' => 'handshake',
-                'description' => 'Dapatkan penghasilan pasif tambahan dengan mengajak kreator dan pembeli lain.',
+                'description' => 'Panduan lengkap cara kerja sistem mitra afiliasi toko, pembagian komisi otomatis, link referral, etalase showcase, dan pencairan saldo.',
                 'sort_order' => 5,
                 'articles' => [
                     [
-                        'title' => 'Panduan Program Afiliasi: Raih Komisi 10% dari Setiap Penjualan',
+                        'title' => 'Panduan Lengkap Cara Kerja Program Afiliasi Toko (Mitra Toko vs Etalase Afiliasi)',
                         'content' => '
-                            <h2>Dapatkan Penghasilan Tambahan Tanpa Perlu Membuat Produk</h2>
-                            <p>Program Afiliasi Rhantech memungkinkan siapa saja meraih komisi pasif hingga <strong>10%</strong> untuk setiap transaksi pembelian produk yang berasal dari tautan referal Anda.</p>
+                            <h2>Mengenal Ekosistem Program Afiliasi di Rhantech</h2>
+                            <p>Program Afiliasi adalah fitur kolaborasi penjualan modern di mana pemilik toko (merchant) dan mitra promotor (affiliate) saling menguntungkan tanpa modal berisiko:</p>
+                            <ul>
+                                <li><strong>Bagi Pemilik Toko (Merchant):</strong> Anda dapat merekrut kreator, influencer, atau teman untuk membantu mempromosikan produk toko Anda. Anda <strong>hanya membayar komisi jika terjadi penjualan nyata (CPA - Cost Per Action)</strong>, sehingga 100% bebas risiko boncos dibandingkan iklan berbayar.</li>
+                                <li><strong>Bagi Mitra Afiliasi (Promotor):</strong> Anda bisa menghasilkan pendapatan pasif dengan membagikan link referral toko atau memajang produk orang lain di etalase toko Anda tanpa perlu repot membuat source code sendiri.</li>
+                            </ul>
 
-                            <h3>Cara Kerja Afiliasi:</h3>
+                            <hr>
+
+                            <h2>Perbedaan Dua Fitur Utama Afiliasi di Dashboard</h2>
+                            <table class="w-full border border-gray-200 text-sm my-4">
+                                <thead class="bg-gray-50 border-b">
+                                    <tr>
+                                        <th class="p-3 border font-bold text-left">Fitur Dashboard</th>
+                                        <th class="p-3 border font-bold text-left">Tujuan & Fungsi</th>
+                                        <th class="p-3 border font-bold text-left">Siapa yang Diuntungkan?</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="p-3 border font-semibold text-sky-600">1. Mitra Toko Saya (<code>/tenant/affiliates</code>)</td>
+                                        <td class="p-3 border">Halaman tempat Anda mengelola orang-orang yang menjadi <strong>tim promotor untuk produk toko Anda sendiri</strong>. Di sini Anda menentukan persentase bagi hasil dan memberikan link referral unik kepada mereka.</td>
+                                        <td class="p-3 border"><strong>Toko Anda</strong> mendapat lonjakan pembeli baru, dan <strong>Mitra Anda</strong> mendapatkan persenan komisi.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 border font-semibold text-emerald-600">2. Etalase Afiliasi / Showcase (<code>/tenant/showcase</code>)</td>
+                                        <td class="p-3 border">Halaman tempat Anda memilih produk digital milik platform atau toko tenant lain untuk <strong>dipajang langsung di etalase toko Anda sendiri</strong>.</td>
+                                        <td class="p-3 border"><strong>Toko Anda</strong> bisa berjualan puluhan produk langsung dan mendapatkan komisi tanpa perlu coding atau membuat produk dari nol!</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <hr>
+
+                            <h2>Perbedaan Program Afiliasi vs Iklan Berbayar (Rhantech Ads)</h2>
+                            <ul>
+                                <li><strong>Iklan Berbayar (CPC):</strong> Saldo toko Anda dipotong setiap kali produk diklik pembeli di hasil pencarian marketplace. Sangat efektif untuk mendongkrak trafik secara instan dalam hitungan jam.</li>
+                                <li><strong>Program Afiliasi (CPA):</strong> 100% GRATIS di awal. Saldo toko Anda <strong>HANYA dipotong setelah pembeli selesai membayar pesanan</strong>. Sangat aman untuk strategi pemasaran jangka panjang berkelanjutan.</li>
+                            </ul>
+                        '
+                    ],
+                    [
+                        'title' => 'Panduan Cara Merekrut Mitra Afiliasi & Pengaturan Bagi Hasil Komisi',
+                        'content' => '
+                            <h2>Langkah Merekrut Mitra Promotor Baru untuk Toko Anda</h2>
+                            <p>Untuk menghubungkan akun pengguna lain sebagai affiliate resmi toko Anda, ikuti langkah-langkah berikut:</p>
+
+                            <h3>Langkah 1: Buka Menu Mitra Afiliasi</h3>
+                            <p>Masuk ke Dashboard Seller &rarr; klik menu <strong>Program Affiliate</strong> (<code>/tenant/affiliates</code>) di sidebar &rarr; lalu klik tombol <strong>+ Tambah Mitra Affiliate</strong>.</p>
+
+                            <h3>Langkah 2: Pilih Akun Pengguna Terdaftar</h3>
+                            <p>Sistem akan menampilkan daftar seluruh akun yang sudah terdaftar di platform Rhantech (baik sesama pemilik toko maupun pengguna pembeli umum). Pilih akun mitra yang ingin Anda ajak bekerjasama.</p>
+
+                            <h3>Langkah 3: Tentukan Persentase Bagi Hasil Komisi</h3>
+                            <p>Masukkan persentase komisi yang akan diberikan kepada mitra tersebut dari setiap transaksi berhasil:</p>
+                            <ul>
+                                <li><strong>Standar Industri:</strong> Umumnya <strong>10% s/d 20%</strong> dari harga produk.</li>
+                                <li><strong>Promo Peluncuran:</strong> Anda bisa memberikan <strong>25% s/d 30%</strong> untuk memotivasi influencer atau affiliate top agar gencar membagikan link toko Anda.</li>
+                            </ul>
+
+                            <h3>Langkah 4: Pembuatan Kode & Link Referral Otomatis</h3>
+                            <p>Setelah Anda mengklik <strong>Hubungkan Akun Mitra</strong>, sistem otomatis:</p>
                             <ol>
-                                <li>Buka menu <strong>Afiliasi</strong> di dashboard Anda untuk menyalin tautan referral unik Anda.</li>
-                                <li>Bagikan link tersebut ke media sosial, blog pemrograman, grup developer Telegram, WhatsApp, atau channel YouTube Anda.</li>
-                                <li>Setiap pengunjung yang mengklik link Anda akan disimpan cookienya selama 30 hari.</li>
-                                <li>Jika pengunjung tersebut membeli produk digital di platform kami, komisi 10% langsung otomatis masuk ke saldo akun Anda!</li>
+                                <li>Membuatkan <strong>Kode Referral Unik</strong> berdasarkan nama akun mitra (misal: <code>RICO2026</code>).</li>
+                                <li>Membuatkan <strong>Tautan Referral Toko Lengkap</strong> (contoh: <code>https://domain.com/store/namatoko?ref=RICO2026</code>).</li>
+                            </ol>
+
+                            <h3>Langkah 5: Bagikan Link ke Mitra</h3>
+                            <p>Pada tabel daftar mitra, Anda dapat langsung mengklik ikon <strong>Salin Link</strong> atau mengklik ikon <strong>WhatsApp</strong> untuk mengirimkan link referral langsung ke nomor WA mitra Anda.</p>
+                        '
+                    ],
+                    [
+                        'title' => 'Panduan Teknis: Pelacakan Klik, Otomatisasi Saldo Komisi & Penarikan Dana Mitra',
+                        'content' => '
+                            <h2>Bagaimana Sistem Menghitung dan Mentransfer Komisi?</h2>
+                            <p>Sistem afiliasi Rhantech bekerja secara 100% otomatis tanpa perlu verifikasi manual dari pemilik toko:</p>
+
+                            <h3>1. Pelacakan Kunjungan (Tracking Klik)</h3>
+                            <p>Saat calon pembeli membuka tautan referral mitra (<code>/store/namatoko?ref=KODE</code>):</p>
+                            <ol>
+                                <li>Sistem secara otomatis mendeteksi kode referral valid.</li>
+                                <li>Counter <strong>Jumlah Klik</strong> pada mitra tersebut langsung bertambah +1.</li>
+                                <li>Sistem mengikat sesi penjelajahan calon pembeli dengan ID mitra referral tersebut.</li>
+                            </ol>
+
+                            <h3>2. Perhitungan Komisi Saat Pembelian</h3>
+                            <p>Ketika pembeli melakukan checkout produk digital dari toko Anda:</p>
+                            <ul>
+                                <li>Sistem mengkalkulasi nominal komisi: <code>Komisi = Harga Produk &times; (Persentase / 100)</code>.</li>
+                                <li>Contoh: Produk seharga Rp200.000 dengan komisi 15% menghasilkan komisi mitra sebesar <strong>Rp30.000</strong>.</li>
+                                <li>Data pesanan menyimpan rincian <code>affiliate_id</code> dan nilai komisi secara transparan.</li>
+                            </ul>
+
+                            <h3>3. Otomatisasi Masuknya Uang ke Saldo Mitra</h3>
+                            <p>Seketika saat pembayaran pesanan terkonfirmasi (baik melalui payment gateway otomatis seperti QRIS, Virtual Account, e-Wallet, maupun persetujuan manual admin):</p>
+                            <ol>
+                                <li><strong>Saldo Toko Mitra Bertambah:</strong> Dana komisi (contoh: Rp30.000) langsung ditambahkan ke <strong>Saldo Penghasilan Toko</strong> milik mitra yang bersangkutan (<code>balance + komisi</code>).</li>
+                                <li><strong>Statistik Penjualan Terupdate:</strong> Counter <strong>Pesanan Sukses</strong> pada tabel afiliasi bertambah +1 dan kolom <strong>Rentang Penjualan (Sales Range)</strong> diperbarui secara kumulatif.</li>
+                            </ol>
+
+                            <hr>
+
+                            <h2>Cara Mitra Mencairkan Uang Komisi (Withdraw / Payout)</h2>
+                            <p>Uang komisi yang masuk ke akun mitra adalah <strong>Uang Riil (Bukan Saldo Iklan)</strong> dan dapat ditarik ke rekening bank pribadi kapan saja:</p>
+                            <ol>
+                                <li>Mitra masuk ke menu <strong>Pusat Keuangan & Penghasilan</strong> (<code>/tenant/payouts</code>).</li>
+                                <li>Mitra dapat melihat total saldo penghasilan yang siap ditarik.</li>
+                                <li>Ketik nominal penarikan (<strong>Minimal Penarikan Hanya Rp 10.000</strong>).</li>
+                                <li>Pilih rekening bank tujuan (BCA, Mandiri, BRI, BNI, CIMB, Seabank, Bank Jago, dll.).</li>
+                                <li>Klik <strong>Ajukan Penarikan</strong>. Dana akan ditransfer oleh tim finance platform dalam waktu maksimal 1x24 jam kerja!</li>
+                            </ol>
+
+                            <blockquote>
+                                <strong>Keamanan Anti-Fraud Transaksi Afiliasi:</strong><br>
+                                Sistem memproteksi pemilik toko dari kecurangan; jika pembeli yang mengklik link adalah pemilik toko itu sendiri, komisi tidak akan dihitung ganda untuk mencegah self-referral abuse.
+                            </blockquote>
+                        '
+                    ],
+                    [
+                        'title' => 'Panduan Memasang Produk Toko Lain di Etalase Toko Saya (Showcase)',
+                        'content' => '
+                            <h2>Jualan Puluhan Produk Digital Tanpa Perlu Bikin Sendiri</h2>
+                            <p>Fitur <strong>Etalase Afiliasi (Showcase)</strong> di <code>/tenant/showcase</code> memungkinkan Anda melengkapi toko Anda dengan ratusan produk digital siap jual dari platform official atau toko tenant lain.</p>
+
+                            <h3>Cara Menambahkan Produk ke Etalase Toko:</h3>
+                            <ol>
+                                <li>Buka menu <strong>Etalase Afiliasi</strong> di dashboard toko Anda.</li>
+                                <li>Gunakan tab filter untuk melihat <em>Semua Produk</em>, <em>Produk Official Platform</em>, atau <em>Produk Toko Tenant Lain</em>.</li>
+                                <li>Pilih produk yang sesuai dengan niche toko Anda (misal: Source Code Web, Template Canva, Plugin WordPress, atau Desain UI/UX).</li>
+                                <li>Klik tombol <strong>+ Pasang di Etalase Toko</strong>. Produk tersebut akan langsung muncul di katalog etalase toko online Anda (<code>/store/{slug-toko-anda}</code>).</li>
+                            </ol>
+
+                            <h3>Bagaimana Cara Kerjanya Saat Ada Pembeli?</h3>
+                            <ol>
+                                <li>Pengunjung membuka toko Anda dan membeli produk afiliasi yang Anda pasang.</li>
+                                <li>Pengiriman file produk digital ditangani secara otomatis oleh platform dan pemilik produk asli.</li>
+                                <li>Anda tidak perlu pusing mengurus upload file atau update source code; Anda cukup mempromosikan toko Anda dan menikmati bagi hasil komisi penjualan yang otomatis masuk ke saldo rekening Anda!</li>
                             </ol>
                         '
                     ]
