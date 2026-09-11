@@ -60,7 +60,9 @@
 
         <div class="space-y-1.5">
             <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">Detail & Cerita Proyek</label>
-            <textarea name="description" rows="6" class="w-full px-4 py-3 rounded-2xl text-xs bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] text-slate-900 dark:text-white outline-none focus:border-primary leading-relaxed">{{ old('description', $project->description) }}</textarea>
+            <p class="text-[11px] text-slate-400 dark:text-slate-500">Jelaskan tantangan, solusi yang Anda bangun, dan hasil yang dicapai. Gunakan toolbar untuk format teks.</p>
+            <input type="hidden" name="description" id="description_input" value="{{ old('description', $project->description) }}">
+            <div id="quill_editor" class="bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-2xl overflow-hidden" style="min-height: 220px;"></div>
         </div>
 
         <div class="pt-4 border-t border-slate-100 dark:border-[#1e2a42] flex justify-end gap-3">
@@ -73,4 +75,57 @@
         </div>
     </form>
 </div>
+@push('scripts')
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.min.js"></script>
+<style>
+    .ql-toolbar.ql-snow {
+        border: none !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+        background: #f8fafc;
+        padding: 8px 12px;
+    }
+    .dark .ql-toolbar.ql-snow {
+        background: #0c1220;
+        border-bottom-color: #222f49 !important;
+    }
+    .ql-container.ql-snow { border: none !important; font-size: 13px; font-family: inherit; }
+    .ql-editor { min-height: 160px; color: #0f172a; line-height: 1.7; padding: 14px 16px; }
+    .dark .ql-editor { color: #e2e8f0; }
+    .dark .ql-snow .ql-stroke { stroke: #94a3b8; }
+    .dark .ql-snow .ql-fill  { fill: #94a3b8; }
+    .dark .ql-snow .ql-picker { color: #94a3b8; }
+    .dark .ql-snow .ql-picker-options { background: #111726; border-color: #222f49; }
+    .ql-editor.ql-blank::before { color: #94a3b8; font-style: normal; font-size: 12px; }
+</style>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const quill = new Quill('#quill_editor', {
+            theme: 'snow',
+            placeholder: 'Jelaskan tantangan, solusi yang Anda bangun, dan hasil yang dicapai...',
+            modules: {
+                toolbar: [
+                    [{ 'header': [1, 2, 3, false] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                    ['blockquote', 'code-block'],
+                    [{ 'align': [] }],
+                    ['link'],
+                    ['clean']
+                ]
+            }
+        });
+
+        const existingVal = document.getElementById('description_input').value;
+        if (existingVal) {
+            quill.clipboard.dangerouslyPasteHTML(existingVal);
+        }
+
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function () {
+            document.getElementById('description_input').value = quill.root.innerHTML === '<p><br></p>' ? '' : quill.root.innerHTML;
+        });
+    });
+</script>
+@endpush
 @endsection
