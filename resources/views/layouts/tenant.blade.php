@@ -338,30 +338,30 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
             <span class="material-symbols-outlined">send_to_mobile</span> WA Broadcast
         </a>
         <a href="{{ route('tenant.ads.index') }}" class="nav-link {{ request()->routeIs('tenant.ads.*') ? 'active' : '' }}">
-            <span class="material-symbols-outlined">ads_click</span> Iklan Promosi Toko
+            <span class="material-symbols-outlined">ads_click</span> Iklan & Promosi
         </a>
         <a href="{{ route('tenant.showcase.index') }}" class="nav-link {{ request()->routeIs('tenant.showcase.*') ? 'active' : '' }}">
             <span class="material-symbols-outlined">shopping_basket</span> Etalase Afiliasi
         </a>
         <a href="{{ route('tenant.affiliates.index') }}" class="nav-link {{ request()->routeIs('tenant.affiliates.*') ? 'active' : '' }}">
-            <span class="material-symbols-outlined">handshake</span> Mitra Toko Saya
+            <span class="material-symbols-outlined">handshake</span> Mitra Afiliasi
         </a>
         <a href="{{ route('tenant.campaigns.index') }}" class="nav-link {{ request()->routeIs('tenant.campaigns.*') ? 'active' : '' }}">
             <span class="material-symbols-outlined">campaign</span> Diskon & Voucher
         </a>
 
-        <div class="nav-section-label">Toko</div>
-        <a href="{{ route('tenant.pro.index') }}" class="nav-link {{ request()->routeIs('tenant.pro.*') ? 'active' : '' }}">
-            <span class="material-symbols-outlined text-amber-500">stars</span> Layanan Toko PRO
-        </a>
-        <a href="{{ route('tenant.projects.index') }}" class="nav-link {{ request()->routeIs('tenant.projects.*') ? 'active' : '' }}">
-            <span class="material-symbols-outlined">work</span> Portofolio Proyek
-        </a>
+        <div class="nav-section-label">Halaman & Profil</div>
         <a href="{{ route('tenant.appearance.index') ?? '#' }}" class="nav-link {{ request()->routeIs('tenant.appearance.*') ? 'active' : '' }}">
-            <span class="material-symbols-outlined">storefront</span> Dekorasi Toko
+            <span class="material-symbols-outlined">palette</span> Desain Tampilan
         </a>
         <a href="{{ route('tenant.store.index') }}" class="nav-link {{ request()->routeIs('tenant.store.*') ? 'active' : '' }}">
-            <span class="material-symbols-outlined">settings</span> Pengaturan Toko
+            <span class="material-symbols-outlined">manage_accounts</span> Profil & Pengaturan
+        </a>
+        <a href="{{ route('tenant.projects.index') }}" class="nav-link {{ request()->routeIs('tenant.projects.*') ? 'active' : '' }}">
+            <span class="material-symbols-outlined">folder_special</span> Portofolio Karya
+        </a>
+        <a href="{{ route('tenant.pro.index') }}" class="nav-link {{ request()->routeIs('tenant.pro.*') ? 'active' : '' }}">
+            <span class="material-symbols-outlined text-amber-500">workspace_premium</span> Fitur & Akun PRO
         </a>
 
         <div class="nav-section-label">Keuangan</div>
@@ -377,7 +377,7 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
 
         <div class="nav-section-label">Analitik</div>
         <a href="{{ route('tenant.performance.index') ?? '#' }}" class="nav-link {{ request()->routeIs('tenant.performance.*') ? 'active' : '' }}">
-            <span class="material-symbols-outlined">monitoring</span> Performa Toko
+            <span class="material-symbols-outlined">monitoring</span> Analitik & Performa
         </a>
         <div class="nav-section-label">Pusat Bantuan</div>
         <a href="{{ route('help.index') }}" target="_blank" class="nav-link">

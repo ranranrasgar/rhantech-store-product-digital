@@ -77,7 +77,7 @@
                                 </button>
                                 <img :src="selectedStore.logo" class="w-7 h-7 rounded-full object-cover border border-outline-variant/50">
                                 <span class="font-bold text-xs text-on-surface truncate" x-text="selectedStore.name"></span>
-                                <a :href="'/toko/' + selectedStore.slug" target="_blank" class="text-primary hover:underline text-[11px] ml-1 flex items-center gap-0.5" title="Kunjungi Toko">
+                                <a :href="'/' + selectedStore.slug" target="_blank" class="text-primary hover:underline text-[11px] ml-1 flex items-center gap-0.5" title="Kunjungi Toko">
                                     <span class="material-symbols-outlined text-[13px]">open_in_new</span> Toko
                                 </a>
                             </div>

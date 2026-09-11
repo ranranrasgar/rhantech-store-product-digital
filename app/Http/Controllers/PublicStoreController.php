@@ -72,9 +72,14 @@ class PublicStoreController extends Controller
         $products = $productsQuery->latest()->paginate(12)->withQueryString();
 
         // Fetch appearance settings
-        $appearance = is_string($store->appearance_data) ? json_decode($store->appearance_data, true) : $store->appearance_data;
-        if (!is_array($appearance)) {
-            $appearance = [];
+        $rawAppearance = is_string($store->appearance_data) ? json_decode($store->appearance_data, true) : $store->appearance_data;
+        $appearance = [];
+        if (is_array($rawAppearance)) {
+            foreach ($rawAppearance as $k => $block) {
+                if (is_numeric($k) && is_array($block) && !empty($block['type'])) {
+                    $appearance[] = $block;
+                }
+            }
         }
         
         $isFollowing = false;
@@ -91,9 +96,26 @@ class PublicStoreController extends Controller
         $campaigns = \App\Models\Campaign::where('store_id', $store->id)
             ->active()
             ->latest()
-            ->get(['id', 'store_id', 'code', 'name', 'type', 'discount_type', 'discount_value', 'minimum_spend', 'start_date', 'end_date', 'usage_limit', 'used_count']);
-            
-        return view('store.show', compact('store', 'products', 'appearance', 'isFollowing', 'categories', 'campaigns'));
+            ->get(['id', 'store_id', 'code', 'name', 'type', 'discount_type', 'discount_value',
+                   'minimum_spend', 'start_date', 'end_date', 'usage_limit', 'used_count', 'color']);
+
+        // Route ke view sesuai store_mode (bisa di-override lewat ?view=store/profile/hybrid)
+        $mode = request('view') ?? ($store->store_mode ?? 'store');
+        $profileLinks = is_array($store->profile_links)
+            ? collect($store->profile_links)->filter(fn($l) => !isset($l['is_active']) || !empty($l['is_active']))->values()
+            : collect();
+
+        $sharedData = compact('store', 'products', 'appearance', 'isFollowing', 'categories', 'campaigns', 'profileLinks');
+
+        if ($mode === 'profile') {
+            return view('store.profile', $sharedData);
+        }
+
+        if ($mode === 'hybrid') {
+            return view('store.hybrid', $sharedData);
+        }
+
+        return view('store.show', $sharedData);
     }
 
     /**

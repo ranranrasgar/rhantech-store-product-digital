@@ -1,21 +1,35 @@
 @extends('layouts.tenant')
 
-@section('title', 'Dekorasi Etalase Toko')
+@section('title', 'Desain Tampilan Halaman')
 
 @section('content')
 <div class="flex flex-col h-full bg-[#f8fafc] dark:bg-[#090d16] text-[#0f172a] dark:text-[#f1f5f9] transition-colors duration-200" x-data="appearanceEditor()">
     
+    <!-- Floating Toast Notification -->
+    <div x-show="toast.show" 
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 translate-y-[-12px] scale-95"
+         x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+         x-transition:leave-end="opacity-0 translate-y-[-12px] scale-95"
+         class="fixed top-5 right-5 z-50 flex items-center gap-2.5 px-4 py-3 rounded-2xl bg-slate-900/95 text-white border border-slate-700/80 shadow-2xl backdrop-blur-md text-xs font-bold"
+         style="display: none;">
+        <span class="material-symbols-outlined text-[20px] text-emerald-400">check_circle</span>
+        <span x-text="toast.message"></span>
+    </div>
+
     <!-- Top Action Header -->
     <div class="sticky top-0 bg-white/95 dark:bg-[#111726]/95 backdrop-blur-md border-b border-slate-200/80 dark:border-[#222f49] px-4 sm:px-6 py-3 sm:py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 shadow-sm z-40 shrink-0">
         <div class="min-w-0">
             <h1 class="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-                Dekorasi Etalase Toko
+                Desain Tampilan Halaman
                 <span x-show="hasUnsavedChanges" x-cloak class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
                     Belum Disimpan
                 </span>
             </h1>
             <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                Kustomisasi susunan visual dan tata letak halaman toko digital Anda.
+                Kustomisasi tampilan profil Bio Link, susunan widget, tema warna, dan etalase digital Anda.
             </p>
         </div>
 
@@ -26,7 +40,7 @@
                 <span class="sm:hidden">Reset</span>
             </button>
             @if($store && $store->slug)
-            <a href="{{ route('store.show', $store->slug) }}" target="_blank" class="flex-1 sm:flex-initial justify-center px-3 sm:px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm">
+            <a href="{{ route('store.show', $store->slug) }}" target="_blank" class="flex-1 sm:flex-initial justify-center px-3 sm:px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm" title="Buka preview halaman publik">
                 <span class="material-symbols-outlined text-[16px]">visibility</span> <span>Preview Web</span>
             </a>
             @endif
@@ -38,16 +52,20 @@
     </div>
 
     <!-- Mobile Tab Switcher (Visible only on screens < lg) -->
-    <div class="lg:hidden bg-white dark:bg-[#111726] border-b border-slate-200/80 dark:border-[#222f49] px-4 py-2 flex items-center justify-center gap-2 shrink-0 z-20">
-        <button type="button" @click="mobileTab = 'palette'" :class="mobileTab === 'palette' ? 'bg-sky-500 text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'" class="flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+    <div class="lg:hidden bg-white dark:bg-[#111726] border-b border-slate-200/80 dark:border-[#222f49] px-4 py-2 flex items-center justify-center gap-1.5 shrink-0 z-20 overflow-x-auto">
+        <button type="button" @click="mobileTab = 'palette'; sidebarTab = 'widgets'" :class="mobileTab === 'palette' ? 'bg-sky-500 text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'" class="flex-1 py-2 px-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap">
             <span class="material-symbols-outlined text-[16px]">widgets</span>
             <span>Widget</span>
         </button>
-        <button type="button" @click="mobileTab = 'voucher'" :class="mobileTab === 'voucher' ? 'bg-rose-500 text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'" class="flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+        <button type="button" @click="mobileTab = 'voucher'; sidebarTab = 'voucher'" :class="mobileTab === 'voucher' ? 'bg-rose-500 text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'" class="flex-1 py-2 px-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap">
             <span class="material-symbols-outlined text-[16px]">confirmation_number</span>
             <span>Voucher</span>
         </button>
-        <button type="button" @click="mobileTab = 'canvas'" :class="mobileTab === 'canvas' ? 'bg-sky-500 text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'" class="flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+        <button type="button" @click="mobileTab = 'biolink'; sidebarTab = 'biolink'" :class="mobileTab === 'biolink' ? 'bg-teal-500 text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'" class="flex-1 py-2 px-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap">
+            <span class="material-symbols-outlined text-[16px]">link</span>
+            <span>Bio Link</span>
+        </button>
+        <button type="button" @click="mobileTab = 'canvas'" :class="mobileTab === 'canvas' ? 'bg-sky-500 text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'" class="flex-1 py-2 px-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap">
             <span class="material-symbols-outlined text-[16px]">devices</span>
             <span>Kanvas</span>
         </button>
@@ -57,20 +75,23 @@
     <div class="flex-1 flex flex-col lg:flex-row overflow-hidden min-h-0 relative">
         
         <!-- LEFT SIDEBAR: WIDGET COMPONENT PALETTE -->
-        <div :class="(mobileTab === 'palette' || mobileTab === 'voucher') ? 'flex' : 'hidden lg:flex'" class="w-full lg:w-[300px] border-b lg:border-b-0 lg:border-r border-slate-200/80 dark:border-[#222f49] bg-white dark:bg-[#111726] flex-col h-full z-10 shrink-0 shadow-sm overflow-hidden">
+        <div :class="(mobileTab === 'palette' || mobileTab === 'voucher' || mobileTab === 'biolink') ? 'flex' : 'hidden lg:flex'" class="w-full lg:w-[320px] border-b lg:border-b-0 lg:border-r border-slate-200/80 dark:border-[#222f49] bg-white dark:bg-[#111726] flex-col h-full z-10 shrink-0 shadow-sm overflow-hidden">
 
             <!-- Sidebar Tab Toggle (Desktop) -->
             <div class="hidden lg:flex border-b border-slate-100 dark:border-[#222f49]">
-                <button type="button" @click="sidebarTab = 'widgets'" :class="sidebarTab === 'widgets' ? 'border-b-2 border-sky-500 text-sky-600 dark:text-sky-400 font-black' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'" class="flex-1 py-2.5 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer">
+                <button type="button" @click="sidebarTab = 'widgets'; mobileTab = 'palette'" :class="sidebarTab === 'widgets' ? 'border-b-2 border-sky-500 text-sky-600 dark:text-sky-400 font-black' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'" class="flex-1 py-2.5 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer">
                     <span class="material-symbols-outlined text-[15px]">widgets</span> Widget
                 </button>
-                <button type="button" @click="sidebarTab = 'voucher'" :class="sidebarTab === 'voucher' ? 'border-b-2 border-rose-500 text-rose-600 dark:text-rose-400 font-black' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'" class="flex-1 py-2.5 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer">
+                <button type="button" @click="sidebarTab = 'voucher'; mobileTab = 'voucher'" :class="sidebarTab === 'voucher' ? 'border-b-2 border-rose-500 text-rose-600 dark:text-rose-400 font-black' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'" class="flex-1 py-2.5 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer">
                     <span class="material-symbols-outlined text-[15px]">confirmation_number</span> Kupon
+                </button>
+                <button type="button" @click="sidebarTab = 'biolink'; mobileTab = 'biolink'" :class="sidebarTab === 'biolink' ? 'border-b-2 border-teal-500 text-teal-600 dark:text-teal-400 font-black' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'" class="flex-1 py-2.5 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer" title="Kelola Tombol Bio Link (Linktree / Lynk.id)">
+                    <span class="material-symbols-outlined text-[15px]">link</span> Bio Link
                 </button>
             </div>
 
             <!-- PANEL: Widget Palette -->
-            <div x-show="sidebarTab === 'widgets' && mobileTab !== 'voucher'" class="flex flex-col flex-1 overflow-hidden">
+            <div x-show="sidebarTab === 'widgets'" class="flex flex-col flex-1 overflow-hidden">
             <div class="p-3.5 sm:p-4 border-b border-slate-100 dark:border-[#222f49]">
                 <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                     Pilihan Blok Widget
@@ -155,7 +176,7 @@
             </div>
 
             <!-- PANEL: Penempatan Voucher -->
-            <div x-show="sidebarTab === 'voucher' || mobileTab === 'voucher'" class="flex flex-col flex-1 overflow-hidden">
+            <div x-show="sidebarTab === 'voucher'" class="flex flex-col flex-1 overflow-hidden">
                 <div class="p-3.5 sm:p-4 border-b border-slate-100 dark:border-[#222f49]">
                     <h2 class="text-xs font-bold uppercase tracking-wider text-rose-500 flex items-center gap-1.5">
                         <span class="material-symbols-outlined text-[15px]">confirmation_number</span>
@@ -202,10 +223,11 @@
                                 <span class="material-symbols-outlined text-[15px] text-rose-500">store</span>
                                 Header Toko
                             </label>
-                            <select id="vp_header" x-model="voucherPlacement.header" class="w-full px-3 py-2 rounded-xl text-xs bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] text-slate-900 dark:text-white outline-none focus:border-rose-500">
+                            <select id="vp_header" x-model="voucherPlacement.header" class="w-full px-3 py-2 rounded-xl text-xs bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] text-slate-900 dark:text-white outline-none focus:border-rose-500 font-medium">
                                 <option value="">— Otomatis (sistem) —</option>
+                                <option value="none">🚫 Nonaktifkan / Sembunyikan</option>
                                 @foreach($activeCampaigns as $c)
-                                    <option value="{{ $c->id }}" {{ ($voucherPlacement['header'] ?? '') == $c->id ? 'selected' : '' }}>
+                                    <option value="{{ $c->id }}" {{ ($voucherPlacement['header'] ?? '') == (string)$c->id ? 'selected' : '' }}>
                                         {{ $c->name }}
                                         @if($c->code) [{{ $c->code }}] @endif
                                         ({{ $c->discount_type === 'percentage' ? $c->discount_value.'%' : 'Rp '.number_format($c->discount_value,0,',','.') }})
@@ -220,10 +242,11 @@
                                 <span class="material-symbols-outlined text-[15px] text-amber-500">inventory_2</span>
                                 Pop-up Halaman Produk
                             </label>
-                            <select id="vp_product" x-model="voucherPlacement.product_page" class="w-full px-3 py-2 rounded-xl text-xs bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] text-slate-900 dark:text-white outline-none focus:border-rose-500">
+                            <select id="vp_product" x-model="voucherPlacement.product_page" class="w-full px-3 py-2 rounded-xl text-xs bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] text-slate-900 dark:text-white outline-none focus:border-rose-500 font-medium">
                                 <option value="">— Otomatis (sistem) —</option>
+                                <option value="none">🚫 Nonaktifkan / Sembunyikan</option>
                                 @foreach($activeCampaigns as $c)
-                                    <option value="{{ $c->id }}" {{ ($voucherPlacement['product_page'] ?? '') == $c->id ? 'selected' : '' }}>
+                                    <option value="{{ $c->id }}" {{ ($voucherPlacement['product_page'] ?? '') == (string)$c->id ? 'selected' : '' }}>
                                         {{ $c->name }}
                                         @if($c->code) [{{ $c->code }}] @endif
                                         ({{ $c->discount_type === 'percentage' ? $c->discount_value.'%' : 'Rp '.number_format($c->discount_value,0,',','.') }})
@@ -238,10 +261,11 @@
                                 <span class="material-symbols-outlined text-[15px] text-emerald-500">shopping_cart_checkout</span>
                                 Halaman Checkout
                             </label>
-                            <select id="vp_checkout" x-model="voucherPlacement.checkout" class="w-full px-3 py-2 rounded-xl text-xs bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] text-slate-900 dark:text-white outline-none focus:border-rose-500">
+                            <select id="vp_checkout" x-model="voucherPlacement.checkout" class="w-full px-3 py-2 rounded-xl text-xs bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] text-slate-900 dark:text-white outline-none focus:border-rose-500 font-medium">
                                 <option value="">— Otomatis (sistem) —</option>
+                                <option value="none">🚫 Nonaktifkan / Sembunyikan</option>
                                 @foreach($activeCampaigns as $c)
-                                    <option value="{{ $c->id }}" {{ ($voucherPlacement['checkout'] ?? '') == $c->id ? 'selected' : '' }}>
+                                    <option value="{{ $c->id }}" {{ ($voucherPlacement['checkout'] ?? '') == (string)$c->id ? 'selected' : '' }}>
                                         {{ $c->name }}
                                         @if($c->code) [{{ $c->code }}] @endif
                                         ({{ $c->discount_type === 'percentage' ? $c->discount_value.'%' : 'Rp '.number_format($c->discount_value,0,',','.') }})
@@ -270,19 +294,246 @@
                 </div>
             </div>
 
+            <!-- PANEL: Bio Link Editor -->
+            <div x-show="sidebarTab === 'biolink'" class="flex flex-col flex-1 overflow-hidden" style="display: none;">
+                <div class="p-3.5 sm:p-4 border-b border-slate-100 dark:border-[#222f49] flex items-center justify-between gap-2">
+                    <div>
+                        <h2 class="text-xs font-bold uppercase tracking-wider text-teal-600 dark:text-teal-400 flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-[16px]">link</span> Tombol Tautan Bio Link
+                        </h2>
+                        <p class="text-[11px] text-slate-400 mt-0.5">Tampil di mode <b>Bio Link</b> dan <b>Hybrid</b>.</p>
+                    </div>
+                    <button type="button" @click="saveProfileLinks()" :disabled="isSavingLinks" class="px-3 py-1.5 rounded-lg bg-teal-500 hover:bg-teal-400 text-white text-[11px] font-bold transition-all shadow-sm flex items-center gap-1 cursor-pointer">
+                        <span class="material-symbols-outlined text-[14px]">save</span>
+                        <span x-text="isSavingLinks ? '...' : 'Simpan'">Simpan</span>
+                    </button>
+                </div>
+
+                <div class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+                    <!-- Quick Presets -->
+                    <div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-2">Tambah Cepat:</span>
+                        <div class="grid grid-cols-2 gap-1.5">
+                            <button type="button" @click="addProfileLink({ title: 'Chat WhatsApp', url: 'https://wa.me/', icon: 'chat', color: '#059669' })" class="px-2 py-1.5 rounded-lg text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 hover:bg-emerald-100 transition-colors flex items-center gap-1.5 text-left cursor-pointer">
+                                <span class="material-symbols-outlined text-[14px]">chat</span> WhatsApp
+                            </button>
+                            <button type="button" @click="addProfileLink({ title: 'Channel Telegram', url: 'https://t.me/', icon: 'send', color: '#0284c7' })" class="px-2 py-1.5 rounded-lg text-xs font-semibold bg-sky-50 dark:bg-sky-950/30 text-sky-600 dark:text-sky-400 border border-sky-200 dark:border-sky-800 hover:bg-sky-100 transition-colors flex items-center gap-1.5 text-left cursor-pointer">
+                                <span class="material-symbols-outlined text-[14px]">send</span> Telegram
+                            </button>
+                            <button type="button" @click="addProfileLink({ title: 'Website Portofolio', url: 'https://', icon: 'language', color: '#7c3aed' })" class="px-2 py-1.5 rounded-lg text-xs font-semibold bg-violet-50 dark:bg-violet-950/30 text-violet-600 dark:text-violet-400 border border-violet-200 dark:border-violet-800 hover:bg-violet-100 transition-colors flex items-center gap-1.5 text-left cursor-pointer">
+                                <span class="material-symbols-outlined text-[14px]">language</span> Portofolio
+                            </button>
+                            <button type="button" @click="addProfileLink({ title: 'YouTube Channel', url: 'https://youtube.com/', icon: 'smart_display', color: '#e11d48' })" class="px-2 py-1.5 rounded-lg text-xs font-semibold bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800 hover:bg-rose-100 transition-colors flex items-center gap-1.5 text-left cursor-pointer">
+                                <span class="material-symbols-outlined text-[14px]">smart_display</span> YouTube
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Links List (Accordion: Collapsed by Default) -->
+                    <div class="space-y-2.5">
+                        <template x-for="(link, lIdx) in profileLinks" :key="lIdx">
+                            <div class="rounded-2xl bg-slate-50 dark:bg-[#0e1526] border border-slate-200 dark:border-[#222f49] shadow-xs overflow-hidden transition-all duration-200">
+                                <!-- Collapsed Header Bar (Always visible) -->
+                                <div @click="expandedLinkIndex = (expandedLinkIndex === lIdx ? null : lIdx)"
+                                     class="p-3 flex items-center justify-between gap-2 cursor-pointer hover:bg-slate-100/70 dark:hover:bg-slate-800/50 transition-colors select-none">
+                                    <div class="flex items-center gap-2 min-w-0 flex-1">
+                                        <span class="w-5 h-5 rounded-md bg-teal-500/10 text-teal-600 dark:text-teal-400 text-[10px] font-black flex items-center justify-center shrink-0" x-text="lIdx + 1"></span>
+                                        
+                                        <!-- Mini Image or Icon Preview -->
+                                        <template x-if="link.image">
+                                            <img :src="link.image" class="w-6 h-6 rounded-md object-cover border border-slate-200 dark:border-slate-700 shrink-0">
+                                        </template>
+                                        <template x-if="!link.image">
+                                            <div class="w-6 h-6 rounded-md flex items-center justify-center text-white shrink-0 text-[11px]" :style="'background:' + (link.color || '#0284c7')">
+                                                <span class="material-symbols-outlined text-[13px]" x-text="link.icon || 'link'"></span>
+                                            </div>
+                                        </template>
+
+                                        <!-- Title & Layout Badge -->
+                                        <div class="min-w-0 flex-1">
+                                            <span class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate block leading-tight" x-text="link.title || 'Tautan Baru'"></span>
+                                            <span class="text-[9px] text-slate-400 font-medium" x-text="link.layout === 'grid' ? '2 Kolom' : (link.layout === 'card' ? 'Gambar Besar' : '1 Baris')"></span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Right: Action Buttons & Expand Icon -->
+                                    <div class="flex items-center gap-0.5 shrink-0">
+                                        <button type="button" @click.stop="moveProfileLinkUp(lIdx)" :disabled="lIdx === 0" :class="lIdx === 0 ? 'opacity-30' : 'hover:bg-slate-200 dark:hover:bg-slate-700'" class="p-1 rounded text-slate-400 hover:text-slate-600 cursor-pointer" title="Naikkan urutan">
+                                            <span class="material-symbols-outlined text-[15px]">arrow_upward</span>
+                                        </button>
+                                        <button type="button" @click.stop="moveProfileLinkDown(lIdx)" :disabled="lIdx === profileLinks.length - 1" :class="lIdx === profileLinks.length - 1 ? 'opacity-30' : 'hover:bg-slate-200 dark:hover:bg-slate-700'" class="p-1 rounded text-slate-400 hover:text-slate-600 cursor-pointer" title="Turunkan urutan">
+                                            <span class="material-symbols-outlined text-[15px]">arrow_downward</span>
+                                        </button>
+                                        <button type="button" @click.stop="removeProfileLink(lIdx)" class="p-1 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded ml-0.5 cursor-pointer" title="Hapus tombol ini">
+                                            <span class="material-symbols-outlined text-[15px]">delete</span>
+                                        </button>
+                                        <div class="w-px h-3.5 bg-slate-200 dark:bg-slate-700 mx-1"></div>
+                                        <span class="material-symbols-outlined text-[18px] text-slate-400 transition-transform duration-200" :class="expandedLinkIndex === lIdx ? 'rotate-180 text-teal-500 font-bold' : ''">expand_more</span>
+                                    </div>
+                                </div>
+
+                                <!-- Collapsible Form Body (Only open for expandedLinkIndex === lIdx) -->
+                                <div x-show="expandedLinkIndex === lIdx" class="p-3.5 pt-2 border-t border-slate-200/60 dark:border-slate-800 space-y-3">
+                                    <!-- Bentuk Tampilan (Layout Selector) -->
+                                    <div>
+                                        <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 block mb-1">Pilihan Layout Tampilan:</span>
+                                        <div class="grid grid-cols-3 gap-1 bg-slate-200/80 dark:bg-[#161f33] p-1 rounded-xl text-center">
+                                            <button type="button" @click="link.layout = 'list'; hasUnsavedChanges = true" 
+                                                    :class="(!link.layout || link.layout === 'list') ? 'bg-white dark:bg-slate-800 text-sky-600 dark:text-sky-400 shadow-xs font-black' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-semibold'" 
+                                                    class="py-1.5 px-1 rounded-lg text-[10px] transition-all flex flex-col items-center justify-center gap-0.5 cursor-pointer">
+                                                <span class="material-symbols-outlined text-[15px]">view_stream</span>
+                                                <span>1 Baris</span>
+                                            </button>
+                                            <button type="button" @click="link.layout = 'grid'; hasUnsavedChanges = true" 
+                                                    :class="link.layout === 'grid' ? 'bg-white dark:bg-slate-800 text-sky-600 dark:text-sky-400 shadow-xs font-black' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-semibold'" 
+                                                    class="py-1.5 px-1 rounded-lg text-[10px] transition-all flex flex-col items-center justify-center gap-0.5 cursor-pointer">
+                                                <span class="material-symbols-outlined text-[15px]">grid_view</span>
+                                                <span>2 Kolom</span>
+                                            </button>
+                                            <button type="button" @click="link.layout = 'card'; hasUnsavedChanges = true" 
+                                                    :class="link.layout === 'card' ? 'bg-white dark:bg-slate-800 text-sky-600 dark:text-sky-400 shadow-xs font-black' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-semibold'" 
+                                                    class="py-1.5 px-1 rounded-lg text-[10px] transition-all flex flex-col items-center justify-center gap-0.5 cursor-pointer">
+                                                <span class="material-symbols-outlined text-[15px]">featured_play_list</span>
+                                                <span>Gambar Besar</span>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Input Judul & Subtitle -->
+                                    <div class="space-y-1.5">
+                                        <div>
+                                            <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1">Judul Teks Tombol *</label>
+                                            <input type="text" x-model="link.title" @input="hasUnsavedChanges = true" placeholder="Judul Teks Tombol / Nama Penawaran *" class="w-full px-2.5 py-1.5 text-xs bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-lg font-bold text-slate-900 dark:text-white">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1">Sub-judul / Harga (Opsional)</label>
+                                            <input type="text" x-model="link.subtitle" @input="hasUnsavedChanges = true" placeholder="Sub-judul / Harga (misal: Rp 150.000 / Diskon 50%)" class="w-full px-2.5 py-1.5 text-xs bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-lg text-slate-600 dark:text-slate-300">
+                                        </div>
+                                    </div>
+
+                                    <!-- Deskripsi Lengkap (Teks Panjang) -->
+                                    <div>
+                                        <div class="flex items-center justify-between mb-1">
+                                            <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400">Deskripsi Lengkap (Teks Panjang):</label>
+                                            <span class="text-[9px] text-slate-400 font-normal">Bisa diisi banyak teks</span>
+                                        </div>
+                                        <textarea x-model="link.description" @input="hasUnsavedChanges = true" rows="3" placeholder="Tuliskan keterangan lengkap detail produk/jasa, fitur, penjelasan teks panjang, panduan, dll..." class="w-full px-2.5 py-1.5 text-xs bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-lg text-slate-700 dark:text-slate-200 focus:border-teal-500 outline-none leading-relaxed custom-scrollbar"></textarea>
+                                    </div>
+
+                                    <!-- Input URL Link -->
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1">URL Link Tujuan *</label>
+                                        <input type="text" x-model="link.url" @input="hasUnsavedChanges = true" placeholder="URL Link: https://wa.me/... atau https://..." class="w-full px-2.5 py-1.5 text-xs bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-lg font-mono text-slate-900 dark:text-white">
+                                    </div>
+
+                                    <!-- Foto / Thumbnail Image (Opsional) -->
+                                    <div>
+                                        <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 block mb-1">Foto / Sampul Thumbnail (Opsional):</span>
+                                        <template x-if="link.image">
+                                            <div class="flex items-center gap-2 w-full bg-white dark:bg-[#0c1220] p-1.5 rounded-xl border border-slate-200 dark:border-[#222f49]">
+                                                <img :src="link.image" class="w-10 h-10 object-cover rounded-lg border border-slate-200 dark:border-slate-700 shrink-0">
+                                                <span class="text-[10px] text-slate-500 truncate flex-1 font-mono" x-text="link.image"></span>
+                                                <button type="button" @click="link.image = null; hasUnsavedChanges = true" class="text-rose-500 hover:text-rose-700 p-1 cursor-pointer" title="Hapus Gambar">
+                                                    <span class="material-symbols-outlined text-[16px]">close</span>
+                                                </button>
+                                            </div>
+                                        </template>
+                                        <template x-if="!link.image">
+                                            <div class="flex items-center gap-1.5 w-full">
+                                                <label class="cursor-pointer px-2.5 py-1.5 rounded-lg bg-sky-50 dark:bg-sky-950/30 text-sky-600 dark:text-sky-400 border border-sky-200 dark:border-sky-800 hover:bg-sky-100 transition-colors text-[11px] font-bold flex items-center gap-1 shrink-0">
+                                                    <span class="material-symbols-outlined text-[14px]">add_photo_alternate</span>
+                                                    <span>Upload Foto</span>
+                                                    <input type="file" class="hidden" accept="image/*" @change="openCropper($event, link, 'image', false, (link.layout === 'card' ? 16/9 : 1/1))">
+                                                </label>
+                                                <input type="text" x-model="link.image" @input="hasUnsavedChanges = true" placeholder="atau paste URL foto..." class="flex-1 px-2 py-1.5 text-[11px] bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-lg font-mono text-slate-700 dark:text-slate-300">
+                                            </div>
+                                        </template>
+                                    </div>
+
+                                    <!-- Badge & Icon & Color Picker -->
+                                    <div class="grid grid-cols-12 gap-1.5 items-center">
+                                        <div class="col-span-5">
+                                            <input type="text" x-model="link.badge" @input="hasUnsavedChanges = true" placeholder="Badge (HOT/NEW)" class="w-full px-2 py-1.5 text-xs bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-lg text-slate-900 dark:text-white uppercase font-bold text-[10px]">
+                                        </div>
+                                        <div class="col-span-5">
+                                            <select x-model="link.icon" @change="hasUnsavedChanges = true" class="w-full py-1.5 px-1.5 text-xs bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-lg text-slate-900 dark:text-white cursor-pointer font-semibold text-[11px]">
+                                                <option value="link">Ikon: Tautan</option>
+                                                <option value="chat">Ikon: WhatsApp</option>
+                                                <option value="send">Ikon: Telegram</option>
+                                                <option value="language">Ikon: Website</option>
+                                                <option value="smart_display">Ikon: YouTube</option>
+                                                <option value="shopping_bag">Ikon: Belanja</option>
+                                                <option value="school">Ikon: Kelas/Kursus</option>
+                                                <option value="star">Ikon: Bintang</option>
+                                                <option value="bolt">Ikon: Flash Promo</option>
+                                                <option value="workspace_premium">Ikon: VIP / PRO</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-span-2 flex justify-end">
+                                            <input type="color" x-model="link.color" @input="hasUnsavedChanges = true" class="w-8 h-8 rounded-lg border border-slate-200 dark:border-slate-700 cursor-pointer p-0 bg-transparent" title="Pilih warna tombol">
+                                        </div>
+                                    </div>
+
+                                    <!-- Button Selesai Tutup -->
+                                    <button type="button" @click="expandedLinkIndex = null" class="w-full py-1.5 text-center text-[11px] font-bold text-teal-600 dark:text-teal-400 bg-teal-50/60 dark:bg-teal-950/20 hover:bg-teal-100/60 rounded-lg flex items-center justify-center gap-1 transition-colors cursor-pointer mt-2">
+                                        <span class="material-symbols-outlined text-[13px]">check</span> Selesai Edit (Tutup)
+                                    </button>
+                                </div>
+                            </div>
+                        </template>
+
+                        <div x-show="profileLinks.length === 0" class="p-6 text-center text-slate-400 text-xs border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl">
+                            Belum ada tombol link. Klik tombol tambah di bawah atau gunakan template di atas.
+                        </div>
+
+                        <button type="button" @click="addProfileLink()" class="w-full py-2 rounded-xl text-xs font-bold text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-950/30 border border-teal-200 dark:border-teal-800 hover:bg-teal-100 transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
+                            <span class="material-symbols-outlined text-[16px]">add_circle</span> Tambah Tombol Link Baru
+                        </button>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <!-- CENTER CANVAS: LIVE INTERACTIVE STORE BUILDER -->
         <div :class="mobileTab === 'canvas' ? 'flex' : 'hidden lg:flex'" class="flex-1 bg-slate-100/60 dark:bg-[#070a12] flex-col items-center py-4 sm:py-6 px-2 sm:px-4 overflow-auto relative custom-scrollbar w-full min-w-0">
             
-            <!-- Viewport Switcher (Desktop / Mobile) -->
-            <div class="flex items-center gap-1.5 mb-4 sm:mb-6 bg-white dark:bg-[#111726] p-1.5 rounded-2xl border border-slate-200/80 dark:border-[#222f49] shrink-0 shadow-sm">
-                <button @click="device = 'desktop'" :class="device === 'desktop' ? 'bg-sky-500 text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'" class="px-3.5 sm:px-4 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer">
-                    <span class="material-symbols-outlined text-[16px]">desktop_windows</span> Desktop
-                </button>
-                <button @click="device = 'mobile'" :class="device === 'mobile' ? 'bg-sky-500 text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'" class="px-3.5 sm:px-4 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer">
-                    <span class="material-symbols-outlined text-[16px]">smartphone</span> Mobile
-                </button>
+            <!-- Control Bar: Mode Tampilan Switcher & Viewport (Desktop/Mobile) -->
+            <div class="w-full max-w-[960px] flex flex-col sm:flex-row items-center justify-between gap-3 mb-4 sm:mb-6 shrink-0">
+                <!-- Mode Tampilan Switcher -->
+                <div class="flex items-center gap-1 bg-white dark:bg-[#111726] p-1.5 rounded-2xl border border-slate-200/80 dark:border-[#222f49] shadow-sm overflow-x-auto max-w-full">
+                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 pl-2 pr-1 shrink-0 flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[14px]">tune</span> Mode:
+                    </span>
+                    <button type="button" @click="setStoreMode('store')" 
+                            :class="storeMode === 'store' ? 'bg-sky-500 text-white shadow-xs font-black' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" 
+                            class="px-3 py-1.5 rounded-xl text-xs transition-all flex items-center gap-1.5 cursor-pointer shrink-0" title="Mode Toko Digital (E-Commerce Katalog)">
+                        <span class="material-symbols-outlined text-[16px]">storefront</span>
+                        <span>Toko Digital</span>
+                    </button>
+                    <button type="button" @click="setStoreMode('profile')" 
+                            :class="storeMode === 'profile' ? 'bg-sky-500 text-white shadow-xs font-black' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" 
+                            class="px-3 py-1.5 rounded-xl text-xs transition-all flex items-center gap-1.5 cursor-pointer shrink-0" title="Mode Bio Link (Linktree / Lynk.id)">
+                        <span class="material-symbols-outlined text-[16px]">contact_page</span>
+                        <span>Bio Link</span>
+                    </button>
+                    <button type="button" @click="setStoreMode('hybrid')" 
+                            :class="storeMode === 'hybrid' ? 'bg-sky-500 text-white shadow-xs font-black' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" 
+                            class="px-3 py-1.5 rounded-xl text-xs transition-all flex items-center gap-1.5 cursor-pointer shrink-0" title="Mode Hybrid (Bio Link + Toko Digital)">
+                        <span class="material-symbols-outlined text-[16px]">layers</span>
+                        <span>Hybrid</span>
+                    </button>
+                </div>
+
+                <!-- Viewport Switcher (Desktop / Mobile) -->
+                <div class="flex items-center gap-1 bg-white dark:bg-[#111726] p-1.5 rounded-2xl border border-slate-200/80 dark:border-[#222f49] shadow-sm shrink-0">
+                    <button @click="device = 'desktop'" :class="device === 'desktop' ? 'bg-sky-500 text-white shadow-xs font-black' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="px-3.5 sm:px-4 py-1.5 rounded-xl text-xs transition-all flex items-center gap-1.5 cursor-pointer">
+                        <span class="material-symbols-outlined text-[16px]">desktop_windows</span> Desktop
+                    </button>
+                    <button @click="device = 'mobile'" :class="device === 'mobile' ? 'bg-sky-500 text-white shadow-xs font-black' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="px-3.5 sm:px-4 py-1.5 rounded-xl text-xs transition-all flex items-center gap-1.5 cursor-pointer">
+                        <span class="material-symbols-outlined text-[16px]">smartphone</span> Mobile
+                    </button>
+                </div>
             </div>
 
             <!-- DESKTOP CANVAS VIEWPORT -->
@@ -298,7 +549,7 @@
                     <div class="flex-1 flex justify-center">
                         <div class="bg-white dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] text-[11px] px-4 py-1 rounded-lg text-slate-500 w-[50%] flex items-center justify-center gap-1.5 font-mono truncate">
                             <span class="material-symbols-outlined text-[13px] text-emerald-500">lock</span>
-                            <span>rhantech.com/toko/{{ $store->slug ?? 'toko-anda' }}</span>
+                            <span>rhantech.com/{{ $store->slug ?? 'toko-anda' }}</span>
                         </div>
                     </div>
                 </div>
@@ -338,8 +589,131 @@
                     </div>
                 </div>
 
+                <!-- Interactive Bio Link Preview Container (Visible in profile & hybrid modes) -->
+                <div x-show="storeMode === 'profile' || storeMode === 'hybrid'" class="p-6 pb-2">
+                    <div class="w-full max-w-md mx-auto space-y-2.5 bg-slate-50/70 dark:bg-[#111726]/70 p-4 rounded-2xl border border-slate-200/80 dark:border-[#222f49]">
+                        <div class="flex items-center justify-between px-1 mb-1">
+                            <span class="text-[11px] font-bold text-teal-600 dark:text-teal-400 flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[15px]">link</span> Tombol Tautan Bio Link
+                            </span>
+                            <button type="button" @click="sidebarTab = 'biolink'; mobileTab = 'biolink'" class="text-[11px] font-semibold text-slate-500 hover:text-teal-600 flex items-center gap-0.5 cursor-pointer">
+                                <span class="material-symbols-outlined text-[14px]">edit</span> Edit Tombol
+                            </button>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-2.5">
+                            <template x-for="(link, lIdx) in profileLinks" :key="lIdx">
+                                <div :class="link.layout === 'grid' ? 'col-span-1' : 'col-span-2'">
+                                    <!-- 1. GRID (2 Kolom) -->
+                                    <template x-if="link.layout === 'grid'">
+                                        <div class="flex flex-col bg-white dark:bg-[#161b22] border border-slate-200 dark:border-[#30363d] rounded-2xl overflow-hidden shadow-xs hover:shadow-md transition-all cursor-pointer text-left h-full"
+                                             @click="sidebarTab = 'biolink'; mobileTab = 'biolink'">
+                                            <div class="w-full aspect-square bg-slate-100 dark:bg-slate-800 relative overflow-hidden flex items-center justify-center">
+                                                <template x-if="link.image">
+                                                    <img :src="link.image" class="w-full h-full object-cover">
+                                                </template>
+                                                <template x-if="!link.image">
+                                                    <div class="w-full h-full flex items-center justify-center text-white" :style="`background: ${link.color || '#0284c7'};`">
+                                                        <span class="material-symbols-outlined text-3xl opacity-90" x-text="link.icon || 'link'"></span>
+                                                    </div>
+                                                </template>
+                                                <template x-if="link.badge">
+                                                    <span class="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded-md bg-black/60 backdrop-blur-md text-white text-[8px] font-black uppercase tracking-wider" x-text="link.badge"></span>
+                                                </template>
+                                            </div>
+                                            <div class="p-2.5 flex flex-col flex-1 justify-between bg-white dark:bg-[#161b22]">
+                                                <div>
+                                                    <h4 class="font-bold text-[11px] text-slate-900 dark:text-white line-clamp-2 leading-tight" x-text="link.title || 'Judul Link'"></h4>
+                                                    <p x-show="link.subtitle" class="text-[10px] font-bold mt-0.5 truncate" :style="`color: ${link.color || '#0284c7'};`" x-text="link.subtitle"></p>
+                                                    <p x-show="link.description" class="text-[9px] text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-2 leading-tight" x-text="link.description"></p>
+                                                </div>
+                                                <div class="mt-2 pt-1.5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[9px] font-bold text-slate-400">
+                                                    <span>Buka Link</span>
+                                                    <span class="material-symbols-outlined text-[12px]">arrow_forward</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+
+                                    <!-- 2. CARD (Gambar Besar 1 Kolom Penuh) -->
+                                    <template x-if="link.layout === 'card'">
+                                        <div class="flex flex-col bg-white dark:bg-[#161b22] border border-slate-200 dark:border-[#30363d] rounded-2xl overflow-hidden shadow-xs hover:shadow-md transition-all cursor-pointer text-left"
+                                             @click="sidebarTab = 'biolink'; mobileTab = 'biolink'">
+                                            <div class="w-full aspect-[16/9] bg-slate-100 dark:bg-slate-800 relative overflow-hidden flex items-center justify-center">
+                                                <template x-if="link.image">
+                                                    <img :src="link.image" class="w-full h-full object-cover">
+                                                </template>
+                                                <template x-if="!link.image">
+                                                    <div class="w-full h-full flex items-center justify-center text-white" :style="`background: ${link.color || '#0284c7'};`">
+                                                        <span class="material-symbols-outlined text-4xl opacity-90" x-text="link.icon || 'link'"></span>
+                                                    </div>
+                                                </template>
+                                                <template x-if="link.badge">
+                                                    <span class="absolute top-2 left-2 px-2 py-0.5 rounded-lg bg-black/60 backdrop-blur-md text-white text-[9px] font-black uppercase tracking-wider" x-text="link.badge"></span>
+                                                </template>
+                                            </div>
+                                            <div class="p-3 bg-white dark:bg-[#161b22]">
+                                                <h4 class="font-extrabold text-xs text-slate-900 dark:text-white leading-snug truncate" x-text="link.title || 'Judul Link'"></h4>
+                                                <p x-show="link.subtitle" class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-1" x-text="link.subtitle"></p>
+                                                <p x-show="link.description" class="text-[10px] text-slate-600 dark:text-slate-300 mt-1 line-clamp-2 leading-relaxed" x-text="link.description"></p>
+                                                <div class="mt-2.5 w-full py-1.5 px-3 rounded-xl text-white font-bold text-[10px] text-center flex items-center justify-center gap-1 shadow-xs"
+                                                     :style="`background: ${link.color || '#0284c7'};`">
+                                                    <span>Buka Tautan</span>
+                                                    <span class="material-symbols-outlined text-[13px]">arrow_forward</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+
+                                    <!-- 3. LIST (Default 1 Baris) -->
+                                    <template x-if="!link.layout || link.layout === 'list'">
+                                        <div class="flex items-center gap-2.5 w-full p-2.5 rounded-2xl text-white font-bold text-xs shadow-xs hover:shadow-md hover:scale-[1.01] transition-all cursor-pointer relative overflow-hidden"
+                                             :style="`background: ${link.color || '#0284c7'};`"
+                                             @click="sidebarTab = 'biolink'; mobileTab = 'biolink'">
+                                            <template x-if="link.badge">
+                                                <span class="absolute top-1 right-2 px-1.5 py-0.2 rounded-full bg-white/25 backdrop-blur-md text-[8px] font-black uppercase tracking-wider" x-text="link.badge"></span>
+                                            </template>
+                                            <template x-if="link.image">
+                                                <img :src="link.image" class="w-10 h-10 rounded-xl object-cover shrink-0 border border-white/20">
+                                            </template>
+                                            <template x-if="!link.image">
+                                                <div class="w-9 h-9 rounded-xl bg-white/15 flex items-center justify-center shrink-0">
+                                                    <span class="material-symbols-outlined text-[18px] opacity-90" x-text="link.icon || 'link'"></span>
+                                                </div>
+                                            </template>
+                                            <div class="flex-1 min-w-0 pr-1 text-left">
+                                                <span class="block truncate leading-tight" x-text="link.title || link.url || 'Tombol Link'"></span>
+                                                <span x-show="link.subtitle" class="block text-[10px] opacity-80 truncate font-normal mt-0.5" x-text="link.subtitle"></span>
+                                                <span x-show="link.description" class="block text-[9px] opacity-75 truncate font-normal mt-0.5" x-text="link.description"></span>
+                                            </div>
+                                            <span class="material-symbols-outlined text-[15px] opacity-70 shrink-0">arrow_forward</span>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+                        </div>
+
+                        <div x-show="profileLinks.length === 0" 
+                             @click="sidebarTab = 'biolink'; mobileTab = 'biolink'"
+                             class="p-4 rounded-xl border-2 border-dashed border-teal-300 dark:border-teal-800/60 bg-teal-50/40 dark:bg-teal-950/20 text-center cursor-pointer hover:bg-teal-50 transition-colors">
+                            <span class="material-symbols-outlined text-teal-500 text-[22px] mb-1">add_link</span>
+                            <p class="text-xs font-bold text-teal-700 dark:text-teal-300">Belum ada tombol link</p>
+                            <p class="text-[11px] text-teal-600/70 dark:text-teal-400/70 mt-0.5">Klik di sini untuk menambahkan tombol ke Bio Link Anda.</p>
+                        </div>
+                    </div>
+
+                    <!-- Pure Profile Mode Notice -->
+                    <div x-show="storeMode === 'profile'" class="p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 text-amber-800 dark:text-amber-300 text-xs flex items-center gap-3 max-w-md mx-auto mt-3">
+                        <span class="material-symbols-outlined text-[20px] text-amber-500 shrink-0">info</span>
+                        <div class="leading-tight">
+                            <p class="font-bold">Mode Bio Link Aktif</p>
+                            <p class="text-[11px] opacity-80 mt-0.5">Halaman publik hanya menampilkan bio &amp; tombol tautan. Ubah ke mode <b>Hybrid</b> jika ingin menampilkan widget etalase produk.</p>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Desktop Droppable Canvas Area -->
-                <div id="desktop-canvas" class="p-6 space-y-4 min-h-[300px]">
+                <div id="desktop-canvas" x-show="storeMode !== 'profile'" class="p-6 space-y-4 min-h-[300px]">
                     <template x-for="(comp, index) in activeComponents" :key="comp.id">
                         <div class="canvas-widget-item relative transition-all rounded-2xl" :data-id="comp.id">
                             <!-- Action Buttons / Toolbar (Always visible) -->
@@ -519,8 +893,128 @@
                     </div>
                 </div>
 
+                <!-- Mobile Bio Link Preview Container (Visible in profile & hybrid modes) -->
+                <div x-show="storeMode === 'profile' || storeMode === 'hybrid'" class="p-3 pb-1">
+                    <div class="w-full space-y-2 bg-slate-50/70 dark:bg-[#111726]/70 p-3 rounded-2xl border border-slate-200/80 dark:border-[#222f49]">
+                        <div class="flex items-center justify-between px-1 mb-0.5">
+                            <span class="text-[10px] font-bold text-teal-600 dark:text-teal-400 flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[14px]">link</span> Tombol Bio Link
+                            </span>
+                            <button type="button" @click="sidebarTab = 'biolink'; mobileTab = 'biolink'" class="text-[10px] font-semibold text-slate-500 hover:text-teal-600 flex items-center gap-0.5 cursor-pointer">
+                                <span class="material-symbols-outlined text-[13px]">edit</span> Edit
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2">
+                            <template x-for="(link, lIdx) in profileLinks" :key="lIdx">
+                                <div :class="link.layout === 'grid' ? 'col-span-1' : 'col-span-2'">
+                                    <!-- 1. GRID (2 Kolom) -->
+                                    <template x-if="link.layout === 'grid'">
+                                        <div class="flex flex-col bg-white dark:bg-[#161b22] border border-slate-200 dark:border-[#30363d] rounded-xl overflow-hidden shadow-xs hover:shadow-md transition-all cursor-pointer text-left h-full"
+                                             @click="sidebarTab = 'biolink'; mobileTab = 'biolink'">
+                                            <div class="w-full aspect-square bg-slate-100 dark:bg-slate-800 relative overflow-hidden flex items-center justify-center">
+                                                <template x-if="link.image">
+                                                    <img :src="link.image" class="w-full h-full object-cover">
+                                                </template>
+                                                <template x-if="!link.image">
+                                                    <div class="w-full h-full flex items-center justify-center text-white" :style="`background: ${link.color || '#0284c7'};`">
+                                                        <span class="material-symbols-outlined text-2xl opacity-90" x-text="link.icon || 'link'"></span>
+                                                    </div>
+                                                </template>
+                                                <template x-if="link.badge">
+                                                    <span class="absolute top-1 left-1 px-1 py-0.2 rounded bg-black/60 backdrop-blur-md text-white text-[7px] font-black uppercase tracking-wider" x-text="link.badge"></span>
+                                                </template>
+                                            </div>
+                                            <div class="p-2 flex flex-col flex-1 justify-between bg-white dark:bg-[#161b22]">
+                                                <div>
+                                                    <h4 class="font-bold text-[10px] text-slate-900 dark:text-white line-clamp-2 leading-tight" x-text="link.title || 'Judul Link'"></h4>
+                                                    <p x-show="link.subtitle" class="text-[9px] font-bold mt-0.5 truncate" :style="`color: ${link.color || '#0284c7'};`" x-text="link.subtitle"></p>
+                                                    <p x-show="link.description" class="text-[8px] text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-2 leading-tight" x-text="link.description"></p>
+                                                </div>
+                                                <div class="mt-1.5 pt-1 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[8px] font-bold text-slate-400">
+                                                    <span>Buka</span>
+                                                    <span class="material-symbols-outlined text-[10px]">arrow_forward</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+
+                                    <!-- 2. CARD (Gambar Besar 1 Kolom Penuh) -->
+                                    <template x-if="link.layout === 'card'">
+                                        <div class="flex flex-col bg-white dark:bg-[#161b22] border border-slate-200 dark:border-[#30363d] rounded-xl overflow-hidden shadow-xs hover:shadow-md transition-all cursor-pointer text-left"
+                                             @click="sidebarTab = 'biolink'; mobileTab = 'biolink'">
+                                            <div class="w-full aspect-[16/9] bg-slate-100 dark:bg-slate-800 relative overflow-hidden flex items-center justify-center">
+                                                <template x-if="link.image">
+                                                    <img :src="link.image" class="w-full h-full object-cover">
+                                                </template>
+                                                <template x-if="!link.image">
+                                                    <div class="w-full h-full flex items-center justify-center text-white" :style="`background: ${link.color || '#0284c7'};`">
+                                                        <span class="material-symbols-outlined text-3xl opacity-90" x-text="link.icon || 'link'"></span>
+                                                    </div>
+                                                </template>
+                                                <template x-if="link.badge">
+                                                    <span class="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded bg-black/60 backdrop-blur-md text-white text-[8px] font-black uppercase tracking-wider" x-text="link.badge"></span>
+                                                </template>
+                                            </div>
+                                            <div class="p-2.5 bg-white dark:bg-[#161b22]">
+                                                <h4 class="font-extrabold text-[11px] text-slate-900 dark:text-white leading-snug truncate" x-text="link.title || 'Judul Link'"></h4>
+                                                <p x-show="link.subtitle" class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-1" x-text="link.subtitle"></p>
+                                                <p x-show="link.description" class="text-[9px] text-slate-600 dark:text-slate-300 mt-0.5 line-clamp-2 leading-tight" x-text="link.description"></p>
+                                                <div class="mt-2 w-full py-1 px-2.5 rounded-lg text-white font-bold text-[9px] text-center flex items-center justify-center gap-1 shadow-xs"
+                                                     :style="`background: ${link.color || '#0284c7'};`">
+                                                    <span>Buka Tautan</span>
+                                                    <span class="material-symbols-outlined text-[11px]">arrow_forward</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+
+                                    <!-- 3. LIST (Default 1 Baris) -->
+                                    <template x-if="!link.layout || link.layout === 'list'">
+                                        <div class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-white font-bold text-[11px] shadow-xs cursor-pointer relative overflow-hidden"
+                                             :style="`background: ${link.color || '#0284c7'};`"
+                                             @click="sidebarTab = 'biolink'; mobileTab = 'biolink'">
+                                            <template x-if="link.badge">
+                                                <span class="absolute top-0.5 right-1.5 px-1 py-0.2 rounded-full bg-white/25 backdrop-blur-md text-[7px] font-black uppercase tracking-wider" x-text="link.badge"></span>
+                                            </template>
+                                            <template x-if="link.image">
+                                                <img :src="link.image" class="w-8 h-8 rounded-lg object-cover shrink-0 border border-white/20">
+                                            </template>
+                                            <template x-if="!link.image">
+                                                <div class="w-7 h-7 rounded-lg bg-white/15 flex items-center justify-center shrink-0">
+                                                    <span class="material-symbols-outlined text-[15px] opacity-90" x-text="link.icon || 'link'"></span>
+                                                </div>
+                                            </template>
+                                            <div class="flex-1 min-w-0 pr-1 text-left">
+                                                <span class="block truncate leading-tight" x-text="link.title || link.url || 'Tombol Link'"></span>
+                                                <span x-show="link.subtitle" class="block text-[9px] opacity-80 truncate font-normal mt-0.5" x-text="link.subtitle"></span>
+                                                <span x-show="link.description" class="block text-[8px] opacity-75 truncate font-normal mt-0.5" x-text="link.description"></span>
+                                            </div>
+                                            <span class="material-symbols-outlined text-[13px] opacity-60 shrink-0">arrow_forward</span>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+                        </div>
+
+                        <div x-show="profileLinks.length === 0" 
+                             @click="sidebarTab = 'biolink'; mobileTab = 'biolink'"
+                             class="p-3 rounded-xl border border-dashed border-teal-300 dark:border-teal-800/60 bg-teal-50/40 dark:bg-teal-950/20 text-center cursor-pointer">
+                            <span class="material-symbols-outlined text-teal-500 text-[18px] mb-0.5">add_link</span>
+                            <p class="text-[11px] font-bold text-teal-700 dark:text-teal-300">Belum ada tombol link</p>
+                            <p class="text-[10px] text-teal-600/70 dark:text-teal-400/70 mt-0.5">Ketuk untuk menambah link</p>
+                        </div>
+                    </div>
+
+                    <!-- Pure Profile Mode Notice -->
+                    <div x-show="storeMode === 'profile'" class="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 text-amber-800 dark:text-amber-300 text-[11px] flex items-center gap-2 mt-2">
+                        <span class="material-symbols-outlined text-[16px] text-amber-500 shrink-0">info</span>
+                        <p class="leading-tight">Mode Bio Link: Widget etalase toko di bawah tidak tampil di publik.</p>
+                    </div>
+                </div>
+
                 <!-- Mobile Canvas Droppable Area -->
-                <div id="mobile-canvas" class="p-3 space-y-3 pb-16 min-h-[300px] overflow-y-auto">
+                <div id="mobile-canvas" x-show="storeMode !== 'profile'" class="p-3 space-y-3 pb-16 min-h-[300px] overflow-y-auto">
                     <template x-for="(comp, index) in activeComponents" :key="comp.id">
                         <div class="canvas-widget-item relative transition-all rounded-xl" :data-id="comp.id">
                             <!-- Action Buttons Mobile (Always visible) -->
@@ -1175,16 +1669,28 @@
 <script>
     document.addEventListener('alpine:init', () => {
         Alpine.data('appearanceEditor', () => ({
-            device: window.innerWidth < 768 ? 'mobile' : 'desktop',
-            mobileTab: window.innerWidth < 1024 ? 'canvas' : 'palette',
-            sidebarTab: 'widgets',
-            activeComponents: {!! json_encode($store->appearance_data ?? []) !!},
-            headerBanner: '{{ $store->banner }}' || '',
+            device: 'mobile',
+            mobileTab: 'biolink',
+            sidebarTab: 'biolink',
+            expandedLinkIndex: null,
+            activeComponents: {!! json_encode(
+                is_array($store->appearance_data)
+                    ? array_values(array_filter($store->appearance_data, fn($v, $k) => is_numeric($k) && is_array($v) && !empty($v['type']), ARRAY_FILTER_USE_BOTH))
+                    : []
+            ) !!},
+            hasSavedAppearance: {{ $store->appearance_data !== null ? 'true' : 'false' }},
+            headerBanner: {!! json_encode($store->banner ?? '') !!},
             isSaving: false,
             hasUnsavedChanges: false,
             draggedItem: null,
             sortableMobile: null,
             sortableDesktop: null,
+
+            // Store Mode & Bio Link state
+            storeMode: '{{ $store->store_mode ?? 'store' }}',
+            profileLinks: {!! json_encode(!empty($store->profile_links) && is_array($store->profile_links) ? array_values($store->profile_links) : []) !!},
+            isSavingLinks: false,
+            toast: { show: false, message: '' },
 
             // Voucher Placement state
             voucherPlacement: {!! json_encode((is_array($store->appearance_data ?? null) ? ($store->appearance_data['voucher_placement'] ?? []) : []) + ['header' => '', 'product_page' => '', 'checkout' => '']) !!},
@@ -1246,14 +1752,12 @@
                     this.device = 'mobile';
                 }
                 
-                if (!Array.isArray(this.activeComponents) || this.activeComponents.length === 0) {
+                if (!this.hasSavedAppearance && (!Array.isArray(this.activeComponents) || this.activeComponents.length === 0)) {
                     this.activeComponents = [
-                        { id: this.generateId(), type: 'banner', data: this.getDefaultData('banner') },
-                        { id: this.generateId(), type: 'voucher', data: this.getDefaultData('voucher') },
                         { id: this.generateId(), type: 'products', data: this.getDefaultData('products') },
                         { id: this.generateId(), type: 'text', data: this.getDefaultData('text') }
                     ];
-                } else {
+                } else if (Array.isArray(this.activeComponents)) {
                     // Ensure all existing components have data objects
                     this.activeComponents.forEach(comp => {
                         if (!comp.data) comp.data = this.getDefaultData(comp.type);
@@ -1404,19 +1908,16 @@
             },
 
             clearHeaderBanner() {
-                if (confirm('Hapus settingan banner toko dan kembalikan ke default?')) {
-                    this.headerBanner = '';
-                    this.previewBanner = '';
-                    this.hasUnsavedChanges = true;
-                    this.closeBannerModal();
-                }
+                this.headerBanner = '';
+                this.previewBanner = '';
+                this.hasUnsavedChanges = true;
+                this.closeBannerModal();
+                this.showToast('Banner gambar dihapus (kembali ke warna polos default).');
             },
 
             resetLayout() {
                 if (confirm('Kembalikan susunan widget etalase ke tata letak awal default?')) {
                     this.activeComponents = [
-                        { id: this.generateId(), type: 'banner', data: this.getDefaultData('banner') },
-                        { id: this.generateId(), type: 'voucher', data: this.getDefaultData('voucher') },
                         { id: this.generateId(), type: 'products', data: this.getDefaultData('products') },
                         { id: this.generateId(), type: 'text', data: this.getDefaultData('text') }
                     ];
@@ -1474,32 +1975,180 @@
                 if(refId === 'desktop-canvas') this.sortableDesktop = sortable;
             },
             
-            save() {
-                this.isSaving = true;
-                fetch('{{ route('tenant.appearance.update') }}', {
+            showToast(message) {
+                this.toast.message = message;
+                this.toast.show = true;
+                setTimeout(() => {
+                    this.toast.show = false;
+                }, 3000);
+            },
+
+            setStoreMode(mode) {
+                if (this.storeMode === mode) return;
+                this.storeMode = mode;
+                
+                // If switching to profile, switch sidebar tab to biolink
+                if (mode === 'profile') {
+                    this.sidebarTab = 'biolink';
+                    this.mobileTab = 'biolink';
+                }
+                
+                // Instantly save mode to backend
+                fetch('{{ route('tenant.appearance.mode') }}', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
-                    body: JSON.stringify({ 
-                        components: this.activeComponents,
-                        header_banner: this.headerBanner 
-                    })
+                    body: JSON.stringify({ store_mode: mode })
                 })
                 .then(res => res.json())
                 .then(data => {
-                    this.isSaving = false;
-                    if(data.success) {
+                    if (data.success) {
+                        this.showToast(data.message || 'Mode berhasil diubah');
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                });
+            },
+
+            addProfileLink(preset = null) {
+                const link = preset ? {
+                    title: preset.title || 'Tautan Baru',
+                    subtitle: preset.subtitle || '',
+                    description: preset.description || '',
+                    url: preset.url || 'https://',
+                    image: preset.image || null,
+                    icon: preset.icon || 'link',
+                    color: preset.color || '#0284c7',
+                    layout: preset.layout || 'list',
+                    badge: preset.badge || '',
+                    is_active: true
+                } : {
+                    title: 'Tautan Baru',
+                    subtitle: '',
+                    description: '',
+                    url: 'https://',
+                    image: null,
+                    icon: 'link',
+                    color: '#0284c7',
+                    layout: 'list',
+                    badge: '',
+                    is_active: true
+                };
+                this.profileLinks.push(link);
+                this.hasUnsavedChanges = true;
+                this.expandedLinkIndex = this.profileLinks.length - 1;
+            },
+
+            removeProfileLink(index) {
+                if (confirm('Hapus tombol tautan link ini?')) {
+                    this.profileLinks.splice(index, 1);
+                    this.hasUnsavedChanges = true;
+                    if (this.expandedLinkIndex === index) {
+                        this.expandedLinkIndex = null;
+                    } else if (this.expandedLinkIndex > index) {
+                        this.expandedLinkIndex--;
+                    }
+                }
+            },
+
+            moveProfileLinkUp(index) {
+                if (index <= 0) return;
+                const item = this.profileLinks.splice(index, 1)[0];
+                this.profileLinks.splice(index - 1, 0, item);
+                this.hasUnsavedChanges = true;
+                if (this.expandedLinkIndex === index) {
+                    this.expandedLinkIndex = index - 1;
+                } else if (this.expandedLinkIndex === index - 1) {
+                    this.expandedLinkIndex = index;
+                }
+            },
+
+            moveProfileLinkDown(index) {
+                if (index >= this.profileLinks.length - 1) return;
+                const item = this.profileLinks.splice(index, 1)[0];
+                this.profileLinks.splice(index + 1, 0, item);
+                this.hasUnsavedChanges = true;
+                if (this.expandedLinkIndex === index) {
+                    this.expandedLinkIndex = index + 1;
+                } else if (this.expandedLinkIndex === index + 1) {
+                    this.expandedLinkIndex = index;
+                }
+            },
+
+            saveProfileLinks() {
+                this.isSavingLinks = true;
+                fetch('{{ route('tenant.appearance.links') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ profile_links: this.profileLinks })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    this.isSavingLinks = false;
+                    if (data.success) {
                         this.hasUnsavedChanges = false;
-                        alert('Dekorasi etalase toko berhasil disimpan!');
+                        this.showToast('✓ Tombol Bio Link berhasil disimpan!');
                     } else {
-                        alert('Gagal menyimpan dekorasi: ' + (data.message || 'Error'));
+                        alert(data.message || 'Gagal menyimpan bio link.');
+                    }
+                })
+                .catch(err => {
+                    this.isSavingLinks = false;
+                    alert('Terjadi kesalahan koneksi.');
+                    console.error(err);
+                });
+            },
+            
+            save() {
+                if (this.isSaving) return;
+                this.isSaving = true;
+
+                const cleanComponents = (this.activeComponents || []).map(c => ({
+                    id: c.id,
+                    type: c.type,
+                    data: c.data || {}
+                }));
+
+                fetch('{{ route('tenant.appearance.update') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ 
+                        components: cleanComponents,
+                        header_banner: this.headerBanner,
+                        store_mode: this.storeMode,
+                        profile_links: this.profileLinks,
+                        voucher_placement: this.voucherPlacement
+                    })
+                })
+                .then(res => {
+                    if (!res.ok) {
+                        return res.json().then(err => { throw new Error(err.message || 'Error ' + res.status); });
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    this.isSaving = false;
+                    if (data.success) {
+                        this.hasUnsavedChanges = false;
+                        this.hasSavedAppearance = true;
+                        this.showToast(data.message || '✓ Pengaturan toko berhasil disimpan!');
+                    } else {
+                        alert('Gagal menyimpan: ' + (data.message || 'Terjadi kesalahan'));
                     }
                 })
                 .catch(err => {
                     this.isSaving = false;
-                    alert('Terjadi kesalahan koneksi saat menyimpan.');
+                    alert('Gagal menyimpan: ' + (err.message || 'Terjadi kesalahan koneksi'));
                     console.error(err);
                 });
             },
@@ -1645,7 +2294,12 @@
                 .then(r => r.json())
                 .then(data => {
                     this.isSavingVoucher = false;
-                    this.voucherSaveMsg = data.success ? '✓ Penempatan berhasil disimpan!' : (data.message || 'Gagal menyimpan.');
+                    if (data.success) {
+                        this.hasUnsavedChanges = false;
+                        this.voucherSaveMsg = '✓ Penempatan berhasil disimpan!';
+                    } else {
+                        this.voucherSaveMsg = data.message || 'Gagal menyimpan.';
+                    }
                     setTimeout(() => this.voucherSaveMsg = '', 3000);
                 })
                 .catch(() => {

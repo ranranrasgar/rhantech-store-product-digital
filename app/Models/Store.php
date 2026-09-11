@@ -11,6 +11,7 @@ class Store extends Model
     protected $casts = [
         'appearance_data' => 'array',
         'social_links' => 'array',
+        'profile_links' => 'array',
         'terms_accepted_at' => 'datetime',
         'is_pro' => 'boolean',
         'pro_expires_at' => 'datetime',

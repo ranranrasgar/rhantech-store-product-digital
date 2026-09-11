@@ -47,6 +47,12 @@ class StoreController extends Controller
             'maps_location' => 'nullable|string',
             'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'social_links' => 'nullable|array',
+            'store_mode' => 'nullable|in:store,profile,hybrid',
+            'profile_links' => 'nullable|array',
+            'profile_links.*.title' => 'nullable|string|max:100',
+            'profile_links.*.url' => 'nullable|string|max:500',
+            'profile_links.*.icon' => 'nullable|string|max:100',
+            'profile_links.*.color' => 'nullable|string|max:30',
         ];
 
         // Saat baru pertama kali buka toko, WAJIB menyetujui Kontrak Elektronik PMSE & Hak Cipta
@@ -104,15 +110,46 @@ class StoreController extends Controller
             }
         }
 
+        // Bersihkan profile_links: buang entry yang URL-nya kosong
+        $profileLinks = [];
+        if ($request->has('profile_links') && is_array($request->profile_links)) {
+            foreach ($request->profile_links as $link) {
+                if (is_array($link) && !empty(trim($link['url'] ?? ''))) {
+                    $url = trim($link['url']);
+                    if (!str_starts_with($url, 'http://') && !str_starts_with($url, 'https://')) {
+                        $url = 'https://' . $url;
+                    }
+                    $profileLinks[] = [
+                        'title'       => trim($link['title'] ?? 'Link'),
+                        'subtitle'    => !empty(trim($link['subtitle'] ?? '')) ? trim($link['subtitle']) : null,
+                        'description' => !empty(trim($link['description'] ?? '')) ? trim($link['description']) : null,
+                        'url'         => $url,
+                        'image'       => !empty(trim($link['image'] ?? '')) ? trim($link['image']) : null,
+                        'icon'        => trim($link['icon'] ?? 'link'),
+                        'color'       => trim($link['color'] ?? '#3b82f6'),
+                        'layout'      => trim($link['layout'] ?? 'list'),
+                        'badge'       => !empty(trim($link['badge'] ?? '')) ? trim($link['badge']) : null,
+                        'is_active'   => !empty($link['is_active']),
+                    ];
+                }
+            }
+        }
+
         $data = [
-            'name' => $request->name,
-            'slug' => $slug,
-            'description' => $request->description,
+            'name'              => $request->name,
+            'slug'              => $slug,
+            'description'       => $request->description,
             'bank_account_info' => $request->bank_account_info,
-            'address' => $request->address,
-            'maps_location' => $mapsLocation,
-            'social_links' => $socialLinks,
+            'address'           => $request->address,
+            'maps_location'     => $mapsLocation,
+            'social_links'      => $socialLinks,
+            'store_mode'        => $request->input('store_mode', $store ? ($store->store_mode ?? 'store') : 'store'),
         ];
+
+        // Hanya update profile_links jika dikirim dalam request (agar tidak terhapus saat simpan dari form profil utama)
+        if ($request->has('profile_links')) {
+            $data['profile_links'] = $profileLinks;
+        }
 
         if ($request->hasFile('logo')) {
             $logoPath = $request->file('logo')->store('stores', 'public');

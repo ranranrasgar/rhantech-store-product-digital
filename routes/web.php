@@ -39,8 +39,11 @@ Route::post('/checkout/apply-voucher', [\App\Http\Controllers\CheckoutController
 Route::post('/checkout/remove-voucher', [\App\Http\Controllers\CheckoutController::class, 'removeVoucher'])->name('checkout.remove_voucher');
 Route::get('/checkout/store-vouchers', [\App\Http\Controllers\CheckoutController::class, 'getStoreVouchers'])->name('checkout.store_vouchers');
 Route::get('/payment/{invoice_number}', [\App\Http\Controllers\CheckoutController::class, 'payment'])->name('checkout.payment');
-Route::get('/checkout/finish/{invoice_number}', [\App\Http\Controllers\CheckoutController::class, 'checkStatus'])->name('checkout.finish');
-Route::get('/toko/{slug}', [\App\Http\Controllers\PublicStoreController::class, 'show'])->name('store.show');
+// Legacy redirect from /toko/{slug} to /{slug}
+Route::get('/toko/{slug}', function (string $slug, \Illuminate\Http\Request $request) {
+    $queryString = $request->getQueryString();
+    return redirect()->to('/' . $slug . ($queryString ? '?' . $queryString : ''), 301);
+})->name('store.legacy');
 Route::post('/toko/{store}/follow', [\App\Http\Controllers\PublicStoreController::class, 'toggleFollow'])->name('store.follow')->middleware('auth');
 Route::get('/download/{token}', [\App\Http\Controllers\DownloadController::class, 'download'])->name('products.download');
 Route::get('/download/{token}/file/{item}', [\App\Http\Controllers\DownloadController::class, 'downloadFile'])->name('products.download.file');
@@ -124,6 +127,8 @@ Route::middleware(['auth', 'verified', 'is_tenant'])->prefix('dashboard')->name(
     Route::get('performance', [\App\Http\Controllers\Tenant\PerformanceController::class, 'index'])->name('performance.index');
     Route::get('appearance', [\App\Http\Controllers\Tenant\AppearanceController::class, 'index'])->name('appearance.index');
     Route::post('appearance', [\App\Http\Controllers\Tenant\AppearanceController::class, 'update'])->name('appearance.update');
+    Route::post('appearance/mode', [\App\Http\Controllers\Tenant\AppearanceController::class, 'updateMode'])->name('appearance.mode');
+    Route::post('appearance/links', [\App\Http\Controllers\Tenant\AppearanceController::class, 'saveProfileLinks'])->name('appearance.links');
     Route::post('appearance/upload', [\App\Http\Controllers\Tenant\AppearanceController::class, 'uploadImage'])->name('appearance.upload');
     Route::post('appearance/voucher-placement', [\App\Http\Controllers\Tenant\AppearanceController::class, 'saveVoucherPlacement'])->name('appearance.voucher-placement');
 
@@ -252,8 +257,8 @@ Route::get('/storage/{path}', function (string $path) {
     return redirect()->away($r2Url, 302);
 })->where('path', '.*');
 
-// Direct Store URL: http://127.0.0.1:8000/<nama-toko> (e.g., http://127.0.0.1:8000/gudang-aplikasi)
+// Direct Store URL: http://127.0.0.1:8000/<nama-toko> (e.g., http://127.0.0.1:8000/ranranrasgar)
 Route::get('/{slug}', [\App\Http\Controllers\PublicStoreController::class, 'show'])
     ->where('slug', '^(?!admin|tenant|dashboard|about|projects|products|clients|cart|checkout|payment|download|contact|help|terms|privacy|copyright|refund-policy|login|register|logout|forgot-password|reset-password|email|storage|chat|toko).*$')
-    ->name('store.direct');
+    ->name('store.show');
 

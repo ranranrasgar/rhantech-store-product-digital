@@ -13,10 +13,10 @@
     $headerBgStyle = '';
     if ($isCustomColorOrGradient) {
         $headerBgStyle = "background: {$banner};";
-    } elseif (!empty($banner)) {
+    } elseif (!empty($banner) && $banner !== 'none') {
         $headerBgStyle = "background-image: url('{$banner}'); background-size: cover; background-position: center;";
     } else {
-        $headerBgStyle = "background-image: url('https://images.unsplash.com/photo-1557683316-973673baf926?w=1200&h=400&fit=crop'); background-size: cover; background-position: center;";
+        $headerBgStyle = "background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);";
     }
 @endphp
 
@@ -454,8 +454,20 @@
         <div x-show="activeTab === 'beranda'" class="space-y-6 md:space-y-8">
         
         @if(empty($appearance))
-            <!-- FALLBACK DEFAULT VIEW -->
-            @if(isset($campaigns) && $campaigns->isNotEmpty())
+            @php
+                $voucherPlacement = is_array($appearance['voucher_placement'] ?? null) 
+                    ? $appearance['voucher_placement'] 
+                    : (is_array($store->appearance_data ?? null) ? ($store->appearance_data['voucher_placement'] ?? []) : []);
+                $vpHeader = $voucherPlacement['header'] ?? '';
+                $headerCampaigns = $campaigns ?? collect();
+                if ($vpHeader !== '' && $vpHeader !== 'none') {
+                    $filtered = $campaigns->where('id', (int)$vpHeader);
+                    if ($filtered->isNotEmpty()) {
+                        $headerCampaigns = $filtered;
+                    }
+                }
+            @endphp
+            @if($vpHeader !== 'none' && $headerCampaigns->isNotEmpty())
                 <!-- KUPON & VOUCHER TOKO (Fallback) -->
                 <div class="mb-6 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-primary/5 via-emerald-500/5 to-amber-500/5 border border-primary/20 shadow-xs">
                     <div class="flex items-center justify-between gap-3 mb-3.5">
@@ -466,14 +478,14 @@
                             <div>
                                 <h2 class="text-sm sm:text-base font-black text-on-surface flex items-center gap-1.5">
                                     <span>Kupon & Voucher Toko</span>
-                                    <span class="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-extrabold">{{ $campaigns->count() }} Tersedia</span>
+                                    <span class="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-extrabold">{{ $headerCampaigns->count() }} Tersedia</span>
                                 </h2>
                                 <p class="text-[11px] text-on-surface-variant font-medium">Salin kode voucher di bawah dan gunakan saat checkout untuk klaim potongan harga</p>
                             </div>
                         </div>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-                        @foreach($campaigns as $campaign)
+                        @foreach($headerCampaigns as $campaign)
                             <x-voucher-card :campaign="$campaign" mode="browse" />
                         @endforeach
                     </div>
@@ -623,14 +635,6 @@
                             </button>
                             @endif
                         </div>
-                    @else
-                        <!-- Empty Placeholder -->
-                        <div class="w-full h-48 md:h-80 bg-slate-100 rounded-2xl overflow-hidden relative shadow-sm flex items-center justify-center border border-slate-200">
-                            <span class="material-symbols-outlined text-5xl text-slate-300">view_carousel</span>
-                            <div class="absolute bottom-4 text-center">
-                                <span class="bg-white/90 backdrop-blur text-[10px] font-bold px-3 py-1 rounded-full text-slate-600 shadow-sm border border-slate-200/50">Slider Banner Toko</span>
-                            </div>
-                        </div>
                     @endif
 
                 @elseif($block['type'] === 'single_image')
@@ -648,29 +652,29 @@
                                 <img src="{{ $data['image_url'] }}" alt="Promo Banner" class="w-full h-auto object-cover max-h-[400px]">
                             </div>
                         @endif
-                    @else
-                        <div class="w-full h-40 bg-slate-50 rounded-2xl flex flex-col gap-2 items-center justify-center border border-dashed border-slate-300">
-                            <span class="material-symbols-outlined text-3xl text-slate-300">image</span>
-                            <span class="text-slate-400 text-xs font-bold">Banner Gambar Promo</span>
-                        </div>
                     @endif
 
                 @elseif($block['type'] === 'text')
                     @php 
-                        $alignClass = match($data['align'] ?? 'center') {
-                            'left' => 'text-left',
-                            'right' => 'text-right',
-                            default => 'text-center'
-                        };
-                        $sizeClass = match($data['size'] ?? 'md') {
-                            'sm' => 'text-sm',
-                            'lg' => 'text-xl',
-                            default => 'text-base'
-                        };
+                        $textContent = trim($data['text'] ?? '');
                     @endphp
-                    <div class="w-full px-4 py-2 {{ $alignClass }}">
-                        <p class="text-slate-700 {{ $sizeClass }} font-medium whitespace-pre-line">{{ $data['text'] ?? 'Selamat datang di toko kami!' }}</p>
-                    </div>
+                    @if(!empty($textContent))
+                        @php 
+                            $alignClass = match($data['align'] ?? 'center') {
+                                'left' => 'text-left',
+                                'right' => 'text-right',
+                                default => 'text-center'
+                            };
+                            $sizeClass = match($data['size'] ?? 'md') {
+                                'sm' => 'text-sm',
+                                'lg' => 'text-xl',
+                                default => 'text-base'
+                            };
+                        @endphp
+                        <div class="w-full px-4 py-2 {{ $alignClass }}">
+                            <p class="text-slate-700 dark:text-slate-200 {{ $sizeClass }} font-medium whitespace-pre-line">{{ $textContent }}</p>
+                        </div>
+                    @endif
 
                 @elseif($block['type'] === 'flash_sale')
                     @php 

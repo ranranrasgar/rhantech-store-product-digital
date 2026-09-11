@@ -1,6 +1,6 @@
 @extends('layouts.tenant')
 
-@section('title', 'Pengaturan Profil Toko')
+@section('title', 'Profil & Pengaturan')
 
 @section('content')
 <div class="flex-1 overflow-y-auto p-4 md:p-8 bg-[#f8fafc] dark:bg-[#090d16] text-[#0f172a] dark:text-[#f1f5f9] transition-colors duration-200" x-data="{ tab: 'profil' }">
@@ -10,18 +10,21 @@
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
                 <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-2.5">
-                    Pengaturan Toko
+                    Profil &amp; Pengaturan
                 </h1>
                 <p class="text-xs md:text-sm text-slate-500 dark:text-slate-400 mt-1">
-                    Kelola informasi profil toko, logo brand, dan data rekening pencairan saldo.
+                    Kelola identitas profil, nama brand/kreator, tautan URL, media sosial, dan data rekening pencairan saldo.
                 </p>
             </div>
             
             @if(isset($store) && $store->slug)
             <div class="flex items-center gap-3">
                 <a href="{{ route('store.show', $store->slug) }}" target="_blank" class="px-4 py-2.5 rounded-xl bg-white dark:bg-[#111726] border border-slate-200 dark:border-[#222f49] hover:bg-slate-50 dark:hover:bg-[#161f33] text-slate-700 dark:text-slate-200 text-xs md:text-sm font-semibold transition-all shadow-sm flex items-center gap-2">
-                    <span class="material-symbols-outlined text-[18px] text-sky-500">storefront</span>
-                    Halaman Toko Publik
+                    <span class="material-symbols-outlined text-[18px] text-sky-500">
+                        {{ ($store->store_mode ?? 'store') === 'profile' ? 'contact_page' : (($store->store_mode ?? 'store') === 'hybrid' ? 'layers' : 'storefront') }}
+                    </span>
+                    <span>Lihat Halaman Publik ({{ ucfirst($store->store_mode ?? 'store') }})</span>
+                    <span class="material-symbols-outlined text-[14px] opacity-60">open_in_new</span>
                 </a>
             </div>
             @endif
@@ -44,10 +47,10 @@
         <!-- Main Card Form -->
         <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl shadow-sm overflow-hidden">
             
-            <!-- Navigation Tabs -->
+            <!-- Navigation Tabs (Hanya Profil, Sosmed, Rekening - Mode & Bio Link diatur di Desain Tampilan) -->
             <div class="border-b border-slate-100 dark:border-[#222f49] px-6 flex items-center gap-8 overflow-x-auto hide-scrollbar bg-slate-50/50 dark:bg-[#0c1220]/50">
                 <button type="button" @click="tab = 'profil'" :class="tab === 'profil' ? 'text-sky-600 dark:text-sky-400 border-sky-600 dark:border-sky-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200'" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 flex items-center gap-2 cursor-pointer">
-                    <span class="material-symbols-outlined text-[18px]">store</span> Profil Toko
+                    <span class="material-symbols-outlined text-[18px]">badge</span> Profil Utama
                 </button>
                 <button type="button" @click="tab = 'sosmed'" :class="tab === 'sosmed' ? 'text-sky-600 dark:text-sky-400 border-sky-600 dark:border-sky-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200'" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 flex items-center gap-2 cursor-pointer">
                     <span class="material-symbols-outlined text-[18px]">share</span> Media Sosial
@@ -59,14 +62,32 @@
 
             <form action="{{ route('tenant.store.store') }}" method="POST" enctype="multipart/form-data" class="p-6 md:p-8 space-y-6">
                 @csrf
+                <input type="hidden" name="store_mode" value="{{ old('store_mode', $store->store_mode ?? 'store') }}">
 
-                <!-- TAB 1: PROFIL TOKO -->
+                <!-- Callout Banner ke Desain Tampilan -->
+                <div class="p-4 rounded-2xl bg-gradient-to-r from-sky-500/10 via-indigo-500/10 to-transparent border border-sky-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                    <div class="flex items-center gap-3 text-slate-700 dark:text-slate-200">
+                        <span class="p-2 rounded-xl bg-sky-500 text-white shrink-0 shadow-sm">
+                            <span class="material-symbols-outlined text-[20px] block">palette</span>
+                        </span>
+                        <div>
+                            <p class="font-bold text-slate-900 dark:text-white">Ingin mengatur Mode Halaman &amp; Tautan Bio Link?</p>
+                            <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Pilihan Mode Halaman (Bio Link / Toko / Hybrid), tema warna, dan daftar tautan link dikelola di <strong>Desain Tampilan</strong>.</p>
+                        </div>
+                    </div>
+                    <a href="{{ route('tenant.appearance.index') }}" class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs whitespace-nowrap transition-all shadow-sm flex items-center gap-1.5 shrink-0 w-fit">
+                        <span>Buka Desain Tampilan</span>
+                        <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+                    </a>
+                </div>
+
+                <!-- TAB 1: PROFIL UTAMA -->
                 <div x-show="tab === 'profil'" class="space-y-6">
                     
-                    <!-- Logo Toko -->
+                    <!-- Logo / Foto Profil -->
                     <div>
                         <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">
-                            Logo Brand Toko
+                            Foto Profil / Logo Brand
                         </label>
                         <div class="flex flex-col sm:flex-row items-start sm:items-center gap-5">
                             <div class="w-24 h-24 rounded-2xl bg-slate-100 dark:bg-slate-800 border-2 border-dashed border-slate-200 dark:border-slate-700 overflow-hidden flex items-center justify-center shrink-0 shadow-inner">
@@ -92,21 +113,21 @@
                         </div>
                     </div>
 
-                    <!-- Nama Toko -->
+                    <!-- Nama Profil / Toko -->
                     <div>
                         <label for="name" class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
-                            Nama Toko <span class="text-rose-500">*</span>
+                            Nama Profil / Toko <span class="text-rose-500">*</span>
                         </label>
                         <input type="text" id="name" name="name" value="{{ old('name', $store->name ?? '') }}" required
-                            class="w-full px-4 py-2.5 text-xs md:text-sm bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 text-slate-900 dark:text-white transition-all" placeholder="Contoh: Digital Code Studio">
+                            class="w-full px-4 py-2.5 text-xs md:text-sm bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 text-slate-900 dark:text-white transition-all" placeholder="Contoh: Gudang Source Aplikasi Web & Mobile / Ranran Studio">
                         @error('name') <span class="text-xs text-rose-500 mt-1 block">{{ $message }}</span> @enderror
                     </div>
 
-                    <!-- Custom URL / Slug Toko -->
+                    <!-- Custom URL / Slug / Username Bio Link -->
                     <div>
                         <div class="flex items-center justify-between mb-2">
                             <label for="slug" class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                                Tautan URL / Slug Toko
+                                Tautan URL / Username Bio Link
                             </label>
                             <span class="text-[11px] text-slate-400">Bebas ditentukan sendiri (unik)</span>
                         </div>
@@ -150,26 +171,26 @@
                         @endif
                     </div>
 
-                    <!-- Deskripsi Toko -->
+                    <!-- Deskripsi / Bio Singkat -->
                     <div>
                         <label for="description" class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
-                            Deskripsi Singkat Toko
+                            Bio / Deskripsi Singkat
                         </label>
                         <textarea id="description" name="description" rows="3" 
-                            class="w-full px-4 py-2.5 text-xs md:text-sm bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 text-slate-900 dark:text-white transition-all leading-relaxed" placeholder="Jelaskan spesialisasi produk digital toko Anda...">{{ old('description', $store->description ?? '') }}</textarea>
+                            class="w-full px-4 py-2.5 text-xs md:text-sm bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 text-slate-900 dark:text-white transition-all leading-relaxed" placeholder="Tulis bio profil atau deskripsi singkat toko Anda...">{{ old('description', $store->description ?? '') }}</textarea>
                         @error('description') <span class="text-xs text-rose-500 mt-1 block">{{ $message }}</span> @enderror
                     </div>
 
                     <div class="pt-4 border-t border-slate-100 dark:border-[#1d273d]">
                         <h3 class="text-sm font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-1.5">
-                            <span class="material-symbols-outlined text-[18px] text-sky-500">location_on</span> Lokasi & Alamat (Opsional)
+                            <span class="material-symbols-outlined text-[18px] text-sky-500">location_on</span> Lokasi &amp; Alamat (Opsional)
                         </h3>
 
-                        <!-- Alamat Fisik -->
+                        <!-- Alamat Fisik / Domisili -->
                         <div class="space-y-4">
                             <div>
                                 <label for="address" class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
-                                    Alamat Domisili / Lokasi Toko
+                                    Kota / Wilayah Domisili (Opsional)
                                 </label>
                                 <textarea id="address" name="address" rows="2" 
                                     class="w-full px-4 py-2.5 text-xs md:text-sm bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 text-slate-900 dark:text-white transition-all" placeholder="Kota, Provinsi, Indonesia">{{ old('address', $store->address ?? '') }}</textarea>
@@ -228,10 +249,10 @@
                      }">
                     <div>
                         <h3 class="text-sm font-bold text-slate-900 dark:text-white mb-1 flex items-center gap-1.5">
-                            <span class="material-symbols-outlined text-[18px] text-sky-500">share</span> Tautan Media Sosial & Kontak Toko
+                            <span class="material-symbols-outlined text-[18px] text-sky-500">share</span> Tautan Media Sosial &amp; Kontak
                         </h3>
                         <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">
-                            Tautan sosmed yang diisi di sini akan tampil interaktif di halaman toko (khususnya versi mobile) untuk memudahkan calon pembeli mengunjungi dan menghubungi Anda.
+                            Tautan media sosial yang diisi di sini akan tampil interaktif di halaman profil / toko Anda untuk memudahkan pengunjung menghubungi atau mengikuti Anda.
                         </p>
                     </div>
 
@@ -325,10 +346,10 @@
                 <div x-show="tab === 'rekening'" class="space-y-6" style="display: none;">
                     <div>
                         <h3 class="text-sm font-bold text-slate-900 dark:text-white mb-1 flex items-center gap-1.5">
-                            <span class="material-symbols-outlined text-[18px] text-emerald-500">account_balance</span> Rekening Pencairan Saldo Penjual
+                            <span class="material-symbols-outlined text-[18px] text-emerald-500">account_balance</span> Rekening Pencairan Saldo
                         </h3>
                         <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">
-                            Data rekening ini digunakan saat Anda mengajukan penarikan saldo penghasilan toko.
+                            Data rekening ini digunakan saat Anda mengajukan penarikan saldo penghasilan.
                         </p>
                     </div>
 
@@ -406,8 +427,8 @@
                         Batal
                     </a>
                     <button type="submit" class="px-6 py-2.5 text-xs md:text-sm font-bold text-white bg-sky-500 hover:bg-sky-400 rounded-xl shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 transition-all flex items-center gap-2 cursor-pointer">
-                        <span class="material-symbols-outlined text-[18px]">store</span>
-                        {{ isset($store) && $store->id ? 'Simpan Pengaturan Toko' : 'Buka Toko Sekarang' }}
+                        <span class="material-symbols-outlined text-[18px]">check_circle</span>
+                        {{ isset($store) && $store->id ? 'Simpan Profil & Pengaturan' : 'Buka Halaman Sekarang' }}
                     </button>
                 </div>
 
