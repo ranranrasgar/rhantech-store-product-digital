@@ -820,48 +820,79 @@
                     </div>
                 </div>
 
-                <!-- Voucher Settings -->
+                <!-- Voucher Settings — linked to Diskon/Voucher module -->
                 <div x-show="editingData && editingData.type === 'voucher'" class="space-y-4">
-                    <div class="flex items-center justify-between mb-2">
-                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">Daftar Kupon</label>
-                        <button type="button" @click="if(!editingData.data.vouchers) editingData.data.vouchers = []; editingData.data.vouchers.push({title: 'Diskon Baru', subtitle: 'Min. Belanja Rp 0', theme: 'rose'})" class="text-[10px] bg-sky-100 text-sky-600 hover:bg-sky-200 px-2 py-1 rounded font-bold flex items-center gap-1 transition-colors">
-                            <span class="material-symbols-outlined text-[12px]">add</span> Tambah Kupon
-                        </button>
+
+                    <!-- Info box -->
+                    <div class="bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800/50 rounded-xl p-3 text-[11px] text-rose-700 dark:text-rose-300">
+                        <p class="font-bold mb-1 flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-[14px]">link</span>
+                            Terhubung ke Modul Diskon &amp; Voucher
+                        </p>
+                        <p>Centang diskon/voucher dari daftar yang sudah Anda buat. Kode dan detail otomatis ditampilkan dari data tersebut.</p>
                     </div>
-                    
-                    <template x-if="!editingData?.data?.vouchers || editingData.data.vouchers.length === 0">
-                        <div class="p-4 bg-slate-50 dark:bg-[#0d1117] rounded-xl border border-dashed border-slate-200 dark:border-[#222f49] text-center text-xs text-slate-400">Belum ada kupon yang ditambahkan.</div>
-                    </template>
-                    
-                    <div class="space-y-3 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
-                        <template x-for="(v, vIdx) in editingData?.data?.vouchers" :key="vIdx">
-                            <div class="p-3 bg-slate-50 dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] rounded-xl relative group">
-                                <button type="button" @click="editingData.data.vouchers.splice(vIdx, 1)" class="absolute top-2 right-2 text-rose-500 hover:bg-rose-100 dark:hover:bg-rose-900/30 p-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <span class="material-symbols-outlined text-[14px]">delete</span>
-                                </button>
-                                <div class="space-y-3 pr-6">
-                                    <div>
-                                        <label class="block text-[10px] font-bold text-slate-500 mb-1">Judul Diskon</label>
-                                        <input type="text" x-model="v.title" class="w-full bg-white dark:bg-[#161f33] border border-slate-200 dark:border-[#222f49] rounded-lg px-3 py-1.5 text-xs text-slate-800 dark:text-slate-200 focus:border-sky-500 focus:outline-none" placeholder="Misal: Diskon Spesial 50%">
-                                    </div>
-                                    <div>
-                                        <label class="block text-[10px] font-bold text-slate-500 mb-1">Syarat / Subtitle</label>
-                                        <input type="text" x-model="v.subtitle" class="w-full bg-white dark:bg-[#161f33] border border-slate-200 dark:border-[#222f49] rounded-lg px-3 py-1.5 text-xs text-slate-800 dark:text-slate-200 focus:border-sky-500 focus:outline-none" placeholder="Misal: Min. Belanja Rp 100.000">
-                                    </div>
-                                    <div>
-                                        <label class="block text-[10px] font-bold text-slate-500 mb-1">Tema Warna</label>
-                                        <select x-model="v.theme" class="w-full bg-white dark:bg-[#161f33] border border-slate-200 dark:border-[#222f49] rounded-lg px-3 py-1.5 text-xs text-slate-800 dark:text-slate-200 focus:border-sky-500 focus:outline-none">
-                                            <option value="rose">Merah Muda (Rose)</option>
-                                            <option value="emerald">Hijau (Emerald)</option>
-                                            <option value="amber">Kuning (Amber)</option>
-                                            <option value="sky">Biru (Sky)</option>
-                                            <option value="violet">Ungu (Violet)</option>
-                                        </select>
-                                    </div>
+
+                    <div class="flex items-center justify-between mb-1">
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">Pilih Voucher yang Ditampilkan</label>
+                        <a href="{{ route('tenant.campaigns.create') }}" target="_blank" class="text-[10px] bg-rose-100 text-rose-600 hover:bg-rose-200 px-2 py-1 rounded font-bold flex items-center gap-1 transition-colors">
+                            <span class="material-symbols-outlined text-[12px]">add</span> Buat Baru
+                        </a>
+                    </div>
+
+                    @php
+                        $widgetCampaigns = \App\Models\Campaign::where('store_id', $store->id)
+                            ->whereIn('status', ['active', 'scheduled'])
+                            ->orderBy('name')->get();
+                    @endphp
+
+                    @if($widgetCampaigns->isEmpty())
+                        <div class="p-4 bg-slate-50 dark:bg-[#0d1117] rounded-xl border border-dashed border-slate-200 dark:border-[#222f49] text-center">
+                            <span class="material-symbols-outlined text-2xl text-slate-300 dark:text-slate-600">confirmation_number</span>
+                            <p class="text-xs text-slate-400 mt-1">Belum ada voucher/diskon aktif.</p>
+                            <a href="{{ route('tenant.campaigns.create') }}" target="_blank" class="mt-2 inline-flex items-center gap-1 text-xs font-bold text-rose-500">
+                                <span class="material-symbols-outlined text-[14px]">add_circle</span> Buat Diskon / Voucher
+                            </a>
+                        </div>
+                    @else
+                        <div class="space-y-2 max-h-64 overflow-y-auto pr-1 custom-scrollbar">
+                            @foreach($widgetCampaigns as $wc)
+                            <label class="flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-all"
+                                :class="(editingData.data.campaign_ids || []).includes({{ $wc->id }}) ? 'border-rose-400 bg-rose-50 dark:bg-rose-950/30' : 'border-slate-200 dark:border-[#222f49] hover:border-rose-300'">
+                                <input type="checkbox" class="sr-only"
+                                    :checked="(editingData.data.campaign_ids || []).includes({{ $wc->id }})"
+                                    @change="
+                                        if (!editingData.data.campaign_ids) editingData.data.campaign_ids = [];
+                                        const idx = editingData.data.campaign_ids.indexOf({{ $wc->id }});
+                                        if (idx > -1) { editingData.data.campaign_ids.splice(idx, 1); }
+                                        else { editingData.data.campaign_ids.push({{ $wc->id }}); }
+                                    ">
+                                <div class="mt-0.5 w-4 h-4 rounded border-2 flex-shrink-0 flex items-center justify-center transition-colors"
+                                    :class="(editingData.data.campaign_ids || []).includes({{ $wc->id }}) ? 'bg-rose-500 border-rose-500 text-white' : 'border-slate-300 dark:border-slate-600'">
+                                    <span class="material-symbols-outlined text-[11px]" x-show="(editingData.data.campaign_ids || []).includes({{ $wc->id }})">check</span>
                                 </div>
-                            </div>
-                        </template>
-                    </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center gap-1.5 flex-wrap">
+                                        <span class="text-xs font-bold text-slate-800 dark:text-slate-200">{{ $wc->name }}</span>
+                                        @if($wc->code)
+                                            <span class="text-[10px] font-mono bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded">{{ $wc->code }}</span>
+                                        @endif
+                                        <span class="text-[10px] font-bold {{ $wc->type === 'voucher' ? 'text-rose-600 bg-rose-100' : 'text-amber-600 bg-amber-100' }} px-1.5 py-0.5 rounded">
+                                            {{ $wc->type === 'voucher' ? 'Voucher' : 'Diskon' }}
+                                        </span>
+                                    </div>
+                                    <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                                        Potongan: <b>{{ $wc->discount_type === 'percentage' ? $wc->discount_value.'%' : 'Rp '.number_format($wc->discount_value,0,',','.') }}</b>
+                                        @if($wc->minimum_spend > 0)· Min. Rp {{ number_format($wc->minimum_spend,0,',','.') }}@endif
+                                        · s/d {{ \Carbon\Carbon::parse($wc->end_date)->format('d M Y') }}
+                                    </p>
+                                </div>
+                            </label>
+                            @endforeach
+                        </div>
+                        <p class="text-[10px] text-slate-400 text-center">
+                            <a href="{{ route('tenant.campaigns.index') }}" target="_blank" class="text-rose-500 hover:underline font-bold">Kelola semua Diskon &amp; Voucher →</a>
+                        </p>
+                    @endif
                 </div>
 
             </div>
