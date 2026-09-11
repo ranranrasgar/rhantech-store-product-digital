@@ -765,10 +765,83 @@
 
                 <!-- Flash Sale Settings -->
                 <div x-show="editingData && editingData.type === 'flash_sale'" class="space-y-4">
+
+                    <!-- Judul -->
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Batas Waktu Flash Sale</label>
-                        <input type="datetime-local" x-model="editingData?.data?.end_date" class="w-full bg-slate-50 dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] rounded-xl px-4 py-2.5 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:border-sky-500">
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Judul Flash Sale</label>
+                        <input type="text" x-model="editingData.data.title" placeholder="Contoh: Flash Sale Hari Ini!" class="w-full bg-slate-50 dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] rounded-xl px-4 py-2.5 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:border-amber-500">
                     </div>
+
+                    <!-- Batas Waktu -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Batas Waktu (Countdown Timer)</label>
+                        <input type="datetime-local" x-model="editingData.data.end_date" class="w-full bg-slate-50 dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] rounded-xl px-4 py-2.5 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:border-amber-500">
+                    </div>
+
+                    <!-- Diskon % -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Persentase Diskon yang Ditampilkan (%)</label>
+                        <div class="flex items-center gap-2">
+                            <input type="number" x-model="editingData.data.discount" min="1" max="99" class="w-24 bg-slate-50 dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] rounded-xl px-3 py-2 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:border-amber-500">
+                            <span class="text-xs text-slate-500">% (badge diskon pada kartu produk)</span>
+                        </div>
+                    </div>
+
+                    <!-- Pilih Produk -->
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">Produk yang Masuk Flash Sale</label>
+                            <span class="text-[10px] text-slate-400">Centang produk yang ingin ditampilkan</span>
+                        </div>
+
+                        @php
+                            $flashProducts = \App\Models\Product::where('store_id', $store->id)
+                                ->where('is_active', true)
+                                ->orderBy('name')
+                                ->get(['id', 'name', 'price', 'thumbnail']);
+                        @endphp
+
+                        @if($flashProducts->isEmpty())
+                            <div class="p-4 bg-slate-50 dark:bg-[#0d1117] rounded-xl border border-dashed border-slate-200 dark:border-[#222f49] text-center">
+                                <span class="material-symbols-outlined text-2xl text-slate-300">inventory_2</span>
+                                <p class="text-xs text-slate-400 mt-1">Belum ada produk aktif.</p>
+                            </div>
+                        @else
+                            <div class="space-y-1.5 max-h-56 overflow-y-auto pr-1 custom-scrollbar">
+                                @foreach($flashProducts as $fp)
+                                <label class="flex items-center gap-3 p-2.5 rounded-xl border cursor-pointer transition-all"
+                                    :class="(editingData.data.product_ids || []).includes({{ $fp->id }}) ? 'border-amber-400 bg-amber-50 dark:bg-amber-950/30' : 'border-slate-200 dark:border-[#222f49] hover:border-amber-300'">
+                                    <input type="checkbox" class="sr-only"
+                                        :checked="(editingData.data.product_ids || []).includes({{ $fp->id }})"
+                                        @change="
+                                            if (!editingData.data.product_ids) editingData.data.product_ids = [];
+                                            const i = editingData.data.product_ids.indexOf({{ $fp->id }});
+                                            if (i > -1) { editingData.data.product_ids.splice(i, 1); }
+                                            else { editingData.data.product_ids.push({{ $fp->id }}); }
+                                        ">
+                                    <div class="w-4 h-4 rounded border-2 flex-shrink-0 flex items-center justify-center transition-colors"
+                                        :class="(editingData.data.product_ids || []).includes({{ $fp->id }}) ? 'bg-amber-500 border-amber-500 text-white' : 'border-slate-300 dark:border-slate-600'">
+                                        <span class="material-symbols-outlined text-[11px]" x-show="(editingData.data.product_ids || []).includes({{ $fp->id }})">check</span>
+                                    </div>
+                                    @if($fp->thumbnail)
+                                        <img src="{{ asset('storage/'.$fp->thumbnail) }}" class="w-8 h-8 rounded-lg object-cover flex-shrink-0 border border-slate-200 dark:border-[#222f49]">
+                                    @else
+                                        <div class="w-8 h-8 rounded-lg bg-slate-200 dark:bg-slate-700 flex items-center justify-center flex-shrink-0">
+                                            <span class="material-symbols-outlined text-[14px] text-slate-400">image</span>
+                                        </div>
+                                    @endif
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">{{ $fp->name }}</p>
+                                        <p class="text-[11px] text-slate-500">Rp {{ number_format($fp->price, 0, ',', '.') }}</p>
+                                    </div>
+                                </label>
+                                @endforeach
+                            </div>
+                            <p class="text-[10px] text-slate-400 mt-1.5 text-center"
+                                x-text="'Dipilih: ' + (editingData.data.product_ids || []).length + ' dari {{ $flashProducts->count() }} produk'"></p>
+                        @endif
+                    </div>
+
                 </div>
                 
                 <!-- Banner Settings -->
@@ -1209,7 +1282,7 @@
                     case 'banner': return { images: [] };
                     case 'single_image': return { image_url: '', link: '' };
                     case 'products': return { type: 'latest', count: 8 };
-                    case 'flash_sale': return { end_date: '', discount: 10 };
+                    case 'flash_sale': return { title: 'Flash Sale Hari Ini!', end_date: '', discount: 20, product_ids: [] };
                     case 'voucher': return {};
                     default: return {};
                 }
