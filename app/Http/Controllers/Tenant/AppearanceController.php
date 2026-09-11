@@ -71,4 +71,31 @@ class AppearanceController extends Controller
 
         return response()->json(['success' => false, 'message' => 'Gagal mengunggah gambar.'], 400);
     }
+
+    /**
+     * Simpan konfigurasi penempatan voucher/diskon di appearance_data
+     */
+    public function saveVoucherPlacement(Request $request)
+    {
+        $store = Auth::user()->store;
+
+        if (!$store) {
+            return response()->json(['success' => false, 'message' => 'Toko tidak ditemukan.'], 404);
+        }
+
+        $request->validate([
+            'voucher_placement'              => 'nullable|array',
+            'voucher_placement.header'       => 'nullable|integer',
+            'voucher_placement.product_page' => 'nullable|integer',
+            'voucher_placement.checkout'     => 'nullable|integer',
+        ]);
+
+        // Merge ke dalam appearance_data yang ada — jangan timpa widget lainnya
+        $current = is_array($store->appearance_data) ? $store->appearance_data : [];
+        $current['voucher_placement'] = $request->input('voucher_placement', []);
+        $store->appearance_data = $current;
+        $store->save();
+
+        return response()->json(['success' => true, 'message' => 'Penempatan kupon berhasil disimpan.']);
+    }
 }

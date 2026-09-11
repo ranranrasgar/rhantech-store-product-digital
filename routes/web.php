@@ -125,6 +125,7 @@ Route::middleware(['auth', 'verified', 'is_tenant'])->prefix('dashboard')->name(
     Route::get('appearance', [\App\Http\Controllers\Tenant\AppearanceController::class, 'index'])->name('appearance.index');
     Route::post('appearance', [\App\Http\Controllers\Tenant\AppearanceController::class, 'update'])->name('appearance.update');
     Route::post('appearance/upload', [\App\Http\Controllers\Tenant\AppearanceController::class, 'uploadImage'])->name('appearance.upload');
+    Route::post('appearance/voucher-placement', [\App\Http\Controllers\Tenant\AppearanceController::class, 'saveVoucherPlacement'])->name('appearance.voucher-placement');
 
     // kerja sama
     Route::resource('affiliates', \App\Http\Controllers\Tenant\AffiliateController::class);

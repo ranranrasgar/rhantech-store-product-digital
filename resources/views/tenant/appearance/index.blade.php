@@ -41,11 +41,15 @@
     <div class="lg:hidden bg-white dark:bg-[#111726] border-b border-slate-200/80 dark:border-[#222f49] px-4 py-2 flex items-center justify-center gap-2 shrink-0 z-20">
         <button type="button" @click="mobileTab = 'palette'" :class="mobileTab === 'palette' ? 'bg-sky-500 text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'" class="flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer">
             <span class="material-symbols-outlined text-[16px]">widgets</span>
-            <span>Pilihan Widget</span>
+            <span>Widget</span>
+        </button>
+        <button type="button" @click="mobileTab = 'voucher'" :class="mobileTab === 'voucher' ? 'bg-rose-500 text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'" class="flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+            <span class="material-symbols-outlined text-[16px]">confirmation_number</span>
+            <span>Voucher</span>
         </button>
         <button type="button" @click="mobileTab = 'canvas'" :class="mobileTab === 'canvas' ? 'bg-sky-500 text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'" class="flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer">
             <span class="material-symbols-outlined text-[16px]">devices</span>
-            <span>Kanvas Preview</span>
+            <span>Kanvas</span>
         </button>
     </div>
 
@@ -53,8 +57,20 @@
     <div class="flex-1 flex flex-col lg:flex-row overflow-hidden min-h-0 relative">
         
         <!-- LEFT SIDEBAR: WIDGET COMPONENT PALETTE -->
-        <div :class="mobileTab === 'palette' ? 'flex' : 'hidden lg:flex'" class="w-full lg:w-[300px] border-b lg:border-b-0 lg:border-r border-slate-200/80 dark:border-[#222f49] bg-white dark:bg-[#111726] flex-col h-full z-10 shrink-0 shadow-sm overflow-hidden">
-            
+        <div :class="(mobileTab === 'palette' || mobileTab === 'voucher') ? 'flex' : 'hidden lg:flex'" class="w-full lg:w-[300px] border-b lg:border-b-0 lg:border-r border-slate-200/80 dark:border-[#222f49] bg-white dark:bg-[#111726] flex-col h-full z-10 shrink-0 shadow-sm overflow-hidden">
+
+            <!-- Sidebar Tab Toggle (Desktop) -->
+            <div class="hidden lg:flex border-b border-slate-100 dark:border-[#222f49]">
+                <button type="button" @click="sidebarTab = 'widgets'" :class="sidebarTab === 'widgets' ? 'border-b-2 border-sky-500 text-sky-600 dark:text-sky-400 font-black' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'" class="flex-1 py-2.5 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer">
+                    <span class="material-symbols-outlined text-[15px]">widgets</span> Widget
+                </button>
+                <button type="button" @click="sidebarTab = 'voucher'" :class="sidebarTab === 'voucher' ? 'border-b-2 border-rose-500 text-rose-600 dark:text-rose-400 font-black' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'" class="flex-1 py-2.5 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer">
+                    <span class="material-symbols-outlined text-[15px]">confirmation_number</span> Kupon
+                </button>
+            </div>
+
+            <!-- PANEL: Widget Palette -->
+            <div x-show="sidebarTab === 'widgets' && mobileTab !== 'voucher'" class="flex flex-col flex-1 overflow-hidden">
             <div class="p-3.5 sm:p-4 border-b border-slate-100 dark:border-[#222f49]">
                 <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                     Pilihan Blok Widget
@@ -136,6 +152,124 @@
                 </div>
 
             </div>
+            </div>
+
+            <!-- PANEL: Penempatan Voucher -->
+            <div x-show="sidebarTab === 'voucher' || mobileTab === 'voucher'" class="flex flex-col flex-1 overflow-hidden">
+                <div class="p-3.5 sm:p-4 border-b border-slate-100 dark:border-[#222f49]">
+                    <h2 class="text-xs font-bold uppercase tracking-wider text-rose-500 flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-[15px]">confirmation_number</span>
+                        Penempatan Kupon & Voucher
+                    </h2>
+                    <p class="text-[11px] text-slate-400 mt-1">Pilih voucher/diskon yang sudah dibuat untuk ditampilkan di setiap lokasi toko. Jika tidak dipilih, sistem akan menampilkan otomatis.</p>
+                </div>
+
+                <div class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+
+                    @php
+                        $voucherPlacement = is_array($store->appearance_data ?? null)
+                            ? ($store->appearance_data['voucher_placement'] ?? [])
+                            : [];
+                        $activeCampaigns = \App\Models\Campaign::where('store_id', $store->id)
+                            ->whereIn('status', ['active', 'scheduled'])
+                            ->orderBy('name')
+                            ->get();
+                    @endphp
+
+                    @if($activeCampaigns->isEmpty())
+                        <div class="text-center py-8">
+                            <span class="material-symbols-outlined text-3xl text-slate-300 dark:text-slate-600">confirmation_number</span>
+                            <p class="text-xs text-slate-400 mt-2">Belum ada diskon/voucher aktif.</p>
+                            <a href="{{ route('tenant.campaigns.create') }}" class="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-rose-500 hover:text-rose-600">
+                                <span class="material-symbols-outlined text-[15px]">add_circle</span>
+                                Buat Diskon / Voucher
+                            </a>
+                        </div>
+                    @else
+                        <!-- Info posisi -->
+                        <div class="bg-slate-50 dark:bg-[#0c1220] rounded-xl p-3 text-[11px] text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-[#222f49]">
+                            <p class="font-bold text-slate-700 dark:text-slate-300 mb-1">📍 3 Lokasi Penempatan:</p>
+                            <ul class="space-y-1 pl-2">
+                                <li>• <b>Header Toko</b> — tampil sebagai banner promo di atas toko</li>
+                                <li>• <b>Pop-up Halaman Produk</b> — muncul saat pembeli buka produk</li>
+                                <li>• <b>Halaman Checkout</b> — tampil saat pembeli selesai beli</li>
+                            </ul>
+                        </div>
+
+                        <!-- Slot 1: Header Toko -->
+                        <div class="space-y-1.5">
+                            <label class="flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300">
+                                <span class="material-symbols-outlined text-[15px] text-rose-500">store</span>
+                                Header Toko
+                            </label>
+                            <select id="vp_header" x-model="voucherPlacement.header" class="w-full px-3 py-2 rounded-xl text-xs bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] text-slate-900 dark:text-white outline-none focus:border-rose-500">
+                                <option value="">— Otomatis (sistem) —</option>
+                                @foreach($activeCampaigns as $c)
+                                    <option value="{{ $c->id }}" {{ ($voucherPlacement['header'] ?? '') == $c->id ? 'selected' : '' }}>
+                                        {{ $c->name }}
+                                        @if($c->code) [{{ $c->code }}] @endif
+                                        ({{ $c->discount_type === 'percentage' ? $c->discount_value.'%' : 'Rp '.number_format($c->discount_value,0,',','.') }})
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Slot 2: Pop-up Produk -->
+                        <div class="space-y-1.5">
+                            <label class="flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300">
+                                <span class="material-symbols-outlined text-[15px] text-amber-500">inventory_2</span>
+                                Pop-up Halaman Produk
+                            </label>
+                            <select id="vp_product" x-model="voucherPlacement.product_page" class="w-full px-3 py-2 rounded-xl text-xs bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] text-slate-900 dark:text-white outline-none focus:border-rose-500">
+                                <option value="">— Otomatis (sistem) —</option>
+                                @foreach($activeCampaigns as $c)
+                                    <option value="{{ $c->id }}" {{ ($voucherPlacement['product_page'] ?? '') == $c->id ? 'selected' : '' }}>
+                                        {{ $c->name }}
+                                        @if($c->code) [{{ $c->code }}] @endif
+                                        ({{ $c->discount_type === 'percentage' ? $c->discount_value.'%' : 'Rp '.number_format($c->discount_value,0,',','.') }})
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Slot 3: Checkout -->
+                        <div class="space-y-1.5">
+                            <label class="flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300">
+                                <span class="material-symbols-outlined text-[15px] text-emerald-500">shopping_cart_checkout</span>
+                                Halaman Checkout
+                            </label>
+                            <select id="vp_checkout" x-model="voucherPlacement.checkout" class="w-full px-3 py-2 rounded-xl text-xs bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] text-slate-900 dark:text-white outline-none focus:border-rose-500">
+                                <option value="">— Otomatis (sistem) —</option>
+                                @foreach($activeCampaigns as $c)
+                                    <option value="{{ $c->id }}" {{ ($voucherPlacement['checkout'] ?? '') == $c->id ? 'selected' : '' }}>
+                                        {{ $c->name }}
+                                        @if($c->code) [{{ $c->code }}] @endif
+                                        ({{ $c->discount_type === 'percentage' ? $c->discount_value.'%' : 'Rp '.number_format($c->discount_value,0,',','.') }})
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Save Button -->
+                        <div class="pt-2">
+                            <button type="button" @click="saveVoucherPlacement()" :disabled="isSavingVoucher" class="w-full py-2.5 rounded-xl bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold shadow-md shadow-rose-500/25 transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-60">
+                                <span class="material-symbols-outlined text-[15px]" x-text="isSavingVoucher ? 'hourglass_empty' : 'save'">save</span>
+                                <span x-text="isSavingVoucher ? 'Menyimpan...' : 'Simpan Penempatan'">Simpan Penempatan</span>
+                            </button>
+                            <p x-show="voucherSaveMsg" x-text="voucherSaveMsg" class="text-center text-[11px] mt-2 text-emerald-600 dark:text-emerald-400 font-bold"></p>
+                        </div>
+
+                        <!-- Link ke modul diskon -->
+                        <div class="pt-1">
+                            <a href="{{ route('tenant.campaigns.index') }}" class="flex items-center justify-center gap-1.5 text-[11px] text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 transition-colors">
+                                <span class="material-symbols-outlined text-[14px]">open_in_new</span>
+                                Kelola Diskon & Voucher
+                            </a>
+                        </div>
+                    @endif
+                </div>
+            </div>
+
         </div>
 
         <!-- CENTER CANVAS: LIVE INTERACTIVE STORE BUILDER -->
@@ -938,6 +1072,7 @@
         Alpine.data('appearanceEditor', () => ({
             device: window.innerWidth < 768 ? 'mobile' : 'desktop',
             mobileTab: window.innerWidth < 1024 ? 'canvas' : 'palette',
+            sidebarTab: 'widgets',
             activeComponents: {!! json_encode($store->appearance_data ?? []) !!},
             headerBanner: '{{ $store->banner }}' || '',
             isSaving: false,
@@ -945,6 +1080,11 @@
             draggedItem: null,
             sortableMobile: null,
             sortableDesktop: null,
+
+            // Voucher Placement state
+            voucherPlacement: {!! json_encode((is_array($store->appearance_data ?? null) ? ($store->appearance_data['voucher_placement'] ?? []) : []) + ['header' => '', 'product_page' => '', 'checkout' => '']) !!},
+            isSavingVoucher: false,
+            voucherSaveMsg: '',
             
             // Cropper state
             isCropperModalOpen: false,
@@ -1383,6 +1523,30 @@
                         console.error(err);
                     });
                 }, 'image/jpeg', 0.85);
+            },
+
+            // Save voucher placement config
+            saveVoucherPlacement() {
+                this.isSavingVoucher = true;
+                this.voucherSaveMsg = '';
+                fetch('{{ route('tenant.appearance.voucher-placement') }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ voucher_placement: this.voucherPlacement })
+                })
+                .then(r => r.json())
+                .then(data => {
+                    this.isSavingVoucher = false;
+                    this.voucherSaveMsg = data.success ? '✓ Penempatan berhasil disimpan!' : (data.message || 'Gagal menyimpan.');
+                    setTimeout(() => this.voucherSaveMsg = '', 3000);
+                })
+                .catch(() => {
+                    this.isSavingVoucher = false;
+                    this.voucherSaveMsg = 'Kesalahan koneksi.';
+                });
             }
         }));
     });
