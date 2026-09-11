@@ -11,7 +11,7 @@ class Campaign extends Model
         'store_id', 'name', 'type', 'applies_to', 'category_ids', 'product_ids',
         'discount_type', 'discount_value', 
         'code', 'start_date', 'end_date', 'status', 'minimum_spend', 
-        'usage_limit', 'used_count', 'description'
+        'usage_limit', 'used_count', 'description', 'color'
     ];
 
     protected $casts = [

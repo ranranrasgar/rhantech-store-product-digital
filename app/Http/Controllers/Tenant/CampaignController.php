@@ -57,6 +57,7 @@ class CampaignController extends Controller
             'minimum_spend' => 'nullable|numeric|min:0',
             'usage_limit' => 'nullable|integer|min:1',
             'description' => 'nullable|string',
+            'color' => 'nullable|string|in:orange,red,rose,pink,purple,indigo,blue,cyan,teal,green,amber,slate',
         ]);
 
         $validated['store_id'] = $store->id;
@@ -114,6 +115,7 @@ class CampaignController extends Controller
             'minimum_spend' => 'nullable|numeric|min:0',
             'usage_limit' => 'nullable|integer|min:1',
             'description' => 'nullable|string',
+            'color' => 'nullable|string|in:orange,red,rose,pink,purple,indigo,blue,cyan,teal,green,amber,slate',
         ]);
 
         $validated['minimum_spend'] = $validated['minimum_spend'] ?? 0;

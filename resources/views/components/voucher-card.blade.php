@@ -15,11 +15,43 @@
     $daysLeft = now()->diffInDays($campaign->end_date, false);
     $hoursLeft = now()->diffInHours($campaign->end_date, false);
 
+    // Palet warna berdasarkan pilihan seller
+    $colorPalette = [
+        'orange'  => 'linear-gradient(135deg, #f59e0b 0%, #ea580c 100%)',
+        'red'     => 'linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)',
+        'blue'    => 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+        'green'   => 'linear-gradient(135deg, #10b981 0%, #047857 100%)',
+        'purple'  => 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)',
+        'pink'    => 'linear-gradient(135deg, #ec4899 0%, #be185d 100%)',
+        'teal'    => 'linear-gradient(135deg, #14b8a6 0%, #0f766e 100%)',
+        'indigo'  => 'linear-gradient(135deg, #6366f1 0%, #4338ca 100%)',
+        'rose'    => 'linear-gradient(135deg, #fb7185 0%, #e11d48 100%)',
+        'amber'   => 'linear-gradient(135deg, #fbbf24 0%, #d97706 100%)',
+        'cyan'    => 'linear-gradient(135deg, #22d3ee 0%, #0891b2 100%)',
+        'slate'   => 'linear-gradient(135deg, #64748b 0%, #334155 100%)',
+    ];
+
     if ($hasUsed) {
         $bgGradient = 'linear-gradient(135deg, #64748b 0%, #475569 100%)';
         $badgeText = 'SUDAH KLAIM';
         $iconName = 'lock';
         $discountLabel = 'TERPAKAI';
+    } elseif (!empty($campaign->color) && isset($colorPalette[$campaign->color])) {
+        // Gunakan warna custom pilihan seller
+        $bgGradient = $colorPalette[$campaign->color];
+        if ($isFree) {
+            $badgeText = 'GRATIS 100%';
+            $iconName = 'redeem';
+            $discountLabel = '100% OFF';
+        } elseif ($isPercentage) {
+            $badgeText = 'DISKON ' . rtrim(rtrim($discountVal, '0'), '.') . '%';
+            $iconName = 'confirmation_number';
+            $discountLabel = rtrim(rtrim($discountVal, '0'), '.') . '% OFF';
+        } else {
+            $badgeText = 'POTONGAN';
+            $iconName = 'local_offer';
+            $discountLabel = 'Rp ' . number_format($discountVal / 1000, 0) . 'rb OFF';
+        }
     } elseif ($isFree) {
         $bgGradient = 'linear-gradient(135deg, #059669 0%, #0d9488 50%, #047857 100%)';
         $badgeText = 'GRATIS 100%';

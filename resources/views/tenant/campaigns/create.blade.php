@@ -179,6 +179,53 @@
                 </div>
             </div>
 
+            <!-- Warna Tema Voucher -->
+            <div class="mb-6" x-data="{ selectedColor: '{{ old('color', '') }}' }">
+                <input type="hidden" name="color" :value="selectedColor">
+                <label class="block text-sm font-semibold mb-3 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[18px] text-slate-500">palette</span>
+                    Warna Tema Voucher
+                    <span class="text-[11px] font-normal text-slate-400">(Opsional — default sesuai jenis diskon)</span>
+                </label>
+                <div class="flex flex-wrap items-center gap-2">
+                    <!-- Reset / Default -->
+                    <button type="button" @click="selectedColor = ''"
+                        :class="selectedColor === '' ? 'ring-2 ring-offset-2 ring-slate-400 scale-110' : 'opacity-70 hover:opacity-100'"
+                        class="w-10 h-10 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-600 bg-white dark:bg-[#0d1117] flex items-center justify-center text-slate-400 transition-all"
+                        title="Default (otomatis)">
+                        <span class="material-symbols-outlined text-[18px]">close</span>
+                    </button>
+                    @foreach([
+                        ['value' => 'orange', 'gradient' => 'linear-gradient(135deg, #f59e0b, #ea580c)', 'label' => 'Orange'],
+                        ['value' => 'red',    'gradient' => 'linear-gradient(135deg, #ef4444, #b91c1c)', 'label' => 'Merah'],
+                        ['value' => 'rose',   'gradient' => 'linear-gradient(135deg, #fb7185, #e11d48)', 'label' => 'Rose'],
+                        ['value' => 'pink',   'gradient' => 'linear-gradient(135deg, #ec4899, #be185d)', 'label' => 'Pink'],
+                        ['value' => 'purple', 'gradient' => 'linear-gradient(135deg, #8b5cf6, #6d28d9)', 'label' => 'Ungu'],
+                        ['value' => 'indigo', 'gradient' => 'linear-gradient(135deg, #6366f1, #4338ca)', 'label' => 'Indigo'],
+                        ['value' => 'blue',   'gradient' => 'linear-gradient(135deg, #3b82f6, #1d4ed8)', 'label' => 'Biru'],
+                        ['value' => 'cyan',   'gradient' => 'linear-gradient(135deg, #22d3ee, #0891b2)', 'label' => 'Cyan'],
+                        ['value' => 'teal',   'gradient' => 'linear-gradient(135deg, #14b8a6, #0f766e)', 'label' => 'Teal'],
+                        ['value' => 'green',  'gradient' => 'linear-gradient(135deg, #10b981, #047857)', 'label' => 'Hijau'],
+                        ['value' => 'amber',  'gradient' => 'linear-gradient(135deg, #fbbf24, #d97706)', 'label' => 'Amber'],
+                        ['value' => 'slate',  'gradient' => 'linear-gradient(135deg, #64748b, #334155)', 'label' => 'Abu-abu'],
+                    ] as $c)
+                    <button type="button"
+                        @click="selectedColor = '{{ $c['value'] }}'"
+                        :class="selectedColor === '{{ $c['value'] }}' ? 'ring-2 ring-offset-2 ring-slate-500 scale-110' : 'opacity-75 hover:opacity-100 hover:scale-105'"
+                        class="w-10 h-10 rounded-xl shadow-md transition-all"
+                        style="background: {{ $c['gradient'] }};"
+                        title="{{ $c['label'] }}">
+                    </button>
+                    @endforeach
+                </div>
+                <!-- Preview Label -->
+                <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-2 flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[14px]">info</span>
+                    Warna ini akan tampil di kartu voucher yang dilihat pembeli.
+                    <span x-show="selectedColor !== ''" class="font-bold text-slate-700 dark:text-slate-300" x-text="'Dipilih: ' + selectedColor"></span>
+                </p>
+            </div>
+
             <!-- Keterangan -->
             <div class="mb-6">
                 <label class="block text-sm font-semibold mb-2">Syarat & Ketentuan (Opsional)</label>
