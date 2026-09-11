@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -51,7 +52,7 @@ class SellerAd extends Model
     /**
      * Scope for active ads that belong to stores with positive ad_balance
      */
-    public function scopeActiveAndFunded($query)
+    public function scopeActiveAndFunded(Builder $query)
     {
         return $query->where('status', 'active')
             ->whereHas('store', function ($q) {

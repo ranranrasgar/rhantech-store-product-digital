@@ -798,7 +798,8 @@
                             $flashProducts = \App\Models\Product::where('store_id', $store->id)
                                 ->where('is_active', true)
                                 ->orderBy('name')
-                                ->get(['id', 'name', 'price', 'thumbnail']);
+                                ->with(['images' => fn($q) => $q->where('is_main', true)->limit(1)])
+                                ->get(['id', 'name', 'price']);
                         @endphp
 
                         @if($flashProducts->isEmpty())
@@ -823,8 +824,8 @@
                                         :class="(editingData.data.product_ids || []).includes({{ $fp->id }}) ? 'bg-amber-500 border-amber-500 text-white' : 'border-slate-300 dark:border-slate-600'">
                                         <span class="material-symbols-outlined text-[11px]" x-show="(editingData.data.product_ids || []).includes({{ $fp->id }})">check</span>
                                     </div>
-                                    @if($fp->thumbnail)
-                                        <img src="{{ asset('storage/'.$fp->thumbnail) }}" class="w-8 h-8 rounded-lg object-cover flex-shrink-0 border border-slate-200 dark:border-[#222f49]">
+                                    @if($fp->images->first())
+                                        <img src="{{ asset('storage/'.$fp->images->first()->image_path) }}" class="w-8 h-8 rounded-lg object-cover flex-shrink-0 border border-slate-200 dark:border-[#222f49]">
                                     @else
                                         <div class="w-8 h-8 rounded-lg bg-slate-200 dark:bg-slate-700 flex items-center justify-center flex-shrink-0">
                                             <span class="material-symbols-outlined text-[14px] text-slate-400">image</span>
