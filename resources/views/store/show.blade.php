@@ -674,11 +674,37 @@
 
                 @elseif($block['type'] === 'flash_sale')
                     @php 
-                        $endDate = $data['end_date'] ?? ''; 
-                        // Ambil 4 produk diskon
-                        $flashProducts = $products->filter(fn($p) => $p->discount_price > 0)->take(4);
-                        if($flashProducts->count() === 0) {
-                            $flashProducts = $products->take(4);
+                        $endDate = $data['end_date'] ?? '';
+                        $selectedIds = $data['product_ids'] ?? [];
+
+                        // Gunakan product_ids yang dipilih di settings appearance
+                        if (!empty($selectedIds)) {
+                            $flashProducts = \App\Models\Product::whereIn('id', $selectedIds)
+                                ->where('store_id', $store->id)
+                                ->where('is_active', true)
+                                ->with(['images' => fn($q) => $q->where('is_main', true)->limit(1)])
+                                ->get()
+                                ->sortBy(fn($p) => array_search($p->id, $selectedIds)) // jaga urutan pilihan
+                                ->take(8)
+                                ->values();
+                        } else {
+                            // Fallback: produk diskon dari toko ini
+                            $flashProducts = \App\Models\Product::where('store_id', $store->id)
+                                ->where('is_active', true)
+                                ->whereNotNull('discount_price')
+                                ->where('discount_price', '>', 0)
+                                ->with(['images' => fn($q) => $q->where('is_main', true)->limit(1)])
+                                ->take(4)
+                                ->get();
+                            // Fallback terakhir: produk terbaru jika tidak ada diskon
+                            if ($flashProducts->isEmpty()) {
+                                $flashProducts = \App\Models\Product::where('store_id', $store->id)
+                                    ->where('is_active', true)
+                                    ->with(['images' => fn($q) => $q->where('is_main', true)->limit(1)])
+                                    ->latest()
+                                    ->take(4)
+                                    ->get();
+                            }
                         }
                     @endphp
                     <div class="w-full relative" 
