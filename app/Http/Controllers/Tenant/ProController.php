@@ -76,6 +76,22 @@ class ProController extends Controller
             ]);
         }
 
+        // Pastikan selalu ada 1 paket yang berstatus rekomendasi (default: Tahunan / yearly)
+        $hasPopular = $plans->contains(function($p) {
+            return !empty($p->is_popular);
+        });
+
+        if (!$hasPopular) {
+            $yearly = $plans->firstWhere('slug', 'yearly');
+            if ($yearly) {
+                $yearly->is_popular = true;
+            } elseif ($plans->count() > 1) {
+                $plans[1]->is_popular = true;
+            } else {
+                $plans->first()->is_popular = true;
+            }
+        }
+
         $defaultPlan = $plans->where('is_popular', true)->first() ?? $plans->first();
 
         $plansData = [];
@@ -87,6 +103,7 @@ class ProController extends Controller
                 'price' => (int)$p->price,
                 'duration' => $duration,
                 'label' => $p->name . ' (' . $labelSuffix . ')',
+                'is_popular' => (bool)($p->is_popular ?? false),
             ];
         }
 

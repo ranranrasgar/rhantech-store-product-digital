@@ -136,19 +136,45 @@
                         @foreach($plans as $plan)
                             @php
                                 $isSelected = $defaultPlan && $defaultPlan->slug === $plan->slug;
+                                $isPopular = (bool)($plan->is_popular ?? false);
                             @endphp
-                            <label class="relative border-2 {{ $isSelected ? 'border-amber-500 bg-amber-50/20 dark:bg-amber-950/10 ring-2 ring-amber-500/20' : 'border-slate-200 dark:border-[#222f49]' }} rounded-2xl p-5 cursor-pointer hover:border-amber-500 dark:hover:border-amber-500 transition-all flex flex-col justify-between plan-card" id="card_{{ $plan->slug }}">
+                            <label class="relative border-2 {{ $isSelected ? 'border-amber-500 bg-amber-50/20 dark:bg-amber-950/10 ring-2 ring-amber-500/20' : ($isPopular ? 'border-amber-400/80 dark:border-amber-600/60 bg-amber-50/5 dark:bg-amber-950/5' : 'border-slate-200 dark:border-[#222f49]') }} rounded-2xl p-5 cursor-pointer hover:border-amber-500 dark:hover:border-amber-500 transition-all flex flex-col justify-between plan-card {{ $isPopular ? 'shadow-md' : 'shadow-sm' }}" id="card_{{ $plan->slug }}">
+                                
+                                {{-- Lencana Direkomendasikan Utama di Tengah Atas --}}
+                                @if($isPopular)
+                                    <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-amber-500 text-slate-950 text-[10px] sm:text-[11px] font-black uppercase px-3.5 py-0.5 rounded-full shadow-md flex items-center gap-1.5 tracking-wider border-2 border-white dark:border-[#111726] z-10 whitespace-nowrap">
+                                        <span class="material-symbols-outlined text-[14px] font-black text-slate-950">star</span>
+                                        <span>DIREKOMENDASIKAN</span>
+                                    </div>
+                                @endif
+
+                                {{-- Tag Promosi di Pojok Kanan Atas --}}
                                 @if($plan->badge)
-                                    <div class="absolute -top-3 right-4 bg-amber-500 text-slate-950 text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full shadow-sm">
+                                    <div class="absolute -top-3 right-3 {{ $isPopular ? 'bg-emerald-600 text-white' : 'bg-slate-900 dark:bg-slate-700 text-slate-100' }} text-[9px] sm:text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full shadow-sm z-10">
                                         {{ $plan->badge }}
                                     </div>
                                 @endif
+
                                 <input type="radio" name="plan" value="{{ $plan->slug }}" class="sr-only" {{ $isSelected ? 'checked' : '' }} onchange="updatePlan('{{ $plan->slug }}', {{ (int)$plan->price }})">
                                 <div>
-                                    <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">
-                                        {{ $plan->is_popular ? 'Paling Populer' : 'Paket Pilihan' }}
+                                    <div class="mb-1">
+                                        @if($isPopular)
+                                            <span class="inline-flex items-center gap-1 text-[11px] font-black text-amber-600 dark:text-amber-400 uppercase tracking-wider">
+                                                <span class="material-symbols-outlined text-[14px]">verified</span>
+                                                Paling Populer & Direkomendasikan
+                                            </span>
+                                        @else
+                                            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                                                Paket Pilihan
+                                            </span>
+                                        @endif
                                     </div>
-                                    <h3 class="text-lg font-black text-slate-900 dark:text-white">{{ $plan->name }}</h3>
+                                    <h3 class="text-lg font-black text-slate-900 dark:text-white flex items-center gap-1.5">
+                                        {{ $plan->name }}
+                                        @if($isPopular)
+                                            <span class="material-symbols-outlined text-amber-500 text-[18px]">verified</span>
+                                        @endif
+                                    </h3>
                                     <div class="mt-3 flex items-baseline gap-1">
                                         <span class="text-2xl font-black text-slate-900 dark:text-white">Rp {{ number_format($plan->price, 0, ',', '.') }}</span>
                                         <span class="text-xs text-slate-400">{{ $plan->duration_label ?? ($plan->duration_days ? '/ ' . $plan->duration_days . ' hari' : '/ selamanya') }}</span>
@@ -350,11 +376,17 @@
             const card = document.getElementById('card_' + p);
             if (card) {
                 if (p === plan) {
-                    card.classList.add('border-amber-500', 'ring-2', 'ring-amber-500/20');
-                    card.classList.remove('border-slate-200', 'dark:border-[#222f49]');
+                    card.classList.add('border-amber-500', 'ring-2', 'ring-amber-500/20', 'bg-amber-50/20', 'dark:bg-amber-950/10');
+                    card.classList.remove('border-slate-200', 'dark:border-[#222f49]', 'border-amber-400/80', 'dark:border-amber-600/60');
                 } else {
-                    card.classList.remove('border-amber-500', 'ring-2', 'ring-amber-500/20');
-                    card.classList.add('border-slate-200', 'dark:border-[#222f49]');
+                    card.classList.remove('border-amber-500', 'ring-2', 'ring-amber-500/20', 'bg-amber-50/20', 'dark:bg-amber-950/10');
+                    if (plansData[p] && plansData[p].is_popular) {
+                        card.classList.add('border-amber-400/80', 'dark:border-amber-600/60');
+                        card.classList.remove('border-slate-200', 'dark:border-[#222f49]');
+                    } else {
+                        card.classList.add('border-slate-200', 'dark:border-[#222f49]');
+                        card.classList.remove('border-amber-400/80', 'dark:border-amber-600/60');
+                    }
                 }
             }
         });
