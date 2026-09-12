@@ -336,8 +336,8 @@
         </div>
         @endif
 
-        <!-- 5 Essential Metrics Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 md:gap-5">
+        <!-- 6 Essential Metrics Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 md:gap-5">
             <!-- Metric 1: Total Revenue -->
             <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5">
                 <div class="flex items-center justify-between">
@@ -438,6 +438,27 @@
                         <span class="text-slate-400">Produk aktif</span>
                         <a href="{{ route('tenant.products.index') }}" class="font-bold text-indigo-600 dark:text-indigo-400 hover:underline">
                             Kelola Produk
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Metric 6: Pengikut Toko (Followers) -->
+            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Pengikut Toko</span>
+                    <div class="w-10 h-10 rounded-xl bg-pink-500/10 text-pink-600 dark:text-pink-400 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-[22px]">group</span>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                        {{ number_format($followersCount ?? 0) }}
+                    </div>
+                    <div class="mt-2 flex items-center justify-between text-xs">
+                        <span class="text-slate-400">Pelanggan setia</span>
+                        <a href="{{ url('/' . $storeSlug) }}" target="_blank" class="font-bold text-pink-600 dark:text-pink-400 hover:underline flex items-center gap-0.5">
+                            Lihat Toko <span class="material-symbols-outlined text-[13px]">open_in_new</span>
                         </a>
                     </div>
                 </div>
@@ -707,6 +728,50 @@
                         </div>
                         @endforelse
                     </div>
+                </div>
+
+                <!-- Pengikut Toko Terbaru -->
+                <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-pink-500 text-[20px]">group</span>
+                            <h2 class="text-base font-bold text-slate-900 dark:text-white">Pengikut Toko</h2>
+                        </div>
+                        <span class="text-xs font-bold text-pink-600 dark:text-pink-400 bg-pink-500/10 px-2.5 py-0.5 rounded-full">
+                            {{ $followersCount ?? 0 }} Pengikut
+                        </span>
+                    </div>
+
+                    @if(isset($recentFollowers) && $recentFollowers->isNotEmpty())
+                        <div class="space-y-3">
+                            @foreach($recentFollowers as $follower)
+                            <div class="flex items-center justify-between gap-3 p-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-[#161f33] transition-colors border border-slate-100 dark:border-slate-800/60">
+                                <div class="flex items-center gap-3 min-w-0">
+                                    <div class="w-9 h-9 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700 shrink-0">
+                                        @if($follower->avatar)
+                                            <img src="{{ asset('storage/' . $follower->avatar) }}" alt="{{ $follower->name }}" class="w-full h-full object-cover">
+                                        @else
+                                            <img src="https://ui-avatars.com/api/?name={{ urlencode($follower->name) }}&background=ec4899&color=fff&size=80" alt="{{ $follower->name }}" class="w-full h-full object-cover">
+                                        @endif
+                                    </div>
+                                    <div class="min-w-0">
+                                        <div class="text-xs font-bold text-slate-900 dark:text-white truncate">{{ $follower->name }}</div>
+                                        <div class="text-[10px] text-slate-400 truncate">{{ $follower->email }}</div>
+                                    </div>
+                                </div>
+                                <span class="text-[10px] text-slate-400 whitespace-nowrap">
+                                    {{ $follower->pivot->created_at ? $follower->pivot->created_at->diffForHumans() : 'Baru saja' }}
+                                </span>
+                            </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="py-6 text-center text-slate-400">
+                            <span class="material-symbols-outlined text-3xl text-slate-300 dark:text-slate-600 mb-1">person_add</span>
+                            <p class="text-xs">Belum ada pengikut toko baru.</p>
+                            <p class="text-[11px] text-slate-500 mt-1">Bagikan tautan tokomu ke media sosial untuk menarik pengikut setia.</p>
+                        </div>
+                    @endif
                 </div>
 
                 <!-- Tips & Growth Guide -->

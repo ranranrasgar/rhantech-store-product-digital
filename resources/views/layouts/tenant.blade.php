@@ -320,6 +320,9 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
         <a href="{{ route('tenant.purchases.index') }}" class="nav-link {{ request()->routeIs('tenant.purchases.*') ? 'active' : '' }}">
             <span class="material-symbols-outlined">shopping_bag</span> Pembelian Saya
         </a>
+        <a href="{{ route('tenant.following') }}" class="nav-link {{ request()->routeIs('tenant.following') ? 'active' : '' }}">
+            <span class="material-symbols-outlined">storefront</span> Toko yang Diikuti
+        </a>
 
         @if(auth()->user()->store)
         <div class="nav-section-label">Manajemen Toko</div>

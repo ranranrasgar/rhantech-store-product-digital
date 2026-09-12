@@ -120,6 +120,14 @@ class DashboardController extends Controller
             $dailySales[] = (float) ($dailyTotals[$d] ?? 0);
         }
 
+        // Pengikut Toko (Followers)
+        $followersCount = $store->followers()->count();
+        $recentFollowers = $store->followers()
+            ->withPivot('created_at')
+            ->latest('followers.created_at')
+            ->take(8)
+            ->get();
+
         return view('tenant.dashboard', compact(
             'store',
             'totalProducts',
@@ -141,7 +149,22 @@ class DashboardController extends Controller
             'monthLabels',
             'dailySales',
             'dailyLabels',
-            'currentMonthName'
+            'currentMonthName',
+            'followersCount',
+            'recentFollowers'
         ));
+    }
+
+    /**
+     * Menampilkan daftar toko yang diikuti oleh user saat ini
+     */
+    public function followingStores()
+    {
+        $user = Auth::user();
+        $stores = $user->followingStores()
+            ->withCount(['products' => fn($q) => $q->published()])
+            ->paginate(12);
+
+        return view('tenant.following', compact('stores'));
     }
 }

@@ -186,16 +186,45 @@ class PublicStoreController extends Controller
     /**
      * Toggle follow status for the store.
      */
-    public function toggleFollow(Store $store)
+    public function toggleFollow($store)
     {
         $user = Auth::user();
-        
-        if ($store->followers()->where('user_id', $user->id)->exists()) {
-            $store->followers()->detach($user->id);
-            return response()->json(['following' => false, 'message' => 'Berhenti mengikuti toko.']);
+        if (!$user) {
+            return response()->json(['message' => 'Silakan login terlebih dahulu untuk mengikuti toko.'], 401);
+        }
+
+        // Resolusi model store baik dari instance, ID numerik, maupun slug
+        $storeModel = $store instanceof Store 
+            ? $store 
+            : (is_numeric($store) ? Store::find($store) : Store::where('slug', $store)->first());
+
+        if (!$storeModel) {
+            return response()->json(['message' => 'Toko tidak ditemukan.'], 404);
+        }
+
+        // Cegah pemilik toko mengikuti toko miliknya sendiri
+        if ($storeModel->user_id === $user->id) {
+            return response()->json([
+                'following' => false,
+                'followers_count' => $storeModel->followers()->count(),
+                'message' => 'Anda tidak dapat mengikuti toko milik Anda sendiri.'
+            ], 422);
+        }
+
+        if ($storeModel->followers()->where('user_id', $user->id)->exists()) {
+            $storeModel->followers()->detach($user->id);
+            return response()->json([
+                'following' => false,
+                'followers_count' => $storeModel->followers()->count(),
+                'message' => 'Berhenti mengikuti toko ' . $storeModel->name . '.'
+            ]);
         } else {
-            $store->followers()->attach($user->id);
-            return response()->json(['following' => true, 'message' => 'Berhasil mengikuti toko.']);
+            $storeModel->followers()->attach($user->id);
+            return response()->json([
+                'following' => true,
+                'followers_count' => $storeModel->followers()->count(),
+                'message' => 'Berhasil mengikuti toko ' . $storeModel->name . '!'
+            ]);
         }
     }
 }

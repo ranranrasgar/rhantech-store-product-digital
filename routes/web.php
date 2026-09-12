@@ -108,6 +108,7 @@ Route::middleware(['auth', 'verified', 'is_tenant'])->prefix('dashboard')->name(
     
     // User Purchases
     Route::get('/purchases', [\App\Http\Controllers\Tenant\PurchaseController::class, 'index'])->name('purchases.index');
+    Route::get('/following', [\App\Http\Controllers\Tenant\DashboardController::class, 'followingStores'])->name('following');
     
     Route::resource('products', \App\Http\Controllers\Tenant\ProductController::class);
     Route::delete('products/{product}/images/delete-all', [\App\Http\Controllers\Tenant\ProductController::class, 'destroyAllImages'])->name('products.images.destroy_all');

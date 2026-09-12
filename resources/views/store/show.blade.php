@@ -29,6 +29,8 @@
         mobileSearchOpen: false,
         shareModalOpen: false,
         shareCopied: false,
+        followToastOpen: false,
+        followToastMessage: '',
         toggleFollow() {
             @auth
             fetch('{{ route('store.follow', $store->id) }}', {
@@ -39,14 +41,30 @@
                     'Accept': 'application/json'
                 }
             })
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok && res.status === 401) {
+                    window.location.href = '{{ route('login') }}?redirect=' + encodeURIComponent(window.location.href);
+                    return null;
+                }
+                return res.json();
+            })
             .then(data => {
+                if (!data) return;
                 this.isFollowing = data.following;
-                this.followersCount = this.isFollowing ? this.followersCount + 1 : this.followersCount - 1;
+                if (data.followers_count !== undefined) {
+                    this.followersCount = data.followers_count;
+                } else {
+                    this.followersCount = this.isFollowing ? this.followersCount + 1 : Math.max(0, this.followersCount - 1);
+                }
+                if (data.message) {
+                    this.followToastMessage = data.message;
+                    this.followToastOpen = true;
+                    setTimeout(() => { this.followToastOpen = false; }, 3000);
+                }
             })
             .catch(err => console.error(err));
             @else
-            window.location.href = '{{ route('login') }}';
+            window.location.href = '{{ route('login') }}?redirect=' + encodeURIComponent(window.location.href);
             @endauth
         },
         copyStoreLink() {
@@ -311,6 +329,20 @@
          class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-2xl bg-slate-900/90 text-white text-xs font-bold backdrop-blur-md shadow-2xl border border-white/10 flex items-center gap-2">
         <span class="material-symbols-outlined text-[18px] text-emerald-400">check_circle</span>
         <span>Tautan toko berhasil disalin ke clipboard!</span>
+    </div>
+
+    <!-- Toast Notifikasi Follow -->
+    <div x-show="followToastOpen" 
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 translate-y-8"
+         x-transition:enter-end="opacity-100 translate-y-0"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100 translate-y-0"
+         x-transition:leave-end="opacity-0 translate-y-8"
+         x-cloak
+         class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-2xl bg-slate-900/95 text-white text-xs font-bold backdrop-blur-md shadow-2xl border border-white/15 flex items-center gap-2">
+        <span class="material-symbols-outlined text-[18px]" :class="isFollowing ? 'text-emerald-400' : 'text-amber-400'" x-text="isFollowing ? 'person_check' : 'person_remove'">person_check</span>
+        <span x-text="followToastMessage"></span>
     </div>
 
     <!-- 1. DESKTOP STORE HEADER BANNER (Layout desktop dipertahankan utuh) -->

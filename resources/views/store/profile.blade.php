@@ -14,10 +14,15 @@
                  method: 'POST',
                  headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json' }
              }).then(r => r.json()).then(data => {
+                 if (!data) return;
                  this.isFollowing = data.following;
-                 this.followersCount = this.isFollowing ? this.followersCount + 1 : this.followersCount - 1;
+                 if (data.followers_count !== undefined) {
+                     this.followersCount = data.followers_count;
+                 } else {
+                     this.followersCount = this.isFollowing ? this.followersCount + 1 : Math.max(0, this.followersCount - 1);
+                 }
              });
-             @else window.location.href = '{{ route('login') }}' @endauth
+             @else window.location.href = '{{ route('login') }}?redirect=' + encodeURIComponent(window.location.href); @endauth
          }
      }">
 
