@@ -194,6 +194,8 @@ class ProductController extends Controller
 
         $popularStores->each(function ($store) {
             $store->is_sponsored_ad = false;
+        });
+
         // Gabungkan: Toko beriklan di posisi awal sebagai rekomendasi, diikuti toko dengan views terbanyak
         $sponsoredStores = $adStores->concat($popularStores);
 
