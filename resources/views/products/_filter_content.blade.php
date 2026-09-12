@@ -60,13 +60,14 @@
     </form>
 
     {{-- Filter Kategori --}}
-    <div class="pt-3 border-t border-gray-100 dark:border-gray-700">
+    <div class="pt-3 border-t border-gray-100 dark:border-gray-700"
+         x-data="{ showAll: {{ ($category && $categories->slice(5)->pluck('id')->contains($category)) ? 'true' : 'false' }} }">
         <h3 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2.5 flex items-center justify-between">
             <span>Kategori Produk</span>
             <span class="text-[11px] font-normal lowercase opacity-75">({{ $categories->count() }})</span>
         </h3>
 
-        <div class="space-y-1 max-h-56 overflow-y-auto pr-1">
+        <div class="space-y-1">
             <button type="button" 
                     @click="setCategory('')" 
                     class="w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-xs md:text-sm text-left transition-all"
@@ -77,8 +78,9 @@
                 </span>
             </button>
 
-            @foreach($categories as $cat)
+            @foreach($categories as $cIdx => $cat)
             <button type="button" 
+                    x-show="showAll || {{ $cIdx < 5 ? 'true' : 'false' }} || category == '{{ $cat->id }}'"
                     @click="setCategory('{{ $cat->id }}')" 
                     class="w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-xs md:text-sm text-left transition-all"
                     :class="category == '{{ $cat->id }}' ? 'bg-primary/10 text-primary font-bold border-l-4 border-primary' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'">
@@ -99,17 +101,27 @@
             </button>
             @endforeach
         </div>
+
+        @if($categories->count() > 5)
+        <button type="button" 
+                @click="showAll = !showAll"
+                class="w-full mt-1.5 py-1 px-2.5 text-[11px] font-bold text-sky-600 dark:text-sky-400 hover:text-sky-700 dark:hover:text-sky-300 flex items-center justify-between rounded-lg hover:bg-sky-50 dark:hover:bg-sky-950/30 transition-colors cursor-pointer">
+            <span x-text="showAll ? 'Sembunyikan' : '+ Lihat {{ $categories->count() - 5 }} lainnya'"></span>
+            <span class="material-symbols-outlined text-[16px] transition-transform duration-200" :class="showAll ? 'rotate-180' : ''">expand_more</span>
+        </button>
+        @endif
     </div>
 
     {{-- Filter Tipe / Platform --}}
     @if(isset($types) && $types->count() > 0)
-    <div class="pt-3 border-t border-gray-100 dark:border-gray-700">
+    <div class="pt-3 border-t border-gray-100 dark:border-gray-700"
+         x-data="{ showAll: {{ ($type && $types->slice(5)->pluck('id')->contains($type)) ? 'true' : 'false' }} }">
         <h3 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2.5 flex items-center justify-between">
             <span>Tipe / Platform</span>
             <span class="text-[11px] font-normal lowercase opacity-75">({{ $types->count() }})</span>
         </h3>
 
-        <div class="space-y-1 max-h-56 overflow-y-auto pr-1">
+        <div class="space-y-1">
             <button type="button" 
                     @click="setType('')" 
                     class="w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-xs md:text-sm text-left transition-all"
@@ -120,8 +132,9 @@
                 </span>
             </button>
 
-            @foreach($types as $tp)
+            @foreach($types as $tIdx => $tp)
             <button type="button" 
+                    x-show="showAll || {{ $tIdx < 5 ? 'true' : 'false' }} || type == '{{ $tp->id }}'"
                     @click="setType('{{ $tp->id }}')" 
                     class="w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-xs md:text-sm text-left transition-all"
                     :class="type == '{{ $tp->id }}' ? 'bg-primary/10 text-primary font-bold border-l-4 border-primary' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'">
@@ -142,18 +155,28 @@
             </button>
             @endforeach
         </div>
+
+        @if($types->count() > 5)
+        <button type="button" 
+                @click="showAll = !showAll"
+                class="w-full mt-1.5 py-1 px-2.5 text-[11px] font-bold text-sky-600 dark:text-sky-400 hover:text-sky-700 dark:hover:text-sky-300 flex items-center justify-between rounded-lg hover:bg-sky-50 dark:hover:bg-sky-950/30 transition-colors cursor-pointer">
+            <span x-text="showAll ? 'Sembunyikan' : '+ Lihat {{ $types->count() - 5 }} lainnya'"></span>
+            <span class="material-symbols-outlined text-[16px] transition-transform duration-200" :class="showAll ? 'rotate-180' : ''">expand_more</span>
+        </button>
+        @endif
     </div>
     @endif
 
     {{-- Filter Toko (Store) --}}
     @if(isset($stores) && $stores->count() > 0)
-    <div class="pt-3 border-t border-gray-100 dark:border-gray-700">
+    <div class="pt-3 border-t border-gray-100 dark:border-gray-700"
+         x-data="{ showAll: {{ ($store && $stores->slice(5)->pluck('id')->contains($store)) ? 'true' : 'false' }} }">
         <h3 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2.5 flex items-center justify-between">
             <span>Toko / Mitra</span>
             <span class="text-[11px] font-normal lowercase opacity-75">({{ $stores->count() }})</span>
         </h3>
 
-        <div class="space-y-1 max-h-44 overflow-y-auto pr-1">
+        <div class="space-y-1">
             <button type="button" 
                     @click="setStore('')" 
                     class="w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-xs md:text-sm text-left transition-all"
@@ -164,8 +187,9 @@
                 </span>
             </button>
 
-            @foreach($stores as $st)
+            @foreach($stores as $sIdx => $st)
             <button type="button" 
+                    x-show="showAll || {{ $sIdx < 5 ? 'true' : 'false' }} || store == '{{ $st->id }}'"
                     @click="setStore('{{ $st->id }}')" 
                     class="w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-xs md:text-sm text-left transition-all"
                     :class="store == '{{ $st->id }}' ? 'bg-primary/10 text-primary font-bold border-l-4 border-primary' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'">
@@ -173,6 +197,15 @@
             </button>
             @endforeach
         </div>
+
+        @if($stores->count() > 5)
+        <button type="button" 
+                @click="showAll = !showAll"
+                class="w-full mt-1.5 py-1 px-2.5 text-[11px] font-bold text-sky-600 dark:text-sky-400 hover:text-sky-700 dark:hover:text-sky-300 flex items-center justify-between rounded-lg hover:bg-sky-50 dark:hover:bg-sky-950/30 transition-colors cursor-pointer">
+            <span x-text="showAll ? 'Sembunyikan' : '+ Lihat {{ $stores->count() - 5 }} lainnya'"></span>
+            <span class="material-symbols-outlined text-[16px] transition-transform duration-200" :class="showAll ? 'rotate-180' : ''">expand_more</span>
+        </button>
+        @endif
     </div>
     @endif
 
