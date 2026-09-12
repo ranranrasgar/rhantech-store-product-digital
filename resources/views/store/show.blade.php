@@ -27,6 +27,7 @@
         isFollowing: {{ $isFollowing ? 'true' : 'false' }},
         followersCount: {{ $store->followers()->count() }},
         mobileSearchOpen: false,
+        shareModalOpen: false,
         shareCopied: false,
         toggleFollow() {
             @auth
@@ -48,18 +49,25 @@
             window.location.href = '{{ route('login') }}';
             @endauth
         },
-        shareStore() {
+        copyStoreLink() {
+            const url = '{{ url('/' . $store->slug) }}';
+            navigator.clipboard.writeText(url);
+            this.shareCopied = true;
+            setTimeout(() => this.shareCopied = false, 2500);
+        },
+        nativeShare() {
             if (navigator.share) {
                 navigator.share({
                     title: '{{ addslashes($store->name) }}',
                     text: 'Kunjungi toko resmi {{ addslashes($store->name) }}',
-                    url: window.location.href
+                    url: '{{ url('/' . $store->slug) }}'
                 }).catch(() => {});
             } else {
-                navigator.clipboard.writeText(window.location.href);
-                this.shareCopied = true;
-                setTimeout(() => this.shareCopied = false, 2500);
+                this.copyStoreLink();
             }
+        },
+        shareStore() {
+            this.shareModalOpen = true;
         }
     }"
     @toggle-store-search.window="mobileSearchOpen = !mobileSearchOpen; if (mobileSearchOpen) { $nextTick(() => { $refs.mobileSearchInput && $refs.mobileSearchInput.focus() }) }">
@@ -120,6 +128,174 @@
                 @endforeach
             </div>
             @endif
+        </div>
+    </div>
+
+    <!-- Share & Media Sosial Modal / Bottom Sheet -->
+    @php $socialLinks = is_array($store->social_links) ? $store->social_links : []; @endphp
+    <div x-show="shareModalOpen" 
+         x-transition.opacity.duration.250ms
+         class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
+         @click="shareModalOpen = false"
+         @keydown.escape.window="shareModalOpen = false"
+         x-cloak>
+        
+        <div x-show="shareModalOpen"
+             x-transition:enter="transition ease-out duration-300 transform"
+             x-transition:enter-start="translate-y-full sm:translate-y-4 sm:scale-95 opacity-0"
+             x-transition:enter-end="translate-y-0 sm:scale-100 opacity-100"
+             x-transition:leave="transition ease-in duration-200 transform"
+             x-transition:leave-start="translate-y-0 sm:scale-100 opacity-100"
+             x-transition:leave-end="translate-y-full sm:translate-y-4 sm:scale-95 opacity-0"
+             @click.stop
+             class="w-full sm:max-w-md bg-surface dark:bg-slate-900 rounded-t-[28px] sm:rounded-2xl border-t sm:border border-outline-variant/60 shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+            
+            <!-- Mobile Drag Indicator -->
+            <div class="w-12 h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full mx-auto mt-3 mb-1 sm:hidden"></div>
+
+            <!-- Header -->
+            <div class="px-5 py-4 border-b border-outline-variant/50 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-outline-variant/60 shrink-0 p-0.5">
+                        @if($store->logo)
+                            <img src="{{ asset('storage/' . $store->logo) }}" alt="{{ $store->name }}" class="w-full h-full object-cover rounded-[10px]">
+                        @else
+                            <img src="https://ui-avatars.com/api/?name={{ urlencode($store->name) }}&background=0284c7&color=fff&size=80" alt="{{ $store->name }}" class="w-full h-full object-cover rounded-[10px]">
+                        @endif
+                    </div>
+                    <div class="min-w-0">
+                        <h3 class="text-sm font-bold text-on-surface flex items-center gap-1.5 truncate">
+                            <span class="truncate">{{ $store->name }}</span>
+                            @if($store->isPro())
+                                <span class="bg-amber-500/20 text-amber-500 text-[10px] font-black px-1.5 py-0.2 rounded uppercase shrink-0">PRO</span>
+                            @endif
+                        </h3>
+                        <p class="text-xs text-on-surface-variant">Media Sosial & Bagikan Toko</p>
+                    </div>
+                </div>
+                <button type="button" 
+                        @click="shareModalOpen = false" 
+                        class="w-8 h-8 rounded-full flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors cursor-pointer shrink-0">
+                    <span class="material-symbols-outlined text-lg">close</span>
+                </button>
+            </div>
+
+            <!-- Modal Body (Scrollable) -->
+            <div class="p-5 space-y-5 overflow-y-auto hide-scrollbar">
+                
+                <!-- 1. MEDIA SOSIAL RESMI TOKO -->
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-bold uppercase tracking-wider text-on-surface-variant flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-[16px] text-primary">diversity_3</span>
+                            <span>Media Sosial Resmi</span>
+                        </span>
+                        @if(count($socialLinks) > 0)
+                            <span class="text-[11px] font-semibold text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full">{{ count($socialLinks) }} Saluran</span>
+                        @endif
+                    </div>
+
+                    @if(count($socialLinks) > 0)
+                        <div class="grid grid-cols-2 gap-2.5">
+                            @foreach($socialLinks as $soc)
+                                @php
+                                    $socPlatform = strtolower($soc['platform'] ?? 'custom');
+                                    $socName = $soc['name'] ?? ucfirst($socPlatform);
+                                    $socUrl = $soc['url'] ?? '#';
+                                    $brandStyle = match($socPlatform) {
+                                        'instagram' => 'hover:border-[#dc2743]/50 bg-rose-500/5 hover:bg-rose-500/10 text-rose-600 dark:text-rose-400',
+                                        'tiktok' => 'hover:border-black/50 dark:hover:border-white/50 bg-slate-500/5 hover:bg-slate-500/10 text-slate-900 dark:text-white',
+                                        'whatsapp' => 'hover:border-[#25D366]/50 bg-emerald-500/5 hover:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
+                                        'youtube' => 'hover:border-[#FF0000]/50 bg-red-500/5 hover:bg-red-500/10 text-red-600 dark:text-red-400',
+                                        'facebook' => 'hover:border-[#1877F2]/50 bg-blue-500/5 hover:bg-blue-500/10 text-blue-600 dark:text-blue-400',
+                                        'x', 'twitter' => 'hover:border-slate-800 dark:hover:border-white/50 bg-slate-500/5 hover:bg-slate-500/10 text-slate-900 dark:text-white',
+                                        'telegram' => 'hover:border-[#229ED9]/50 bg-sky-500/5 hover:bg-sky-500/10 text-sky-600 dark:text-sky-400',
+                                        'github' => 'hover:border-slate-700 bg-slate-500/5 hover:bg-slate-500/10 text-slate-800 dark:text-slate-200',
+                                        default => 'hover:border-primary/50 bg-primary/5 hover:bg-primary/10 text-primary'
+                                    };
+                                    $iconBadge = match($socPlatform) {
+                                        'instagram' => 'bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888] text-white',
+                                        'tiktok' => 'bg-black text-white',
+                                        'whatsapp' => 'bg-[#25D366] text-white',
+                                        'youtube' => 'bg-[#FF0000] text-white',
+                                        'facebook' => 'bg-[#1877F2] text-white',
+                                        'x', 'twitter' => 'bg-black text-white',
+                                        'telegram' => 'bg-[#229ED9] text-white',
+                                        'github' => 'bg-[#24292e] text-white',
+                                        default => 'bg-primary text-white'
+                                    };
+                                @endphp
+                                <a href="{{ $socUrl }}" 
+                                   target="_blank" 
+                                   rel="noopener noreferrer" 
+                                   class="flex items-center gap-2.5 p-2.5 rounded-xl border border-outline-variant/70 {{ $brandStyle }} active:scale-95 transition-all group">
+                                    <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 shadow-xs {{ $iconBadge }}">
+                                        <x-store-social-icon :platform="$socPlatform" class="w-4 h-4" />
+                                    </div>
+                                    <div class="min-w-0 flex-1">
+                                        <div class="text-xs font-bold text-on-surface truncate">{{ $socName }}</div>
+                                        <div class="text-[10px] text-on-surface-variant flex items-center gap-0.5">
+                                            <span>Buka</span>
+                                            <span class="material-symbols-outlined text-[12px] group-hover:translate-x-0.5 transition-transform">arrow_outward</span>
+                                        </div>
+                                    </div>
+                                </a>
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="bg-surface-container/50 dark:bg-slate-800/50 rounded-xl p-3.5 text-center border border-dashed border-outline-variant">
+                            <p class="text-xs text-on-surface-variant">Toko ini belum menambahkan tautan media sosial resmi.</p>
+                            @if(auth()->check() && auth()->id() === $store->user_id)
+                                <a href="{{ route('tenant.store.index') }}" class="inline-flex items-center gap-1.5 mt-2 text-xs font-bold text-primary hover:underline">
+                                    <span class="material-symbols-outlined text-[15px]">add_circle</span>
+                                    <span>+ Atur Media Sosial Sekarang</span>
+                                </a>
+                            @endif
+                        </div>
+                    @endif
+                </div>
+
+                <!-- 2. BAGIKAN TAUTAN PROFIL TOKO -->
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-on-surface-variant flex items-center gap-1.5 mb-2.5">
+                        <span class="material-symbols-outlined text-[16px] text-primary">link</span>
+                        <span>Bagikan Tautan Profil</span>
+                    </span>
+                    
+                    <div class="flex items-center gap-2 p-1.5 bg-surface-container dark:bg-slate-800 rounded-xl border border-outline-variant">
+                        <input type="text" 
+                               readonly 
+                               value="{{ url('/' . $store->slug) }}" 
+                               class="bg-transparent border-0 text-xs font-medium text-on-surface px-2.5 flex-1 focus:outline-none focus:ring-0 truncate select-all">
+                        <button type="button" 
+                                @click="copyStoreLink()" 
+                                :class="shareCopied ? 'bg-emerald-600 text-white' : 'bg-primary text-white hover:bg-primary/90'"
+                                class="px-3.5 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 active:scale-95 shadow-xs cursor-pointer">
+                            <span class="material-symbols-outlined text-[15px]" x-text="shareCopied ? 'check' : 'content_copy'">content_copy</span>
+                            <span x-text="shareCopied ? 'Tersalin!' : 'Salin'">Salin</span>
+                        </button>
+                    </div>
+
+                    <!-- Tombol Cepat Bagikan -->
+                    <div class="grid grid-cols-2 gap-2 mt-2.5">
+                        <a href="https://api.whatsapp.com/send?text={{ urlencode('Kunjungi toko resmi ' . $store->name . ' di ' . url('/' . $store->slug)) }}" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           class="flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-[#25D366]/15 hover:bg-[#25D366]/25 text-[#25D366] text-xs font-bold border border-[#25D366]/30 transition-all active:scale-95">
+                            <x-store-social-icon platform="whatsapp" class="w-4 h-4" />
+                            <span>WhatsApp</span>
+                        </a>
+
+                        <button type="button" 
+                                @click="nativeShare()" 
+                                class="flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface text-xs font-bold border border-outline-variant transition-all active:scale-95 cursor-pointer">
+                            <span class="material-symbols-outlined text-[16px]">share</span>
+                            <span>Lainnya</span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
 
@@ -202,8 +378,8 @@
                 </div>
 
                 <!-- Actions -->
-                @if(!auth()->check() || auth()->id() !== $store->user_id)
                 <div class="flex items-center gap-3">
+                    @if(!auth()->check() || auth()->id() !== $store->user_id)
                     <button @click="@auth window.dispatchEvent(new CustomEvent('open-chat-with-store', { 
                         detail: { 
                             store_id: {{ $store->id }}, 
@@ -220,8 +396,15 @@
                         <span class="material-symbols-outlined text-[18px]" x-text="isFollowing ? 'check' : 'add'">add</span> 
                         <span x-text="isFollowing ? 'Mengikuti' : 'Ikuti'">Ikuti</span>
                     </button>
+                    @endif
+                    <button type="button" 
+                            @click="shareModalOpen = true" 
+                            class="px-4 py-2 bg-white/15 hover:bg-white/25 border border-white/30 text-white rounded font-bold transition-colors flex items-center gap-2 cursor-pointer"
+                            title="Bagikan & Media Sosial">
+                        <span class="material-symbols-outlined text-[18px]">share</span>
+                        <span>Bagikan</span>
+                    </button>
                 </div>
-                @endif
             </div>
         </div>
     </div>
@@ -283,9 +466,8 @@
                 </div>
             </div>
 
-            <!-- Mobile Action & Social Row (Sejajar Sebaris: Chat, Ikuti, Share + Icon Sosmed) -->
-            @php $socialLinks = is_array($store->social_links) ? $store->social_links : []; @endphp
-            <div class="flex items-center gap-2 overflow-x-auto hide-scrollbar pt-1 pb-0.5">
+            <!-- Mobile Action Row (Chat, Ikuti, Share & Media Sosial) -->
+            <div class="flex items-center gap-2 pt-1 pb-0.5">
                 @if(!auth()->check() || auth()->id() !== $store->user_id)
                     <!-- Chat Button -->
                     <button type="button" 
@@ -297,7 +479,7 @@
                                     store_logo: '{{ $store->logo ? asset('storage/' . $store->logo) : '' }}'
                                 } 
                             })) @else window.location.href = '{{ route('login') }}' @endauth" 
-                            class="py-1.5 px-3 rounded-xl bg-white/15 hover:bg-white/25 active:scale-95 border border-white/25 backdrop-blur-md text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm shrink-0">
+                            class="py-1.5 px-3.5 rounded-xl bg-white/15 hover:bg-white/25 active:scale-95 border border-white/25 backdrop-blur-md text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm shrink-0">
                         <span class="material-symbols-outlined text-[16px]">chat</span>
                         <span>Chat</span>
                     </button>
@@ -308,57 +490,22 @@
                             :class="isFollowing 
                                 ? 'bg-white/25 border-white/40 text-white' 
                                 : 'bg-primary hover:bg-primary/90 text-white border-primary shadow-md shadow-primary/30'"
-                            class="py-1.5 px-3 rounded-xl border active:scale-95 text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm shrink-0">
+                            class="py-1.5 px-3.5 rounded-xl border active:scale-95 text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm shrink-0">
                         <span class="material-symbols-outlined text-[16px]" x-text="isFollowing ? 'check' : 'person_add'"></span>
                         <span x-text="isFollowing ? 'Mengikuti' : 'Ikuti'"></span>
                     </button>
                 @endif
 
-                <!-- Share Store Button -->
+                <!-- Share & Social Store Button -->
                 <button type="button" 
-                        @click="shareStore()" 
-                        class="w-8 h-8 rounded-xl bg-white/15 hover:bg-white/25 active:scale-95 border border-white/25 backdrop-blur-md text-white transition-all flex items-center justify-center cursor-pointer shadow-sm shrink-0"
-                        title="Bagikan Toko">
+                        @click="shareModalOpen = true" 
+                        class="w-8 h-8 rounded-xl bg-white/15 hover:bg-white/25 active:scale-95 border border-white/25 backdrop-blur-md text-white transition-all flex items-center justify-center cursor-pointer shadow-sm shrink-0 relative"
+                        title="Bagikan & Media Sosial">
                     <span class="material-symbols-outlined text-[17px]">share</span>
+                    @if(count($socialLinks) > 0)
+                        <span class="absolute -top-0.5 -right-0.5 w-2 h-2 bg-emerald-400 border border-[#0d1322] rounded-full" title="Tersedia Media Sosial"></span>
+                    @endif
                 </button>
-
-                @if(count($socialLinks) > 0)
-                    <!-- Pemisah Vertikal Halus -->
-                    <div class="w-px h-5 bg-white/25 shrink-0 mx-0.5"></div>
-
-                    <!-- Icon Sosmed Toko Sejajar dengan Tombol -->
-                    @foreach($socialLinks as $soc)
-                        @php
-                            $socPlatform = strtolower($soc['platform'] ?? 'custom');
-                            $socName = $soc['name'] ?? ucfirst($socPlatform);
-                            $socUrl = $soc['url'] ?? '#';
-                            $badgeStyle = match($socPlatform) {
-                                'instagram' => 'bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888] text-white shadow-rose-950/40',
-                                'tiktok' => 'bg-[#000000] text-white border border-white/30 shadow-black/60',
-                                'whatsapp' => 'bg-[#25D366] text-white shadow-emerald-950/40',
-                                'youtube' => 'bg-[#FF0000] text-white shadow-red-950/40',
-                                'facebook' => 'bg-[#1877F2] text-white shadow-blue-950/40',
-                                'x', 'twitter' => 'bg-black text-white border border-white/30',
-                                'telegram' => 'bg-[#229ED9] text-white shadow-sky-950/40',
-                                'github' => 'bg-[#24292e] text-white border border-white/20',
-                                default => 'bg-white/20 backdrop-blur-md text-white border border-white/30'
-                            };
-                        @endphp
-                        <a href="{{ $socUrl }}" 
-                           target="_blank" 
-                           rel="noopener noreferrer" 
-                           title="{{ $socName }}"
-                           class="w-8 h-8 rounded-full flex items-center justify-center shadow-md active:scale-90 hover:scale-110 transition-all shrink-0 {{ $badgeStyle }}">
-                            <x-store-social-icon :platform="$socPlatform" class="w-4 h-4 shrink-0" />
-                        </a>
-                    @endforeach
-                @elseif(auth()->check() && auth()->id() === $store->user_id)
-                    <div class="w-px h-5 bg-white/25 shrink-0 mx-0.5"></div>
-                    <a href="{{ route('tenant.store.index') }}" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-[11px] font-bold bg-white/15 backdrop-blur-md border border-white/25 text-white hover:bg-white/25 transition-all shrink-0">
-                        <span class="material-symbols-outlined text-[15px]">add_circle</span>
-                        <span>+ Atur Sosmed</span>
-                    </a>
-                @endif
             </div>
         </div>
     </div>
