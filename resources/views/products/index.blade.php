@@ -238,7 +238,7 @@
                         $topPrice = $topDiscount ? $top->discount_price : $top->price;
                     @endphp
                     <a href="{{ route('products.show', $top->slug) }}" 
-                       class="group/card w-[170px] bg-white dark:bg-gray-800 rounded-xl p-2.5 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-200 flex flex-col border border-white/20 text-gray-800 dark:text-gray-100 relative">
+                       class="group/card w-[170px] bg-white dark:bg-gray-800 rounded-xl p-2.5 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-200 flex flex-col border border-white/20 text-gray-800 dark:text-gray-100 relative overflow-hidden">
                         
                         {{-- Top Badge / Views --}}
                         <div class="absolute top-1.5 right-1.5 z-10 bg-amber-500 text-white text-[9px] font-extrabold px-1.5 py-0.5 rounded-full flex items-center gap-0.5 shadow-xs">
@@ -273,12 +273,12 @@
                         </div>
 
                         {{-- Price --}}
-                        <div class="mt-auto flex items-baseline justify-between pt-1 border-t border-gray-100 dark:border-gray-700">
-                            <span class="text-primary font-bold text-xs">
+                        <div class="mt-auto flex items-baseline justify-between flex-wrap gap-x-1 pt-1 border-t border-gray-100 dark:border-gray-700 min-w-0">
+                            <span class="text-primary font-bold text-xs shrink-0">
                                 Rp{{ number_format($topPrice, 0, ',', '.') }}
                             </span>
                             @if($topDiscount)
-                                <span class="text-[9px] text-gray-400 line-through">
+                                <span class="text-[9px] text-gray-400 line-through truncate max-w-full">
                                     Rp{{ number_format($top->price, 0, ',', '.') }}
                                 </span>
                             @endif
@@ -421,7 +421,7 @@
                                             : route('products.show', $p->slug);
                                     @endphp
                                     <a href="{{ $pLink }}" 
-                                       class="group/pmini flex items-center gap-2 p-1.5 pr-2.5 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 hover:border-sky-400 dark:hover:border-sky-500 transition-all shadow-2xs hover:shadow-xs shrink-0 w-[130px] sm:w-[140px] xl:w-[155px] min-w-0 relative">
+                                       class="group/pmini flex items-center gap-2 p-1.5 pr-2.5 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white/70 dark:bg-slate-800/60 hover:bg-white dark:hover:bg-slate-800 hover:border-sky-400 dark:hover:border-sky-500 transition-all shadow-2xs hover:shadow-xs shrink-0 w-[155px] sm:w-[170px] xl:w-[185px] min-w-0 relative overflow-hidden">
                                         
                                         <!-- Thumbnail -->
                                         <div class="w-9 h-9 md:w-10 md:h-10 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-800 shrink-0 relative">
@@ -438,16 +438,16 @@
                                         </div>
 
                                         <!-- Info -->
-                                        <div class="min-w-0 flex-1">
-                                            <h4 class="text-[11px] font-bold text-slate-800 dark:text-slate-100 truncate group-hover/pmini:text-[#0284c7] transition-colors leading-tight" title="{{ $p->name }}">
+                                        <div class="min-w-0 flex-1 flex flex-col justify-center">
+                                            <h4 class="text-[11px] font-bold text-slate-800 dark:text-slate-100 truncate group-hover/pmini:text-[#0284c7] transition-colors leading-tight mb-0.5" title="{{ $p->name }}">
                                                 {{ $p->name }}
                                             </h4>
-                                            <div class="flex items-baseline gap-1 mt-0.5">
-                                                <span class="text-[10px] font-black text-[#0284c7]">
+                                            <div class="flex items-baseline gap-1 flex-wrap min-w-0">
+                                                <span class="text-[10px] sm:text-[11px] font-black text-[#0284c7] shrink-0 leading-none">
                                                     Rp{{ number_format($pPrice, 0, ',', '.') }}
                                                 </span>
                                                 @if($hasDisc)
-                                                <span class="text-[8px] text-slate-400 line-through">
+                                                <span class="text-[8px] sm:text-[8.5px] text-slate-400 line-through truncate max-w-full leading-none">
                                                     Rp{{ number_format($p->price, 0, ',', '.') }}
                                                 </span>
                                                 @endif
