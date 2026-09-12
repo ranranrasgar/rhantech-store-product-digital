@@ -22,6 +22,7 @@ Route::get('/projects/{slug}', [PublicController::class, 'projectDetail'])->name
 Route::get('/projects/{slug}/brochure', [PublicController::class, 'downloadBrochure'])->name('projects.brochure');
 Route::get('/clients', [PublicController::class, 'clients'])->name('clients.index');
 Route::get('/products', [\App\Http\Controllers\ProductController::class, 'index'])->name('products.index');
+Route::get('/api/search-suggest', [\App\Http\Controllers\ProductController::class, 'suggest'])->name('api.search.suggest');
 Route::get('/products/{slug}', [\App\Http\Controllers\ProductController::class, 'show'])->name('products.show');
 Route::get('/products/{slug}/brochure', [\App\Http\Controllers\ProductController::class, 'brochure'])->name('products.brochure');
 

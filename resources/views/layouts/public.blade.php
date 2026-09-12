@@ -361,12 +361,39 @@
     <!-- Mobile Header (1-Row, block md:hidden) -->
     <header class="block md:hidden site-header fixed top-0 left-0 right-0 z-50">
         <div class="px-3 py-2 flex items-center gap-2">
-            <!-- Search Input (flex-1) -->
-            <div class="flex-1 min-w-0">
+            <!-- Search Input (flex-1) with Live Suggest for Store / Account / Product -->
+            <div class="flex-1 min-w-0 relative"
+                 x-data="{
+                     query: '{{ addslashes(request('search')) }}',
+                     results: null,
+                     open: false,
+                     loading: false,
+                     fetchSuggest() {
+                         const q = this.query.trim();
+                         if (q.length < 2) {
+                             this.results = null;
+                             this.open = false;
+                             return;
+                         }
+                         this.loading = true;
+                         fetch('{{ route('api.search.suggest') }}?q=' + encodeURIComponent(q))
+                             .then(res => res.json())
+                             .then(data => {
+                                 this.results = data;
+                                 this.open = (data.stores && data.stores.length > 0) || (data.products && data.products.length > 0);
+                             })
+                             .catch(() => { this.results = null; this.open = false; })
+                             .finally(() => { this.loading = false; });
+                     }
+                 }"
+                 @click.outside="open = false"
+                 @keydown.escape.window="open = false">
                 <form action="{{ route('products.index') }}" method="GET" class="m-0">
                     <div class="search-bar-wrap !border-white/20 !bg-white/10 focus-within:!border-[#00d4ff]">
-                        <input type="text" name="search" value="{{ request('search') }}"
-                            placeholder="Cari produk digital, source code..."
+                        <input type="text" name="search" x-model="query"
+                            @input.debounce.250ms="fetchSuggest()"
+                            @focus="if(query.trim().length >= 2) fetchSuggest()"
+                            placeholder="Cari produk, toko, akun..."
                             class="!py-2 !px-3 !text-xs"
                             autocomplete="off">
                         <button type="submit" aria-label="Cari" class="!py-2 !px-3 shrink-0">
@@ -374,6 +401,69 @@
                         </button>
                     </div>
                 </form>
+
+                <!-- Live Suggest Dropdown -->
+                <div x-show="open" 
+                     x-cloak
+                     style="display: none;"
+                     class="absolute top-full left-0 right-0 mt-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl shadow-2xl overflow-hidden z-50 text-xs">
+                    
+                    <!-- Toko / Akun Suggestion -->
+                    <template x-if="results && results.stores && results.stores.length > 0">
+                        <div class="p-2 border-b border-slate-100 dark:border-slate-800 bg-sky-50/50 dark:bg-sky-950/20">
+                            <div class="text-[10px] font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400 px-1 mb-1.5 flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[13px]">storefront</span>
+                                <span>Toko / Akun</span>
+                            </div>
+                            <div class="space-y-1">
+                                <template x-for="st in results.stores" :key="'store-'+st.id">
+                                    <a :href="st.url" class="flex items-center justify-between gap-2 p-1.5 rounded-lg hover:bg-white dark:hover:bg-slate-800 transition-colors">
+                                        <div class="flex items-center gap-2 min-w-0">
+                                            <img :src="st.logo" class="w-6 h-6 rounded-lg object-cover border border-slate-200 dark:border-slate-700 shrink-0">
+                                            <div class="min-w-0">
+                                                <div class="font-bold text-slate-800 dark:text-white truncate text-[11px]" x-text="st.name"></div>
+                                                <div class="text-[9px] text-slate-400 font-mono" x-text="'/@' + st.slug"></div>
+                                            </div>
+                                        </div>
+                                        <span class="text-[10px] text-sky-600 dark:text-sky-400 font-bold shrink-0 flex items-center gap-0.5">
+                                            <span>Lihat Toko</span>
+                                            <span class="material-symbols-outlined text-[11px]">arrow_forward</span>
+                                        </span>
+                                    </a>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+
+                    <!-- Produk Suggestion -->
+                    <template x-if="results && results.products && results.products.length > 0">
+                        <div class="p-2">
+                            <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-1 mb-1.5 flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[13px]">inventory_2</span>
+                                <span>Produk</span>
+                            </div>
+                            <div class="space-y-1">
+                                <template x-for="pr in results.products" :key="'prod-'+pr.id">
+                                    <a :href="pr.url" class="flex items-center justify-between gap-2 p-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                                        <div class="flex items-center gap-2 min-w-0">
+                                            <template x-if="pr.image">
+                                                <img :src="pr.image" class="w-6 h-6 rounded-md object-cover border border-slate-200 dark:border-slate-700 shrink-0">
+                                            </template>
+                                            <div class="font-medium text-slate-700 dark:text-slate-200 truncate text-[11px]" x-text="pr.name"></div>
+                                        </div>
+                                        <span class="font-bold text-[#0284c7] text-[10px] shrink-0" x-text="pr.price_formatted"></span>
+                                    </a>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+
+                    <!-- View all link -->
+                    <a :href="'{{ route('products.index') }}?search=' + encodeURIComponent(query)"
+                       class="block py-2 px-3 text-center bg-slate-50 dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-800 text-sky-600 dark:text-sky-400 font-bold text-[11px] border-t border-slate-100 dark:border-slate-800">
+                        <span x-text="'Lihat semua hasil untuk &quot;' + query + '&quot;'"></span> →
+                    </a>
+                </div>
             </div>
 
             <!-- Keranjang & Tombol Masuk / Akun (Side by side with Search) -->

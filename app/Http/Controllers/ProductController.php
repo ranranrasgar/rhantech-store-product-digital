@@ -43,14 +43,19 @@ class ProductController extends Controller
         }
 
         if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function ($q) use ($search) {
+            $search = trim($request->search);
+            $cleanedSearch = ltrim($search, '@');
+            $query->where(function ($q) use ($search, $cleanedSearch) {
                 $q->where('products.name', 'like', "%{$search}%")
                     ->orWhere('products.tags', 'like', "%{$search}%")
                     ->orWhere('products.short_description', 'like', "%{$search}%")
                     ->orWhere('products.description', 'like', "%{$search}%")
-                    ->orWhereHas('store', function ($sq) use ($search) {
-                        $sq->where('stores.name', 'like', "%{$search}%");
+                    ->orWhereHas('store', function ($sq) use ($search, $cleanedSearch) {
+                        $sq->where('stores.name', 'like', "%{$search}%")
+                            ->orWhere('stores.slug', 'like', "%{$cleanedSearch}%")
+                            ->orWhereHas('user', function($uq) use ($search) {
+                                $uq->where('users.name', 'like', "%{$search}%");
+                            });
                     });
             });
         }
@@ -189,12 +194,33 @@ class ProductController extends Controller
 
         $popularStores->each(function ($store) {
             $store->is_sponsored_ad = false;
-        });
-
         // Gabungkan: Toko beriklan di posisi awal sebagai rekomendasi, diikuti toko dengan views terbanyak
         $sponsoredStores = $adStores->concat($popularStores);
 
-        return view('products.index', compact('products', 'categories', 'types', 'stores', 'banners', 'topProducts', 'sponsoredStores'));
+        // Toko / Akun yang cocok dengan kata kunci pencarian
+        $matchedStores = collect();
+        if ($request->filled('search')) {
+            $searchKeyword = trim($request->search);
+            $cleanedKeyword = ltrim($searchKeyword, '@');
+            $matchedStores = \App\Models\Store::query()
+                ->with(['user:id,name,avatar'])
+                ->withCount(['products' => function($q) {
+                    $q->published();
+                }])
+                ->where(function($q) use ($searchKeyword, $cleanedKeyword) {
+                    $q->where('name', 'like', "%{$searchKeyword}%")
+                      ->orWhere('slug', 'like', "%{$cleanedKeyword}%")
+                      ->orWhere('description', 'like', "%{$searchKeyword}%")
+                      ->orWhereHas('user', function($uq) use ($searchKeyword, $cleanedKeyword) {
+                          $uq->where('name', 'like', "%{$searchKeyword}%")
+                             ->orWhere('email', 'like', "%{$cleanedKeyword}%");
+                      });
+                })
+                ->take(3)
+                ->get();
+        }
+
+        return view('products.index', compact('products', 'categories', 'types', 'stores', 'banners', 'topProducts', 'sponsoredStores', 'matchedStores'));
     }
 
     public function show(Request $request, string $slug)
@@ -324,5 +350,69 @@ class ProductController extends Controller
         $company = \App\Models\CompanyProfile::first(['*']);
 
         return view('products.brochure', compact('product', 'company'));
+    }
+
+    public function suggest(Request $request)
+    {
+        $query = trim($request->input('q', ''));
+        if (strlen($query) < 2) {
+            return response()->json(['stores' => [], 'products' => []]);
+        }
+
+        $cleanQuery = ltrim($query, '@');
+
+        // Cari toko / akun
+        $stores = \App\Models\Store::query()
+            ->withCount(['products' => function($q) {
+                $q->published();
+            }])
+            ->where(function($q) use ($query, $cleanQuery) {
+                $q->where('name', 'like', "%{$query}%")
+                  ->orWhere('slug', 'like', "%{$cleanQuery}%")
+                  ->orWhereHas('user', function($uq) use ($query) {
+                      $uq->where('name', 'like', "%{$query}%");
+                  });
+            })
+            ->take(4)
+            ->get()
+            ->map(function($store) {
+                return [
+                    'id' => $store->id,
+                    'name' => $store->name,
+                    'slug' => $store->slug,
+                    'logo' => $store->logo ? asset('storage/' . $store->logo) : 'https://ui-avatars.com/api/?name=' . urlencode($store->name) . '&background=0284c7&color=fff',
+                    'products_count' => $store->products_count,
+                    'url' => route('store.show', $store->slug),
+                    'is_pro' => (bool)$store->is_pro,
+                ];
+            });
+
+        // Cari produk
+        $products = Product::query()
+            ->published()
+            ->where(function($q) use ($query) {
+                $q->where('name', 'like', "%{$query}%")
+                  ->orWhere('tags', 'like', "%{$query}%");
+            })
+            ->with(['images'])
+            ->take(4)
+            ->get()
+            ->map(function($p) {
+                $img = $p->images->firstWhere('is_main', true) ?? $p->images->first();
+                $price = ($p->discount_price && $p->discount_price > 0 && $p->discount_price < $p->price) ? $p->discount_price : $p->price;
+                return [
+                    'id' => $p->id,
+                    'name' => $p->name,
+                    'slug' => $p->slug,
+                    'price_formatted' => 'Rp' . number_format($price, 0, ',', '.'),
+                    'image' => $img ? asset('storage/' . $img->image_path) : null,
+                    'url' => route('products.show', $p->slug),
+                ];
+            });
+
+        return response()->json([
+            'stores' => $stores,
+            'products' => $products,
+        ]);
     }
 }

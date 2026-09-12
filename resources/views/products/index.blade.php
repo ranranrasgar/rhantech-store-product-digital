@@ -800,6 +800,59 @@
         </div>
         @endif
 
+        {{-- ── TOKO / AKUN DITEMUKAN ── --}}
+        @if(request('search') && isset($matchedStores) && $matchedStores->isNotEmpty())
+        <div class="mb-5 bg-gradient-to-r from-sky-50/80 via-white to-sky-50/40 dark:from-slate-800/90 dark:via-slate-800 dark:to-slate-800/60 p-3.5 md:p-4 rounded-xl border border-sky-200/80 dark:border-slate-700 shadow-xs">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400 mb-2.5 flex items-center justify-between">
+                <span class="flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[16px]">storefront</span>
+                    <span>Toko / Akun Ditemukan ({{ $matchedStores->count() }})</span>
+                </span>
+                <span class="text-[10px] text-slate-400 font-normal">Hasil pencarian toko</span>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                @foreach($matchedStores as $mStore)
+                <div class="flex items-center justify-between gap-3 p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-700/80 shadow-2xs hover:border-sky-400 transition-all group">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <div class="w-10 h-10 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shrink-0 flex items-center justify-center">
+                            @if($mStore->logo)
+                                <img src="{{ asset('storage/' . $mStore->logo) }}" alt="{{ $mStore->name }}" class="w-full h-full object-cover">
+                            @else
+                                <img src="https://ui-avatars.com/api/?name={{ urlencode($mStore->name) }}&background=0284c7&color=fff" alt="{{ $mStore->name }}" class="w-full h-full object-cover">
+                            @endif
+                        </div>
+                        <div class="min-w-0">
+                            <div class="flex items-center gap-1">
+                                <a href="{{ route('store.show', $mStore->slug) }}" class="text-xs md:text-sm font-extrabold text-slate-900 dark:text-white group-hover:text-primary transition-colors truncate block">
+                                    {{ $mStore->name }}
+                                </a>
+                                @if($mStore->is_pro)
+                                    <span class="px-1 py-0.2 rounded bg-amber-500/10 text-amber-500 text-[8px] font-black border border-amber-500/30 shrink-0">PRO</span>
+                                @endif
+                            </div>
+                            <div class="flex items-center gap-1.5 text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">
+                                <span class="text-sky-600 dark:text-sky-400 font-medium">/{{ $mStore->slug }}</span>
+                                <span>•</span>
+                                <span>{{ $mStore->products_count }} Produk</span>
+                                @if($mStore->user && $mStore->user->name !== $mStore->name)
+                                <span>•</span>
+                                <span class="truncate max-w-[80px]" title="Pemilik akun: {{ $mStore->user->name }}">👤 {{ $mStore->user->name }}</span>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                    <a href="{{ route('store.show', $mStore->slug) }}" 
+                       class="px-3 py-1.5 rounded-lg bg-primary text-white hover:bg-primary/90 text-xs font-bold shrink-0 transition-all shadow-xs flex items-center gap-1">
+                        <span>Kunjungi</span>
+                        <span class="material-symbols-outlined text-[13px]">arrow_forward</span>
+                    </a>
+                </div>
+                @endforeach
+            </div>
+        </div>
+        @endif
+
         {{-- ── MOBILE & TABLET SUB-HEADER (TABS & FILTER ICON) - VISIBLE ON SCREENS < 1024px ── --}}
         <div class="lg:hidden sticky top-[calc(env(safe-area-inset-top,0px)+54px)] md:top-[86px] z-30 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-b border-gray-200 dark:border-gray-700 -mx-2 md:-mx-6 px-3 md:px-6 py-2 mb-4 shadow-xs">
             <div class="flex items-center justify-between gap-2 overflow-x-auto hide-scrollbar">
