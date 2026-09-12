@@ -387,9 +387,9 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
             <span class="material-symbols-outlined">help</span> Panduan Aplikasi
         </a>
         @else
-        <div class="nav-section-label">Toko Saya</div>
+        <div class="nav-section-label">Halaman Kreator</div>
         <a href="{{ route('tenant.store.index') }}" class="nav-link {{ request()->routeIs('tenant.store.*') ? 'active' : '' }}">
-            <span class="material-symbols-outlined">storefront</span> Mulai Berjualan
+            <span class="material-symbols-outlined">hub</span> Buat Toko &amp; Bio Link
         </a>
         <div class="nav-section-label">Pusat Bantuan</div>
         <a href="{{ route('help.index') }}" target="_blank" class="nav-link">

@@ -97,10 +97,10 @@
             <div class="lg:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left space-y-6">
                 <div>
                     <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
-                        Mulai Jual Produkmu & <span class="text-[#00838f] dark:text-teal-400">Raih Pendapatan</span>
+                        Mulai Jual Produk, Bio Link &amp; <span class="text-[#00838f] dark:text-teal-400">Raih Penghasilan</span>
                     </h1>
                     <p class="mt-3 text-sm sm:text-base text-slate-600 dark:text-slate-300 max-w-lg leading-relaxed">
-                        Bergabunglah dengan ribuan kreator & developer. Pasang produk digital Anda, terima pembayaran otomatis, dan cairkan saldo kapan saja.
+                        Bergabunglah dengan ribuan kreator &amp; developer. Buat toko digital atau bio link medsos, terima pembayaran otomatis, dan cairkan saldo kapan saja.
                     </p>
                 </div>
 
@@ -109,11 +109,11 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div class="bg-white dark:bg-[#161b22] p-4 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-3">
                             <div class="w-10 h-10 rounded-xl bg-teal-500/10 flex items-center justify-center text-[#00838f] dark:text-teal-400">
-                                <span class="material-symbols-outlined text-2xl">store</span>
+                                <span class="material-symbols-outlined text-2xl">hub</span>
                             </div>
                             <div class="text-left">
-                                <div class="text-xs text-slate-500 dark:text-slate-400">Toko Sendiri</div>
-                                <div class="text-xs font-bold text-slate-800 dark:text-white">Gratis Buka Toko</div>
+                                <div class="text-xs text-slate-500 dark:text-slate-400">Halaman Kreator</div>
+                                <div class="text-xs font-bold text-slate-800 dark:text-white">Toko &amp; Bio Link</div>
                             </div>
                         </div>
 

@@ -36,7 +36,7 @@
                 <div class="flex items-center gap-1.5 flex-wrap">
                     <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gradient-to-r from-amber-500/15 to-primary/15 border border-amber-500/30 text-amber-700 dark:text-amber-300 text-[11px] font-black tracking-wide">
                         <span class="animate-pulse">🎁</span>
-                        <span>BONUS TOKO BARU</span>
+                        <span>BONUS TOKO &amp; BIO LINK</span>
                     </div>
                     <div class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-400 text-[10px] font-extrabold">
                         <span class="material-symbols-outlined text-[13px]">trending_up</span>
@@ -56,14 +56,14 @@
             <!-- Content Body -->
             <div class="flex items-start gap-3 mb-3">
                 <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-sky-500 via-primary to-emerald-500 text-white flex items-center justify-center shrink-0 shadow-md shadow-primary/20">
-                    <span class="material-symbols-outlined text-[26px]">rocket_launch</span>
+                    <span class="material-symbols-outlined text-[26px]">hub</span>
                 </div>
                 <div class="min-w-0 flex-1">
                     <h3 class="text-sm sm:text-base font-black text-on-background dark:text-white leading-snug">
-                        Buka Toko, Dapatkan Saldo Iklan <span class="text-primary font-extrabold">Rp 500.000!</span>
+                        Buka Toko &amp; Bio Link, Dapatkan Saldo Iklan <span class="text-primary font-extrabold">Rp 500.000!</span>
                     </h3>
                     <p class="text-[12px] text-on-surface-variant mt-1 leading-relaxed">
-                        Daftar dan aktifkan tokomu hari ini. Dapatkan modal saldo promosi gratis untuk mendongkrak kunjungan toko hingga <strong class="text-emerald-600 dark:text-emerald-400 font-extrabold">+30%</strong> di posisi teratas katalog!
+                        Aktifkan tokomu atau bio link medsos hari ini. Dapatkan modal saldo promosi gratis untuk mendongkrak kunjungan profil &amp; produk hingga <strong class="text-emerald-600 dark:text-emerald-400 font-extrabold">+30%</strong> di posisi teratas!
                     </p>
                 </div>
             </div>
@@ -104,7 +104,7 @@
                     <div class="space-y-2">
                         <a href="{{ route('tenant.dashboard') }}"
                            class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-primary to-sky-600 hover:from-primary/90 hover:to-sky-600/90 text-white font-black text-xs shadow-md shadow-primary/20 flex items-center justify-center gap-1.5 transition-all hover:scale-[1.01] active:scale-98">
-                            <span>Buka Toko & Klaim Rp 500.000</span>
+                            <span>Buat Toko / Bio Link &amp; Klaim Rp 500.000</span>
                             <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
                         </a>
                     </div>
@@ -139,8 +139,8 @@
             x-transition:leave-start="opacity-100 translate-y-0 scale-100"
             x-transition:leave-end="opacity-0 translate-y-4 scale-75"
             class="pointer-events-auto relative flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-tr from-amber-500 via-orange-500 to-amber-600 text-white shadow-xl hover:shadow-2xl shadow-amber-500/30 hover:shadow-amber-500/50 transition-all duration-300 hover:scale-110 active:scale-95 group border-2 border-white/60 dark:border-white/30 cursor-pointer"
-            title="Klaim Bonus Saldo Iklan Rp 500.000 & Kunjungan +30%"
-            aria-label="Klaim Bonus Saldo Iklan Rp 500.000 & Kunjungan +30%">
+            title="Klaim Bonus Kreator & Toko: Saldo Iklan Rp 500.000 & Kunjungan +30%"
+            aria-label="Klaim Bonus Kreator & Toko: Saldo Iklan Rp 500.000 & Kunjungan +30%">
 
         <!-- Gift Icon with subtle hover wiggle -->
         <span class="text-2xl sm:text-[26px] group-hover:rotate-12 group-hover:scale-110 transition-transform duration-300 select-none">🎁</span>
