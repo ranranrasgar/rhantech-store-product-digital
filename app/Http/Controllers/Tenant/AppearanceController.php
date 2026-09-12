@@ -145,7 +145,7 @@ class AppearanceController extends Controller
     {
         $profileLinks = [];
         if (is_array($links)) {
-            foreach ($links as $link) {
+            foreach ($links as $index => $link) {
                 if (is_array($link) && !empty(trim($link['url'] ?? ''))) {
                     $url = trim($link['url']);
                     if (!str_starts_with($url, 'http://') && !str_starts_with($url, 'https://')) {
@@ -155,10 +155,20 @@ class AppearanceController extends Controller
                     if (!in_array($layout, ['list', 'grid', 'card'])) {
                         $layout = 'list';
                     }
+                    $title = trim($link['title'] ?? 'Link');
+                    $slug = !empty($link['slug']) 
+                        ? \Illuminate\Support\Str::slug($link['slug']) 
+                        : (\Illuminate\Support\Str::slug($title) ?: 'item-' . ($index + 1));
+                    $id = !empty($link['id']) ? trim($link['id']) : $slug;
+
                     $profileLinks[] = [
-                        'title'       => trim($link['title'] ?? 'Link'),
+                        'id'          => $id,
+                        'slug'        => $slug,
+                        'title'       => $title,
                         'subtitle'    => !empty(trim($link['subtitle'] ?? '')) ? trim($link['subtitle']) : null,
                         'description' => !empty(trim($link['description'] ?? '')) ? trim($link['description']) : null,
+                        'button_text' => !empty(trim($link['button_text'] ?? '')) ? trim($link['button_text']) : 'Buka Tautan / Pesan',
+                        'has_detail'  => isset($link['has_detail']) ? (bool)$link['has_detail'] : true,
                         'url'         => $url,
                         'image'       => !empty(trim($link['image'] ?? '')) ? trim($link['image']) : null,
                         'icon'        => trim($link['icon'] ?? 'link'),

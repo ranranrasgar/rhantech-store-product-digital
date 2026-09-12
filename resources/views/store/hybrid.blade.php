@@ -21,110 +21,129 @@
          }
      }">
 
-    {{-- ===== BAGIAN PROFILE LINK (Linktree-style) ===== --}}
-    <div class="max-w-md mx-auto">
-        @include('store._partials._profile_header')
-        @include('store._partials._profile_links')
-    </div>
+    <div class="max-w-6xl mx-auto px-3 sm:px-6 lg:px-8 py-5 sm:py-8 space-y-6 sm:space-y-8">
 
-    {{-- ===== DIVIDER ===== --}}
-    <div class="max-w-5xl mx-auto px-4 py-4">
-        <div class="flex items-center gap-4">
-            <div class="flex-1 h-px bg-slate-200 dark:bg-slate-800"></div>
-            <div class="flex items-center gap-2 text-xs font-bold text-slate-400 dark:text-slate-500 bg-white dark:bg-[#111726] px-4 py-1.5 rounded-full border border-slate-200 dark:border-[#222f49] shadow-xs">
-                <span class="material-symbols-outlined text-[16px]">storefront</span>
-                Katalog Produk Toko
-            </div>
-            <div class="flex-1 h-px bg-slate-200 dark:bg-slate-800"></div>
-        </div>
-    </div>
+        {{-- 1. BAGIAN PROFIL TOKO & BIO LINKS (Full Width Card) --}}
+        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-3xl shadow-xs overflow-hidden">
+            {{-- Header Profile (Banner, Logo, Nama, Sosmed, Chat/Follow) --}}
+            @include('store._partials._profile_header')
 
-    {{-- ===== BAGIAN TOKO (sama dengan store.show) ===== --}}
-    <div class="max-w-5xl mx-auto px-3 sm:px-6 pb-10 space-y-6">
-
-        {{-- Voucher --}}
-        @php
-            $voucherPlacement = is_array($appearance['voucher_placement'] ?? null) 
-                ? $appearance['voucher_placement'] 
-                : (is_array($store->appearance_data ?? null) ? ($store->appearance_data['voucher_placement'] ?? []) : []);
-            $vpHeader = $voucherPlacement['header'] ?? '';
-            $headerCampaigns = $campaigns ?? collect();
-            if ($vpHeader !== '' && $vpHeader !== 'none') {
-                $filtered = $campaigns->where('id', (int)$vpHeader);
-                if ($filtered->isNotEmpty()) {
-                    $headerCampaigns = $filtered;
-                }
-            }
-        @endphp
-        @if($vpHeader !== 'none' && $headerCampaigns->isNotEmpty())
-        <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-primary/5 via-emerald-500/5 to-amber-500/5 border border-primary/20 shadow-xs">
-            <div class="flex items-center gap-2 mb-3 text-sm font-black text-on-surface">
-                <span class="material-symbols-outlined text-[18px]">confirmation_number</span>
-                Kupon &amp; Voucher Toko
-                <span class="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-extrabold">{{ $headerCampaigns->count() }} Tersedia</span>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-                @foreach($headerCampaigns as $campaign)
-                    <x-voucher-card :campaign="$campaign" mode="browse" />
-                @endforeach
-            </div>
-        </div>
-        @endif
-
-        {{-- Appearance Blocks --}}
-        @if(!empty($appearance))
-            @foreach($appearance as $block)
-                @php $data = $block['data'] ?? []; @endphp
-                @include('store._partials._appearance_block', ['block' => $block, 'data' => $data])
-            @endforeach
-        @else
-            {{-- Fallback: grid produk --}}
-            <div>
-                <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-lg font-bold text-on-surface border-l-4 border-primary pl-3">Semua Produk</h2>
+            {{-- Bio Links / Portofolio Showcase (ala Lynk.id) --}}
+            @if(isset($profileLinks) && $profileLinks->isNotEmpty())
+                <div class="p-4 sm:p-6 border-t border-slate-100 dark:border-slate-800/80">
+                    <div class="flex items-center justify-between mb-4 px-1">
+                        <span class="text-xs sm:text-sm font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-[18px] text-primary">widgets</span>
+                            Portofolio &amp; Layanan Pilihan
+                        </span>
+                        <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500">
+                            {{ $profileLinks->count() }} Link
+                        </span>
+                    </div>
+                    @include('store._partials._profile_links')
                 </div>
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    @forelse($products as $product)
-                    @php
-                        $hasDiscount = $product->discount_price && $product->discount_price > 0 && $product->discount_price < $product->price;
-                    @endphp
-                    <a href="{{ route('products.show', $product->slug) }}" class="group bg-white dark:bg-surface-container border border-outline-variant hover:border-primary rounded-xl overflow-hidden hover:shadow-xl transition-all flex flex-col">
-                        <div class="aspect-square w-full bg-surface-container-high relative overflow-hidden">
-                            @if($product->images->count() > 0)
-                                @php $mainImg = $product->images->where('is_main', true)->first() ?? $product->images->first(); @endphp
-                                <img src="{{ asset('storage/' . $mainImg->image_path) }}" alt="{{ $product->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                            @else
-                                <div class="w-full h-full flex items-center justify-center text-slate-300"><span class="material-symbols-outlined text-4xl">inventory_2</span></div>
-                            @endif
-                            @if($hasDiscount)
-                                <div class="absolute top-2 right-2 bg-rose-500 text-white font-black text-[10px] px-2 py-0.5 rounded-md shadow-sm">
-                                    -{{ round((($product->price - $product->discount_price) / $product->price) * 100) }}%
-                                </div>
-                            @endif
-                        </div>
-                        <div class="p-3 flex flex-col flex-1">
-                            <h3 class="font-bold text-on-surface text-xs line-clamp-2 mb-1.5 group-hover:text-primary transition-colors">{{ $product->name }}</h3>
-                            <div class="mt-auto">
-                                @if($hasDiscount)
-                                    <div class="text-[10px] text-slate-400 line-through">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
-                                    <div class="font-black text-primary text-sm">Rp {{ number_format($product->discount_price, 0, ',', '.') }}</div>
+            @endif
+        </div>
+
+        {{-- 2. PEMISAH ETALASE TOKO --}}
+        <div class="flex items-center gap-4 my-6">
+            <div class="flex-1 h-px bg-slate-200 dark:bg-slate-800"></div>
+            <div class="flex items-center gap-2 text-xs font-bold text-slate-500 dark:text-slate-400 bg-white dark:bg-[#111726] px-4 py-1.5 rounded-full border border-slate-200 dark:border-[#222f49] shadow-xs">
+                <span class="material-symbols-outlined text-[16px] text-primary">storefront</span>
+                Katalog &amp; Etalase Produk
+            </div>
+            <div class="flex-1 h-px bg-slate-200 dark:bg-slate-800"></div>
+        </div>
+
+        {{-- 3. BAGIAN ETALASE TOKO (Full Width) --}}
+        <div class="space-y-6">
+
+            {{-- Voucher Header Otomatis (Hanya tampil jika belum ada blok widget voucher di kanvas) --}}
+            @php
+                $hasVoucherBlock = collect($appearance)->contains(fn($b) => ($b['type'] ?? '') === 'voucher');
+                $voucherPlacement = is_array($appearance['voucher_placement'] ?? null) 
+                    ? $appearance['voucher_placement'] 
+                    : (is_array($store->appearance_data ?? null) ? ($store->appearance_data['voucher_placement'] ?? []) : []);
+                $vpHeader = $voucherPlacement['header'] ?? '';
+                $headerCampaigns = $campaigns ?? collect();
+                if ($vpHeader !== '' && $vpHeader !== 'none') {
+                    $filtered = $campaigns->where('id', (int)$vpHeader);
+                    if ($filtered->isNotEmpty()) {
+                        $headerCampaigns = $filtered;
+                    }
+                }
+            @endphp
+            @if(!$hasVoucherBlock && $vpHeader !== 'none' && $headerCampaigns->isNotEmpty())
+            <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-primary/5 via-emerald-500/5 to-amber-500/5 border border-primary/20 shadow-xs">
+                <div class="flex items-center gap-2 mb-3 text-sm font-black text-on-surface">
+                    <span class="material-symbols-outlined text-[18px]">confirmation_number</span>
+                    Kupon &amp; Voucher Toko
+                    <span class="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-extrabold">{{ $headerCampaigns->count() }} Tersedia</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                    @foreach($headerCampaigns as $campaign)
+                        <x-voucher-card :campaign="$campaign" mode="browse" />
+                    @endforeach
+                </div>
+            </div>
+            @endif
+
+            {{-- Appearance Blocks --}}
+            @if(!empty($appearance))
+                @foreach($appearance as $block)
+                    @php $data = $block['data'] ?? []; @endphp
+                    @include('store._partials._appearance_block', ['block' => $block, 'data' => $data])
+                @endforeach
+            @else
+                {{-- Fallback: grid produk --}}
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white border-l-4 border-primary pl-3">Semua Produk</h2>
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                        @forelse($products as $product)
+                        @php
+                            $hasDiscount = $product->discount_price && $product->discount_price > 0 && $product->discount_price < $product->price;
+                        @endphp
+                        <a href="{{ route('products.show', $product->slug) }}" class="group bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] hover:border-primary rounded-xl overflow-hidden hover:shadow-xl transition-all flex flex-col">
+                            <div class="aspect-square w-full bg-slate-50 dark:bg-[#0d1117] relative overflow-hidden">
+                                @if($product->images->count() > 0)
+                                    @php $mainImg = $product->images->where('is_main', true)->first() ?? $product->images->first(); @endphp
+                                    <img src="{{ asset('storage/' . $mainImg->image_path) }}" alt="{{ $product->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                                 @else
-                                    <div class="font-black text-primary text-sm">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
+                                    <div class="w-full h-full flex items-center justify-center text-slate-300"><span class="material-symbols-outlined text-4xl">inventory_2</span></div>
+                                @endif
+                                @if($hasDiscount)
+                                    <div class="absolute top-2 right-2 bg-rose-500 text-white font-black text-[10px] px-2 py-0.5 rounded-md shadow-sm">
+                                        -{{ round((($product->price - $product->discount_price) / $product->price) * 100) }}%
+                                    </div>
                                 @endif
                             </div>
-                        </div>
-                    </a>
-                    @empty
-                    <div class="col-span-full text-center py-10 text-slate-400">Belum ada produk aktif.</div>
-                    @endforelse
+                            <div class="p-3.5 flex flex-col flex-1">
+                                <h3 class="font-bold text-slate-800 dark:text-slate-200 text-xs sm:text-sm line-clamp-2 mb-1.5 group-hover:text-primary transition-colors">{{ $product->name }}</h3>
+                                <div class="mt-auto">
+                                    @if($hasDiscount)
+                                        <div class="text-[10px] text-slate-400 line-through">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
+                                        <div class="font-black text-primary text-sm sm:text-base">Rp {{ number_format($product->discount_price, 0, ',', '.') }}</div>
+                                    @else
+                                        <div class="font-black text-primary text-sm sm:text-base">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
+                                    @endif
+                                </div>
+                            </div>
+                        </a>
+                        @empty
+                        <div class="col-span-full text-center py-10 text-slate-400">Belum ada produk aktif.</div>
+                        @endforelse
+                    </div>
+                    <div class="mt-6">{{ $products->links() }}</div>
                 </div>
-                <div class="mt-6">{{ $products->links() }}</div>
-            </div>
-        @endif
+            @endif
+        </div>
+
     </div>
 
     {{-- Footer --}}
-    <div class="text-center py-6 text-[11px] text-slate-400 dark:text-slate-600">
+    <div class="text-center py-8 text-[11px] text-slate-400 dark:text-slate-600">
         <a href="{{ route('home') }}" class="hover:text-primary transition-colors font-semibold">⚡ Powered by Rhantech</a>
     </div>
 </div>

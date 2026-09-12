@@ -798,8 +798,14 @@
                     </div>
 
                 @elseif($block['type'] === 'voucher')
-                    @php $vouchers = $data['vouchers'] ?? []; @endphp
-                    @if(isset($campaigns) && $campaigns->isNotEmpty())
+                    @php 
+                        $selectedCampaignIds = $data['campaign_ids'] ?? [];
+                        $blockCampaigns = $campaigns ?? collect();
+                        if (!empty($selectedCampaignIds) && is_array($selectedCampaignIds)) {
+                            $blockCampaigns = $blockCampaigns->whereIn('id', array_map('intval', $selectedCampaignIds));
+                        }
+                    @endphp
+                    @if($blockCampaigns->isNotEmpty())
                         <!-- REAL STORE CAMPAIGNS / VOUCHERS -->
                         <div class="w-full p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-primary/5 via-emerald-500/5 to-amber-500/5 border border-primary/20 shadow-xs">
                             <div class="flex items-center justify-between gap-3 mb-3.5">
@@ -809,15 +815,15 @@
                                     </div>
                                     <div>
                                         <h2 class="text-sm sm:text-base font-black text-on-surface flex items-center gap-1.5">
-                                            <span>Kupon & Voucher Toko</span>
-                                            <span class="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-extrabold">{{ $campaigns->count() }} Tersedia</span>
+                                            <span>Kupon &amp; Voucher Toko</span>
+                                            <span class="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-extrabold">{{ $blockCampaigns->count() }} Tersedia</span>
                                         </h2>
                                         <p class="text-[11px] text-on-surface-variant font-medium">Salin kode voucher di bawah dan gunakan saat checkout untuk klaim potongan harga</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-                                @foreach($campaigns as $campaign)
+                                @foreach($blockCampaigns as $campaign)
                                     <x-voucher-card :campaign="$campaign" mode="browse" />
                                 @endforeach
                             </div>

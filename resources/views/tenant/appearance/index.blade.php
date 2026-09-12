@@ -40,13 +40,60 @@
                 <span class="sm:hidden">Reset</span>
             </button>
             @if($store && $store->slug)
-            <a href="{{ route('store.show', $store->slug) }}" target="_blank" class="flex-1 sm:flex-initial justify-center px-3 sm:px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm" title="Buka preview halaman publik">
-                <span class="material-symbols-outlined text-[16px]">visibility</span> <span>Preview Web</span>
-            </a>
+            <button type="button" @click="openPreviewModal()" class="flex-1 sm:flex-initial justify-center px-3 sm:px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm cursor-pointer" title="Buka live preview interaktif (Mobile & Desktop)">
+                <span class="material-symbols-outlined text-[16px] text-sky-500">visibility</span> <span>Preview Web</span>
+            </button>
             @endif
             <button @click="save()" :disabled="isSaving" :class="hasUnsavedChanges ? 'ring-2 ring-amber-400 dark:ring-amber-500' : ''" class="flex-1 sm:flex-initial justify-center px-4 sm:px-5 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs font-bold shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 transition-all flex items-center gap-1.5 disabled:opacity-60 cursor-pointer whitespace-nowrap">
                 <span class="material-symbols-outlined text-[16px]" x-text="isSaving ? 'hourglass_empty' : 'save'">save</span>
                 <span x-text="isSaving ? 'Menyimpan...' : (hasUnsavedChanges ? 'Simpan Perubahan *' : 'Simpan Perubahan')">Simpan Perubahan</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Global Mode Switcher Bar (Tampil di semua perangkat: Mobile, Tablet & Desktop) -->
+    <div class="bg-slate-50/95 dark:bg-[#0c1220]/95 backdrop-blur-sm border-b border-slate-200/80 dark:border-[#222f49] px-4 sm:px-6 py-2 sm:py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 shrink-0 z-30 shadow-2xs">
+        <div class="flex items-center justify-between sm:justify-start gap-2">
+            <div class="flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full animate-pulse"
+                      :class="storeMode === 'profile' ? 'bg-purple-500' : (storeMode === 'hybrid' ? 'bg-emerald-500' : 'bg-sky-500')"></span>
+                <span class="text-xs font-bold text-slate-700 dark:text-slate-200 flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[16px] text-slate-400">tune</span>
+                    <span>Pilihan Mode Halaman:</span>
+                </span>
+            </div>
+            <span class="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider"
+                  :class="storeMode === 'profile' ? 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20' : (storeMode === 'hybrid' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20' : 'bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20')">
+                <span x-text="storeMode === 'profile' ? 'Bio Link' : (storeMode === 'hybrid' ? 'Hybrid' : 'Toko Digital')"></span>
+            </span>
+        </div>
+
+        <div class="grid grid-cols-3 gap-1 p-1 bg-white dark:bg-[#111726] rounded-xl border border-slate-200 dark:border-[#222f49] shadow-2xs w-full sm:w-auto">
+            <!-- 1. Toko Digital -->
+            <button type="button" @click="setStoreMode('store')" 
+                    :class="storeMode === 'store' ? 'bg-sky-500 text-white shadow-xs font-black' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" 
+                    class="px-2.5 py-1.5 rounded-lg text-xs transition-all flex items-center justify-center gap-1 cursor-pointer" 
+                    title="Mode Toko Digital (E-Commerce Katalog Penuh)">
+                <span class="material-symbols-outlined text-[15px]">storefront</span>
+                <span class="truncate">Toko Digital</span>
+            </button>
+
+            <!-- 2. Bio Link -->
+            <button type="button" @click="setStoreMode('profile')" 
+                    :class="storeMode === 'profile' ? 'bg-purple-600 text-white shadow-xs font-black' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" 
+                    class="px-2.5 py-1.5 rounded-lg text-xs transition-all flex items-center justify-center gap-1 cursor-pointer" 
+                    title="Mode Bio Link (Profil Personal ala Linktree / Lynk.id)">
+                <span class="material-symbols-outlined text-[15px]">contact_page</span>
+                <span class="truncate">Bio Link</span>
+            </button>
+
+            <!-- 3. Hybrid -->
+            <button type="button" @click="setStoreMode('hybrid')" 
+                    :class="storeMode === 'hybrid' ? 'bg-emerald-600 text-white shadow-xs font-black' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" 
+                    class="px-2.5 py-1.5 rounded-lg text-xs transition-all flex items-center justify-center gap-1 cursor-pointer" 
+                    title="Mode Hybrid (Kombinasi Bio Link + Toko Digital)">
+                <span class="material-symbols-outlined text-[15px]">layers</span>
+                <span class="truncate">Hybrid</span>
             </button>
         </div>
     </div>
@@ -102,6 +149,23 @@
             <!-- Components List -->
             <div class="flex-1 overflow-y-auto p-4 space-y-5 custom-scrollbar">
                 
+                <!-- Notice if Store Mode is currently 'profile' -->
+                <div x-show="storeMode === 'profile'" class="p-3 rounded-xl bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800/50 text-xs text-purple-800 dark:text-purple-300 flex items-start gap-2">
+                    <span class="material-symbols-outlined text-[18px] text-purple-500 shrink-0 mt-0.5">info</span>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-bold">Mode aktif: Bio Link</p>
+                        <p class="text-[11px] text-purple-700/90 dark:text-purple-400/90 mt-0.5">Halaman publik saat ini difokuskan pada tautan profil personal. Agar widget katalog produk ini tampil, ganti mode ke <strong>Toko Digital</strong> atau <strong>Hybrid</strong>.</p>
+                        <div class="flex items-center gap-1.5 mt-2">
+                            <button type="button" @click="setStoreMode('store')" class="px-2.5 py-1 rounded-lg bg-sky-500 hover:bg-sky-400 text-white text-[10px] font-bold transition-all shadow-xs flex items-center gap-1 cursor-pointer">
+                                <span class="material-symbols-outlined text-[13px]">storefront</span> Aktifkan Toko
+                            </button>
+                            <button type="button" @click="setStoreMode('hybrid')" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-bold transition-all shadow-xs flex items-center gap-1 cursor-pointer">
+                                <span class="material-symbols-outlined text-[13px]">layers</span> Aktifkan Hybrid
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Group 1: Media & Konten -->
                 <div>
                     <h3 class="text-xs font-bold text-slate-900 dark:text-white mb-2.5 flex items-center gap-1.5">
@@ -208,13 +272,16 @@
                         </div>
                     @else
                         <!-- Info posisi -->
-                        <div class="bg-slate-50 dark:bg-[#0c1220] rounded-xl p-3 text-[11px] text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-[#222f49]">
-                            <p class="font-bold text-slate-700 dark:text-slate-300 mb-1">📍 3 Lokasi Penempatan:</p>
+                        <div class="bg-slate-50 dark:bg-[#0c1220] rounded-xl p-3 text-[11px] text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-[#222f49] space-y-2">
+                            <p class="font-bold text-slate-700 dark:text-slate-300">📍 3 Lokasi Penempatan Otomatis (Global):</p>
                             <ul class="space-y-1 pl-2">
-                                <li>• <b>Header Toko</b> — tampil sebagai banner promo di atas toko</li>
+                                <li>• <b>Header Toko</b> — tampil sebagai banner promo di atas katalog etalase</li>
                                 <li>• <b>Pop-up Halaman Produk</b> — muncul saat pembeli buka produk</li>
                                 <li>• <b>Halaman Checkout</b> — tampil saat pembeli selesai beli</li>
                             </ul>
+                            <div class="pt-2 border-t border-slate-200 dark:border-slate-800 text-[10.5px] text-amber-600 dark:text-amber-400 bg-amber-500/10 p-2 rounded-lg leading-relaxed">
+                                💡 <b>Tips:</b> Jika Anda memasang <b>"Blok Kupon Voucher"</b> manual di susunan <b>Widget</b>, sistem otomatis memakai blok widget tersebut agar kupon tidak tampil dobel di etalase toko.
+                            </div>
                         </div>
 
                         <!-- Slot 1: Header Toko -->
@@ -310,6 +377,23 @@
                 </div>
 
                 <div class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+                    <!-- Status Notice if currently in Toko Digital Mode -->
+                    <div x-show="storeMode === 'store'" class="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 text-xs text-amber-800 dark:text-amber-300 flex items-start gap-2">
+                        <span class="material-symbols-outlined text-[18px] text-amber-500 shrink-0 mt-0.5">info</span>
+                        <div class="flex-1 min-w-0">
+                            <p class="font-bold">Mode aktif: Toko Digital</p>
+                            <p class="text-[11px] text-amber-700/90 dark:text-amber-400/90 mt-0.5">Tombol Bio Link ini hanya akan tampil di halaman publik jika mode diubah ke <strong>Bio Link</strong> atau <strong>Hybrid</strong>.</p>
+                            <div class="flex items-center gap-1.5 mt-2">
+                                <button type="button" @click="setStoreMode('profile')" class="px-2.5 py-1 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-[10px] font-bold transition-all shadow-xs flex items-center gap-1 cursor-pointer">
+                                    <span class="material-symbols-outlined text-[13px]">contact_page</span> Aktifkan Bio Link
+                                </button>
+                                <button type="button" @click="setStoreMode('hybrid')" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-bold transition-all shadow-xs flex items-center gap-1 cursor-pointer">
+                                    <span class="material-symbols-outlined text-[13px]">layers</span> Aktifkan Hybrid
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Quick Presets -->
                     <div>
                         <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-2">Tambah Cepat:</span>
@@ -420,10 +504,16 @@
                                         <textarea x-model="link.description" @input="hasUnsavedChanges = true" rows="3" placeholder="Tuliskan keterangan lengkap detail produk/jasa, fitur, penjelasan teks panjang, panduan, dll..." class="w-full px-2.5 py-1.5 text-xs bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-lg text-slate-700 dark:text-slate-200 focus:border-teal-500 outline-none leading-relaxed custom-scrollbar"></textarea>
                                     </div>
 
-                                    <!-- Input URL Link -->
-                                    <div>
-                                        <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1">URL Link Tujuan *</label>
-                                        <input type="text" x-model="link.url" @input="hasUnsavedChanges = true" placeholder="URL Link: https://wa.me/... atau https://..." class="w-full px-2.5 py-1.5 text-xs bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-lg font-mono text-slate-900 dark:text-white">
+                                    <!-- Input URL Link & Teks Tombol Aksi (CTA) -->
+                                    <div class="space-y-2">
+                                        <div>
+                                            <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1">URL Link Tujuan *</label>
+                                            <input type="text" x-model="link.url" @input="hasUnsavedChanges = true" placeholder="URL Link: https://wa.me/... atau https://..." class="w-full px-2.5 py-1.5 text-xs bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-lg font-mono text-slate-900 dark:text-white">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1">Teks Tombol Aksi di Halaman Detail (CTA)</label>
+                                            <input type="text" x-model="link.button_text" @input="hasUnsavedChanges = true" placeholder="Default: Buka Tautan / Pesan (Bisa: BOOK NOW, Hubungi WA, dll)" class="w-full px-2.5 py-1.5 text-xs bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-lg text-slate-900 dark:text-white font-bold">
+                                        </div>
                                     </div>
 
                                     <!-- Foto / Thumbnail Image (Opsional) -->
@@ -792,13 +882,18 @@
 
                             <!-- VOUCHER -->
                             <template x-if="comp.type === 'voucher'">
-                                <div class="bg-slate-50 dark:bg-[#111726] border-2 border-dashed border-slate-200 dark:border-[#222f49] hover:border-sky-500 dark:hover:border-sky-500 rounded-2xl p-6 flex items-center gap-4 shadow-xs transition-colors">
-                                    <div class="w-12 h-12 rounded-xl bg-rose-500/10 text-rose-500 flex items-center justify-center shrink-0">
+                                <div @click="openSettings(index)" class="bg-slate-50 dark:bg-[#111726] border-2 border-dashed border-slate-200 dark:border-[#222f49] hover:border-sky-500 dark:hover:border-sky-500 rounded-2xl p-6 flex items-center gap-4 shadow-xs transition-colors cursor-pointer group">
+                                    <div class="w-12 h-12 rounded-xl bg-rose-500/10 text-rose-500 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                                         <span class="material-symbols-outlined text-2xl">confirmation_number</span>
                                     </div>
-                                    <div>
-                                        <h4 class="text-sm font-bold text-slate-900 dark:text-white">Blok Kupon Voucher Toko</h4>
-                                        <p class="text-xs text-slate-400 mt-0.5">Menampilkan daftar voucher diskon aktif yang siap diklaim pembeli.</p>
+                                    <div class="flex-1">
+                                        <div class="flex items-center gap-2 flex-wrap">
+                                            <h4 class="text-sm font-bold text-slate-900 dark:text-white">Blok Kupon Voucher Toko</h4>
+                                            <span class="text-[10px] px-2 py-0.5 rounded-full font-bold"
+                                                  :class="(comp.data?.campaign_ids && comp.data.campaign_ids.length > 0) ? 'bg-rose-100 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'"
+                                                  x-text="(comp.data?.campaign_ids && comp.data.campaign_ids.length > 0) ? comp.data.campaign_ids.length + ' Kupon Terpilih (Klik utk Edit)' : 'Semua Kupon Aktif (Klik utk Edit)'"></span>
+                                        </div>
+                                        <p class="text-xs text-slate-400 mt-0.5">Menampilkan voucher diskon pilihan pembeli. Klik blok ini untuk memilih kupon mana saja yang tampil.</p>
                                     </div>
                                 </div>
                             </template>
@@ -1663,6 +1758,129 @@
         </div>
     </div>
 
+    <!-- ========================================================================= -->
+    <!-- INTERACTIVE LIVE PREVIEW MODAL (IN-APP OVERLAY SIMULATOR)                   -->
+    <!-- ========================================================================= -->
+    <div x-show="isPreviewModalOpen" 
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 scale-98"
+         x-transition:enter-end="opacity-100 scale-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100 scale-100"
+         x-transition:leave-end="opacity-0 scale-98"
+         @keydown.escape.window="closePreviewModal()"
+         class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex flex-col overflow-hidden"
+         style="display: none;">
+        
+        <!-- Modal Top Control Bar -->
+        <div class="h-14 bg-slate-900 border-b border-slate-800 px-3 sm:px-6 flex items-center justify-between gap-3 shrink-0 text-white select-none">
+            
+            <!-- Left: Info & Mode Badge -->
+            <div class="flex items-center gap-2.5 min-w-0">
+                <div class="w-8 h-8 rounded-xl bg-sky-500/20 text-sky-400 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-[18px]">visibility</span>
+                </div>
+                <div class="min-w-0">
+                    <h3 class="text-xs sm:text-sm font-bold text-white flex items-center gap-2 truncate">
+                        <span>Live Preview Halaman</span>
+                        <span class="text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider shrink-0"
+                              :class="storeMode === 'profile' ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' : (storeMode === 'hybrid' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-sky-500/20 text-sky-300 border border-sky-500/30')"
+                              x-text="storeMode === 'profile' ? 'Bio Link' : (storeMode === 'hybrid' ? 'Hybrid' : 'Toko Digital')">
+                        </span>
+                    </h3>
+                    <p class="text-[10px] text-slate-400 truncate hidden sm:block font-mono">
+                        {{ url('/' . ($store->slug ?? '')) }}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Center: Device Switcher & Refresh Button -->
+            <div class="flex items-center gap-1 p-1 bg-slate-800/90 rounded-xl border border-slate-700">
+                <button type="button" @click="previewDevice = 'mobile'" 
+                        :class="previewDevice === 'mobile' ? 'bg-sky-500 text-white font-bold shadow-xs' : 'text-slate-400 hover:text-white'" 
+                        class="px-2.5 sm:px-3 py-1 rounded-lg text-xs transition-all flex items-center gap-1 cursor-pointer">
+                    <span class="material-symbols-outlined text-[15px]">smartphone</span>
+                    <span class="hidden sm:inline">Mobile</span>
+                </button>
+                <button type="button" @click="previewDevice = 'desktop'" 
+                        :class="previewDevice === 'desktop' ? 'bg-sky-500 text-white font-bold shadow-xs' : 'text-slate-400 hover:text-white'" 
+                        class="px-2.5 sm:px-3 py-1 rounded-lg text-xs transition-all flex items-center gap-1 cursor-pointer">
+                    <span class="material-symbols-outlined text-[15px]">desktop_windows</span>
+                    <span class="hidden sm:inline">Desktop</span>
+                </button>
+                <div class="h-4 w-px bg-slate-700 mx-0.5"></div>
+                <button type="button" @click="refreshPreview()" 
+                        class="p-1 rounded-lg text-slate-400 hover:text-white transition-colors cursor-pointer" 
+                        title="Muat Ulang / Refresh Preview">
+                    <span class="material-symbols-outlined text-[16px]">refresh</span>
+                </button>
+            </div>
+
+            <!-- Right: Tab Baru & Close Button -->
+            <div class="flex items-center gap-2">
+                @if($store && $store->slug)
+                <a href="{{ route('store.show', $store->slug) }}" target="_blank" 
+                   class="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-semibold border border-slate-700 transition-all"
+                   title="Buka di tab browser baru">
+                    <span>Tab Baru</span>
+                    <span class="material-symbols-outlined text-[14px]">open_in_new</span>
+                </a>
+                @endif
+                <button type="button" @click="closePreviewModal()" 
+                        class="px-3 py-1.5 rounded-xl bg-rose-500/20 hover:bg-rose-500 text-rose-300 hover:text-white text-xs font-bold transition-all flex items-center gap-1 border border-rose-500/30 cursor-pointer"
+                        title="Tutup Preview (Tekan ESC)">
+                    <span class="material-symbols-outlined text-[16px]">close</span>
+                    <span class="hidden sm:inline">Tutup</span>
+                </button>
+            </div>
+
+        </div>
+
+        <!-- Modal Body (Simulation Canvas) -->
+        <div class="flex-1 overflow-auto p-3 sm:p-6 flex items-center justify-center relative custom-scrollbar">
+            
+            <!-- Mobile Frame Viewport (390px iPhone Frame) -->
+            <div x-show="previewDevice === 'mobile'" 
+                 class="w-full max-w-[390px] h-[820px] max-h-[88vh] bg-slate-950 rounded-[44px] p-3 shadow-2xl ring-1 ring-white/15 flex flex-col relative shrink-0 transition-all duration-300">
+                <!-- Dynamic Island / Speaker Notch -->
+                <div class="w-28 h-4 bg-black rounded-full mx-auto mb-2 shrink-0 flex items-center justify-center">
+                    <div class="w-2.5 h-2.5 rounded-full bg-slate-900 border border-slate-800"></div>
+                </div>
+                <!-- Iframe Container -->
+                <div class="flex-1 w-full bg-white dark:bg-[#090d16] rounded-[32px] overflow-hidden relative shadow-inner">
+                    <iframe id="preview-iframe-mobile" :src="isPreviewModalOpen ? previewUrl : 'about:blank'" class="w-full h-full border-0"></iframe>
+                </div>
+                <!-- Bottom Bar Indicator -->
+                <div class="w-32 h-1 bg-slate-700 rounded-full mx-auto mt-2 shrink-0"></div>
+            </div>
+
+            <!-- Desktop Frame Viewport (Browser Frame) -->
+            <div x-show="previewDevice === 'desktop'" 
+                 class="w-full max-w-5xl h-[820px] max-h-[88vh] bg-slate-900 rounded-2xl shadow-2xl ring-1 ring-white/15 flex flex-col overflow-hidden transition-all duration-300">
+                <!-- Browser Window Header -->
+                <div class="h-9 bg-slate-800/90 border-b border-slate-700 px-4 flex items-center gap-3 shrink-0">
+                    <div class="flex gap-1.5">
+                        <div class="w-2.5 h-2.5 rounded-full bg-rose-500"></div>
+                        <div class="w-2.5 h-2.5 rounded-full bg-amber-500"></div>
+                        <div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
+                    </div>
+                    <div class="flex-1 flex justify-center">
+                        <div class="bg-slate-950/80 border border-slate-700 text-[11px] px-4 py-1 rounded-lg text-slate-400 w-[60%] flex items-center justify-center gap-1.5 font-mono truncate">
+                            <span class="material-symbols-outlined text-[13px] text-emerald-400">lock</span>
+                            <span x-text="previewUrl"></span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Iframe Container -->
+                <div class="flex-1 w-full bg-white dark:bg-[#090d16] overflow-hidden relative">
+                    <iframe id="preview-iframe-desktop" :src="isPreviewModalOpen ? previewUrl : 'about:blank'" class="w-full h-full border-0"></iframe>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
@@ -1691,6 +1909,11 @@
             profileLinks: {!! json_encode(!empty($store->profile_links) && is_array($store->profile_links) ? array_values($store->profile_links) : []) !!},
             isSavingLinks: false,
             toast: { show: false, message: '' },
+
+            // Live Preview Modal state
+            isPreviewModalOpen: false,
+            previewDevice: 'mobile',
+            previewUrl: '{{ route('store.show', $store->slug ?? '') }}',
 
             // Voucher Placement state
             voucherPlacement: {!! json_encode((is_array($store->appearance_data ?? null) ? ($store->appearance_data['voucher_placement'] ?? []) : []) + ['header' => '', 'product_page' => '', 'checkout' => '']) !!},
@@ -2018,6 +2241,8 @@
                     title: preset.title || 'Tautan Baru',
                     subtitle: preset.subtitle || '',
                     description: preset.description || '',
+                    button_text: preset.button_text || 'Buka Tautan / Pesan',
+                    has_detail: preset.has_detail !== undefined ? preset.has_detail : true,
                     url: preset.url || 'https://',
                     image: preset.image || null,
                     icon: preset.icon || 'link',
@@ -2029,6 +2254,8 @@
                     title: 'Tautan Baru',
                     subtitle: '',
                     description: '',
+                    button_text: 'Buka Tautan / Pesan',
+                    has_detail: true,
                     url: 'https://',
                     image: null,
                     icon: 'link',
@@ -2305,6 +2532,32 @@
                 .catch(() => {
                     this.isSavingVoucher = false;
                     this.voucherSaveMsg = 'Kesalahan koneksi.';
+                });
+            },
+
+            // Live Preview Modal methods
+            openPreviewModal() {
+                if (this.hasUnsavedChanges) {
+                    this.save();
+                }
+                this.isPreviewModalOpen = true;
+                this.refreshPreview();
+            },
+
+            closePreviewModal() {
+                this.isPreviewModalOpen = false;
+            },
+
+            refreshPreview() {
+                const timestamp = new Date().getTime();
+                const base = '{{ route('store.show', $store->slug ?? '') }}';
+                const url = base + (base.includes('?') ? '&' : '?') + '_t=' + timestamp;
+                this.previewUrl = url;
+                this.$nextTick(() => {
+                    const mIframe = document.getElementById('preview-iframe-mobile');
+                    const dIframe = document.getElementById('preview-iframe-desktop');
+                    if (mIframe) mIframe.src = url;
+                    if (dIframe) dIframe.src = url;
                 });
             }
         }));

@@ -21,24 +21,24 @@
 {{-- Banner & Avatar Container --}}
 <div class="relative w-full">
     {{-- Banner Background (overflow-hidden applies only to the background itself) --}}
-    <div class="relative w-full h-40 sm:h-52 overflow-hidden rounded-b-2xl shadow-sm"
+    <div class="relative w-full h-44 sm:h-56 md:h-64 lg:h-72 overflow-hidden rounded-b-2xl shadow-sm transition-all duration-300"
          style="{{ $headerBgStyle }}">
         <div class="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/45"></div>
     </div>
 
     {{-- Avatar (completely outside overflow-hidden, floats seamlessly over the banner bottom edge) --}}
-    <div class="relative flex justify-center -mt-14 sm:-mt-16 z-20">
+    <div class="relative flex justify-center -mt-14 sm:-mt-16 md:-mt-20 z-20">
         <div class="relative">
-            <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 {{ $store->isPro() ? 'border-amber-400 ring-4 ring-amber-500/30' : 'border-white dark:border-[#0d1117]' }} shadow-xl overflow-hidden bg-white dark:bg-[#0d1117]">
+            <div class="w-24 h-24 sm:w-28 sm:h-28 md:w-36 md:h-36 rounded-full border-4 {{ $store->isPro() ? 'border-amber-400 ring-4 ring-amber-500/30' : 'border-white dark:border-[#0d1117]' }} shadow-xl overflow-hidden bg-white dark:bg-[#0d1117] transition-all">
                 @if($store->logo)
                     <img src="{{ asset('storage/' . $store->logo) }}" alt="{{ $store->name }}" class="w-full h-full object-cover">
                 @else
-                    <img src="https://ui-avatars.com/api/?name={{ urlencode($store->name) }}&background=0284c7&color=fff&size=128" alt="{{ $store->name }}" class="w-full h-full object-cover">
+                    <img src="https://ui-avatars.com/api/?name={{ urlencode($store->name) }}&background=0284c7&color=fff&size=140" alt="{{ $store->name }}" class="w-full h-full object-cover">
                 @endif
             </div>
             @if($store->isPro())
-                <span class="absolute -bottom-2.5 left-1/2 -translate-x-1/2 bg-slate-900 text-amber-400 font-black text-[11px] px-2.5 py-0.5 rounded-full shadow-lg border-2 border-amber-400 flex items-center gap-1 tracking-wider uppercase whitespace-nowrap z-30">
-                    <span class="material-symbols-outlined text-[13px] text-amber-400 font-bold">stars</span>
+                <span class="absolute -bottom-2.5 left-1/2 -translate-x-1/2 bg-slate-900 text-amber-400 font-black text-[11px] sm:text-xs px-2.5 sm:px-3 py-0.5 rounded-full shadow-lg border-2 border-amber-400 flex items-center gap-1 tracking-wider uppercase whitespace-nowrap z-30">
+                    <span class="material-symbols-outlined text-[13px] sm:text-[15px] text-amber-400 font-bold">stars</span>
                     <span>PRO</span>
                 </span>
             @endif
@@ -47,17 +47,17 @@
 </div>
 
 {{-- Info di bawah banner --}}
-<div class="pt-4 pb-5 px-4 text-center">
-    <h1 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight flex items-center justify-center gap-2 flex-wrap">
+<div class="pt-4 pb-6 px-4 sm:px-8 text-center">
+    <h1 class="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 dark:text-white tracking-tight flex items-center justify-center gap-2 flex-wrap">
         <span>{{ $store->name }}</span>
         
-        <span class="w-5 h-5 bg-sky-500 text-white rounded-full inline-flex items-center justify-center shadow-xs shrink-0" title="Terverifikasi">
-            <span class="material-symbols-outlined text-[13px]">verified</span>
+        <span class="w-5 h-5 sm:w-6 sm:h-6 bg-sky-500 text-white rounded-full inline-flex items-center justify-center shadow-xs shrink-0" title="Terverifikasi">
+            <span class="material-symbols-outlined text-[13px] sm:text-[15px]">verified</span>
         </span>
     </h1>
 
     @if(!empty($store->description))
-        <p class="text-sm text-slate-500 dark:text-slate-400 mt-2 max-w-sm mx-auto leading-relaxed line-clamp-3">
+        <p class="text-xs sm:text-sm md:text-base text-slate-500 dark:text-slate-400 mt-2 max-w-2xl mx-auto leading-relaxed">
             {{ $store->description }}
         </p>
     @endif

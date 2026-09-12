@@ -119,6 +119,71 @@ class PublicStoreController extends Controller
     }
 
     /**
+     * Display the dedicated detail page for a profile/showcase link (ala Lynk.id)
+     */
+    public function showLinkDetail(Request $request, string $slug, string $linkId)
+    {
+        $store = Store::where('slug', $slug)->firstOrFail();
+        
+        $profileLinks = is_array($store->profile_links)
+            ? collect($store->profile_links)
+            : collect();
+
+        // Cari item link berdasarkan ID, slug, atau index
+        $matchedLink = null;
+        $matchedIndex = null;
+
+        foreach ($profileLinks as $index => $item) {
+            $itemId = $item['id'] ?? null;
+            $itemSlug = !empty($item['slug']) 
+                ? $item['slug'] 
+                : (!empty($item['title']) ? \Illuminate\Support\Str::slug($item['title']) : 'item-' . ($index + 1));
+            $itemIndexId = 'item-' . ($index + 1);
+            $itemDirectIndex = (string)$index;
+            
+            if ($linkId === $itemId || $linkId === $itemSlug || $linkId === $itemIndexId || $linkId === $itemDirectIndex) {
+                $matchedLink = $item;
+                $matchedIndex = $index;
+                break;
+            }
+        }
+
+        // Fallback jika tidak match persis, coba cari jika linkId mengandung substring atau index
+        if (!$matchedLink && is_numeric($linkId) && isset($profileLinks[(int)$linkId])) {
+            $matchedLink = $profileLinks[(int)$linkId];
+            $matchedIndex = (int)$linkId;
+        }
+
+        if (!$matchedLink) {
+            return redirect()->route('store.show', $store->slug);
+        }
+
+        // Format WhatsApp URL untuk tombol WhatsApp
+        $socialLinks = is_array($store->social_links) ? $store->social_links : [];
+        $waLink = collect($socialLinks)->firstWhere('platform', 'whatsapp')['url'] ?? null;
+        if (!$waLink && !empty($store->user?->phone)) {
+            $phone = preg_replace('/[^0-9]/', '', $store->user->phone);
+            if (str_starts_with($phone, '0')) {
+                $phone = '62' . substr($phone, 1);
+            }
+            $waLink = 'https://wa.me/' . $phone;
+        }
+
+        if ($waLink) {
+            $msg = 'Halo, saya tertarik dengan "' . ($matchedLink['title'] ?? 'produk/portofolio') . '" di toko ' . $store->name . '. Boleh minta info lebih lanjut?';
+            $waLink = $waLink . (str_contains($waLink, '?') ? '&' : '?') . 'text=' . urlencode($msg);
+        }
+
+        return view('store.link_detail', [
+            'store'        => $store,
+            'link'         => $matchedLink,
+            'linkIndex'    => $matchedIndex,
+            'waLink'       => $waLink,
+            'profileLinks' => $profileLinks,
+        ]);
+    }
+
+    /**
      * Toggle follow status for the store.
      */
     public function toggleFollow(Store $store)
@@ -134,3 +199,4 @@ class PublicStoreController extends Controller
         }
     }
 }
+

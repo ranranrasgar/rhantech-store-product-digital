@@ -257,8 +257,17 @@ Route::get('/storage/{path}', function (string $path) {
     return redirect()->away($r2Url, 302);
 })->where('path', '.*');
 
+// Direct Store Profile Link Detail: http://127.0.0.1:8000/<nama-toko>/<link-id> (e.g., http://127.0.0.1:8000/ranranrasgar/kwenorgxerve)
+Route::get('/{slug}/{linkId}', [\App\Http\Controllers\PublicStoreController::class, 'showLinkDetail'])
+    ->where('slug', '(?!admin|tenant|dashboard|about|projects|products|clients|cart|checkout|payment|download|contact|help|terms|privacy|copyright|refund-policy|login|register|logout|forgot-password|reset-password|email|storage|chat|toko)[a-zA-Z0-9_\-]+')
+    ->where('linkId', '[a-zA-Z0-9_\-]+')
+    ->name('store.link_detail');
+
 // Direct Store URL: http://127.0.0.1:8000/<nama-toko> (e.g., http://127.0.0.1:8000/ranranrasgar)
 Route::get('/{slug}', [\App\Http\Controllers\PublicStoreController::class, 'show'])
-    ->where('slug', '^(?!admin|tenant|dashboard|about|projects|products|clients|cart|checkout|payment|download|contact|help|terms|privacy|copyright|refund-policy|login|register|logout|forgot-password|reset-password|email|storage|chat|toko).*$')
+    ->where('slug', '^(?!admin|tenant|dashboard|about|projects|products|clients|cart|checkout|payment|download|contact|help|terms|privacy|copyright|refund-policy|login|register|logout|forgot-password|reset-password|email|storage|chat|toko)[a-zA-Z0-9_\-]+$')
     ->name('store.show');
+
+
+
 

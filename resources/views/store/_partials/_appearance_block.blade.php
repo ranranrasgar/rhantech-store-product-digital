@@ -197,14 +197,22 @@
     </div>
 
 @elseif($type === 'voucher')
-    @if(isset($campaigns) && $campaigns->isNotEmpty())
+    @php
+        $selectedCampaignIds = $data['campaign_ids'] ?? [];
+        $blockCampaigns = $campaigns ?? collect();
+        if (!empty($selectedCampaignIds) && is_array($selectedCampaignIds)) {
+            $blockCampaigns = $blockCampaigns->whereIn('id', array_map('intval', $selectedCampaignIds));
+        }
+    @endphp
+    @if($blockCampaigns->isNotEmpty())
         <div class="w-full p-4 rounded-2xl bg-gradient-to-r from-primary/5 via-emerald-500/5 to-amber-500/5 border border-primary/20 shadow-xs">
             <div class="flex items-center gap-2 mb-3">
                 <span class="material-symbols-outlined text-[18px] text-primary">confirmation_number</span>
-                <span class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">Kupon & Voucher Toko</span>
+                <span class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">Kupon &amp; Voucher Toko</span>
+                <span class="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-extrabold">{{ $blockCampaigns->count() }} Tersedia</span>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                @foreach($campaigns as $campaign)
+                @foreach($blockCampaigns as $campaign)
                     <x-voucher-card :campaign="$campaign" mode="browse" />
                 @endforeach
             </div>
