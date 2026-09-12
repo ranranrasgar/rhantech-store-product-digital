@@ -381,7 +381,7 @@
                          :class="activeStoreIndex === {{ $sIndex }} ? '' : 'pointer-events-none'">
                         
                         <!-- 1. Info Toko Rekomendasi / Populer (Kiri) -->
-                        <div class="flex items-center gap-2.5 shrink-0 max-w-full lg:max-w-[220px] xl:max-w-[250px]">
+                        <div class="flex items-center gap-2.5 shrink-0 max-w-full lg:max-w-[220px] xl:max-w-[250px] pr-20 lg:pr-0">
                             <div class="w-9 h-9 md:w-10 md:h-10 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shrink-0 shadow-2xs flex items-center justify-center">
                                 @if($spStore->logo)
                                     <img src="{{ asset('storage/' . $spStore->logo) }}" alt="{{ $spStore->name }}" class="w-full h-full object-cover">
@@ -467,24 +467,22 @@
                             </div>
                         </div>
 
-
-
                     </div>
                     @endforeach
 
                 </div>
             </div>
 
-            <!-- Controls (Tetap di kanan, stabil tanpa bergeser saat slide berganti) -->
+            <!-- Controls (Sejajar nama toko di kanan atas pada mobile, di kanan produk pada desktop) -->
             @if($sponsoredStores->count() > 1)
-            <div class="flex items-center justify-end gap-1.5 shrink-0 self-end lg:self-center pt-2 lg:pt-0 border-t lg:border-t-0 lg:border-l border-slate-200/60 dark:border-slate-800/60 lg:pl-3 w-full lg:w-auto">
+            <div class="absolute top-2.5 right-2.5 lg:static flex items-center justify-end gap-1.5 shrink-0 z-10 lg:border-l border-slate-200/60 dark:border-slate-800/60 lg:pl-3">
                 <button type="button" 
                         @click="prevStore()" 
                         aria-label="Toko Sebelumnya"
-                        class="w-7 h-7 rounded-lg border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-700 active:scale-90 flex items-center justify-center text-slate-600 dark:text-slate-300 transition-all cursor-pointer shadow-2xs">
-                    <span class="material-symbols-outlined text-[15px]">chevron_left</span>
+                        class="w-6 h-6 md:w-7 md:h-7 rounded-lg border border-slate-200 dark:border-slate-700 bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-700 active:scale-90 flex items-center justify-center text-slate-600 dark:text-slate-300 transition-all cursor-pointer shadow-2xs">
+                    <span class="material-symbols-outlined text-[14px] md:text-[15px]">chevron_left</span>
                 </button>
-                <div class="flex items-center gap-1 px-1 select-none">
+                <div class="flex items-center gap-0.5 px-1 select-none">
                     <span class="text-[10px] font-mono font-bold text-slate-700 dark:text-slate-200" x-text="activeStoreIndex + 1"></span>
                     <span class="text-[10px] font-mono text-slate-400">/</span>
                     <span class="text-[10px] font-mono font-medium text-slate-500">{{ $sponsoredStores->count() }}</span>
@@ -492,8 +490,8 @@
                 <button type="button" 
                         @click="nextStore()" 
                         aria-label="Toko Berikutnya"
-                        class="w-7 h-7 rounded-lg border border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-700 active:scale-90 flex items-center justify-center text-slate-600 dark:text-slate-300 transition-all cursor-pointer shadow-2xs">
-                    <span class="material-symbols-outlined text-[15px]">chevron_right</span>
+                        class="w-6 h-6 md:w-7 md:h-7 rounded-lg border border-slate-200 dark:border-slate-700 bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-700 active:scale-90 flex items-center justify-center text-slate-600 dark:text-slate-300 transition-all cursor-pointer shadow-2xs">
+                    <span class="material-symbols-outlined text-[14px] md:text-[15px]">chevron_right</span>
                 </button>
             </div>
             @endif
