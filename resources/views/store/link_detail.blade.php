@@ -136,8 +136,8 @@
             </div>
 
             {{-- Store Card Footer / Identitas Singkat --}}
-            <div class="p-4 sm:p-5 bg-slate-50 dark:bg-[#0c1220] border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
-                <div class="flex items-center gap-3">
+            <a href="{{ route('store.show', $store->slug) }}" class="p-4 sm:p-5 bg-slate-50 dark:bg-[#0c1220] border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between group hover:bg-slate-100/70 dark:hover:bg-[#141b2d] transition-colors">
+                <div class="flex items-center gap-3 min-w-0">
                     <div class="w-10 h-10 rounded-full overflow-hidden border border-slate-200 dark:border-slate-700 shadow-xs bg-white shrink-0">
                         @if($store->logo)
                             <img src="{{ asset('storage/' . $store->logo) }}" alt="{{ $store->name }}" class="w-full h-full object-cover">
@@ -147,15 +147,13 @@
                             </div>
                         @endif
                     </div>
-                    <div>
-                        <h4 class="text-xs sm:text-sm font-black text-slate-900 dark:text-white leading-tight">{{ $store->name }}</h4>
-                        <p class="text-[11px] text-slate-500 dark:text-slate-400">Official Store &amp; Portofolio</p>
+                    <div class="min-w-0">
+                        <h4 class="text-xs sm:text-sm font-black text-slate-900 dark:text-white leading-tight group-hover:text-primary transition-colors truncate">{{ $store->name }}</h4>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400 truncate">Official Store &amp; Portofolio</p>
                     </div>
                 </div>
-                <a href="{{ route('store.show', $store->slug) }}" class="text-xs font-bold text-primary hover:underline">
-                    Kunjungi Toko &rarr;
-                </a>
-            </div>
+                <span class="material-symbols-outlined text-slate-400 group-hover:text-primary group-hover:translate-x-1 transition-all text-[20px] shrink-0">chevron_right</span>
+            </a>
 
         </div>
 

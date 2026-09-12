@@ -460,14 +460,7 @@
                             </div>
                         </div>
 
-                        <!-- 3. Tombol Kunjungi Toko -->
-                        <div class="shrink-0 self-end lg:self-center">
-                            <a href="{{ route('store.show', $spStore->slug) }}" 
-                               class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0284c7] hover:bg-[#0369a1] active:scale-95 text-white text-xs font-bold transition-all shadow-xs shrink-0 whitespace-nowrap">
-                                <span>Kunjungi Toko</span>
-                                <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
-                            </a>
-                        </div>
+
 
                     </div>
                     @endforeach
