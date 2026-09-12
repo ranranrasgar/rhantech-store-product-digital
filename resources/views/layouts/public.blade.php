@@ -151,22 +151,34 @@
 <style>
 /* ── Modern Tech Header (Synchronized with Products / Marketplace) ── */
 .site-header {
-    background-color: #050e1d;
-    background-image: 
-        linear-gradient(135deg, rgba(5, 14, 29, 0.94) 0%, rgba(9, 28, 51, 0.88) 50%, rgba(12, 42, 74, 0.93) 100%),
-        url('/images/batik-pattern.svg');
-    background-repeat: repeat;
-    background-size: auto, 100px 100px;
+    background: linear-gradient(135deg, #050e1d 0%, #081d38 50%, #0a2d52 100%);
     position: fixed; top: 0; left: 0; right: 0;
     z-index: 50;
-    box-shadow: 0 4px 25px rgba(0,0,0,0.38);
+    box-shadow: 0 4px 25px rgba(0,0,0,0.45);
     padding-top: env(safe-area-inset-top, 0px);
+    overflow: hidden;
+}
+.site-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url('/images/batik-pattern.svg');
+    background-repeat: repeat;
+    background-size: 110px 110px;
+    opacity: 0.45;
+    pointer-events: none;
+    z-index: 0;
+}
+.site-header > * {
+    position: relative;
+    z-index: 1;
 }
 .site-header::after {
     content: '';
     position: absolute; bottom: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, transparent 0%, rgba(56, 189, 248, 0.7) 30%, rgba(245, 158, 11, 0.5) 55%, rgba(0, 212, 255, 0.7) 80%, transparent 100%);
+    height: 2.5px;
+    background: linear-gradient(90deg, transparent 0%, rgba(56, 189, 248, 0.8) 30%, rgba(251, 191, 36, 0.7) 55%, rgba(0, 212, 255, 0.8) 80%, transparent 100%);
+    z-index: 2;
 }
 .header-logo {
     font-size: 22px; font-weight: 900;
