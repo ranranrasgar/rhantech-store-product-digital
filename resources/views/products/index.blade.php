@@ -801,7 +801,7 @@
         @endif
 
         {{-- ── MOBILE & TABLET SUB-HEADER (TABS & FILTER ICON) - VISIBLE ON SCREENS < 1024px ── --}}
-        <div class="lg:hidden sticky top-[104px] md:top-[146px] z-30 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 -mx-2 md:-mx-6 px-3 md:px-6 py-2 mb-4 shadow-xs">
+        <div class="lg:hidden sticky top-[calc(env(safe-area-inset-top,0px)+54px)] md:top-[86px] z-30 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-b border-gray-200 dark:border-gray-700 -mx-2 md:-mx-6 px-3 md:px-6 py-2 mb-4 shadow-xs">
             <div class="flex items-center justify-between gap-2 overflow-x-auto hide-scrollbar">
                 {{-- Quick Sort Pills --}}
                 <div class="flex items-center gap-1.5 flex-1 overflow-x-auto hide-scrollbar py-0.5">
