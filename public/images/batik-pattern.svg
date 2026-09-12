@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120">
+  <defs>
+    <radialGradient id="batikGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.35"/>
+      <stop offset="60%" stop-color="#38bdf8" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#38bdf8" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  
+  <!-- Subtle background glow nodes -->
+  <circle cx="60" cy="60" r="28" fill="url(#batikGlow)"/>
+  <circle cx="0" cy="0" r="28" fill="url(#batikGlow)"/>
+  <circle cx="120" cy="0" r="28" fill="url(#batikGlow)"/>
+  <circle cx="0" cy="120" r="28" fill="url(#batikGlow)"/>
+  <circle cx="120" cy="120" r="28" fill="url(#batikGlow)"/>
+
+  <!-- Ornate Indonesian Batik Motif (Kawung & Floral Isen-isen) -->
+  <g fill="none" stroke="#7dd3fc" stroke-width="0.85" opacity="0.22">
+    <!-- Main Center Kawung 4-Petal Ellipses -->
+    <path d="M 60,30 C 50,30 42,42 42,60 C 42,78 50,90 60,90 C 70,90 78,78 78,60 C 78,42 70,30 60,30 Z" stroke="#38bdf8" stroke-width="1"/>
+    <path d="M 30,60 C 30,50 42,42 60,42 C 78,42 90,50 90,60 C 90,70 78,78 60,78 C 42,78 30,70 30,60 Z" stroke="#38bdf8" stroke-width="1"/>
+    
+    <!-- Inner concentric petal rings (typical of fine hand-drawn batik tulis) -->
+    <path d="M 60,36 C 53,36 47,45 47,60 C 47,75 53,84 60,84 C 67,84 73,75 73,60 C 73,45 67,36 60,36 Z" stroke="#e0f2fe" stroke-width="0.6" opacity="0.7"/>
+    <path d="M 36,60 C 36,53 45,47 60,47 C 75,47 84,53 84,60 C 84,67 75,73 60,73 C 45,73 36,67 36,60 Z" stroke="#e0f2fe" stroke-width="0.6" opacity="0.7"/>
+
+    <!-- Corner Kawung Petals (Repeating Seamlessly) -->
+    <!-- Top-Left & Bottom-Right -->
+    <path d="M 0,-30 C -10,-30 -18,-18 -18,0 C -18,18 -10,30 0,30 C 10,30 18,18 18,0 C 18,-18 10,-30 0,-30 Z" stroke="#38bdf8" stroke-width="1"/>
+    <path d="M -30,0 C -30,-10 -18,-18 0,-18 C 18,-18 30,-10 30,0 C 30,10 18,18 0,18 C -18,18 -30,10 -30,0 Z" stroke="#38bdf8" stroke-width="1"/>
+    
+    <path d="M 120,-30 C 110,-30 102,-18 102,0 C 102,18 110,30 120,30 C 130,30 138,18 138,0 C 138,-18 130,-30 120,-30 Z" stroke="#38bdf8" stroke-width="1"/>
+    <path d="M 90,0 C 90,-10 102,-18 120,-18 C 138,-18 150,-10 150,0 C 150,10 138,18 120,18 C 102,18 90,10 90,0 Z" stroke="#38bdf8" stroke-width="1"/>
+
+    <path d="M 0,90 C -10,90 -18,102 -18,120 C -18,138 -10,150 0,150 C 10,150 18,138 18,120 C 18,102 10,90 0,90 Z" stroke="#38bdf8" stroke-width="1"/>
+    <path d="M -30,120 C -30,110 -18,102 0,102 C 18,102 30,110 30,120 C 30,130 18,138 0,138 C -18,138 -30,130 -30,120 Z" stroke="#38bdf8" stroke-width="1"/>
+
+    <path d="M 120,90 C 110,90 102,102 102,120 C 102,138 110,150 120,150 C 130,150 138,138 138,120 C 138,102 130,90 120,90 Z" stroke="#38bdf8" stroke-width="1"/>
+    <path d="M 90,120 C 90,110 102,102 120,102 C 138,102 150,110 150,120 C 150,130 138,138 120,138 C 102,138 90,130 90,120 Z" stroke="#38bdf8" stroke-width="1"/>
+
+    <!-- Interstitial Diamond Stars (Pamor / Ceplokan) -->
+    <g stroke="#f59e0b" stroke-width="0.75" opacity="0.65">
+      <path d="M 60,8 L 63,18 L 73,20 L 63,22 L 60,32 L 57,22 L 47,20 L 57,18 Z"/>
+      <path d="M 60,88 L 63,98 L 73,100 L 63,102 L 60,112 L 57,102 L 47,100 L 57,98 Z"/>
+      <path d="M 8,60 L 18,63 L 20,73 L 22,63 L 32,60 L 22,57 L 20,47 L 18,57 Z"/>
+      <path d="M 88,60 L 98,63 L 100,73 L 102,63 L 112,60 L 102,57 L 100,47 L 98,57 Z"/>
+    </g>
+
+    <!-- Center Cross & Concentric Dots (Cecek-cecek Canting) -->
+    <g fill="#bae6fd" stroke="none">
+      <!-- Center Rosette -->
+      <circle cx="60" cy="60" r="3.5" fill="#38bdf8" fill-opacity="0.8"/>
+      <circle cx="60" cy="60" r="1.5" fill="#ffffff"/>
+      <circle cx="0" cy="0" r="3.5" fill="#38bdf8" fill-opacity="0.8"/>
+      <circle cx="120" cy="0" r="3.5" fill="#38bdf8" fill-opacity="0.8"/>
+      <circle cx="0" cy="120" r="3.5" fill="#38bdf8" fill-opacity="0.8"/>
+      <circle cx="120" cy="120" r="3.5" fill="#38bdf8" fill-opacity="0.8"/>
+
+      <!-- Cecek dots inside petals -->
+      <circle cx="60" cy="42" r="1.2" opacity="0.8"/>
+      <circle cx="60" cy="48" r="1.2" opacity="0.8"/>
+      <circle cx="60" cy="72" r="1.2" opacity="0.8"/>
+      <circle cx="60" cy="78" r="1.2" opacity="0.8"/>
+      <circle cx="42" cy="60" r="1.2" opacity="0.8"/>
+      <circle cx="48" cy="60" r="1.2" opacity="0.8"/>
+      <circle cx="72" cy="60" r="1.2" opacity="0.8"/>
+      <circle cx="78" cy="60" r="1.2" opacity="0.8"/>
+
+      <!-- Diagonal accent dots -->
+      <circle cx="46" cy="46" r="1.5" fill="#f59e0b" opacity="0.75"/>
+      <circle cx="74" cy="46" r="1.5" fill="#f59e0b" opacity="0.75"/>
+      <circle cx="46" cy="74" r="1.5" fill="#f59e0b" opacity="0.75"/>
+      <circle cx="74" cy="74" r="1.5" fill="#f59e0b" opacity="0.75"/>
+    </g>
+
+    <!-- Graceful Diagonal Connecting Tendrils (Lelungitan Batik) -->
+    <path d="M 20,20 Q 35,25 46,46 Q 55,35 60,20" stroke="#38bdf8" stroke-width="0.5" stroke-dasharray="2,2" opacity="0.5"/>
+    <path d="M 100,20 Q 85,25 74,46 Q 65,35 60,20" stroke="#38bdf8" stroke-width="0.5" stroke-dasharray="2,2" opacity="0.5"/>
+    <path d="M 20,100 Q 35,95 46,74 Q 55,85 60,100" stroke="#38bdf8" stroke-width="0.5" stroke-dasharray="2,2" opacity="0.5"/>
+    <path d="M 100,100 Q 85,95 74,74 Q 65,85 60,100" stroke="#38bdf8" stroke-width="0.5" stroke-dasharray="2,2" opacity="0.5"/>
+  </g>
+</svg>

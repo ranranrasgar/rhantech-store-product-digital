@@ -60,8 +60,13 @@
     </form>
 
     {{-- Filter Kategori --}}
+    @php
+        $reqCat = request('category');
+        $reqType = request('type');
+        $reqStore = request('store');
+    @endphp
     <div class="pt-3 border-t border-gray-100 dark:border-gray-700"
-         x-data="{ showAll: {{ ($category && $categories->slice(5)->pluck('id')->contains($category)) ? 'true' : 'false' }} }">
+         x-data="{ showAll: {{ ($reqCat && $categories->slice(5)->pluck('id')->contains($reqCat)) ? 'true' : 'false' }} }">
         <h3 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2.5 flex items-center justify-between">
             <span>Kategori Produk</span>
             <span class="text-[11px] font-normal lowercase opacity-75">({{ $categories->count() }})</span>
@@ -115,7 +120,7 @@
     {{-- Filter Tipe / Platform --}}
     @if(isset($types) && $types->count() > 0)
     <div class="pt-3 border-t border-gray-100 dark:border-gray-700"
-         x-data="{ showAll: {{ ($type && $types->slice(5)->pluck('id')->contains($type)) ? 'true' : 'false' }} }">
+         x-data="{ showAll: {{ ($reqType && $types->slice(5)->pluck('id')->contains($reqType)) ? 'true' : 'false' }} }">
         <h3 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2.5 flex items-center justify-between">
             <span>Tipe / Platform</span>
             <span class="text-[11px] font-normal lowercase opacity-75">({{ $types->count() }})</span>
@@ -170,7 +175,7 @@
     {{-- Filter Toko (Store) --}}
     @if(isset($stores) && $stores->count() > 0)
     <div class="pt-3 border-t border-gray-100 dark:border-gray-700"
-         x-data="{ showAll: {{ ($store && $stores->slice(5)->pluck('id')->contains($store)) ? 'true' : 'false' }} }">
+         x-data="{ showAll: {{ ($reqStore && $stores->slice(5)->pluck('id')->contains($reqStore)) ? 'true' : 'false' }} }">
         <h3 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2.5 flex items-center justify-between">
             <span>Toko / Mitra</span>
             <span class="text-[11px] font-normal lowercase opacity-75">({{ $stores->count() }})</span>

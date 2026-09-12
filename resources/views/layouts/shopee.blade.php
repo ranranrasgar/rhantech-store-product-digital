@@ -2,7 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
     @include('components.theme-init')
     @include('components.pwa-head')
     <title>@yield('title', 'Jual Source Code & Aplikasi Digital Siap Pakai - ' . ($company->company_name ?? 'R-Tech'))</title>
@@ -178,16 +178,22 @@
 <style>
 /* ── Modern Tech Header ── */
 .site-header {
-    background: linear-gradient(135deg, #0a1628 0%, #0d2240 60%, #0a3352 100%);
+    background-color: #050e1d;
+    background-image: 
+        linear-gradient(135deg, rgba(5, 14, 29, 0.94) 0%, rgba(9, 28, 51, 0.88) 50%, rgba(12, 42, 74, 0.93) 100%),
+        url('/images/batik-pattern.svg');
+    background-repeat: repeat;
+    background-size: auto, 100px 100px;
     position: fixed; top: 0; left: 0; right: 0;
     z-index: 50;
-    box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 25px rgba(0,0,0,0.38);
+    padding-top: env(safe-area-inset-top, 0px);
 }
 .site-header::after {
     content: '';
     position: absolute; bottom: 0; left: 0; right: 0;
     height: 2px;
-    background: linear-gradient(90deg, transparent, #00d4ff, #00b3cc, transparent);
+    background: linear-gradient(90deg, transparent 0%, rgba(56, 189, 248, 0.7) 30%, rgba(245, 158, 11, 0.5) 55%, rgba(0, 212, 255, 0.7) 80%, transparent 100%);
 }
 .header-logo {
     font-size: 22px; font-weight: 900;
@@ -364,21 +370,23 @@
     </div>
 
     {{-- Main header row --}}
-    <div class="max-w-[1280px] mx-auto px-4 md:px-6 py-3 flex flex-wrap md:flex-nowrap items-center justify-between md:justify-start gap-3 md:gap-6">
-        {{-- Logo --}}
-        <a href="{{ url('/') }}" class="header-logo shrink-0" wire:navigate>
+    <div class="max-w-[1280px] mx-auto px-3 md:px-6 py-2 md:py-3 flex items-center justify-between gap-2 md:gap-6">
+        {{-- Logo (Hidden on mobile) --}}
+        <a href="{{ url('/') }}" class="header-logo shrink-0 hidden md:flex" wire:navigate>
             <span class="logo-dot"></span>
             {{ $company->company_name ?? 'rhantech' }}
         </a>
 
         {{-- Search --}}
-        <div class="flex-1 order-3 md:order-2 w-full md:w-auto">
-            <form action="{{ route('products.index') }}" method="GET">
-                <div class="search-bar-wrap">
+        <div class="flex-1 min-w-0">
+            <form action="{{ route('products.index') }}" method="GET" class="m-0">
+                <div class="search-bar-wrap !border-white/20 !bg-white/10 focus-within:!border-[#00d4ff]">
                     <input type="text" name="search" value="{{ request('search') }}"
-                        placeholder="Cari produk digital, source code, aplikasi...">
-                    <button type="submit">
-                        <span class="material-symbols-outlined text-[20px]">search</span>
+                        placeholder="Cari produk digital, source code..."
+                        class="!py-2 !px-3 md:!py-2.5 md:!px-4 !text-xs md:!text-sm"
+                        autocomplete="off">
+                    <button type="submit" class="!py-2 !px-3 md:!py-2.5 md:!px-4.5 shrink-0">
+                        <span class="material-symbols-outlined text-[18px] md:text-[20px]">search</span>
                     </button>
                 </div>
             </form>
@@ -395,25 +403,29 @@
             @endif
         </div>
 
-        {{-- Right actions --}}
-        <div class="flex items-center gap-1 shrink-0 order-2 md:order-3">
+        {{-- Right actions (Cart & Masuk / User) --}}
+        <div class="flex items-center gap-1.5 md:gap-1 shrink-0">
             {{-- Cart --}}
             @php $cartCount = count(session('cart', [])); @endphp
-            <a href="{{ route('cart.index') }}" class="header-action-btn relative" title="Keranjang">
-                <span class="material-symbols-outlined text-[22px]">shopping_cart</span>
+            <a href="{{ route('cart.index') }}" class="header-action-btn relative !p-2 md:!py-1.5 md:!px-3.5 !rounded-xl md:!rounded-lg !bg-white/10 md:!bg-transparent border border-white/10 md:border-transparent flex items-center justify-center" title="Keranjang">
+                <span class="material-symbols-outlined text-[20px] md:text-[22px] text-white">shopping_cart</span>
                 <span data-cart-count
-                    class="absolute -top-1 -right-1 bg-[#00d4ff] text-[#0a1628] text-[9px] font-black px-1.5 py-0.5 rounded-full min-w-[18px] text-center leading-none"
+                    class="absolute -top-1 -right-1 bg-[#00d4ff] text-[#0a1628] text-[9px] font-black px-1.5 py-0.5 rounded-full min-w-[16px] text-center leading-none shadow"
                     style="{{ $cartCount > 0 ? '' : 'display:none' }}">{{ $cartCount }}</span>
             </a>
-            {{-- Mobile login --}}
+            {{-- Mobile login / User profile --}}
             @guest
-            <a href="{{ route('login') }}" class="header-action-btn primary md:hidden text-xs px-3 py-2">Masuk</a>
+            <a href="{{ route('login') }}" class="header-action-btn primary md:hidden text-xs !py-2 !px-3 !rounded-xl font-bold whitespace-nowrap shadow-sm">Masuk</a>
+            @else
+            <a href="{{ route('tenant.dashboard') }}" class="md:hidden flex items-center p-0.5 rounded-full ring-2 ring-[#00d4ff]/40" title="Akun Saya">
+                <img src="{{ auth()->user()->avatar ? (Str::startsWith(auth()->user()->avatar, 'http') ? auth()->user()->avatar : asset('storage/' . auth()->user()->avatar)) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=0d2240&color=00d4ff' }}" class="w-8 h-8 rounded-full object-cover">
+            </a>
             @endguest
         </div>
     </div>
 </header>
 
-    <main class="flex-1 mt-[105px] md:mt-[146px]">
+    <main class="flex-1 mt-[calc(env(safe-area-inset-top,0px)+58px)] md:mt-[146px]">
         @yield('content')
     </main>
 

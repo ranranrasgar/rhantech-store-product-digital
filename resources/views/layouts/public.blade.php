@@ -2,7 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
     @include('components.theme-init')
     @include('components.pwa-head')
     <title>@yield('title', ($company->company_name ?? 'rhantech') . ' - We Build Digital Experiences')</title>
@@ -151,16 +151,22 @@
 <style>
 /* ── Modern Tech Header (Synchronized with Products / Marketplace) ── */
 .site-header {
-    background: linear-gradient(135deg, #0a1628 0%, #0d2240 60%, #0a3352 100%);
+    background-color: #050e1d;
+    background-image: 
+        linear-gradient(135deg, rgba(5, 14, 29, 0.94) 0%, rgba(9, 28, 51, 0.88) 50%, rgba(12, 42, 74, 0.93) 100%),
+        url('/images/batik-pattern.svg');
+    background-repeat: repeat;
+    background-size: auto, 100px 100px;
     position: fixed; top: 0; left: 0; right: 0;
     z-index: 50;
-    box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 25px rgba(0,0,0,0.38);
+    padding-top: env(safe-area-inset-top, 0px);
 }
 .site-header::after {
     content: '';
     position: absolute; bottom: 0; left: 0; right: 0;
     height: 2px;
-    background: linear-gradient(90deg, transparent, #00d4ff, #00b3cc, transparent);
+    background: linear-gradient(90deg, transparent 0%, rgba(56, 189, 248, 0.7) 30%, rgba(245, 158, 11, 0.5) 55%, rgba(0, 212, 255, 0.7) 80%, transparent 100%);
 }
 .header-logo {
     font-size: 22px; font-weight: 900;
@@ -340,76 +346,70 @@
         </div>
     </nav>
 
-    <!-- Mobile Header (2-Row, block md:hidden) -->
+    <!-- Mobile Header (1-Row, block md:hidden) -->
     <header class="block md:hidden site-header fixed top-0 left-0 right-0 z-50">
-        <div class="px-4 py-2 flex flex-col gap-2">
-            <!-- Row 1: Logo, Cart, Masuk/User -->
-            <div class="flex items-center justify-between">
-                <a href="{{ url('/') }}" class="header-logo shrink-0" wire:navigate>
-                    <span class="logo-dot"></span>
-                    {{ $company->company_name ?? 'rhantech' }}
-                </a>
-                
-                <div class="flex items-center gap-2 shrink-0">
-                    @php $cartCount = count(session('cart', [])); @endphp
-                    <a href="{{ route('cart.index') }}" class="header-action-btn relative p-1.5" title="Keranjang" wire:navigate>
-                        <span class="material-symbols-outlined text-[20px]">shopping_cart</span>
-                        <span data-cart-count
-                            class="absolute -top-1 -right-1 bg-[#00d4ff] text-[#0a1628] text-[9px] font-black px-1.5 py-0.5 rounded-full min-w-[16px] text-center leading-none"
-                            style="{{ $cartCount > 0 ? '' : 'display:none' }}">{{ $cartCount }}</span>
-                    </a>
-
-                    @guest
-                        <a href="{{ route('login') }}" class="header-action-btn primary text-xs !py-1 !px-3">Masuk</a>
-                    @else
-                        <div class="relative" x-data="{ open: false }">
-                            <button @click="open = !open" @click.outside="open = false" class="flex items-center focus:outline-none">
-                                <img src="{{ auth()->user()->avatar ? (Str::startsWith(auth()->user()->avatar, 'http') ? auth()->user()->avatar : asset('storage/' . auth()->user()->avatar)) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=0d2240&color=00d4ff' }}" class="w-7 h-7 rounded-full border border-white/30 object-cover">
-                            </button>
-                            <div x-show="open" style="display: none;" class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl py-2 z-50 text-xs">
-                                <div class="px-3 py-1.5 border-b border-gray-100 dark:border-gray-800">
-                                    <p class="font-bold text-gray-800 dark:text-white truncate">{{ auth()->user()->name }}</p>
-                                </div>
-                                @if(auth()->user()->role === 'admin')
-                                <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2 px-3 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800">
-                                    <span class="material-symbols-outlined text-[16px]">admin_panel_settings</span> Admin
-                                </a>
-                                @endif
-                                <a href="{{ route('tenant.dashboard') }}" class="flex items-center gap-2 px-3 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800">
-                                    <span class="material-symbols-outlined text-[16px]">storefront</span> Dashboard Toko
-                                </a>
-                                <a href="{{ route('tenant.purchases.index') }}" class="flex items-center gap-2 px-3 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800">
-                                    <span class="material-symbols-outlined text-[16px]">receipt_long</span> Riwayat Belanja
-                                </a>
-                                <form method="POST" action="{{ route('logout') }}" class="border-t border-gray-100 dark:border-gray-800 mt-1 pt-1">
-                                    @csrf
-                                    <button type="submit" class="w-full text-left flex items-center gap-2 px-3 py-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20">
-                                        <span class="material-symbols-outlined text-[16px]">logout</span> Keluar
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    @endguest
-                </div>
-            </div>
-
-            <!-- Row 2: Search Input -->
-            <div class="w-full">
-                <form action="{{ route('products.index') }}" method="GET">
-                    <div class="search-bar-wrap">
+        <div class="px-3 py-2 flex items-center gap-2">
+            <!-- Search Input (flex-1) -->
+            <div class="flex-1 min-w-0">
+                <form action="{{ route('products.index') }}" method="GET" class="m-0">
+                    <div class="search-bar-wrap !border-white/20 !bg-white/10 focus-within:!border-[#00d4ff]">
                         <input type="text" name="search" value="{{ request('search') }}"
-                            placeholder="Cari produk digital, source code, aplikasi..."
+                            placeholder="Cari produk digital, source code..."
+                            class="!py-2 !px-3 !text-xs"
                             autocomplete="off">
-                        <button type="submit" aria-label="Cari">
+                        <button type="submit" aria-label="Cari" class="!py-2 !px-3 shrink-0">
                             <span class="material-symbols-outlined text-[18px]">search</span>
                         </button>
                     </div>
                 </form>
             </div>
+
+            <!-- Keranjang & Tombol Masuk / Akun (Side by side with Search) -->
+            <div class="flex items-center gap-1.5 shrink-0">
+                @php $cartCount = count(session('cart', [])); @endphp
+                <a href="{{ route('cart.index') }}" class="header-action-btn relative !p-2 !rounded-xl !bg-white/10 hover:!bg-white/20 border border-white/10 transition-all flex items-center justify-center" title="Keranjang" wire:navigate>
+                    <span class="material-symbols-outlined text-[20px] text-white">shopping_cart</span>
+                    <span data-cart-count
+                        class="absolute -top-1 -right-1 bg-[#00d4ff] text-[#0a1628] text-[9px] font-black px-1.5 py-0.5 rounded-full min-w-[16px] text-center leading-none shadow"
+                        style="{{ $cartCount > 0 ? '' : 'display:none' }}">{{ $cartCount }}</span>
+                </a>
+
+                @guest
+                    <a href="{{ route('login') }}" class="header-action-btn primary text-xs !py-2 !px-3 !rounded-xl font-bold whitespace-nowrap shadow-sm">Masuk</a>
+                @else
+                    <div class="relative" x-data="{ open: false }">
+                        <button @click="open = !open" @click.outside="open = false" class="flex items-center focus:outline-none p-0.5 rounded-full ring-2 ring-[#00d4ff]/40">
+                            <img src="{{ auth()->user()->avatar ? (Str::startsWith(auth()->user()->avatar, 'http') ? auth()->user()->avatar : asset('storage/' . auth()->user()->avatar)) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=0d2240&color=00d4ff' }}" class="w-8 h-8 rounded-full object-cover">
+                        </button>
+                        <div x-show="open" style="display: none;" class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl py-2 z-50 text-xs">
+                            <div class="px-3 py-1.5 border-b border-gray-100 dark:border-gray-800">
+                                <p class="font-bold text-gray-800 dark:text-white truncate">{{ auth()->user()->name }}</p>
+                            </div>
+                            @if(auth()->user()->role === 'admin')
+                            <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2 px-3 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800">
+                                <span class="material-symbols-outlined text-[16px]">admin_panel_settings</span> Admin
+                            </a>
+                            @endif
+                            <a href="{{ route('tenant.dashboard') }}" class="flex items-center gap-2 px-3 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800">
+                                <span class="material-symbols-outlined text-[16px]">storefront</span> Dashboard Toko
+                            </a>
+                            <a href="{{ route('tenant.purchases.index') }}" class="flex items-center gap-2 px-3 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800">
+                                <span class="material-symbols-outlined text-[16px]">receipt_long</span> Riwayat Belanja
+                            </a>
+                            <form method="POST" action="{{ route('logout') }}" class="border-t border-gray-100 dark:border-gray-800 mt-1 pt-1">
+                                @csrf
+                                <button type="submit" class="w-full text-left flex items-center gap-2 px-3 py-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20">
+                                    <span class="material-symbols-outlined text-[16px]">logout</span> Keluar
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                @endguest
+            </div>
         </div>
     </header>
 
-    <main class="flex-1 mt-[95px] md:mt-20">
+    <main class="flex-1 mt-[calc(env(safe-area-inset-top,0px)+58px)] md:mt-20">
         @yield('content')
     </main>
 

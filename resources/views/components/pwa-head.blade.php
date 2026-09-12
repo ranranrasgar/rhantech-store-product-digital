@@ -1,9 +1,9 @@
 <!-- PWA Meta Tags & Web App Manifest -->
 <link rel="manifest" href="{{ asset('manifest.webmanifest') }}">
-<meta name="theme-color" id="pwa-theme-color" content="#0a1628">
-<meta name="msapplication-TileColor" id="pwa-ms-tile" content="#0a1628">
+<meta name="theme-color" id="pwa-theme-color" content="#050e1d">
+<meta name="msapplication-TileColor" id="pwa-ms-tile" content="#050e1d">
 <meta name="msapplication-TileImage" content="{{ asset('icons/icon-144x144.png') }}">
-<meta name="msapplication-navbutton-color" id="pwa-ms-nav" content="#0a1628">
+<meta name="msapplication-navbutton-color" id="pwa-ms-nav" content="#050e1d">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="application-name" content="{{ $company->company_name ?? 'Rhantech' }}">
 
@@ -40,7 +40,7 @@
         const msNavMeta = document.getElementById('pwa-ms-nav');
         const msTileMeta = document.getElementById('pwa-ms-tile');
 
-        let targetColor = '#0a1628'; // Default dark tech blue for root, products, etc.
+        let targetColor = '#050e1d'; // Default dark batik degradation for root, products, etc.
         let appleStyle = 'black-translucent';
 
         if (path.startsWith('/store/')) {
@@ -54,7 +54,7 @@
             }
         } else if (path.startsWith('/login') || path.startsWith('/register') || path.startsWith('/password')) {
             if (isDark) {
-                targetColor = '#0a1628';
+                targetColor = '#050e1d';
                 appleStyle = 'black-translucent';
             } else {
                 targetColor = '#ffffff';
@@ -69,8 +69,8 @@
                 appleStyle = 'default';
             }
         } else {
-            // Homepage, Catalog, Products have fixed dark blue header (#0a1628)
-            targetColor = '#0a1628';
+            // Homepage, Catalog, Products have fixed dark batik header (#050e1d)
+            targetColor = '#050e1d';
             appleStyle = 'black-translucent';
         }
 
