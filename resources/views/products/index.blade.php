@@ -377,10 +377,10 @@
                             ->unique('id')
                             ->take(6);
                     @endphp
-                    <div class="w-full shrink-0 min-w-full flex flex-col lg:flex-row lg:items-center justify-between gap-3 transition-opacity duration-500"
-                         :class="activeStoreIndex === {{ $sIndex }} ? 'opacity-100' : 'opacity-25 pointer-events-none'">
+                    <div class="w-full shrink-0 min-w-full flex flex-col lg:flex-row lg:items-center justify-between gap-3"
+                         :class="activeStoreIndex === {{ $sIndex }} ? '' : 'pointer-events-none'">
                         
-                        <!-- 1. Info Toko Rekomendasi (Kiri) -->
+                        <!-- 1. Info Toko Rekomendasi / Populer (Kiri) -->
                         <div class="flex items-center gap-2.5 shrink-0 max-w-full lg:max-w-[220px] xl:max-w-[250px]">
                             <div class="w-9 h-9 md:w-10 md:h-10 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shrink-0 shadow-2xs flex items-center justify-center">
                                 @if($spStore->logo)
@@ -395,10 +395,17 @@
                                     <a href="{{ route('store.show', $spStore->slug) }}" class="text-xs md:text-sm font-extrabold text-slate-900 dark:text-white hover:text-[#0284c7] transition-colors truncate block">
                                         {{ $spStore->name }}
                                     </a>
-                                    <span class="px-1.5 py-0.5 rounded-full bg-sky-50 dark:bg-sky-950/60 text-[#0284c7] dark:text-sky-400 text-[9px] font-bold border border-sky-200/80 dark:border-sky-800/60 flex items-center gap-0.5">
-                                        <span class="material-symbols-outlined text-[11px]">verified</span>
-                                        Toko Rekomendasi
-                                    </span>
+                                    @if($spStore->is_sponsored_ad ?? false)
+                                        <span class="px-1.5 py-0.5 rounded-full bg-sky-50 dark:bg-sky-950/60 text-[#0284c7] dark:text-sky-400 text-[9px] font-bold border border-sky-200/80 dark:border-sky-800/60 flex items-center gap-0.5" title="Toko Rekomendasi (Iklan Aktif)">
+                                            <span class="material-symbols-outlined text-[11px]">verified</span>
+                                            Toko Rekomendasi
+                                        </span>
+                                    @else
+                                        <span class="px-1.5 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 text-[9px] font-bold border border-amber-200/80 dark:border-amber-800/60 flex items-center gap-0.5" title="Toko Populer (Banyak Dilihat)">
+                                            <span class="material-symbols-outlined text-[11px]">trending_up</span>
+                                            Toko Populer
+                                        </span>
+                                    @endif
                                 </div>
                                 <p class="text-[10px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
                                     {{ $spStore->description ?: 'Mitra resmi dengan koleksi produk digital pilihan.' }}

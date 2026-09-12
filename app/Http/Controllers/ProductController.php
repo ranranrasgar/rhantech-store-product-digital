@@ -143,8 +143,9 @@ class ProductController extends Controller
             ->limit(5)
             ->get();
 
-        // Banner Toko Beriklan (Bergantian / Carousel Slide) beserta produk yang diiklankannya
-        $sponsoredStores = \App\Models\Store::where('ad_balance', '>', 0)
+        // Banner Toko Rekomendasi & Beriklan (Carousel Slide Bergantian)
+        // Prioritas 1: Toko yang beriklan aktif (Toko Rekomendasi Bersponsor)
+        $adStores = \App\Models\Store::where('ad_balance', '>', 0)
             ->whereHas('ads', function ($q) {
                 $q->activeAndFunded()->whereNotNull('product_id');
             })
@@ -159,7 +160,39 @@ class ProductController extends Controller
                     $q->published()->select(['products.id', 'products.store_id', 'products.name', 'products.slug', 'products.price', 'products.discount_price'])->with('images')->latest('products.created_at')->take(6);
                 }
             ])
-            ->get(['id', 'name', 'slug', 'logo', 'ad_balance']);
+            ->get(['id', 'name', 'slug', 'logo', 'description', 'ad_balance', 'views']);
+
+        $adStores->each(function ($store) {
+            $store->is_sponsored_ad = true;
+        });
+
+        // Prioritas 2: Toko yang paling banyak views (Toko Populer) agar slide selalu berputar
+        $adStoreIds = $adStores->pluck('id');
+        $popularStores = \App\Models\Store::whereNotIn('id', $adStoreIds)
+            ->where(function ($q) {
+                $q->whereHas('products', fn($p) => $p->published())
+                  ->orWhereHas('showcaseProducts', fn($p) => $p->published());
+            })
+            ->with([
+                'ads' => fn($q) => $q->whereRaw('0 = 1'),
+                'products' => function ($q) {
+                    $q->published()->select(['products.id', 'products.store_id', 'products.name', 'products.slug', 'products.price', 'products.discount_price'])->with('images')->latest('products.created_at')->take(6);
+                },
+                'showcaseProducts' => function ($q) {
+                    $q->published()->select(['products.id', 'products.store_id', 'products.name', 'products.slug', 'products.price', 'products.discount_price'])->with('images')->latest('products.created_at')->take(6);
+                }
+            ])
+            ->orderBy('views', 'desc')
+            ->orderBy('id', 'desc')
+            ->take(6)
+            ->get(['id', 'name', 'slug', 'logo', 'description', 'ad_balance', 'views']);
+
+        $popularStores->each(function ($store) {
+            $store->is_sponsored_ad = false;
+        });
+
+        // Gabungkan: Toko beriklan di posisi awal sebagai rekomendasi, diikuti toko dengan views terbanyak
+        $sponsoredStores = $adStores->concat($popularStores);
 
         return view('products.index', compact('products', 'categories', 'types', 'stores', 'banners', 'topProducts', 'sponsoredStores'));
     }
