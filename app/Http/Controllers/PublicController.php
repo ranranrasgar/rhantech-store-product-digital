@@ -99,7 +99,7 @@ class PublicController extends Controller
             ->values()
             ->take(10);
 
-        // Kategori produk aktif untuk navigasi cepat mobile
+        // Kategori produk aktif untuk navigasi cepat mobile (diurutkan berdasarkan produk terbanyak)
         $categories = \App\Models\ProductCategory::select(['id', 'name'])
             ->whereHas('products', function ($q) {
                 $q->published();
@@ -107,6 +107,7 @@ class PublicController extends Controller
             ->withCount(['products' => function ($q) {
                 $q->published();
             }])
+            ->orderByDesc('products_count')
             ->orderBy('name', 'asc')
             ->take(12)
             ->get();

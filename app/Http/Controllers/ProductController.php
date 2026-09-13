@@ -122,6 +122,7 @@ class ProductController extends Controller
                 $q->published();
             }])
             ->with('store:id,name')
+            ->orderByDesc('products_count')
             ->orderByRaw('store_id IS NULL DESC, name ASC')
             ->get();
 

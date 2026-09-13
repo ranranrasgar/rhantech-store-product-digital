@@ -726,10 +726,59 @@
                 Lihat Semua <span class="material-symbols-outlined text-[12px]">arrow_forward</span>
             </a>
         </div>
-        {{-- Touch/Drag Interactive Swipeable Track --}}
-        <div class="overflow-x-auto hide-scrollbar scroll-smooth py-1 -mx-0 px-4">
+        {{-- Touch/Drag Interactive & Auto-sliding Track --}}
+        @php
+            $displayStores = $topStores->concat($topStores);
+            if ($topStores->count() < 4) {
+                $displayStores = $displayStores->concat($displayStores);
+            }
+        @endphp
+        <div class="overflow-x-auto hide-scrollbar py-1 -mx-0 px-4 select-none cursor-grab active:cursor-grabbing"
+             x-data="{
+                 isPaused: false,
+                 rafId: null,
+                 resumeTimer: null,
+                 speed: 0.65,
+                 initSlider() {
+                     const el = this.$refs.slider;
+                     if (!el) return;
+                     const step = () => {
+                         if (!this.isPaused && el) {
+                             el.scrollLeft += this.speed;
+                             const half = el.scrollWidth / 2;
+                             if (half > 0 && el.scrollLeft >= half) {
+                                 el.scrollLeft -= half;
+                             }
+                         }
+                         this.rafId = requestAnimationFrame(step);
+                     };
+                     this.rafId = requestAnimationFrame(step);
+                 },
+                 pause() {
+                     this.isPaused = true;
+                     if (this.resumeTimer) clearTimeout(this.resumeTimer);
+                 },
+                 resume() {
+                     this.isPaused = false;
+                 },
+                 resumeWithDelay() {
+                     if (this.resumeTimer) clearTimeout(this.resumeTimer);
+                     this.resumeTimer = setTimeout(() => {
+                         this.isPaused = false;
+                     }, 2000);
+                 }
+             }"
+             x-init="initSlider()"
+             @touchstart="pause()"
+             @touchend="resumeWithDelay()"
+             @pointerdown="pause()"
+             @pointerup="resumeWithDelay()"
+             @mouseenter="pause()"
+             @mouseleave="resume()"
+             x-ref="slider"
+             style="-webkit-overflow-scrolling: touch; scroll-behavior: auto; -ms-overflow-style: none; scrollbar-width: none;">
             <div class="flex items-stretch gap-2.5 w-max">
-                @foreach($topStores as $store)
+                @foreach($displayStores as $store)
                 @php
                     $storeDesc = $store->description ?: ($store->bio ?: 'Kreator produk digital & template terpercaya.');
                 @endphp
