@@ -188,17 +188,17 @@ class CompanyProfileController extends Controller
 
         if ($request->hasFile('logo')) {
             if ($profile->logo) Storage::disk('public')->delete($profile->logo);
-            $validated['logo'] = $request->file('logo')->store('company', 'public');
+            $validated['logo'] = $this->optimizeAndStoreImage($request->file('logo'), 'company', 'public', 600, 600);
         }
 
         if ($request->hasFile('favicon')) {
             if ($profile->favicon) Storage::disk('public')->delete($profile->favicon);
-            $validated['favicon'] = $request->file('favicon')->store('company', 'public');
+            $validated['favicon'] = $this->optimizeAndStoreImage($request->file('favicon'), 'company', 'public', 128, 128);
         }
 
         if ($request->hasFile('hero_image')) {
             if ($profile->hero_image) Storage::disk('public')->delete($profile->hero_image);
-            $validated['hero_image'] = $request->file('hero_image')->store('company/hero', 'public');
+            $validated['hero_image'] = $this->optimizeAndStoreImage($request->file('hero_image'), 'company/hero', 'public', 1600, 2000);
         }
 
         if ($profile->exists) {
@@ -613,4 +613,75 @@ class CompanyProfileController extends Controller
         if ($bytes >= 1024)    return round($bytes / 1024, 2) . ' KB';
         return $bytes . ' B';
     }
+
+    protected function optimizeAndStoreImage($file, string $directory, string $disk = 'public', int $maxWidth = 1600, int $maxHeight = 2000): string
+    {
+        $extension = strtolower($file->getClientOriginalExtension());
+
+        // SVG, ICO, dan GIF animasi langsung disimpan tanpa re-encode
+        if (in_array($extension, ['svg', 'gif', 'ico'])) {
+            return $file->store($directory, $disk);
+        }
+
+        if (function_exists('imagecreatefromstring') && function_exists('imagewebp')) {
+            try {
+                $imageContent = file_get_contents($file->getRealPath());
+                $srcImage = @imagecreatefromstring($imageContent);
+
+                if ($srcImage !== false) {
+                    // Perbaiki rotasi orientasi kamera HP (EXIF) jika ada
+                    if (function_exists('exif_read_data')) {
+                        try {
+                            $exif = @exif_read_data($file->getRealPath());
+                            if (!empty($exif['Orientation'])) {
+                                switch ($exif['Orientation']) {
+                                    case 3: $srcImage = imagerotate($srcImage, 180, 0); break;
+                                    case 6: $srcImage = imagerotate($srcImage, -90, 0); break;
+                                    case 8: $srcImage = imagerotate($srcImage, 90, 0); break;
+                                }
+                            }
+                        } catch (\Throwable $e) {}
+                    }
+
+                    $origWidth = imagesx($srcImage);
+                    $origHeight = imagesy($srcImage);
+
+                    $targetWidth = $origWidth;
+                    $targetHeight = $origHeight;
+                    if ($origWidth > $maxWidth || $origHeight > $maxHeight) {
+                        $ratio = min($maxWidth / $origWidth, $maxHeight / $origHeight);
+                        $targetWidth = (int) max(1, round($origWidth * $ratio));
+                        $targetHeight = (int) max(1, round($origHeight * $ratio));
+                    }
+
+                    $dstImage = imagecreatetruecolor($targetWidth, $targetHeight);
+                    imagealphablending($dstImage, false);
+                    imagesavealpha($dstImage, true);
+                    $transparent = imagecolorallocatealpha($dstImage, 255, 255, 255, 127);
+                    imagefilledrectangle($dstImage, 0, 0, $targetWidth, $targetHeight, $transparent);
+
+                    imagecopyresampled($dstImage, $srcImage, 0, 0, 0, 0, $targetWidth, $targetHeight, $origWidth, $origHeight);
+
+                    ob_start();
+                    imagewebp($dstImage, null, 82);
+                    $webpContent = ob_get_clean();
+
+                    imagedestroy($srcImage);
+                    imagedestroy($dstImage);
+
+                    if (!empty($webpContent)) {
+                        $filename = Str::random(40) . '.webp';
+                        $path = rtrim($directory, '/') . '/' . $filename;
+                        Storage::disk($disk)->put($path, $webpContent, 'public');
+                        return $path;
+                    }
+                }
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::warning('Server image optimization error: ' . $e->getMessage());
+            }
+        }
+
+        return $file->store($directory, $disk);
+    }
 }
+

@@ -85,7 +85,10 @@
 
     <!-- ==================== TAB 1: PROFIL PERUSAHAAN ==================== -->
     <div x-show="currentTab === 'profile'" x-transition class="space-y-6">
-        <form action="{{ route('admin.company.store') }}" method="POST" enctype="multipart/form-data" class="bg-surface rounded-2xl border border-outline-variant p-6 md:p-8 shadow-xs">
+        <form action="{{ route('admin.company.store') }}" method="POST" enctype="multipart/form-data" 
+              x-data="{ isSubmitting: false }" 
+              @submit="isSubmitting = true" 
+              class="bg-surface rounded-2xl border border-outline-variant p-6 md:p-8 shadow-xs">
             @csrf
             
             <!-- Section: Info Dasar -->
@@ -407,9 +410,15 @@
 
             <!-- Submit Button -->
             <div class="flex justify-end pt-4 border-t border-outline-variant">
-                <button type="submit" class="px-6 py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:brightness-110 transition-all shadow-md flex items-center gap-2">
-                    <span class="material-symbols-outlined text-[18px]">save</span>
-                    Simpan Profil Perusahaan
+                <button type="submit" 
+                        :disabled="isSubmitting"
+                        class="px-6 py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:brightness-110 transition-all shadow-md flex items-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed">
+                    <span x-show="!isSubmitting" class="material-symbols-outlined text-[18px]">save</span>
+                    <svg x-show="isSubmitting" x-cloak class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                    </svg>
+                    <span x-text="isSubmitting ? 'Menyimpan Profil...' : 'Simpan Profil Perusahaan'"></span>
                 </button>
             </div>
         </form>
@@ -417,7 +426,10 @@
 
     <!-- ==================== TAB: HERO BERANDA & TOKO ==================== -->
     <div x-show="currentTab === 'hero'" x-transition style="display: none;" class="space-y-6">
-        <form action="{{ route('admin.company.store') }}" method="POST" enctype="multipart/form-data" class="bg-surface rounded-2xl border border-outline-variant p-6 md:p-8 shadow-xs">
+        <form action="{{ route('admin.company.store') }}" method="POST" enctype="multipart/form-data" 
+              x-data="heroFormHandler()" 
+              @submit="isSubmitting = true" 
+              class="bg-surface rounded-2xl border border-outline-variant p-6 md:p-8 shadow-xs">
             @csrf
             <input type="hidden" name="redirect_tab" value="hero">
             <!-- Menjaga field wajib info dasar -->
@@ -606,26 +618,52 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
                         <div>
                             <label class="block text-xs font-bold text-on-surface uppercase tracking-wider mb-2">Upload Foto / Banner Hero Baru</label>
-                            <input type="file" name="hero_image" accept="image/*" class="w-full px-3 py-2 bg-surface border border-outline-variant rounded-xl text-xs">
-                            <p class="text-[11px] text-on-surface-variant mt-2">
-                                Format: JPG, PNG, WEBP (Maksimal 3MB). Disarankan foto vertikal/portrait atau rasio 4:5 berkualitas tinggi.
+                            <input type="file" 
+                                   name="hero_image" 
+                                   id="hero_image_input"
+                                   accept="image/jpeg,image/png,image/webp,image/jpg" 
+                                   @change="handleHeroChange($event)"
+                                   class="w-full px-3 py-2 bg-surface border border-outline-variant rounded-xl text-xs">
+                            
+                            <!-- Status Kompresi Cepat -->
+                            <div x-show="compressStatus" x-cloak class="mt-2.5 text-xs flex items-center gap-1.5 font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 p-2.5 rounded-xl border border-emerald-200 dark:border-emerald-800/40">
+                                <span class="material-symbols-outlined text-[16px]">check_circle</span>
+                                <span x-text="compressStatus"></span>
+                            </div>
+
+                            <p class="text-[11px] text-on-surface-variant mt-2 leading-relaxed">
+                                ⚡ <strong>Kompresi Otomatis Aktif:</strong> Foto resolusi tinggi dari kamera HP/laptop akan langsung dioptimasi seketika di browser agar upload berlangsung cepat (&lt; 1 detik) tanpa mengurangi ketajaman visual.
                             </p>
                             @error('hero_image')<span class="text-error text-xs mt-1 block">{{ $message }}</span>@enderror
                         </div>
 
                         <div>
-                            <label class="block text-xs font-bold text-on-surface uppercase tracking-wider mb-2">Preview Gambar Saat Ini:</label>
-                            @if(isset($profile) && $profile->hero_image)
-                                <div class="relative w-40 h-48 rounded-xl overflow-hidden border border-outline-variant shadow-sm">
-                                    <img src="{{ asset('storage/' . $profile->hero_image) }}" class="w-full h-full object-cover">
-                                    <span class="absolute bottom-1 right-1 px-2 py-0.5 rounded bg-black/70 text-[10px] text-white font-bold">Kustom</span>
+                            <label class="block text-xs font-bold text-on-surface uppercase tracking-wider mb-2">Preview Gambar:</label>
+                            
+                            <!-- Preview Baru jika ada -->
+                            <template x-if="heroPreview">
+                                <div class="relative w-40 h-48 rounded-xl overflow-hidden border-2 border-emerald-500 shadow-md">
+                                    <img :src="heroPreview" class="w-full h-full object-cover">
+                                    <span class="absolute bottom-1 right-1 px-2 py-0.5 rounded bg-emerald-600 text-[10px] text-white font-bold shadow">Foto Baru</span>
                                 </div>
-                            @else
-                                <div class="relative w-40 h-48 rounded-xl overflow-hidden border border-outline-variant shadow-sm">
-                                    <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover">
-                                    <span class="absolute bottom-1 right-1 px-2 py-0.5 rounded bg-black/70 text-[10px] text-white font-bold">Default</span>
+                            </template>
+
+                            <!-- Gambar saat ini jika belum memilih file baru -->
+                            <template x-if="!heroPreview">
+                                <div>
+                                    @if(isset($profile) && $profile->hero_image)
+                                        <div class="relative w-40 h-48 rounded-xl overflow-hidden border border-outline-variant shadow-sm">
+                                            <img src="{{ asset('storage/' . $profile->hero_image) }}" class="w-full h-full object-cover">
+                                            <span class="absolute bottom-1 right-1 px-2 py-0.5 rounded bg-black/70 text-[10px] text-white font-bold">Saat Ini</span>
+                                        </div>
+                                    @else
+                                        <div class="relative w-40 h-48 rounded-xl overflow-hidden border border-outline-variant shadow-sm">
+                                            <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover">
+                                            <span class="absolute bottom-1 right-1 px-2 py-0.5 rounded bg-black/70 text-[10px] text-white font-bold">Default</span>
+                                        </div>
+                                    @endif
                                 </div>
-                            @endif
+                            </template>
                         </div>
                     </div>
                 </div>
@@ -633,9 +671,15 @@
 
             <!-- Submit Button Hero -->
             <div class="flex justify-end pt-4 border-t border-outline-variant">
-                <button type="submit" class="px-6 py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:brightness-110 transition-all shadow-md flex items-center gap-2 cursor-pointer">
-                    <span class="material-symbols-outlined text-[18px]">save</span>
-                    Simpan Pengaturan Hero &amp; Toko
+                <button type="submit" 
+                        :disabled="isSubmitting"
+                        class="px-6 py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:brightness-110 transition-all shadow-md flex items-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed">
+                    <span x-show="!isSubmitting" class="material-symbols-outlined text-[18px]">save</span>
+                    <svg x-show="isSubmitting" x-cloak class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                    </svg>
+                    <span x-text="isSubmitting ? 'Mengunggah & Menyimpan...' : 'Simpan Pengaturan Hero & Toko'"></span>
                 </button>
             </div>
         </form>
@@ -1162,5 +1206,92 @@
     </div>
 
 </div>
+
+<script>
+window.compressImageFile = function(file, maxWidth = 1600, maxHeight = 2000, quality = 0.82) {
+    return new Promise((resolve) => {
+        if (!file || !file.type || !file.type.startsWith('image/')) return resolve(file);
+        if (file.type === 'image/svg+xml' || file.type === 'image/gif') return resolve(file);
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                let w = img.width;
+                let h = img.height;
+                if (w > maxWidth || h > maxHeight) {
+                    if (w / h > maxWidth / maxHeight) {
+                        h = Math.round((h * maxWidth) / w);
+                        w = maxWidth;
+                    } else {
+                        w = Math.round((w * maxHeight) / h);
+                        h = maxHeight;
+                    }
+                }
+                const canvas = document.createElement('canvas');
+                canvas.width = w;
+                canvas.height = h;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, w, h);
+
+                canvas.toBlob((blob) => {
+                    if (!blob || blob.size >= file.size) {
+                        return resolve(file);
+                    }
+                    const newFileName = file.name.replace(/\.[^/.]+$/, "") + ".webp";
+                    const newFile = new File([blob], newFileName, {
+                        type: 'image/webp',
+                        lastModified: Date.now()
+                    });
+                    resolve(newFile);
+                }, 'image/webp', quality);
+            };
+            img.onerror = () => resolve(file);
+            img.src = e.target.result;
+        };
+        reader.onerror = () => resolve(file);
+        reader.readAsDataURL(file);
+    });
+};
+
+function heroFormHandler() {
+    return {
+        selectedMode: '{{ old('hero_mode', $profile->hero_mode ?? 'custom') }}',
+        isSubmitting: false,
+        heroPreview: null,
+        compressStatus: '',
+        isCompressing: false,
+        async handleHeroChange(e) {
+            const input = e.target;
+            if (!input.files || !input.files[0]) return;
+            const file = input.files[0];
+            const origKb = Math.round(file.size / 1024);
+
+            this.heroPreview = URL.createObjectURL(file);
+            this.compressStatus = '⚡ Mengoptimasi gambar...';
+            this.isCompressing = true;
+
+            try {
+                const compressed = await window.compressImageFile(file, 1600, 2000, 0.82);
+                const compKb = Math.round(compressed.size / 1024);
+                try {
+                    const dt = new DataTransfer();
+                    dt.items.add(compressed);
+                    input.files = dt.files;
+                } catch(err) {}
+                this.heroPreview = URL.createObjectURL(compressed);
+                const savedPercent = origKb > compKb ? Math.round((1 - compKb / origKb) * 100) : 0;
+                this.compressStatus = savedPercent > 0 
+                    ? `✓ Gambar dioptimasi: ${origKb} KB → ${compKb} KB (Hemat ${savedPercent}%). Upload akan sangat cepat!`
+                    : `✓ Gambar siap diunggah (${compKb} KB).`;
+            } catch (err) {
+                this.compressStatus = `Gambar siap (${origKb} KB).`;
+            } finally {
+                this.isCompressing = false;
+            }
+        }
+    };
+}
+</script>
 @endsection
 
