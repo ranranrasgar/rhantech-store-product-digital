@@ -45,7 +45,7 @@
                         Produk Toko Tenant Lain
                     </a>
                     <a href="{{ route('tenant.showcase.index', ['tab' => 'terpasang', 'search' => request('search')]) }}" class="px-4 py-2 rounded-lg text-xs font-bold transition {{ $tab === 'terpasang' ? 'bg-white dark:bg-[#1f2a40] text-emerald-600 dark:text-emerald-400 shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900' }}">
-                        Dipajang di Toko Saya ({{ count($myShowcaseIds) }})
+                        Dipajang di Toko Saya (<span id="showcase-counter">{{ count($myShowcaseIds) }}</span>)
                     </a>
                 </div>
 
@@ -58,7 +58,7 @@
                         </div>
                         <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama produk / toko..." class="w-full pl-9 pr-4 py-2 rounded-xl text-xs bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition">
                     </div>
-                    <button type="submit" class="px-4 py-2 text-xs font-bold bg-sky-500 hover:bg-sky-400 text-white rounded-xl shadow-xs transition">
+                    <button type="submit" class="px-4 py-2 text-xs font-bold bg-sky-500 hover:bg-sky-400 text-white rounded-xl shadow-xs transition cursor-pointer">
                         Cari
                     </button>
                 </form>
@@ -72,7 +72,7 @@
                     $isInstalled = in_array($product->id, $myShowcaseIds);
                     $mainImage = $product->images->where('is_main', true)->first() ?? $product->images->first();
                 @endphp
-                <div class="bg-white dark:bg-[#111726] border {{ $isInstalled ? 'border-emerald-500/50 shadow-md shadow-emerald-500/5 ring-1 ring-emerald-500/20' : 'border-slate-200/80 dark:border-[#222f49]' }} rounded-2xl overflow-hidden flex flex-col transition hover:shadow-lg">
+                <div id="showcase-card-{{ $product->id }}" class="showcase-card bg-white dark:bg-[#111726] border {{ $isInstalled ? 'border-emerald-500/50 shadow-md shadow-emerald-500/5 ring-1 ring-emerald-500/20' : 'border-slate-200/80 dark:border-[#222f49]' }} rounded-2xl overflow-hidden flex flex-col transition-all duration-300 hover:shadow-lg">
                     
                     <!-- Image Box -->
                     <div class="aspect-video w-full bg-slate-100 dark:bg-slate-800 relative overflow-hidden group">
@@ -100,13 +100,11 @@
                         </div>
 
                         <!-- Status Terpasang Indicator -->
-                        @if($isInstalled)
-                            <div class="absolute top-3 right-3">
-                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-500 text-white shadow-sm">
-                                    <span class="material-symbols-outlined text-[13px]">check_circle</span> Terpasang di Toko
-                                </span>
-                            </div>
-                        @endif
+                        <div id="installed-badge-{{ $product->id }}" class="absolute top-3 right-3 {{ $isInstalled ? '' : 'hidden' }}">
+                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-500 text-white shadow-sm">
+                                <span class="material-symbols-outlined text-[13px]">check_circle</span> Terpasang di Toko
+                            </span>
+                        </div>
                     </div>
 
                     <!-- Content -->
@@ -139,20 +137,19 @@
                             </div>
                         </div>
 
-                        <!-- Action Button: Pasang / Copot -->
-                        <form action="{{ route('tenant.showcase.toggle', $product->id) }}" method="POST" class="w-full">
+                        <!-- Action Button: Pasang / Copot (AJAX Seamless) -->
+                        <form action="{{ route('tenant.showcase.toggle', $product->id) }}" method="POST" class="w-full" onsubmit="handleShowcaseToggle(event, {{ $product->id }}, '{{ route('tenant.showcase.toggle', $product->id) }}')">
                             @csrf
-                            @if($isInstalled)
-                                <button type="submit" class="w-full py-2 px-3 rounded-xl border border-rose-200 dark:border-rose-900/40 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/30 dark:hover:bg-rose-900/50 text-rose-600 dark:text-rose-400 text-xs font-bold transition flex items-center justify-center gap-1.5">
+                            <button type="submit" id="btn-toggle-{{ $product->id }}"
+                                    class="w-full py-2 px-3 rounded-xl {{ $isInstalled ? 'border border-rose-200 dark:border-rose-900/40 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/30 dark:hover:bg-rose-900/50 text-rose-600 dark:text-rose-400' : 'bg-sky-500 hover:bg-sky-400 text-white shadow-sm shadow-sky-500/20' }} text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer">
+                                @if($isInstalled)
                                     <span class="material-symbols-outlined text-[16px]">remove_shopping_cart</span>
-                                    Copot dari Toko Saya
-                                </button>
-                            @else
-                                <button type="submit" class="w-full py-2 px-3 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm shadow-sky-500/20">
+                                    <span>Copot dari Toko Saya</span>
+                                @else
                                     <span class="material-symbols-outlined text-[16px]">add_shopping_cart</span>
-                                    + Pasang di Etalase Toko
-                                </button>
-                            @endif
+                                    <span>+ Pasang di Etalase Toko</span>
+                                @endif
+                            </button>
                         </form>
 
                     </div>
@@ -176,4 +173,145 @@
 
     </div>
 </div>
+
+<!-- Floating Notification Toast -->
+<div id="showcase-toast" class="fixed bottom-6 right-6 z-50 transform transition-all duration-300 translate-y-20 opacity-0 pointer-events-none flex items-center gap-3 px-4 py-3 rounded-2xl bg-slate-900/95 dark:bg-white/95 text-white dark:text-slate-900 shadow-2xl backdrop-blur-md border border-slate-700/50 dark:border-slate-200/50 text-xs font-bold max-w-sm">
+    <div id="showcase-toast-icon" class="w-7 h-7 rounded-xl bg-emerald-500/20 text-emerald-400 dark:text-emerald-600 flex items-center justify-center shrink-0">
+        <span class="material-symbols-outlined text-[18px]">check_circle</span>
+    </div>
+    <div id="showcase-toast-msg" class="leading-tight flex-1"></div>
+</div>
+
+@push('scripts')
+<script>
+let toastTimeout = null;
+function showToast(message, isSuccess = true) {
+    const toast = document.getElementById('showcase-toast');
+    const toastMsg = document.getElementById('showcase-toast-msg');
+    const toastIcon = document.getElementById('showcase-toast-icon');
+    if (!toast || !toastMsg || !toastIcon) return;
+
+    toastMsg.textContent = message;
+    if (isSuccess) {
+        toastIcon.className = 'w-7 h-7 rounded-xl bg-emerald-500/20 text-emerald-400 dark:text-emerald-600 flex items-center justify-center shrink-0';
+        toastIcon.innerHTML = '<span class="material-symbols-outlined text-[18px]">check_circle</span>';
+    } else {
+        toastIcon.className = 'w-7 h-7 rounded-xl bg-rose-500/20 text-rose-500 dark:text-rose-600 flex items-center justify-center shrink-0';
+        toastIcon.innerHTML = '<span class="material-symbols-outlined text-[18px]">error</span>';
+    }
+
+    toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+    toast.classList.add('translate-y-0', 'opacity-100', 'pointer-events-auto');
+
+    clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+        toast.classList.remove('translate-y-0', 'opacity-100', 'pointer-events-auto');
+    }, 3000);
+}
+
+function handleShowcaseToggle(event, productId, url) {
+    event.preventDefault();
+
+    const btn = document.getElementById('btn-toggle-' + productId);
+    const card = document.getElementById('showcase-card-' + productId);
+    const badge = document.getElementById('installed-badge-' + productId);
+    const counter = document.getElementById('showcase-counter');
+    const currentTab = '{{ $tab }}';
+
+    if (!btn) return;
+
+    const originalBtnHtml = btn.innerHTML;
+    const originalBtnClass = btn.className;
+
+    // Loading state in-place
+    btn.disabled = true;
+    btn.innerHTML = '<span class="material-symbols-outlined text-[16px] animate-spin">sync</span> <span>Memproses...</span>';
+
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') 
+        || document.querySelector('input[name="_token"]')?.value;
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': csrfToken,
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({})
+    })
+    .then(async response => {
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data.message || 'Terjadi kesalahan sistem.');
+        }
+        return data;
+    })
+    .then(data => {
+        if (data.success) {
+            // Update button & card state
+            if (data.is_installed) {
+                // Dipasang
+                btn.className = 'w-full py-2 px-3 rounded-xl border border-rose-200 dark:border-rose-900/40 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/30 dark:hover:bg-rose-900/50 text-rose-600 dark:text-rose-400 text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer';
+                btn.innerHTML = '<span class="material-symbols-outlined text-[16px]">remove_shopping_cart</span> <span>Copot dari Toko Saya</span>';
+                
+                if (card) {
+                    card.classList.remove('border-slate-200/80', 'dark:border-[#222f49]');
+                    card.classList.add('border-emerald-500/50', 'shadow-md', 'shadow-emerald-500/5', 'ring-1', 'ring-emerald-500/20');
+                }
+                if (badge) {
+                    badge.classList.remove('hidden');
+                }
+            } else {
+                // Dicopot
+                btn.className = 'w-full py-2 px-3 rounded-xl bg-sky-500 hover:bg-sky-400 text-white shadow-sm shadow-sky-500/20 text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer';
+                btn.innerHTML = '<span class="material-symbols-outlined text-[16px]">add_shopping_cart</span> <span>+ Pasang di Etalase Toko</span>';
+                
+                if (card) {
+                    card.classList.remove('border-emerald-500/50', 'shadow-md', 'shadow-emerald-500/5', 'ring-1', 'ring-emerald-500/20');
+                    card.classList.add('border-slate-200/80', 'dark:border-[#222f49]');
+                }
+                if (badge) {
+                    badge.classList.add('hidden');
+                }
+
+                // Jika di tab 'terpasang', kartu menghilang dengan transisi halus
+                if (currentTab === 'terpasang' && card) {
+                    card.style.transition = 'all 0.35s ease';
+                    card.style.opacity = '0';
+                    card.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        card.remove();
+                        const remaining = document.querySelectorAll('.showcase-card');
+                        if (remaining.length === 0) {
+                            window.location.reload();
+                        }
+                    }, 350);
+                }
+            }
+
+            // Update badge counter
+            if (counter && typeof data.count !== 'undefined') {
+                counter.textContent = data.count;
+            }
+
+            showToast(data.message, true);
+        } else {
+            showToast(data.message || 'Gagal mengubah etalase toko.', false);
+            btn.innerHTML = originalBtnHtml;
+            btn.className = originalBtnClass;
+        }
+    })
+    .catch(err => {
+        showToast(err.message || 'Koneksi bermasalah. Silakan coba lagi.', false);
+        btn.innerHTML = originalBtnHtml;
+        btn.className = originalBtnClass;
+    })
+    .finally(() => {
+        btn.disabled = false;
+    });
+}
+</script>
+@endpush
 @endsection

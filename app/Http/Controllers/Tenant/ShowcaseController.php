@@ -63,24 +63,48 @@ class ShowcaseController extends Controller
     /**
      * Tambahkan atau hapus produk dari etalase toko.
      */
-    public function toggle(Product $product)
+    public function toggle(Request $request, Product $product)
     {
         $store = Store::where('user_id', Auth::id())->first();
 
         if (!$store) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Anda harus memiliki toko untuk mengelola etalase showcase.'], 403);
+            }
             return back()->with('error', 'Toko tidak ditemukan.');
         }
 
         // Tidak boleh menambahkan produk sendiri ke showcase afiliasi
         if ($product->store_id === $store->id) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Produk ini adalah produk toko Anda sendiri.'], 422);
+            }
             return back()->with('error', 'Produk ini adalah produk toko Anda sendiri.');
         }
 
         if ($store->showcaseProducts()->where('product_id', $product->id)->exists()) {
             $store->showcaseProducts()->detach($product->id);
+            $count = $store->showcaseProducts()->count();
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'is_installed' => false,
+                    'count' => $count,
+                    'message' => "Produk '{$product->name}' berhasil dicopot dari etalase toko Anda.",
+                ]);
+            }
             return back()->with('success', "Produk '{$product->name}' berhasil dicopot dari etalase toko Anda.");
         } else {
             $store->showcaseProducts()->attach($product->id, ['is_active' => true]);
+            $count = $store->showcaseProducts()->count();
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'is_installed' => true,
+                    'count' => $count,
+                    'message' => "Produk '{$product->name}' berhasil dipajang di etalase toko Anda!",
+                ]);
+            }
             return back()->with('success', "Produk '{$product->name}' berhasil dipajang di etalase toko Anda!");
         }
     }
