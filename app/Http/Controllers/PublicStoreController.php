@@ -37,10 +37,46 @@ class PublicStoreController extends Controller
                     session([$sessionKey => true]);
                 }
             }
+        } else {
+            // Set session affiliate_ref otomatis ke slug toko ini agar jika pembeli membeli produk showcase, komisi otomatis masuk ke toko ini
+            session(['affiliate_ref' => $store->slug]);
         }
-        
-        // Set session affiliate_ref otomatis ke slug toko ini agar jika pembeli membeli produk showcase, komisi otomatis masuk ke toko ini
-        session(['affiliate_ref' => $store->slug]);
+
+        // Ambil link referral afiliasi jika pengunjung sedang login (dan bukan pemilik toko ini)
+        $myAffiliateLink = null;
+        $myAffiliateCode = null;
+        if (\Illuminate\Support\Facades\Auth::check() && \Illuminate\Support\Facades\Auth::id() !== $store->user_id) {
+            $visitorUser = \Illuminate\Support\Facades\Auth::user();
+            $affiliateRecord = \App\Models\Affiliate::firstOrCreate(
+                [
+                    'store_id' => $store->id,
+                    'user_id' => $visitorUser->id,
+                ],
+                [
+                    'affiliate_store_id' => $visitorUser->store->id ?? null,
+                    'name' => $visitorUser->name,
+                    'handle' => $visitorUser->store ? ('@' . $visitorUser->store->slug) : ('@' . \Illuminate\Support\Str::slug($visitorUser->name)),
+                    'whatsapp' => $visitorUser->phone ?? ($visitorUser->store->phone ?? null),
+                    'avatar_url' => $visitorUser->avatar ?? ($visitorUser->store->logo ?? null),
+                    'referral_code' => (function() use ($visitorUser) {
+                        $cleanBase = strtoupper(preg_replace('/[^A-Za-z0-9]/', '', $visitorUser->name));
+                        $cleanBase = substr($cleanBase, 0, 8);
+                        if (empty($cleanBase)) $cleanBase = 'USER' . $visitorUser->id;
+                        $code = $cleanBase . rand(10, 99);
+                        while (\App\Models\Affiliate::where('referral_code', $code)->exists()) {
+                            $code = $cleanBase . rand(100, 999);
+                        }
+                        return $code;
+                    })(),
+                    'commission_rate' => $store->default_affiliate_commission ?? 10.00,
+                    'platform' => $visitorUser->store ? 'Toko & Akun Terdaftar' : 'Akun Pengguna',
+                    'is_active' => true,
+                ]
+            );
+
+            $myAffiliateCode = $affiliateRecord->referral_code;
+            $myAffiliateLink = url('/' . $store->slug . '?ref=' . $affiliateRecord->referral_code);
+        }
 
         // Ambil ID produk milik toko sendiri dan ID produk showcase yang dipajang oleh toko ini
         $ownProductIds = $store->products()->published()->pluck('products.id');
@@ -58,18 +94,33 @@ class PublicStoreController extends Controller
         // Filter search jika ada query param
         if ($request->filled('q') || $request->filled('search')) {
             $keyword = trim($request->query('q', $request->query('search')));
-            $productsQuery->where(function($q) use ($keyword) {
-                $q->where('products.name', 'like', "%{$keyword}%")
-                  ->orWhere('products.description', 'like', "%{$keyword}%");
-            });
+            $productsQuery->where('name', 'like', "%{$keyword}%");
         }
 
         // Filter kategori jika ada query param
         if ($request->filled('category')) {
-            $productsQuery->where('products.product_category_id', $request->query('category'));
+            $productsQuery->where('product_category_id', $request->query('category'));
         }
 
-        $products = $productsQuery->latest()->paginate(12)->withQueryString();
+        // Sorting: default produk terbaru
+        $sort = $request->query('sort', 'latest');
+        if ($sort === 'price_asc') {
+            $productsQuery->orderByRaw('COALESCE(discount_price, price) ASC');
+        } elseif ($sort === 'price_desc') {
+            $productsQuery->orderByRaw('COALESCE(discount_price, price) DESC');
+        } elseif ($sort === 'popular') {
+            $productsQuery->orderBy('views', 'desc');
+        } else {
+            $productsQuery->latest();
+        }
+
+        $products = $productsQuery->paginate(12)->withQueryString();
+
+        // Check if user is following this store
+        $isFollowing = false;
+        if (\Illuminate\Support\Facades\Auth::check()) {
+            $isFollowing = $store->followers()->where('user_id', \Illuminate\Support\Facades\Auth::id())->exists();
+        }
 
         // Fetch appearance settings
         $rawAppearance = is_string($store->appearance_data) ? json_decode($store->appearance_data, true) : $store->appearance_data;
@@ -80,11 +131,6 @@ class PublicStoreController extends Controller
                     $appearance[] = $block;
                 }
             }
-        }
-        
-        $isFollowing = false;
-        if (Auth::check()) {
-            $isFollowing = $store->followers()->where('user_id', Auth::id())->exists();
         }
         
         // Fetch categories from all displayed products
@@ -105,7 +151,7 @@ class PublicStoreController extends Controller
             ? collect($store->profile_links)->filter(fn($l) => !isset($l['is_active']) || !empty($l['is_active']))->values()
             : collect();
 
-        $sharedData = compact('store', 'products', 'appearance', 'isFollowing', 'categories', 'campaigns', 'profileLinks');
+        $sharedData = compact('store', 'products', 'appearance', 'isFollowing', 'categories', 'campaigns', 'profileLinks', 'myAffiliateLink', 'myAffiliateCode');
 
         if ($mode === 'profile') {
             return view('store.profile', $sharedData);

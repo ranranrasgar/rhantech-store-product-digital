@@ -24,9 +24,40 @@
                 </a>
                 <a href="{{ route('tenant.affiliates.create') }}" class="px-5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs md:text-sm font-bold shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 transition-all duration-200 flex items-center gap-2">
                     <span class="material-symbols-outlined text-[18px]">person_add</span>
-                    Tambah Mitra Affiliate
+                    Tambah Mitra Manual
                 </a>
             </div>
+        </div>
+
+        <!-- Card Pengaturan Default Komisi Afiliasi Toko -->
+        <div class="bg-gradient-to-r from-sky-500/10 via-indigo-500/5 to-purple-500/10 border border-sky-500/30 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div class="space-y-1 max-w-2xl">
+                <div class="flex items-center gap-2">
+                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-sky-500/20 text-sky-600 dark:text-sky-400 border border-sky-500/30">Program Referral Toko</span>
+                    <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">&bull; Otomatis Untuk Semua Mitra</span>
+                </div>
+                <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                    <span class="material-symbols-outlined text-sky-500 text-[22px]">loyalty</span>
+                    Persentase Komisi Referral Toko Anda
+                </h3>
+                <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                    Setiap orang atau toko lain yang mengunjungi website toko Anda (<strong>{{ url('/' . $store->slug) }}</strong>) dapat langsung menyalin link referral mereka. Saat ada transaksi lewat link tersebut, mereka otomatis terdaftar di sini dan mendapatkan persentase komisi ini.
+                </p>
+            </div>
+            
+            <form action="{{ route('tenant.affiliates.default_commission') }}" method="POST" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 shrink-0 w-full md:w-auto">
+                @csrf
+                <div class="relative w-full sm:w-40">
+                    <input type="number" name="default_affiliate_commission" min="0" max="100" step="0.5" 
+                           value="{{ old('default_affiliate_commission', $store->default_affiliate_commission ?? 10) }}" 
+                           class="w-full pl-4 pr-9 py-2.5 bg-white dark:bg-[#0c1220] border border-sky-300 dark:border-sky-500/40 rounded-xl text-sm font-black text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 shadow-2xs">
+                    <span class="absolute right-3.5 top-3 text-xs font-black text-slate-400">%</span>
+                </div>
+                <button type="submit" class="px-5 py-2.5 bg-sky-500 hover:bg-sky-400 text-white rounded-xl text-xs font-bold transition shadow-sm whitespace-nowrap flex items-center justify-center gap-1.5 cursor-pointer">
+                    <span class="material-symbols-outlined text-[16px]">save</span>
+                    Simpan Komisi
+                </button>
+            </form>
         </div>
 
         <!-- Filter & Search Card -->

@@ -127,6 +127,20 @@ class AffiliateController extends Controller
         return redirect()->route('tenant.affiliates.index')->with('success', 'Data komisi & kode referral berhasil diperbarui.');
     }
 
+    public function updateDefaultCommission(Request $request)
+    {
+        $store = Store::where('user_id', Auth::id())->firstOrFail();
+        $validated = $request->validate([
+            'default_affiliate_commission' => 'required|numeric|min:0|max:100',
+        ]);
+
+        $store->update([
+            'default_affiliate_commission' => $validated['default_affiliate_commission'],
+        ]);
+
+        return back()->with('success', "Default komisi afiliasi toko berhasil diatur menjadi {$validated['default_affiliate_commission']}%!");
+    }
+
     public function destroy(\App\Models\Affiliate $affiliate)
     {
         $affiliate->delete();

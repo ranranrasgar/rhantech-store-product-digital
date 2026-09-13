@@ -313,6 +313,52 @@
                     </div>
                 </div>
 
+                <!-- 3. LINK REFERRAL AFILIASI KHUSUS ANDA (DAPATKAN KOMISI) -->
+                @if(isset($myAffiliateLink))
+                <div class="p-4 bg-gradient-to-r from-amber-500/10 via-sky-500/10 to-indigo-500/10 border border-amber-500/30 rounded-2xl space-y-2.5">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-[17px]">loyalty</span>
+                            <span>Link Afiliasi Anda (Komisi {{ (float)($store->default_affiliate_commission ?? 10) }}%)</span>
+                        </span>
+                        <span class="text-[9px] font-black px-2 py-0.5 rounded-full bg-amber-500 text-white shadow-2xs">AKTIF</span>
+                    </div>
+                    <p class="text-[11px] text-on-surface-variant leading-relaxed">
+                        Bagikan link khusus Anda di bawah ini ke medsos / teman. Dapatkan komisi <strong>{{ (float)($store->default_affiliate_commission ?? 10) }}%</strong> otomatis dari setiap pembelian yang masuk melalui link ini!
+                    </p>
+                    <div class="flex items-center gap-2 p-1.5 bg-surface dark:bg-slate-800 rounded-xl border border-amber-500/30">
+                        <input type="text" 
+                               readonly 
+                               value="{{ $myAffiliateLink }}" 
+                               id="affiliate_ref_link"
+                               class="bg-transparent border-0 text-xs font-mono font-bold text-amber-600 dark:text-amber-400 px-2 flex-1 focus:outline-none focus:ring-0 truncate select-all">
+                        <button type="button" 
+                                onclick="navigator.clipboard.writeText('{{ $myAffiliateLink }}'); alert('Link afiliasi Anda berhasil disalin:\n{{ $myAffiliateLink }}\n\nBagikan link ini untuk mulai mendapatkan komisi!');"
+                                class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-xs font-bold transition flex items-center gap-1 shadow-xs cursor-pointer shrink-0">
+                            <span class="material-symbols-outlined text-[15px]">content_copy</span>
+                            <span>Salin</span>
+                        </button>
+                    </div>
+                    <div class="flex items-center justify-between text-[10px] text-on-surface-variant pt-1 border-t border-amber-500/20">
+                        <span>Kode Referral: <strong class="font-mono text-on-surface">{{ $myAffiliateCode }}</strong></span>
+                        <a href="{{ route('tenant.payouts.index') }}" class="text-sky-500 hover:underline font-bold">Cek Saldo Komisi &rarr;</a>
+                    </div>
+                </div>
+                @elseif(!auth()->check())
+                <div class="p-3.5 bg-amber-500/5 border border-amber-500/20 rounded-2xl flex items-center justify-between gap-3 text-xs">
+                    <div>
+                        <div class="font-bold text-on-surface flex items-center gap-1 text-amber-600">
+                            <span class="material-symbols-outlined text-[16px]">monetization_on</span>
+                            Ingin Dapatkan Komisi {{ (float)($store->default_affiliate_commission ?? 10) }}%?
+                        </div>
+                        <div class="text-[11px] text-on-surface-variant">Login untuk otomatis mendapatkan link referral afiliasi Anda.</div>
+                    </div>
+                    <a href="{{ route('login') }}?redirect={{ urlencode(url('/' . $store->slug)) }}" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-xs font-bold transition shrink-0">
+                        Login Mitra
+                    </a>
+                </div>
+                @endif
+
             </div>
         </div>
     </div>
@@ -429,6 +475,17 @@
                         <span x-text="isFollowing ? 'Mengikuti' : 'Ikuti'">Ikuti</span>
                     </button>
                     @endif
+
+                    @if(isset($myAffiliateLink))
+                    <button type="button" 
+                            @click="shareModalOpen = true" 
+                            class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 border border-emerald-400 text-white rounded font-bold transition-colors flex items-center gap-1.5 cursor-pointer shadow-md"
+                            title="Dapatkan komisi {{ (float)($store->default_affiliate_commission ?? 10) }}% dengan membagikan link afiliasi toko ini">
+                        <span class="material-symbols-outlined text-[18px]">attach_money</span>
+                        <span>Afiliasi ({{ (float)($store->default_affiliate_commission ?? 10) }}%)</span>
+                    </button>
+                    @endif
+
                     <button type="button" 
                             @click="shareModalOpen = true" 
                             class="px-4 py-2 bg-white/15 hover:bg-white/25 border border-white/30 text-white rounded font-bold transition-colors flex items-center gap-2 cursor-pointer"
@@ -525,6 +582,17 @@
                             class="py-1.5 px-3.5 rounded-xl border active:scale-95 text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm shrink-0">
                         <span class="material-symbols-outlined text-[16px]" x-text="isFollowing ? 'check' : 'person_add'"></span>
                         <span x-text="isFollowing ? 'Mengikuti' : 'Ikuti'"></span>
+                    </button>
+                @endif
+
+                @if(isset($myAffiliateLink))
+                    <!-- Affiliate Button -->
+                    <button type="button" 
+                            @click="shareModalOpen = true" 
+                            class="py-1.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-95 border border-emerald-400 text-white text-xs font-bold transition-all flex items-center justify-center gap-1 cursor-pointer shadow-sm shrink-0"
+                            title="Bagikan Link Afiliasi (Komisi {{ (float)($store->default_affiliate_commission ?? 10) }}%)">
+                        <span class="material-symbols-outlined text-[16px]">attach_money</span>
+                        <span>Afiliasi {{ (float)($store->default_affiliate_commission ?? 10) }}%</span>
                     </button>
                 @endif
 

@@ -135,6 +135,7 @@ Route::middleware(['auth', 'verified', 'is_tenant'])->prefix('dashboard')->name(
     Route::post('appearance/voucher-placement', [\App\Http\Controllers\Tenant\AppearanceController::class, 'saveVoucherPlacement'])->name('appearance.voucher-placement');
 
     // kerja sama
+    Route::post('affiliates/default-commission', [\App\Http\Controllers\Tenant\AffiliateController::class, 'updateDefaultCommission'])->name('affiliates.default_commission');
     Route::resource('affiliates', \App\Http\Controllers\Tenant\AffiliateController::class);
     Route::get('showcase', [\App\Http\Controllers\Tenant\ShowcaseController::class, 'index'])->name('showcase.index');
     Route::post('showcase/{product}/toggle', [\App\Http\Controllers\Tenant\ShowcaseController::class, 'toggle'])->name('showcase.toggle');

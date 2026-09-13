@@ -455,11 +455,19 @@ class CheckoutController extends Controller
                 $commRate = $affiliateRecord->commission_rate ?? 10;
                 $affiliateCommission = round(($finalTotal * $commRate) / 100, 2);
             } else {
-                // Cek jika referral berupa store slug
+                // Cek jika referral berupa store slug (misal dari etalase showcase)
                 $refStoreBySlug = \App\Models\Store::where('slug', $affiliateRef)->first();
                 if ($refStoreBySlug) {
                     $referrerStoreId = $refStoreBySlug->id;
-                    $affiliateCommission = round(($finalTotal * 10) / 100, 2); // default 10%
+                    
+                    // Ambil komisi khusus dari data produk yang dibeli jika ada
+                    $firstCartItem = $cartItems[0] ?? null;
+                    $productModel = $firstCartItem ? \App\Models\Product::find($firstCartItem['id']) : null;
+                    $commRate = ($productModel && $productModel->affiliate_commission_rate !== null)
+                        ? (float) $productModel->affiliate_commission_rate
+                        : (float) ($refStoreBySlug->default_affiliate_commission ?? 10);
+
+                    $affiliateCommission = round(($finalTotal * $commRate) / 100, 2);
                 }
             }
         }

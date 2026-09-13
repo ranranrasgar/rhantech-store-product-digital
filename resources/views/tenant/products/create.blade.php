@@ -203,6 +203,40 @@
                 </div>
             </div>
 
+            <!-- Pengaturan Bagi Hasil Komisi Afiliasi (Showcase) -->
+            <div class="p-4 rounded-xl border border-sky-500/30 bg-sky-500/[0.03] dark:bg-sky-500/[0.05] space-y-3">
+                <div class="flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-sky-500 text-[22px]">storefront</span>
+                        <div>
+                            <h4 class="text-xs font-bold text-on-surface">Bagi Hasil Komisi Afiliasi (Etalase Showcase)</h4>
+                            <p class="text-[11px] text-on-surface-variant">Izinkan toko lain memajang produk ini di etalase mereka dan tentukan bagi hasil komisi saat produk terjual.</p>
+                        </div>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer shrink-0">
+                        <input type="checkbox" name="is_affiliate_enabled" value="1" {{ old('is_affiliate_enabled', $sourceProduct->is_affiliate_enabled ?? true) ? 'checked' : '' }} class="sr-only peer">
+                        <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-sky-500"></div>
+                    </label>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-outline-variant/40">
+                    <div>
+                        <label class="block text-xs font-semibold text-on-surface mb-1">Persentase Komisi (%) *</label>
+                        <div class="relative">
+                            <input type="number" name="affiliate_commission_rate" min="0" max="100" step="0.5" 
+                                   value="{{ old('affiliate_commission_rate', $sourceProduct->affiliate_commission_rate ?? 10) }}" 
+                                   placeholder="10" 
+                                   class="w-full pl-4 pr-8 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg text-xs font-bold text-on-surface focus:border-sky-500 focus:ring-1 focus:ring-sky-500/20">
+                            <span class="absolute right-3 top-2 text-xs font-bold text-slate-400">%</span>
+                        </div>
+                        <span class="text-[10px] text-on-surface-variant mt-1 block">Default platform: 10%. Semakin menarik komisi, semakin banyak toko yang memajang produk Anda.</span>
+                    </div>
+                    <div class="bg-surface-container-low/60 rounded-lg p-2.5 flex flex-col justify-center border border-outline-variant/30 text-[11px] text-on-surface-variant">
+                        <span class="font-bold text-on-surface flex items-center gap-1"><span class="material-symbols-outlined text-[15px] text-amber-500">payments</span> Simulasi Bagi Hasil:</span>
+                        <span class="mt-0.5">Toko lain yang memajang produk ini akan langsung melihat persentase & nominal komisi di menu Etalase Afiliasi.</span>
+                    </div>
+                </div>
+            </div>
+
             <div>
                 <label class="block font-label-md text-on-surface mb-xs">Ringkasan Singkat (Short Description) - Opsional</label>
                 <textarea name="short_description" rows="2" placeholder="Ringkasan singkat produk untuk tampilan kartu etalase..." class="w-full pl-4 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-secondary focus:ring-1 focus:ring-secondary/20">{{ old('short_description', $sourceProduct->short_description ?? '') }}</textarea>

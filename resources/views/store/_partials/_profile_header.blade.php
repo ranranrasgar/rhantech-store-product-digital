@@ -105,20 +105,32 @@
     </div>
     @endif
 
-    {{-- Action Buttons (Follow & Chat) --}}
-    @if(!auth()->check() || auth()->id() !== $store->user_id)
-    <div class="flex items-center justify-center gap-3 mt-4">
-        <button type="button"
-                @click="@auth window.dispatchEvent(new CustomEvent('open-chat-with-store', { detail: { store_id: {{ $store->id }}, store_name: '{{ addslashes($store->name) }}', store_slug: '{{ $store->slug }}', store_logo: '{{ $store->logo ? asset('storage/' . $store->logo) : '' }}' } })) @else window.location.href = '{{ route('login') }}' @endauth"
-                class="px-5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-all flex items-center gap-1.5 border border-slate-200 dark:border-slate-700">
-            <span class="material-symbols-outlined text-[17px]">chat</span> Chat
-        </button>
-        <button type="button" @click="toggleFollow()"
-                :class="isFollowing ? 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200' : 'bg-primary border-primary text-white'"
-                class="px-5 py-2 rounded-xl border text-xs font-bold transition-all flex items-center gap-1.5">
-            <span class="material-symbols-outlined text-[17px]" x-text="isFollowing ? 'check' : 'person_add'">person_add</span>
-            <span x-text="isFollowing ? 'Mengikuti' : 'Ikuti'">Ikuti</span>
-        </button>
+    {{-- Action Buttons (Follow, Chat & Affiliate) --}}
+    <div class="flex items-center justify-center gap-2.5 mt-4 flex-wrap">
+        @if(!auth()->check() || auth()->id() !== $store->user_id)
+            <button type="button"
+                    @click="@auth window.dispatchEvent(new CustomEvent('open-chat-with-store', { detail: { store_id: {{ $store->id }}, store_name: '{{ addslashes($store->name) }}', store_slug: '{{ $store->slug }}', store_logo: '{{ $store->logo ? asset('storage/' . $store->logo) : '' }}' } })) @else window.location.href = '{{ route('login') }}' @endauth"
+                    class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-all flex items-center gap-1.5 border border-slate-200 dark:border-slate-700">
+                <span class="material-symbols-outlined text-[17px]">chat</span> Chat
+            </button>
+            <button type="button" @click="toggleFollow()"
+                    :class="isFollowing ? 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200' : 'bg-primary border-primary text-white'"
+                    class="px-4 py-2 rounded-xl border text-xs font-bold transition-all flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[17px]" x-text="isFollowing ? 'check' : 'person_add'">person_add</span>
+                <span x-text="isFollowing ? 'Mengikuti' : 'Ikuti'">Ikuti</span>
+            </button>
+        @endif
+
+        @if(isset($myAffiliateLink))
+            <div x-data="{ copied: false }" class="inline-flex">
+                <button type="button"
+                        @click="navigator.clipboard.writeText('{{ $myAffiliateLink }}'); copied = true; setTimeout(() => copied = false, 2500)"
+                        class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm"
+                        title="Dapatkan komisi {{ (float)($store->default_affiliate_commission ?? 10) }}% per penjualan">
+                    <span class="material-symbols-outlined text-[17px]" x-text="copied ? 'check_circle' : 'attach_money'">attach_money</span>
+                    <span x-text="copied ? 'Link Disalin!' : 'Link Afiliasi ({{ (float)($store->default_affiliate_commission ?? 10) }}%)'">Link Afiliasi</span>
+                </button>
+            </div>
+        @endif
     </div>
-    @endif
 </div>

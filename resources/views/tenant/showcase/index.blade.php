@@ -116,7 +116,12 @@
                             {{ $product->name }}
                         </h3>
 
-                        <!-- Price -->
+                        @php
+                            $effectivePrice = ($product->discount_price && $product->discount_price > 0 && $product->discount_price < $product->price) ? $product->discount_price : $product->price;
+                            $commRate = (float)($product->affiliate_commission_rate ?? 10);
+                            $commAmount = round(($effectivePrice * $commRate) / 100);
+                        @endphp
+                        <!-- Price & Commission -->
                         <div class="mt-auto pt-3 border-t border-slate-100 dark:border-[#1d273d] flex items-end justify-between mb-4">
                             <div>
                                 <div class="text-[10px] uppercase font-bold text-slate-400">Harga Jual</div>
@@ -128,12 +133,15 @@
                                 @endif
                             </div>
 
-                            <!-- Perkiraan Komisi -->
+                            <!-- Perkiraan Komisi Riil -->
                             <div class="text-right">
-                                <a href="{{ route('help.show', 'panduan-memasang-produk-toko-lain-di-etalase-toko-saya-showcase') }}" target="_blank" class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200/60 dark:border-amber-800/40 hover:bg-amber-100 transition" title="Pelajari cara kerja bagi hasil komisi showcase">
-                                    Komisi Afiliasi
-                                    <span class="material-symbols-outlined text-[12px]">help</span>
-                                </a>
+                                <div class="text-[10px] uppercase font-bold text-amber-600 dark:text-amber-400 flex items-center justify-end gap-1" title="Bagi hasil komisi yang Anda peroleh per penjualan">
+                                    <span class="material-symbols-outlined text-[12px]">monetization_on</span>
+                                    <span>Komisi {{ $commRate + 0 }}%</span>
+                                </div>
+                                <div class="font-extrabold text-xs text-emerald-600 dark:text-emerald-400">
+                                    +Rp {{ number_format($commAmount, 0, ',', '.') }}
+                                </div>
                             </div>
                         </div>
 
