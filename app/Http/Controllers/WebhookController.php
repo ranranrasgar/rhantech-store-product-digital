@@ -215,8 +215,36 @@ class WebhookController extends Controller
                         }
 
                         // Tambahkan komisi affiliator ke toko perujuk jika ada
-                        if ($order->referrer_store_id && $order->affiliate_commission > 0) {
-                            $refStore = \App\Models\Store::find($order->referrer_store_id);
+                        if ($order->affiliate_commission > 0) {
+                            $refStore = null;
+                            if ($order->referrer_store_id) {
+                                $refStore = \App\Models\Store::find($order->referrer_store_id);
+                            } elseif ($order->affiliate_id) {
+                                $aff = \App\Models\Affiliate::find($order->affiliate_id);
+                                if ($aff && $aff->user_id) {
+                                    $user = \App\Models\User::find($aff->user_id);
+                                    $baseSlug = \Illuminate\Support\Str::slug($user ? $user->name : 'mitra');
+                                    if (empty($baseSlug)) $baseSlug = 'mitra-' . $aff->user_id;
+                                    $slug = $baseSlug;
+                                    $count = 1;
+                                    while (\App\Models\Store::where('slug', $slug)->exists()) {
+                                        $slug = $baseSlug . '-' . $count++;
+                                    }
+                                    $refStore = \App\Models\Store::firstOrCreate(
+                                        ['user_id' => $aff->user_id],
+                                        [
+                                            'name' => ($user ? $user->name : 'Mitra') . ' Store',
+                                            'slug' => $slug,
+                                            'balance' => 0,
+                                            'store_mode' => 'hybrid',
+                                        ]
+                                    );
+                                    if ($refStore && !$order->referrer_store_id) {
+                                        $order->update(['referrer_store_id' => $refStore->id]);
+                                    }
+                                }
+                            }
+
                             if ($refStore) {
                                 $refStore->increment('balance', $order->affiliate_commission);
                             }
