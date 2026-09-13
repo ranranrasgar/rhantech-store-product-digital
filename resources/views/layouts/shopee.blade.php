@@ -192,7 +192,7 @@
     background-image: url('/images/batik-pattern.svg');
     background-repeat: repeat;
     background-size: 110px 110px;
-    opacity: 0.45;
+    opacity: 0.10;
     pointer-events: none;
     z-index: 0;
 }
