@@ -189,11 +189,40 @@
     }
 
     @if(session('fcm_notification'))
-    // Mainkan suara lonceng & picu update bell saat halaman dibuka dengan notifikasi baru
+    @php
+        $sessNotif = session('fcm_notification');
+        $sessTitle = is_array($sessNotif) ? ($sessNotif['title'] ?? 'Pemberitahuan') : 'Pemberitahuan';
+        $sessBody = is_array($sessNotif) ? ($sessNotif['body'] ?? '') : (string) $sessNotif;
+    @endphp
+    // Mainkan suara lonceng & picu update bell & pop-up notifikasi desktop
     setTimeout(() => {
         window.playNotificationChime();
         window.triggerBellUpdate();
-    }, 300);
+
+        if (window.Notification && Notification.permission === 'granted') {
+            try {
+                const title = "{{ addslashes($sessTitle) }}";
+                const body = "{{ addslashes($sessBody) }}";
+                if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+                    navigator.serviceWorker.ready.then(reg => {
+                        reg.showNotification(title, {
+                            body: body,
+                            icon: '/images/logo.png',
+                            badge: '/images/logo.png',
+                            tag: 'rhn-notif-' + Date.now(),
+                            requireInteraction: true
+                        });
+                    }).catch(() => {
+                        new Notification(title, { body: body, icon: '/images/logo.png' });
+                    });
+                } else {
+                    new Notification(title, { body: body, icon: '/images/logo.png' });
+                }
+            } catch(e) {
+                console.warn('[FCM Desktop Popup Error]', e);
+            }
+        }
+    }, 400);
     @endif
 
     if (document.readyState === 'loading') {

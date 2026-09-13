@@ -288,9 +288,18 @@ class OrderController extends Controller
     public function destroy(Order $order)
     {
         $invoice = $order->invoice_number;
+        $orderId = $order->id;
+
+        // Bersihkan notifikasi terkait pesanan ini dari lonceng
+        \App\Models\AppNotification::where('data->order_id', $orderId)
+            ->orWhere('data->invoice', $invoice)
+            ->orWhere('title', 'like', "%{$invoice}%")
+            ->orWhere('body', 'like', "%{$invoice}%")
+            ->delete();
+
         $order->orderItems()->delete();
         $order->delete();
 
-        return back()->with('success', "Order {$invoice} berhasil dihapus.");
+        return back()->with('success', "Order {$invoice} beserta riwayat notifikasinya berhasil dihapus.");
     }
 }

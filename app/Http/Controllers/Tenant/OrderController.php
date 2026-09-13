@@ -104,10 +104,20 @@ class OrderController extends Controller
     public function destroy(Order $order)
     {
         $this->checkOrderAccess($order);
-        
+
+        $invoice = $order->invoice_number;
+        $orderId = $order->id;
+
+        // Bersihkan notifikasi terkait pesanan ini dari lonceng
+        \App\Models\AppNotification::where('data->order_id', $orderId)
+            ->orWhere('data->invoice', $invoice)
+            ->orWhere('title', 'like', "%{$invoice}%")
+            ->orWhere('body', 'like', "%{$invoice}%")
+            ->delete();
+
         $order->delete();
 
-        return back()->with('success', 'Pesanan berhasil dihapus.');
+        return back()->with('success', 'Pesanan beserta riwayat notifikasinya berhasil dihapus.');
     }
 
     public function markPaid(Order $order)
@@ -120,6 +130,15 @@ class OrderController extends Controller
 
         $order->update(['status' => 'paid']);
 
+        // Tambahkan saldo ke toko bila item milik toko
+        $order->loadMissing('orderItems.product.store');
+        foreach ($order->orderItems as $item) {
+            if ($item->product && $item->product->store_id) {
+                $itemTotal = $item->price * $item->quantity;
+                $item->product->store->increment('balance', $itemTotal);
+            }
+        }
+
         // Send email
         try {
             \Illuminate\Support\Facades\Mail::to($order->customer_email)->send(new \App\Mail\OrderPaidMail($order));
@@ -127,7 +146,18 @@ class OrderController extends Controller
             \Illuminate\Support\Facades\Log::error('Failed to send OrderPaidMail: ' . $e->getMessage());
         }
 
-        return back()->with('success', 'Status pesanan diubah menjadi Lunas dan email produk telah dikirim.');
+        // Kirim notifikasi push FCM & lonceng (Pembeli, Toko, Platform Admin)
+        try {
+            app(\App\Services\FirebaseService::class)->notifyOrderStatusChanged($order, 'paid');
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning("FCM markPaid notification failed: " . $e->getMessage());
+        }
+
+        return back()->with('success', 'Status pesanan diubah menjadi Lunas dan email produk telah dikirim.')
+            ->with('fcm_notification', [
+                'title' => "🎉 Pembayaran Berhasil: #{$order->invoice_number}",
+                'body' => "Pesanan senilai Rp " . number_format($order->amount, 0, ',', '.') . " telah lunas. Notifikasi & email terkirim ke pembeli."
+            ]);
     }
 
     public function resendEmail(Order $order)

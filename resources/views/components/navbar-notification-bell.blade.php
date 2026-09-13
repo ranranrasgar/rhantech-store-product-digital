@@ -36,10 +36,29 @@
                 <span class="font-bold text-sm text-slate-900 dark:text-white">Notifikasi</span>
                 <span x-show="unreadCount > 0" class="px-2 py-0.5 bg-red-500/10 text-red-600 dark:text-red-400 text-[11px] font-bold rounded-full" x-text="unreadCount + ' Baru'"></span>
             </div>
-            <button x-show="unreadCount > 0" 
-                    @click="markAllAsRead()" 
-                    class="text-[11px] font-semibold text-blue-600 dark:text-blue-400 hover:underline transition-colors focus:outline-none">
-                Tandai Dibaca
+            <div class="flex items-center gap-2">
+                <template x-if="notificationPermission === 'granted'">
+                    <button type="button" @click="testDesktopNotification()" title="Uji coba pop-up notifikasi desktop Windows" class="text-[10px] font-semibold text-slate-500 hover:text-blue-600 dark:text-slate-400 flex items-center gap-0.5 cursor-pointer">
+                        <span class="material-symbols-outlined text-[13px]">desktop_windows</span>
+                        <span>Tes Pop-up</span>
+                    </button>
+                </template>
+                <button x-show="unreadCount > 0" 
+                        @click="markAllAsRead()" 
+                        class="text-[11px] font-semibold text-blue-600 dark:text-blue-400 hover:underline transition-colors focus:outline-none cursor-pointer">
+                    Tandai Dibaca
+                </button>
+            </div>
+        </div>
+
+        <!-- Banner Izin Notifikasi Desktop Windows jika belum diizinkan -->
+        <div x-show="notificationPermission !== 'granted'" class="px-3.5 py-2.5 bg-amber-500/10 border-b border-amber-500/20 flex items-center justify-between gap-2">
+            <div class="text-[11px] text-amber-800 dark:text-amber-200 font-semibold flex items-center gap-1.5 min-w-0">
+                <span class="material-symbols-outlined text-[16px] text-amber-600 shrink-0">notifications_active</span>
+                <span class="truncate">Aktifkan pop-up Windows</span>
+            </div>
+            <button type="button" @click="requestDesktopPermission()" class="text-[10px] font-bold bg-amber-600 hover:bg-amber-700 text-white px-2.5 py-1 rounded-lg transition shadow-xs shrink-0 cursor-pointer">
+                Izinkan Pop-up
             </button>
         </div>
 
@@ -101,15 +120,15 @@
                     <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
                 </a>
             </template>
-            <template x-if="'{{ $role }}' === 'tenant'">
+            <template x-if="'{{ $role }}' === 'tenant' && hasStore">
                 <a href="{{ route('tenant.orders.index') }}" class="text-xs font-bold text-primary hover:underline flex items-center justify-center gap-1">
                     <span>Lihat Riwayat Penjualan</span>
                     <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
                 </a>
             </template>
-            <template x-if="'{{ $role }}' === 'buyer'">
+            <template x-if="'{{ $role }}' !== 'admin' && ('{{ $role }}' === 'buyer' || !hasStore)">
                 <a href="{{ route('tenant.purchases.index') }}" class="text-xs font-bold text-primary hover:underline flex items-center justify-center gap-1">
-                    <span>Lihat Produk yang Dibeli</span>
+                    <span>Lihat Pembelian Saya</span>
                     <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
                 </a>
             </template>
@@ -126,11 +145,16 @@ if (typeof navbarNotificationBell === 'undefined') {
             loading: false,
             unreadCount: 0,
             hasNewNotif: false,
-            items: [],
-            pollTimer: null,
+            hasStore: false,
+            notificationPermission: ('Notification' in window) ? Notification.permission : 'denied',
 
             initBell() {
                 this.fetchData();
+
+                // Check permission status berkala
+                if ('Notification' in window) {
+                    this.notificationPermission = Notification.permission;
+                }
 
                 // Listen untuk FCM foreground message jika ada event baru
                 window.addEventListener('fcm-message-received', (e) => {
@@ -148,6 +172,72 @@ if (typeof navbarNotificationBell === 'undefined') {
                 }, 25000);
             },
 
+            async requestDesktopPermission() {
+                if (!('Notification' in window)) {
+                    alert('Browser Anda belum mendukung notifikasi desktop.');
+                    return;
+                }
+
+                try {
+                    const permission = await Notification.requestPermission();
+                    this.notificationPermission = permission;
+                    if (permission === 'granted') {
+                        // Tampilkan notifikasi pop-up uji coba langsung di Windows
+                        this.triggerNativePopup(
+                            "🔔 Pop-up Windows Berhasil Aktif!",
+                            "Notifikasi desktop Anda kini telah aktif. Setiap pesanan baru atau konfirmasi sukses akan memunculkan pop-up ini."
+                        );
+                    } else if (permission === 'denied') {
+                        alert('Izin notifikasi diblokir di browser. Silakan klik ikon setelan situs (di samping URL localhost:8000) dan ubah "Notifications" menjadi "Allow/Izinkan".');
+                    }
+                } catch (e) {
+                    console.error('[Request Permission Error]', e);
+                }
+            },
+
+            testDesktopNotification() {
+                if (!('Notification' in window)) return;
+
+                if (Notification.permission === 'granted') {
+                    this.triggerNativePopup(
+                        "🎉 Uji Coba Pop-up Windows Sukses!",
+                        "Push notification desktop berjalan normal di layar komputer Anda."
+                    );
+                } else {
+                    this.requestDesktopPermission();
+                }
+            },
+
+            triggerNativePopup(title, body) {
+                if (window.playNotificationChime) {
+                    window.playNotificationChime();
+                }
+
+                try {
+                    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+                        navigator.serviceWorker.ready.then(reg => {
+                            reg.showNotification(title, {
+                                body: body,
+                                icon: '/images/logo.png',
+                                badge: '/images/logo.png',
+                                tag: 'rhn-test-' + Date.now(),
+                                requireInteraction: true
+                            });
+                        }).catch(() => {
+                            new Notification(title, { body: body, icon: '/images/logo.png' });
+                        });
+                    } else {
+                        new Notification(title, { body: body, icon: '/images/logo.png' });
+                    }
+                } catch (e) {
+                    try {
+                        new Notification(title, { body: body, icon: '/images/logo.png' });
+                    } catch (err) {
+                        console.warn('[Native popup error]', err);
+                    }
+                }
+            },
+
             toggleDropdown() {
                 this.open = !this.open;
                 if (this.open) {
@@ -162,6 +252,7 @@ if (typeof navbarNotificationBell === 'undefined') {
                     const data = await res.json();
                     this.unreadCount = data.unread_count || 0;
                     this.items = data.notifications || [];
+                    this.hasStore = (data.has_store === true);
                 } catch (e) {
                     console.warn('[Bell Notification]', e);
                 } finally {

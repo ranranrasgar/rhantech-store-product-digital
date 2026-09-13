@@ -6,6 +6,7 @@ use App\Models\AppNotification;
 use App\Models\Order;
 use App\Models\Store;
 use App\Models\PayoutRequest;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,44 +17,86 @@ class NotificationController extends Controller
      */
     public function getNotifications(Request $request)
     {
-        $role = $request->query('role', 'buyer');
         $user = Auth::user();
+
+        if (!$user) {
+            return response()->json(['unread_count' => 0, 'notifications' => []]);
+        }
+
+        $isAdmin = ($user->role === 'Admin');
+        $hasStore = (bool) $user->store;
+        $requestedRole = $request->query('role', 'buyer');
 
         // Query notifikasi dari tabel app_notifications
         $query = AppNotification::latest();
 
-        if ($role === 'admin') {
+        if ($requestedRole === 'admin' && $isAdmin) {
+            // Admin Platform: melihat notifikasi platform (admin)
             $query->where(function ($q) use ($user) {
                 $q->where('target_role', 'admin')
-                  ->orWhereNull('target_role');
-                if ($user) {
-                    $q->orWhere('user_id', $user->id);
-                }
+                  ->orWhereNull('target_role')
+                  ->orWhere('user_id', $user->id);
             });
-        } elseif ($role === 'tenant') {
-            if ($user) {
-                $query->where(function ($q) use ($user) {
-                    $q->where('user_id', $user->id)
-                      ->orWhere('target_role', 'tenant');
-                });
+        } elseif ($hasStore) {
+            // User memiliki toko:
+            if ($requestedRole === 'tenant') {
+                // Di dashboard toko: tampilkan notifikasi toko miliknya (+ notifikasi pembeli miliknya)
+                $query->where('user_id', $user->id)
+                      ->whereIn('target_role', ['tenant', 'buyer']);
             } else {
-                $query->where('target_role', 'tenant');
+                // Di halaman umum: notifikasi untuk user ini
+                $query->where('user_id', $user->id);
             }
         } else {
-            // Buyer
-            if ($user) {
-                $query->where('user_id', $user->id);
-            } else {
-                return response()->json(['unread_count' => 0, 'notifications' => []]);
+            // User TIDAK memiliki toko (pembeli/customer biasa):
+            // HANYA notifikasi pembelian miliknya sendiri, DILARANG menampilkan notifikasi penjualan/tenant toko lain!
+            $query->where('user_id', $user->id)
+                  ->where('target_role', 'buyer');
+        }
+
+        // Jika riwayat notifikasi pembeli masih kosong, sinkronkan dari pesanan riil pembeli
+        if ($query->count() === 0 && !$isAdmin) {
+            $this->seedInitialNotifications($hasStore ? 'tenant' : 'buyer', $user);
+        }
+
+        $rawNotifications = $query->take(20)->get();
+
+        // Validasi integritas: jika notifikasi pesanan tetapi pesanannya sudah dihapus dari sistem, otomatis bersihkan
+        $validNotifications = $rawNotifications->filter(function ($item) use ($user, $hasStore, $isAdmin) {
+            if (in_array($item->type, ['order_created', 'order_pending', 'order_paid', 'order_failed'])) {
+                $orderId = $item->data['order_id'] ?? null;
+                $invoice = $item->data['invoice'] ?? null;
+
+                // Ekstrak nomor invoice jika tersimpan di title / body (#RHN-...)
+                if (!$invoice && preg_match('/#([A-Za-z0-9\-]+)/', $item->title . ' ' . $item->body, $matches)) {
+                    $invoice = $matches[1];
+                }
+
+                $order = null;
+                if ($orderId) {
+                    $order = \App\Models\Order::find($orderId);
+                } elseif ($invoice) {
+                    $order = \App\Models\Order::where('invoice_number', $invoice)->first();
+                }
+
+                // Jika pesanan sudah dihapus di admin atau sistem -> bersihkan notifikasi
+                if (!$order) {
+                    $item->delete();
+                    return false;
+                }
+
+                // Jika user adalah buyer murni (tanpa toko), pastikan order ini milik email user
+                if (!$isAdmin && !$hasStore) {
+                    if ($order->customer_email !== $user->email) {
+                        $item->delete();
+                        return false;
+                    }
+                }
             }
-        }
+            return true;
+        })->values();
 
-        // Jika tabel notifikasi masih kosong, buat otomatis dari data riil
-        if ($query->count() === 0) {
-            $this->seedInitialNotifications($role, $user);
-        }
-
-        $notifications = $query->take(8)->get()->map(function ($item) {
+        $notifications = $validNotifications->take(8)->map(function ($item) {
             return [
                 'id' => $item->id,
                 'title' => $item->title,
@@ -66,11 +109,12 @@ class NotificationController extends Controller
             ];
         });
 
-        $unreadCount = $query->where('is_read', false)->count();
+        $unreadCount = $validNotifications->where('is_read', false)->count();
 
         return response()->json([
             'unread_count' => $unreadCount,
             'notifications' => $notifications,
+            'has_store' => $hasStore,
         ]);
     }
 
@@ -79,27 +123,29 @@ class NotificationController extends Controller
      */
     public function markAllAsRead(Request $request)
     {
-        $role = $request->input('role', 'buyer');
         $user = Auth::user();
+
+        if (!$user) {
+            return response()->json(['success' => false]);
+        }
+
+        $isAdmin = ($user->role === 'Admin');
+        $hasStore = (bool) $user->store;
+        $requestedRole = $request->input('role', 'buyer');
 
         $query = AppNotification::where('is_read', false);
 
-        if ($role === 'admin') {
+        if ($requestedRole === 'admin' && $isAdmin) {
             $query->where(function ($q) use ($user) {
                 $q->where('target_role', 'admin')
-                  ->orWhereNull('target_role');
-                if ($user) {
-                    $q->orWhere('user_id', $user->id);
-                }
+                  ->orWhereNull('target_role')
+                  ->orWhere('user_id', $user->id);
             });
-        } elseif ($role === 'tenant') {
-            if ($user) {
-                $query->where('user_id', $user->id);
-            }
+        } elseif ($hasStore) {
+            $query->where('user_id', $user->id);
         } else {
-            if ($user) {
-                $query->where('user_id', $user->id);
-            }
+            $query->where('user_id', $user->id)
+                  ->where('target_role', 'buyer');
         }
 
         $query->update(['is_read' => true]);
@@ -109,8 +155,12 @@ class NotificationController extends Controller
 
     /**
      * Isi awal dari transaksi riil yang ada jika tabel belum terisi
+     *
+     * @param string $role
+     * @param \App\Models\User|null $user
+     * @return void
      */
-    protected function seedInitialNotifications(string $role, $user): void
+    protected function seedInitialNotifications(string $role, ?User $user): void
     {
         try {
             if ($role === 'admin') {
@@ -162,8 +212,8 @@ class NotificationController extends Controller
                     ]);
                 }
             } elseif ($role === 'buyer' && $user) {
+                // Notifikasi pembeli HANYA berdasarkan email akun terdaftar
                 $orders = Order::where('customer_email', $user->email)
-                    ->orWhere('customer_phone', $user->phone ?? '')
                     ->latest()->take(6)->get();
 
                 foreach ($orders as $o) {
@@ -176,6 +226,10 @@ class NotificationController extends Controller
                         'body' => "Pesanan #{$o->invoice_number} senilai Rp " . number_format($o->amount, 0, ',', '.') . ($isPaid ? ' siap diunduh di akun Anda.' : ' menunggu pembayaran.'),
                         'icon' => $isPaid ? 'check_circle' : 'pending',
                         'url' => route('tenant.purchases.index'),
+                        'data' => [
+                            'order_id' => $o->id,
+                            'invoice' => $o->invoice_number,
+                        ],
                         'created_at' => $o->created_at,
                     ]);
                 }

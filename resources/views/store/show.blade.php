@@ -90,6 +90,24 @@
     }"
     @toggle-store-search.window="mobileSearchOpen = !mobileSearchOpen; if (mobileSearchOpen) { $nextTick(() => { $refs.mobileSearchInput && $refs.mobileSearchInput.focus() }) }">
     
+    @if($store->isBanned() || $store->isSuspended())
+        <div class="bg-red-600 text-white px-4 py-3 text-center text-sm font-semibold shadow-md flex items-center justify-center gap-2 sticky top-0 z-40">
+            <span class="material-symbols-outlined text-lg">warning</span>
+            <div>
+                <span>
+                    @if($store->isBanned())
+                        Toko ini sedang dinonaktifkan / diblokir oleh Platform. Pembelian produk dinonaktifkan sementara.
+                    @else
+                        Toko ini sedang dalam peninjauan / ditangguhkan sementara oleh Platform.
+                    @endif
+                </span>
+                @if($store->ban_reason)
+                    <span class="block text-xs font-normal opacity-90 mt-0.5">Catatan Platform: {{ $store->ban_reason }}</span>
+                @endif
+            </div>
+        </div>
+    @endif
+
     <!-- Mobile Interactive Search Modal / Drawer (Muncul ketika tombol cari di klik) -->
     <div x-show="mobileSearchOpen" 
          x-transition:enter="transition ease-out duration-200"

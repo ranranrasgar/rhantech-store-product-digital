@@ -433,7 +433,10 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
             <a href="{{ route('help.index') }}" target="_blank" class="topbar-icon-btn" title="Pusat Bantuan & Panduan">
                 <span class="material-symbols-outlined" style="font-size:20px;">help</span>
             </a>
-            <x-navbar-notification-bell role="tenant" />
+            @php
+                $bellRole = (auth()->check() && auth()->user()->store) ? 'tenant' : 'buyer';
+            @endphp
+            <x-navbar-notification-bell :role="$bellRole" />
             <div style="position:relative;" x-data="{ open: false }">
                 <button class="topbar-icon-btn" @click="open = !open" @click.outside="open = false" style="padding:0; width:34px; height:34px; border-radius:50%; overflow:hidden; border:2px solid transparent; transition:border-color 0.2s;">
                     <x-user-avatar style="width:100%; height:100%; object-fit:cover;" />

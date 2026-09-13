@@ -242,6 +242,10 @@ Route::middleware(['auth', 'is_admin'])->prefix('admin')->name('admin.')->group(
     // Multi-tenant features
     Route::get('stores', [\App\Http\Controllers\Admin\StoreController::class, 'index'])->name('stores.index');
     Route::patch('stores/{store}', [\App\Http\Controllers\Admin\StoreController::class, 'update'])->name('stores.update');
+    Route::patch('stores/{store}/ban', [\App\Http\Controllers\Admin\StoreController::class, 'ban'])->name('stores.ban');
+    Route::patch('stores/{store}/unban', [\App\Http\Controllers\Admin\StoreController::class, 'unban'])->name('stores.unban');
+    Route::delete('stores/{store}', [\App\Http\Controllers\Admin\StoreController::class, 'destroy'])->name('stores.destroy');
+    Route::get('stores/{store}/related-data', [\App\Http\Controllers\Admin\StoreController::class, 'relatedData'])->name('stores.related-data');
     Route::get('payouts', [\App\Http\Controllers\Admin\PayoutController::class, 'index'])->name('payouts.index');
     Route::patch('payouts/{payout}', [\App\Http\Controllers\Admin\PayoutController::class, 'update'])->name('payouts.update');
     Route::get('ads', [\App\Http\Controllers\Admin\AdController::class, 'index'])->name('ads.index');

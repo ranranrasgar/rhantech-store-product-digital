@@ -73,8 +73,15 @@ class FirebaseService
 
     /**
      * Kirim notifikasi ke satu User (kompatibilitas lama + FCM HTTP v1)
+     *
+     * @param User|int|string|null $user
+     * @param string $title
+     * @param string $body
+     * @param array $data
+     * @param string|null $clickUrl
+     * @return void
      */
-    public function sendNotificationToUser($user, $title, $body, $data = [], $clickUrl = null)
+    public function sendNotificationToUser(User|int|string|null $user, string $title, string $body, array $data = [], ?string $clickUrl = null): void
     {
         if (is_numeric($user) || is_string($user)) {
             $user = User::find($user);
@@ -94,8 +101,15 @@ class FirebaseService
 
     /**
      * Alias helper sendToUser
+     *
+     * @param User|int|string|null $user
+     * @param string $title
+     * @param string $body
+     * @param string|null $clickUrl
+     * @param array $data
+     * @return void
      */
-    public function sendToUser($user, string $title, string $body, ?string $clickUrl = null, array $data = []): void
+    public function sendToUser(User|int|string|null $user, string $title, string $body, ?string $clickUrl = null, array $data = []): void
     {
         $this->sendNotificationToUser($user, $title, $body, $data, $clickUrl);
     }
@@ -217,6 +231,55 @@ class FirebaseService
             }
         } catch (\Throwable $e) {
             Log::error('notifyStoreOwner Error: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Kirim notifikasi status perubahan toko (banned / suspended / active) ke Tenant
+     */
+    public function notifyStoreStatusChanged(Store $store, string $status, ?string $reason = null): void
+    {
+        try {
+            $statusTitles = [
+                'banned' => "🚫 Toko Anda Diblokir Platform: {$store->name}",
+                'suspended' => "⚠️ Toko Anda Ditangguhkan Sementara: {$store->name}",
+                'active' => "✅ Toko Anda Telah Dipulihkan: {$store->name}",
+            ];
+
+            $statusBodies = [
+                'banned' => "Toko '{$store->name}' telah dinonaktifkan/diblokir oleh Platform." . ($reason ? " Alasan: {$reason}" : ''),
+                'suspended' => "Toko '{$store->name}' ditangguhkan sementara oleh Platform." . ($reason ? " Alasan: {$reason}" : ''),
+                'active' => "Toko '{$store->name}' telah diaktifkan kembali dan kini dapat beroperasi normal.",
+            ];
+
+            $icons = [
+                'banned' => 'block',
+                'suspended' => 'warning',
+                'active' => 'check_circle',
+            ];
+
+            $title = $statusTitles[$status] ?? "Pemberitahuan Status Toko: {$store->name}";
+            $body = $statusBodies[$status] ?? "Status toko Anda telah diperbarui menjadi {$status}.";
+            $icon = $icons[$status] ?? 'notifications';
+            $clickUrl = url('/tenant/dashboard');
+
+            // 1. Catat ke lonceng Tenant
+            if ($store->user_id) {
+                $this->recordNotification($store->user_id, 'tenant', 'store_status', $title, $body, $clickUrl, $icon, [
+                    'store_id' => $store->id,
+                    'status' => $status,
+                    'reason' => $reason,
+                ]);
+            }
+
+            // 2. Kirim Push Notification FCM ke perangkat pemilik toko
+            $this->notifyStoreOwner($store, $title, $body, $clickUrl, [
+                'type' => 'store_status',
+                'status' => $status,
+                'store_id' => (string) $store->id,
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('notifyStoreStatusChanged Error: ' . $e->getMessage());
         }
     }
 

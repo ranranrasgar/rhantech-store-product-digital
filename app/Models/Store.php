@@ -15,8 +15,33 @@ class Store extends Model
         'terms_accepted_at' => 'datetime',
         'is_pro' => 'boolean',
         'pro_expires_at' => 'datetime',
+        'banned_at' => 'datetime',
         'custom_payout_fee_percentage' => 'decimal:2',
     ];
+
+    /**
+     * Check if store is currently active
+     */
+    public function isActive(): bool
+    {
+        return ($this->status ?? 'active') === 'active';
+    }
+
+    /**
+     * Check if store is suspended
+     */
+    public function isSuspended(): bool
+    {
+        return ($this->status ?? 'active') === 'suspended';
+    }
+
+    /**
+     * Check if store is banned
+     */
+    public function isBanned(): bool
+    {
+        return ($this->status ?? 'active') === 'banned';
+    }
 
     /**
      * Check if store has active Pro status
@@ -92,5 +117,10 @@ class Store extends Model
     public function adTransactions()
     {
         return $this->hasMany(AdTransaction::class);
+    }
+
+    public function bannedBy()
+    {
+        return $this->belongsTo(User::class, 'banned_by');
     }
 }

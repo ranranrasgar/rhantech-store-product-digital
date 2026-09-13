@@ -11,6 +11,20 @@ class Order extends Model
 
     protected $guarded = ['id'];
 
+    protected static function booted()
+    {
+        static::deleting(function ($order) {
+            $invoice = $order->invoice_number;
+            $orderId = $order->id;
+
+            \App\Models\AppNotification::where('data->order_id', $orderId)
+                ->orWhere('data->invoice', $invoice)
+                ->orWhere('title', 'like', "%{$invoice}%")
+                ->orWhere('body', 'like', "%{$invoice}%")
+                ->delete();
+        });
+    }
+
     public function product()
     {
         return $this->belongsTo(Product::class);
