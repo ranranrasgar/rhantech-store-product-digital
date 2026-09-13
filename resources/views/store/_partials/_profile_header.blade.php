@@ -78,27 +78,17 @@
         </span>
     </div>
 
-    {{-- Sosmed Icons --}}
+    {{-- Sosmed Icons (Monokrom / Netral Elegan) --}}
     @if(count($socialLinks) > 0)
     <div class="flex items-center justify-center gap-2 mt-4 flex-wrap">
         @foreach($socialLinks as $soc)
             @php
                 $socPlatform = strtolower($soc['platform'] ?? 'custom');
+                $socName = $soc['name'] ?? ucfirst($socPlatform);
                 $socUrl = $soc['url'] ?? '#';
-                $bgClass = match($socPlatform) {
-                    'instagram' => 'bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888] text-white',
-                    'tiktok' => 'bg-black text-white',
-                    'whatsapp' => 'bg-[#25D366] text-white',
-                    'youtube' => 'bg-[#FF0000] text-white',
-                    'facebook' => 'bg-[#1877F2] text-white',
-                    'x', 'twitter' => 'bg-black text-white',
-                    'telegram' => 'bg-[#229ED9] text-white',
-                    'github' => 'bg-[#24292e] text-white',
-                    default => 'bg-slate-700 text-white'
-                };
             @endphp
-            <a href="{{ $socUrl }}" target="_blank" rel="noopener noreferrer"
-               class="w-9 h-9 rounded-full flex items-center justify-center shadow-md hover:scale-110 active:scale-95 transition-transform {{ $bgClass }}">
+            <a href="{{ $socUrl }}" target="_blank" rel="noopener noreferrer" title="{{ $socName }}"
+               class="w-9 h-9 rounded-full flex items-center justify-center bg-slate-100 hover:bg-slate-900 dark:bg-slate-800/90 dark:hover:bg-white text-slate-700 hover:text-white dark:text-slate-200 dark:hover:text-slate-900 border border-slate-200/80 dark:border-slate-700/80 shadow-xs hover:scale-110 active:scale-95 transition-all">
                 <x-store-social-icon :platform="$socPlatform" class="w-4 h-4" />
             </a>
         @endforeach

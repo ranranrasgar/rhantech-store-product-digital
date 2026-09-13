@@ -38,7 +38,13 @@ class HelpController extends Controller
         return view('help.index', compact('categories', 'popularArticles'));
     }
 
-    public function show($slug)
+    /**
+     * Tampilkan detail artikel bantuan berdasarkan slug.
+     *
+     * @param string $slug
+     * @return \Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
+     */
+    public function show(string $slug)
     {
         $aliases = [
             'panduan-lengkap-penarikan-saldo-penjualan-toko-payout-withdraw' => 'panduan-aturan-resmi-penarikan-dana-payout-hasil-penjualan-tenant',
@@ -66,7 +72,14 @@ class HelpController extends Controller
         return view('help.show', compact('article', 'relatedArticles'));
     }
 
-    public function feedback(Request $request, $id)
+    /**
+     * Simpan respon feedback pembaca terhadap artikel bantuan.
+     *
+     * @param Request $request
+     * @param int|string $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function feedback(Request $request, string|int $id)
     {
         $article = HelpArticle::findOrFail($id);
         

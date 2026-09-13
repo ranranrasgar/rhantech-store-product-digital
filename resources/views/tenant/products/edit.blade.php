@@ -1,17 +1,60 @@
 @extends('layouts.tenant')
-@section('title', 'Edit Digital Product')
+@section('title', 'Edit Produk: ' . $product->name)
 @section('content')
-<div class="p-lg md:p-xl flex-1 max-w-4xl mx-auto w-full">
-    <div class="flex items-center gap-md mb-lg">
-        <a href="{{ route('tenant.products.index') }}" class="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition">
-            <span class="material-symbols-outlined">arrow_back</span>
-        </a>
-        <h2 class="font-headline-md font-bold text-on-surface">Edit Digital Product</h2>
+<div class="p-3 sm:p-4 md:p-8 flex-1 max-w-4xl mx-auto w-full pb-8 md:pb-12"
+     x-data="{ submitting: false, imageHasError: false }" 
+     @image-validation-state.window="imageHasError = $event.detail.hasError">
+
+    <!-- Mobile Native Top App Bar (Sticky on mobile) -->
+    <div class="sticky top-0 z-30 -mx-3 -mt-3 sm:-mx-4 sm:-mt-4 md:hidden bg-white/95 dark:bg-[#0d1117]/95 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 px-4 py-3 flex items-center justify-between mb-4 shadow-xs">
+        <div class="flex items-center gap-3 min-w-0">
+            <a href="{{ route('tenant.products.index') }}" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-700 dark:text-slate-200 active:scale-90 transition-transform shrink-0">
+                <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+            </a>
+            <div class="min-w-0">
+                <h1 class="font-extrabold text-sm text-slate-900 dark:text-white truncate leading-tight">
+                    Edit Produk Digital
+                </h1>
+                <p class="text-[10px] text-slate-400 truncate">
+                    ID: #{{ $product->id }} • {{ $product->name }}
+                </p>
+            </div>
+        </div>
+
+        <button type="submit" form="product-form" :disabled="submitting || imageHasError" class="shrink-0 px-3.5 py-1.5 rounded-xl bg-[#00838f] hover:bg-[#00727d] text-white text-xs font-black shadow-sm active:scale-95 transition-all flex items-center gap-1 disabled:opacity-50">
+            <span x-show="submitting" x-cloak class="material-symbols-outlined animate-spin text-[14px]">progress_activity</span>
+            <span x-text="submitting ? '...' : 'Simpan'">Simpan</span>
+        </button>
     </div>
 
+    <!-- Desktop Header -->
+    <div class="hidden md:flex items-center justify-between gap-4 mb-6">
+        <div class="flex items-center gap-4">
+            <a href="{{ route('tenant.products.index') }}" class="p-2 text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition">
+                <span class="material-symbols-outlined text-[24px]">arrow_back</span>
+            </a>
+            <div>
+                <h1 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                    Edit Produk Digital
+                </h1>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                    Perbarui informasi, harga, file unduhan, atau foto produk digital toko Anda.
+                </p>
+            </div>
+        </div>
+
+        @if($product->slug)
+        <a href="{{ route('products.show', $product->slug) }}" target="_blank" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold inline-flex items-center gap-1.5 transition-colors">
+            <span class="material-symbols-outlined text-[16px] text-indigo-500">open_in_new</span>
+            Lihat di Web
+        </a>
+        @endif
+    </div>
+
+    <!-- Status Alerts: Rejection / Pending -->
     @if($product->approval_status === 'rejected')
-    <div class="mb-4 p-4 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-300 dark:border-rose-900 text-rose-800 dark:text-rose-200">
-        <div class="flex items-start gap-2.5">
+    <div class="mb-4 p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-300 dark:border-rose-900 text-rose-800 dark:text-rose-200 shadow-xs">
+        <div class="flex items-start gap-3">
             <span class="material-symbols-outlined text-rose-600 dark:text-rose-400 text-2xl shrink-0 mt-0.5">error</span>
             <div>
                 <h4 class="font-bold text-sm">Produk ini sebelumnya Ditolak oleh Platform</h4>
@@ -19,14 +62,14 @@
                     <strong>Alasan penolakan:</strong> {{ $product->rejection_reason ?? 'Mohon periksa kesesuaian deskripsi, gambar, atau tautan unduhan.' }}
                 </p>
                 <p class="text-[11px] mt-1.5 text-rose-600 dark:text-rose-400">
-                    💡 <em>Silakan perbaiki data yang belum sesuai lalu klik "Update Product". Status produk akan otomatis diajukan kembali untuk ditinjau oleh Admin Platform.</em>
+                    💡 <em>Silakan perbaiki data yang belum sesuai lalu klik "Update Produk". Status produk akan otomatis diajukan kembali untuk ditinjau oleh Admin Platform.</em>
                 </p>
             </div>
         </div>
     </div>
     @elseif($product->approval_status === 'pending')
-    <div class="mb-4 p-4 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-900 text-amber-800 dark:text-amber-200">
-        <div class="flex items-start gap-2.5">
+    <div class="mb-4 p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-900 text-amber-800 dark:text-amber-200 shadow-xs">
+        <div class="flex items-start gap-3">
             <span class="material-symbols-outlined text-amber-600 dark:text-amber-400 text-2xl shrink-0 mt-0.5">hourglass_empty</span>
             <div>
                 <h4 class="font-bold text-sm">Produk Sedang Dalam Peninjauan (In Review)</h4>
@@ -38,17 +81,37 @@
     </div>
     @endif
 
-    <div class="bg-surface rounded-md border border-outline-variant  p-lg">
-        <form action="{{ route('tenant.products.update', $product) }}" method="POST" enctype="multipart/form-data" class="flex flex-col gap-lg" x-data="{ submitting: false, imageHasError: false }" @image-validation-state.window="imageHasError = $event.detail.hasError" @submit="if(imageHasError) { $event.preventDefault(); alert('Mohon perbaiki foto yang melebihi batas 2 MB terlebih dahulu sebelum menyimpan.'); return false; } submitting = true">
-            @csrf @method('PUT')
+    <form action="{{ route('tenant.products.update', $product) }}" 
+          method="POST" 
+          id="product-form"
+          enctype="multipart/form-data" 
+          class="space-y-4 md:space-y-6" 
+          @submit="if(imageHasError) { $event.preventDefault(); alert('Mohon perbaiki foto yang melebihi batas 2 MB terlebih dahulu sebelum menyimpan.'); return false; } submitting = true">
+        @csrf 
+        @method('PUT')
 
-            <div>
-                <label class="block font-label-md text-on-surface mb-xs">Product Name *</label>
-                <input type="text" name="name" required value="{{ old('name', $product->name) }}" class="w-full pl-4 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-secondary focus:ring-1 focus:ring-secondary/20">
-                @error('name')<span class="text-error text-xs">{{ $message }}</span>@enderror
+        <!-- ========================================== -->
+        <!-- CARD 1: INFORMASI UTAMA PRODUK             -->
+        <!-- ========================================== -->
+        <div class="bg-white dark:bg-[#111726] rounded-2xl border border-slate-200/80 dark:border-[#222f49] p-4 md:p-6 shadow-xs space-y-4">
+            <div class="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-slate-800 text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+                <span class="material-symbols-outlined text-[18px] text-sky-500">inventory_2</span>
+                Informasi Utama
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-md" x-data="{
+            <div>
+                <label class="block text-xs md:text-sm font-bold text-slate-800 dark:text-slate-200 mb-1.5">
+                    Nama Produk <span class="text-rose-500">*</span>
+                </label>
+                <input type="text" 
+                       name="name" 
+                       required 
+                       value="{{ old('name', $product->name) }}" 
+                       class="w-full px-4 py-2.5 bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl text-xs md:text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition-all font-semibold">
+                @error('name')<span class="text-rose-500 text-xs mt-1 block">{{ $message }}</span>@enderror
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" x-data="{
                 showAddCategoryModal: false,
                 showAddTypeModal: false,
                 newCategoryName: '',
@@ -123,13 +186,15 @@
                 }
             }">
                 <div>
-                    <div class="flex items-center justify-between mb-xs">
-                        <label class="block font-label-md text-on-surface">Kategori</label>
-                        <button type="button" @click="showAddCategoryModal = true" class="text-xs font-semibold text-primary hover:underline flex items-center gap-0.5">
-                            <span class="material-symbols-outlined text-sm">add_circle</span> Buat Kategori Toko
+                    <div class="flex items-center justify-between mb-1.5">
+                        <label class="block text-xs md:text-sm font-bold text-slate-800 dark:text-slate-200">
+                            Kategori
+                        </label>
+                        <button type="button" @click="showAddCategoryModal = true" class="text-[11px] font-bold text-sky-600 dark:text-sky-400 hover:underline flex items-center gap-1 active:scale-95 transition-transform">
+                            <span class="material-symbols-outlined text-[15px]">add_circle</span> + Buat Kategori
                         </button>
                     </div>
-                    <select id="category-select" name="product_category_id" class="w-full pl-4 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-secondary focus:ring-1 focus:ring-secondary/20">
+                    <select id="category-select" name="product_category_id" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl text-xs md:text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500">
                         <option value="">-- Tanpa Kategori --</option>
                         <optgroup label="🌐 Kategori Platform">
                             @foreach($categories->whereNull('store_id') as $cat)
@@ -144,16 +209,19 @@
                         </optgroup>
                         @endif
                     </select>
-                    @error('product_category_id')<span class="text-error text-xs">{{ $message }}</span>@enderror
+                    @error('product_category_id')<span class="text-rose-500 text-xs mt-1 block">{{ $message }}</span>@enderror
                 </div>
+
                 <div>
-                    <div class="flex items-center justify-between mb-xs">
-                        <label class="block font-label-md text-on-surface">Tipe Produk</label>
-                        <button type="button" @click="showAddTypeModal = true" class="text-xs font-semibold text-primary hover:underline flex items-center gap-0.5">
-                            <span class="material-symbols-outlined text-sm">add_circle</span> Buat Tipe Toko
+                    <div class="flex items-center justify-between mb-1.5">
+                        <label class="block text-xs md:text-sm font-bold text-slate-800 dark:text-slate-200">
+                            Tipe Produk
+                        </label>
+                        <button type="button" @click="showAddTypeModal = true" class="text-[11px] font-bold text-sky-600 dark:text-sky-400 hover:underline flex items-center gap-1 active:scale-95 transition-transform">
+                            <span class="material-symbols-outlined text-[15px]">add_circle</span> + Buat Tipe
                         </button>
                     </div>
-                    <select id="type-select" name="product_type_id" class="w-full pl-4 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-secondary focus:ring-1 focus:ring-secondary/20">
+                    <select id="type-select" name="product_type_id" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl text-xs md:text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500">
                         <option value="">-- Tanpa Tipe --</option>
                         <optgroup label="🌐 Tipe Platform">
                             @foreach($types->whereNull('store_id') as $type)
@@ -168,22 +236,24 @@
                         </optgroup>
                         @endif
                     </select>
-                    @error('product_type_id')<span class="text-error text-xs">{{ $message }}</span>@enderror
+                    @error('product_type_id')<span class="text-rose-500 text-xs mt-1 block">{{ $message }}</span>@enderror
                 </div>
 
                 <!-- Modal Buat Kategori Toko -->
-                <div x-show="showAddCategoryModal" x-cloak class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-                    <div class="bg-surface rounded-xl border border-outline-variant p-5 w-full max-w-sm shadow-xl" @click.away="showAddCategoryModal = false">
-                        <h3 class="text-sm font-bold text-on-surface mb-2 flex items-center gap-1.5">
-                            <span class="material-symbols-outlined text-primary text-lg">folder_open</span>
-                            Tambah Kategori Toko Anda
-                        </h3>
-                        <p class="text-xs text-on-surface-variant mb-3">Kategori ini khusus dibuat untuk toko Anda dan akan muncul di filter katalog.</p>
-                        <input type="text" x-model="newCategoryName" placeholder="Nama kategori baru..." class="w-full px-3 py-2 text-sm bg-surface-container-lowest border border-outline-variant rounded-lg mb-3 focus:outline-none focus:border-primary">
-                        <div class="flex justify-end gap-2">
-                            <button type="button" @click="showAddCategoryModal = false" class="px-3 py-1.5 text-xs text-on-surface-variant hover:bg-surface-container rounded-lg">Batal</button>
-                            <button type="button" @click="addCategory()" :disabled="loadingCat" class="px-3.5 py-1.5 text-xs font-bold bg-primary text-white rounded-lg hover:opacity-90 flex items-center gap-1">
-                                <span x-show="loadingCat" class="material-symbols-outlined animate-spin text-xs">progress_activity</span>
+                <div x-show="showAddCategoryModal" x-cloak class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+                    <div class="bg-white dark:bg-[#111726] rounded-2xl border border-slate-200 dark:border-[#222f49] p-5 w-full max-w-sm shadow-2xl space-y-3" @click.away="showAddCategoryModal = false">
+                        <div class="flex items-center gap-2 text-slate-900 dark:text-white font-bold text-sm">
+                            <span class="material-symbols-outlined text-sky-500 text-[20px]">folder_open</span>
+                            Tambah Kategori Toko Baru
+                        </div>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                            Kategori ini khusus dibuat untuk toko Anda dan akan muncul di filter etalase.
+                        </p>
+                        <input type="text" x-model="newCategoryName" placeholder="Nama kategori baru..." class="w-full px-3.5 py-2.5 text-xs md:text-sm bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-sky-500">
+                        <div class="flex justify-end gap-2 pt-1">
+                            <button type="button" @click="showAddCategoryModal = false" class="px-3.5 py-2 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl">Batal</button>
+                            <button type="button" @click="addCategory()" :disabled="loadingCat" class="px-4 py-2 text-xs font-bold bg-sky-500 hover:bg-sky-600 text-white rounded-xl flex items-center gap-1.5 shadow-sm disabled:opacity-50">
+                                <span x-show="loadingCat" class="material-symbols-outlined animate-spin text-[14px]">progress_activity</span>
                                 Simpan Kategori
                             </button>
                         </div>
@@ -191,88 +261,337 @@
                 </div>
 
                 <!-- Modal Buat Tipe Toko -->
-                <div x-show="showAddTypeModal" x-cloak class="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-                    <div class="bg-surface rounded-xl border border-outline-variant p-5 w-full max-w-sm shadow-xl" @click.away="showAddTypeModal = false">
-                        <h3 class="text-sm font-bold text-on-surface mb-2 flex items-center gap-1.5">
-                            <span class="material-symbols-outlined text-primary text-lg">devices</span>
-                            Tambah Tipe Toko Anda
-                        </h3>
-                        <p class="text-xs text-on-surface-variant mb-3">Tipe/platform ini khusus dibuat untuk produk toko Anda.</p>
-                        <input type="text" x-model="newTypeName" placeholder="Nama tipe/platform baru..." class="w-full px-3 py-2 text-sm bg-surface-container-lowest border border-outline-variant rounded-lg mb-3 focus:outline-none focus:border-primary">
-                        <div class="flex justify-end gap-2">
-                            <button type="button" @click="showAddTypeModal = false" class="px-3 py-1.5 text-xs text-on-surface-variant hover:bg-surface-container rounded-lg">Batal</button>
-                            <button type="button" @click="addType()" :disabled="loadingType" class="px-3.5 py-1.5 text-xs font-bold bg-primary text-white rounded-lg hover:opacity-90 flex items-center gap-1">
-                                <span x-show="loadingType" class="material-symbols-outlined animate-spin text-xs">progress_activity</span>
+                <div x-show="showAddTypeModal" x-cloak class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+                    <div class="bg-white dark:bg-[#111726] rounded-2xl border border-slate-200 dark:border-[#222f49] p-5 w-full max-w-sm shadow-2xl space-y-3" @click.away="showAddTypeModal = false">
+                        <div class="flex items-center gap-2 text-slate-900 dark:text-white font-bold text-sm">
+                            <span class="material-symbols-outlined text-sky-500 text-[20px]">devices</span>
+                            Tambah Tipe/Platform Toko
+                        </div>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                            Tipe produk ini khusus dibuat untuk mengelompokkan aplikasi atau file digital toko Anda.
+                        </p>
+                        <input type="text" x-model="newTypeName" placeholder="Nama tipe baru..." class="w-full px-3.5 py-2.5 text-xs md:text-sm bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-sky-500">
+                        <div class="flex justify-end gap-2 pt-1">
+                            <button type="button" @click="showAddTypeModal = false" class="px-3.5 py-2 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl">Batal</button>
+                            <button type="button" @click="addType()" :disabled="loadingType" class="px-4 py-2 text-xs font-bold bg-sky-500 hover:bg-sky-600 text-white rounded-xl flex items-center gap-1.5 shadow-sm disabled:opacity-50">
+                                <span x-show="loadingType" class="material-symbols-outlined animate-spin text-[14px]">progress_activity</span>
                                 Simpan Tipe
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+        <!-- ========================================== -->
+        <!-- CARD 2: HARGA & AFILIASI                   -->
+        <!-- ========================================== -->
+        <div class="bg-white dark:bg-[#111726] rounded-2xl border border-slate-200/80 dark:border-[#222f49] p-4 md:p-6 shadow-xs space-y-4">
+            <div class="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-slate-800 text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+                <span class="material-symbols-outlined text-[18px] text-emerald-500">payments</span>
+                Harga & Komisi Penjualan
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <label class="block font-label-md text-on-surface mb-xs">Price (Rp) *</label>
-                    <input type="number" name="price" required min="0" value="{{ old('price', (int)$product->price) }}" class="w-full pl-4 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-secondary focus:ring-1 focus:ring-secondary/20">
-                    @error('price')<span class="text-error text-xs">{{ $message }}</span>@enderror
+                    <label class="block text-xs md:text-sm font-bold text-slate-800 dark:text-slate-200 mb-1.5">
+                        Harga Normal (Rp) <span class="text-rose-500">*</span>
+                    </label>
+                    <input type="number" 
+                           name="price" 
+                           required 
+                           min="0" 
+                           value="{{ old('price', (int)$product->price) }}" 
+                           class="w-full px-4 py-2.5 bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl text-xs md:text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition-all font-semibold">
+                    @error('price')<span class="text-rose-500 text-xs mt-1 block">{{ $message }}</span>@enderror
                 </div>
                 <div>
-                    <label class="block font-label-md text-on-surface mb-xs">Discount Price (Rp) - Optional</label>
-                    <input type="number" name="discount_price" min="0" value="{{ old('discount_price', ($product->discount_price && $product->discount_price > 0) ? (int)$product->discount_price : '') }}" placeholder="Kosongkan jika tidak ada diskon" class="w-full pl-4 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-secondary focus:ring-1 focus:ring-secondary/20">
-                    <p class="text-[11px] text-on-surface-variant mt-1">Kosongkan atau isi 0 jika tidak ada harga diskon (promo).</p>
-                    @error('discount_price')<span class="text-error text-xs">{{ $message }}</span>@enderror
+                    <label class="block text-xs md:text-sm font-bold text-slate-800 dark:text-slate-200 mb-1.5">
+                        Harga Diskon (Rp) <span class="text-xs font-normal text-slate-400">- Opsional</span>
+                    </label>
+                    <input type="number" 
+                           name="discount_price" 
+                           min="0" 
+                           value="{{ old('discount_price', $product->discount_price ? (int)$product->discount_price : '') }}" 
+                           class="w-full px-4 py-2.5 bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl text-xs md:text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition-all font-semibold">
+                    @error('discount_price')<span class="text-rose-500 text-xs mt-1 block">{{ $message }}</span>@enderror
                 </div>
             </div>
 
-            <!-- Pengaturan Bagi Hasil Komisi Afiliasi (Showcase) -->
-            <div class="p-4 rounded-xl border border-sky-500/30 bg-sky-500/[0.03] dark:bg-sky-500/[0.05] space-y-3">
+            <!-- Bagi Hasil Komisi Afiliasi (Showcase) -->
+            <div class="p-3.5 sm:p-4 rounded-xl border border-sky-500/30 bg-sky-500/[0.03] dark:bg-sky-500/[0.06] space-y-3">
                 <div class="flex items-center justify-between gap-3">
                     <div class="flex items-center gap-2">
-                        <span class="material-symbols-outlined text-sky-500 text-[22px]">storefront</span>
+                        <span class="material-symbols-outlined text-sky-500 text-[22px] shrink-0">storefront</span>
                         <div>
-                            <h4 class="text-xs font-bold text-on-surface">Bagi Hasil Komisi Afiliasi (Etalase Showcase)</h4>
-                            <p class="text-[11px] text-on-surface-variant">Izinkan toko lain memajang produk ini di etalase mereka dan tentukan bagi hasil komisi saat produk terjual.</p>
+                            <h4 class="text-xs font-bold text-slate-900 dark:text-white">Bagi Hasil Komisi Afiliasi (Etalase Showcase)</h4>
+                            <p class="text-[11px] text-slate-500 dark:text-slate-400">Izinkan toko lain memajang produk ini di etalase mereka dan dapatkan komisi saat terjual.</p>
                         </div>
                     </div>
                     <label class="relative inline-flex items-center cursor-pointer shrink-0">
                         <input type="checkbox" name="is_affiliate_enabled" value="1" {{ old('is_affiliate_enabled', $product->is_affiliate_enabled ?? true) ? 'checked' : '' }} class="sr-only peer">
-                        <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-sky-500"></div>
+                        <div class="w-10 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-sky-500"></div>
                     </label>
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-outline-variant/40">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2.5 border-t border-sky-500/20">
                     <div>
-                        <label class="block text-xs font-semibold text-on-surface mb-1">Persentase Komisi (%) *</label>
+                        <label class="block text-xs font-semibold text-slate-800 dark:text-slate-200 mb-1">Persentase Komisi Afiliasi (%) *</label>
                         <div class="relative">
                             <input type="number" name="affiliate_commission_rate" min="0" max="100" step="0.5" 
                                    value="{{ old('affiliate_commission_rate', $product->affiliate_commission_rate ?? 10) }}" 
                                    placeholder="10" 
-                                   class="w-full pl-4 pr-8 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg text-xs font-bold text-on-surface focus:border-sky-500 focus:ring-1 focus:ring-sky-500/20">
+                                   class="w-full pl-3.5 pr-8 py-2 bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-sky-500">
                             <span class="absolute right-3 top-2 text-xs font-bold text-slate-400">%</span>
                         </div>
-                        <span class="text-[10px] text-on-surface-variant mt-1 block">Default platform: 10%. Semakin menarik komisi, semakin banyak toko yang memajang produk Anda.</span>
+                        <span class="text-[10px] text-slate-400 mt-1 block">Default platform: 10%. Semakin tinggi komisi, semakin menarik bagi toko lain.</span>
                     </div>
-                    <div class="bg-surface-container-low/60 rounded-lg p-2.5 flex flex-col justify-center border border-outline-variant/30 text-[11px] text-on-surface-variant">
-                        <span class="font-bold text-on-surface flex items-center gap-1"><span class="material-symbols-outlined text-[15px] text-amber-500">payments</span> Simulasi Bagi Hasil:</span>
-                        <span class="mt-0.5">Toko lain yang memajang produk ini akan langsung melihat persentase & nominal komisi di menu Etalase Afiliasi.</span>
+                    <div class="bg-white/60 dark:bg-slate-800/40 rounded-xl p-2.5 flex flex-col justify-center border border-slate-200/50 dark:border-slate-800/50 text-[11px] text-slate-500 dark:text-slate-400">
+                        <span class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[15px] text-amber-500">payments</span> Simulasi Etalase:
+                        </span>
+                        <span class="mt-0.5">Mitra afiliasi akan melihat nominal komisi ini saat memajang produk Anda di toko mereka.</span>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div>
-                <label class="block font-label-md text-on-surface mb-xs">Ringkasan Singkat (Short Description) - Opsional</label>
-                <textarea name="short_description" rows="2" placeholder="Ringkasan singkat produk untuk tampilan kartu etalase..." class="w-full pl-4 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-secondary focus:ring-1 focus:ring-secondary/20">{{ old('short_description', $product->short_description) }}</textarea>
-                @error('short_description')<span class="text-error text-xs">{{ $message }}</span>@enderror
+        <!-- ========================================== -->
+        <!-- CARD 3: FOTO PRODUK (MAKS 5)               -->
+        <!-- ========================================== -->
+        @php
+            $initialSavedImages = $product->images->map(function($img) {
+                return [
+                    'id' => $img->id,
+                    'image_path' => asset('storage/' . $img->image_path),
+                    'is_main' => (bool)$img->is_main,
+                    'deleting' => false
+                ];
+            })->values()->all();
+        @endphp
+
+        <div class="bg-white dark:bg-[#111726] rounded-2xl border border-slate-200/80 dark:border-[#222f49] p-4 md:p-6 shadow-xs space-y-4"
+             x-data="productImageValidator({{ json_encode($initialSavedImages) }}, {{ $product->id }})">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 flex-wrap gap-1">
+                <div class="flex items-center gap-2 text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+                    <span class="material-symbols-outlined text-[18px] text-indigo-500">photo_library</span>
+                    Foto Produk (Maks 5)
+                </div>
+                <span class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1 font-medium">
+                    <span class="material-symbols-outlined text-[14px] text-sky-500">verified</span>
+                    Maks. 2 MB per foto
+                </span>
+            </div>
+
+            <!-- Ketentuan Info Box -->
+            <div class="p-3 rounded-xl bg-teal-500/10 border border-teal-500/20 text-xs text-teal-800 dark:text-teal-300 flex items-center justify-between gap-2 flex-wrap">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[18px] text-[#00838f] dark:text-teal-400 shrink-0">info</span>
+                    <span><strong>Ketentuan:</strong> Maks <strong>2 MB</strong> / foto. Format: JPG, JPEG, PNG, WEBP, GIF.</span>
+                </div>
+                <span class="text-[11px] font-bold text-teal-700 dark:text-teal-300">
+                    Slot tersisa: <strong x-text="remainingSlot"></strong> foto
+                </span>
+            </div>
+            
+            <div class="relative">
+                <input type="file" 
+                       name="images[]" 
+                       multiple 
+                       accept=".jpg,.jpeg,.png,.webp,.gif,image/jpeg,image/png,image/webp,image/gif" 
+                       @change="validateFiles($event)" 
+                       class="w-full px-4 py-2.5 bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl text-xs md:text-sm text-slate-900 dark:text-white focus:outline-none focus:border-sky-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-sky-500/10 file:text-sky-600 dark:file:text-sky-400 hover:file:bg-sky-500/20 cursor-pointer" 
+                       :class="hasOversized ? 'border-rose-500 ring-1 ring-rose-500/30' : ''">
+            </div>
+
+            <!-- Alert Error Validasi File Melebihi 2MB -->
+            <div x-show="errorMessage" x-cloak class="p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 rounded-xl flex items-start gap-2.5 text-rose-700 dark:text-rose-300 text-xs">
+                <span class="material-symbols-outlined text-[18px] shrink-0 text-rose-600 mt-0.5">warning</span>
+                <div>
+                    <strong class="font-bold block mb-0.5 text-rose-800 dark:text-rose-200">Peringatan Ukuran Foto:</strong>
+                    <span x-text="errorMessage"></span>
+                </div>
+            </div>
+
+            <!-- Pratinjau Gambar Tambahan Terpilih -->
+            <div x-show="files.length > 0" x-cloak class="p-3 bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl">
+                <div class="flex items-center justify-between flex-wrap gap-2 mb-2.5">
+                    <p class="text-xs font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-sm" :class="hasOversized ? 'text-rose-600' : 'text-emerald-600'" x-text="hasOversized ? 'error' : 'check_circle'"></span>
+                        <span x-text="files.length + ' foto baru dipilih (Total: ' + totalSizeFormatted + '):'"></span>
+                    </p>
+                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full"
+                          :class="hasOversized ? 'bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300' : 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300'"
+                          x-text="hasOversized ? '⚠️ Ada foto > 2 MB' : '✓ Semua foto aman (< 2 MB)'"></span>
+                </div>
+                <div class="flex flex-wrap gap-2.5">
+                    <template x-for="(f, i) in files" :key="i">
+                        <div class="relative rounded-xl overflow-hidden w-20 h-20 bg-white dark:bg-slate-800 shadow-xs border"
+                             :class="f.isOversized ? 'border-2 border-rose-500' : 'border-slate-200 dark:border-slate-700'">
+                            <img :src="f.previewUrl" class="w-full h-full object-cover">
+                            <div class="absolute bottom-0 inset-x-0 p-0.5 text-[9px] truncate text-center font-mono font-bold"
+                                 :class="f.isOversized ? 'bg-rose-600 text-white' : 'bg-slate-900/80 text-white'">
+                                <span x-text="f.size"></span>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <!-- List Foto Produk yang Sudah Tersimpan -->
+            <div x-show="savedImages.length > 0" x-cloak class="p-3.5 bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl space-y-3">
+                <div class="flex items-center justify-between flex-wrap gap-2">
+                    <div class="flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-sky-500 text-base">photo_library</span>
+                        <span class="text-xs font-bold text-slate-900 dark:text-white">
+                            Foto Tersimpan (<span x-text="savedImages.length"></span>/5)
+                        </span>
+                    </div>
+                    <button type="button" 
+                            @click="deleteAllImages()" 
+                            :disabled="deletingAll"
+                            class="px-2.5 py-1 text-xs font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 dark:text-rose-300 rounded-lg transition flex items-center gap-1 disabled:opacity-50 cursor-pointer">
+                        <span class="material-symbols-outlined text-sm" :class="deletingAll ? 'animate-spin' : ''" x-text="deletingAll ? 'progress_activity' : 'delete_sweep'"></span>
+                        <span x-text="deletingAll ? 'Menghapus...' : 'Hapus Semua Foto'">Hapus Semua Foto</span>
+                    </button>
+                </div>
+                
+                <div class="flex flex-wrap gap-2.5">
+                    <template x-for="img in savedImages" :key="img.id">
+                        <div class="relative group w-20 h-20 rounded-xl overflow-hidden border transition-all"
+                             :class="img.is_main ? 'border-sky-500 border-2 shadow-xs' : 'border-slate-200 dark:border-slate-700'">
+                            <img :src="img.image_path" class="w-full h-full object-cover">
+                            
+                            <!-- Loading overlay saat proses hapus foto -->
+                            <div x-show="img.deleting" x-cloak class="absolute inset-0 bg-black/75 flex flex-col items-center justify-center gap-1 text-white p-1">
+                                <span class="material-symbols-outlined animate-spin text-base">progress_activity</span>
+                                <span class="text-[9px] font-semibold">Menghapus...</span>
+                            </div>
+
+                            <div x-show="!img.deleting" class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1 p-1">
+                                <button x-show="!img.is_main" 
+                                        type="button" 
+                                        @click="setMainImage(img)" 
+                                        class="w-full py-1 bg-white text-slate-900 text-[9px] font-bold rounded-md shadow hover:bg-slate-100 transition cursor-pointer">
+                                    Set Utama
+                                </button>
+                                <button type="button" 
+                                        @click="deleteImage(img)" 
+                                        class="w-full py-1 bg-rose-600 text-white text-[9px] font-bold rounded-md shadow hover:bg-rose-700 transition cursor-pointer">
+                                    Hapus
+                                </button>
+                            </div>
+                            
+                            <div x-show="img.is_main" class="absolute top-0 left-0 bg-sky-500 text-white text-[8px] font-black px-1.5 py-0.2 rounded-br-lg tracking-wider">UTAMA</div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            @error('images')<span class="text-rose-500 text-xs block mt-1">{{ $message }}</span>@enderror
+            @error('images.*')<span class="text-rose-500 text-xs block mt-1">{{ $message }}</span>@enderror
+        </div>
+
+        <!-- ========================================== -->
+        <!-- CARD 4: DESKRIPSI PRODUK                   -->
+        <!-- ========================================== -->
+        <div class="bg-white dark:bg-[#111726] rounded-2xl border border-slate-200/80 dark:border-[#222f49] p-4 md:p-6 shadow-xs space-y-4">
+            <div class="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-slate-800 text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+                <span class="material-symbols-outlined text-[18px] text-amber-500">description</span>
+                Deskripsi Produk
             </div>
 
             <div>
-                <label class="block font-label-md text-on-surface mb-xs">Full Description *</label>
-                <div id="editor-container" class="w-full bg-surface-container-low border border-[#CBD5E1] dark:border-outline-variant rounded-b-lg font-body-md text-body-md text-on-surface" style="min-height: 250px;"></div>
+                <label class="block text-xs md:text-sm font-bold text-slate-800 dark:text-slate-200 mb-1.5">
+                    Ringkasan Singkat (Short Description) <span class="text-xs font-normal text-slate-400">- Opsional</span>
+                </label>
+                <textarea name="short_description" rows="2" placeholder="Ringkasan singkat produk..." class="w-full px-4 py-2.5 bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl text-xs md:text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500">{{ old('short_description', $product->short_description) }}</textarea>
+                @error('short_description')<span class="text-rose-500 text-xs mt-1 block">{{ $message }}</span>@enderror
+            </div>
+
+            <div>
+                <label class="block text-xs md:text-sm font-bold text-slate-800 dark:text-slate-200 mb-1.5">
+                    Deskripsi Lengkap <span class="text-rose-500">*</span>
+                </label>
+                <div id="editor-container" class="w-full bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-b-xl text-xs md:text-sm text-slate-900 dark:text-white" style="min-height: 220px;"></div>
                 <input type="hidden" name="description" id="description" value="{{ old('description', $product->description) }}">
-                @error('description')<span class="text-error text-xs">{{ $message }}</span>@enderror
+                @error('description')<span class="text-rose-500 text-xs mt-1 block">{{ $message }}</span>@enderror
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- CARD 5: TAUTAN UNDUHAN & DEMO              -->
+        <!-- ========================================== -->
+        <div class="bg-white dark:bg-[#111726] rounded-2xl border border-slate-200/80 dark:border-[#222f49] p-4 md:p-6 shadow-xs space-y-4">
+            <div class="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-slate-800 text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+                <span class="material-symbols-outlined text-[18px] text-cyan-500">cloud_download</span>
+                Tautan File & Unduhan Pembeli
             </div>
 
-            <!-- Tags / Kata Kunci Pencarian & Auto-Generator -->
-            <div x-data="{
+            <div>
+                <label class="block text-xs md:text-sm font-bold text-slate-800 dark:text-slate-200 mb-1.5">
+                    Demo URL <span class="text-xs font-normal text-slate-400">- Opsional</span>
+                </label>
+                <input type="url" name="demo_url" value="{{ old('demo_url', $product->demo_url) }}" placeholder="https://demo-aplikasi.com" class="w-full px-4 py-2.5 bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl text-xs md:text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500">
+                @error('demo_url')<span class="text-rose-500 text-xs mt-1 block">{{ $message }}</span>@enderror
+            </div>
+
+            <div class="p-3.5 md:p-4 bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl space-y-3">
+                <div class="flex justify-between items-center flex-wrap gap-2">
+                    <div>
+                        <label class="block text-xs md:text-sm font-bold text-slate-800 dark:text-slate-200">
+                            Tautan Unduhan Eksternal <span class="text-rose-500">*</span>
+                        </label>
+                        <p class="text-[11px] text-slate-400">Tautan file produk (Google Drive, Dropbox, Mega) yang akan dikirim otomatis ke email pembeli.</p>
+                    </div>
+                    <button type="button" onclick="addLink()" class="text-xs bg-sky-500 hover:bg-sky-600 text-white px-3 py-1.5 rounded-xl font-bold transition-all shadow-xs flex items-center gap-1 active:scale-95">
+                        <span class="material-symbols-outlined text-[16px]">add</span> Tambah Link
+                    </button>
+                </div>
+                
+                <div id="links-container" class="flex flex-col gap-2.5">
+                    @php $links = old('download_links', $product->download_links ?? []); @endphp
+                    @if(!empty($links) && is_array($links))
+                        @foreach($links as $index => $link)
+                        <div class="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center p-2.5 sm:p-0 bg-white dark:bg-[#111726] sm:bg-transparent rounded-xl border sm:border-0 border-slate-200 dark:border-[#222f49]">
+                            <div class="flex-1">
+                                <input type="text" name="download_links[{{ $index }}][name]" value="{{ $link['name'] ?? '' }}" placeholder="Nama Link (cth: Source Code)" required class="w-full px-3 py-2 bg-slate-50 sm:bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl text-xs md:text-sm text-slate-900 dark:text-white">
+                            </div>
+                            <div class="flex-[2]">
+                                <input type="url" name="download_links[{{ $index }}][url]" value="{{ $link['url'] ?? '' }}" placeholder="https://..." required class="w-full px-3 py-2 bg-slate-50 sm:bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl text-xs md:text-sm text-slate-900 dark:text-white">
+                            </div>
+                            <div class="flex justify-end sm:block">
+                                <button type="button" onclick="if(document.querySelectorAll('#links-container > div').length > 1) this.closest('.flex').remove(); else alert('Minimal 1 tautan harus diisi.');" class="p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-xl transition-colors flex items-center gap-1 text-xs" title="Hapus Link">
+                                    <span class="material-symbols-outlined text-base">delete</span>
+                                    <span class="sm:hidden text-xs font-semibold">Hapus</span>
+                                </button>
+                            </div>
+                        </div>
+                        @endforeach
+                    @else
+                        <div class="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center p-2.5 sm:p-0 bg-white dark:bg-[#111726] sm:bg-transparent rounded-xl border sm:border-0 border-slate-200 dark:border-[#222f49]">
+                            <div class="flex-1">
+                                <input type="text" name="download_links[0][name]" placeholder="Nama Link (cth: Source Code)" required class="w-full px-3 py-2 bg-slate-50 sm:bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl text-xs md:text-sm text-slate-900 dark:text-white">
+                            </div>
+                            <div class="flex-[2]">
+                                <input type="url" name="download_links[0][url]" placeholder="https://..." required class="w-full px-3 py-2 bg-slate-50 sm:bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl text-xs md:text-sm text-slate-900 dark:text-white">
+                            </div>
+                            <div class="flex justify-end sm:block">
+                                <button type="button" onclick="if(document.querySelectorAll('#links-container > div').length > 1) this.closest('.flex').remove(); else alert('Minimal 1 tautan harus diisi.');" class="p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-xl transition-colors flex items-center gap-1 text-xs" title="Hapus Link">
+                                    <span class="material-symbols-outlined text-base">delete</span>
+                                    <span class="sm:hidden text-xs font-semibold">Hapus</span>
+                                </button>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- CARD 6: TAGS & SEO                         -->
+        <!-- ========================================== -->
+        <div class="bg-white dark:bg-[#111726] rounded-2xl border border-slate-200/80 dark:border-[#222f49] p-4 md:p-6 shadow-xs space-y-4"
+             x-data="{
                 tagsString: '{{ addslashes(old('tags', $product->tags ?? '')) }}',
                 tagsList: [],
                 generating: false,
@@ -317,7 +636,6 @@
                     }
 
                     this.generating = true;
-
                     const combined = `${nameInput} ${catText} ${typeText} ${shortDesc} ${descInput}`;
                     
                     const techDictionary = [
@@ -349,19 +667,14 @@
                     ]);
 
                     const extractedTags = new Set();
-
                     techDictionary.forEach(term => {
                         const regex = new RegExp('\\b' + term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i');
-                        if (regex.test(combined)) {
-                            extractedTags.add(term);
-                        }
+                        if (regex.test(combined)) extractedTags.add(term);
                     });
 
                     businessDictionary.forEach(term => {
                         const regex = new RegExp('\\b' + term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i');
-                        if (regex.test(combined)) {
-                            extractedTags.add(term);
-                        }
+                        if (regex.test(combined)) extractedTags.add(term);
                     });
 
                     if (nameInput.trim()) {
@@ -375,14 +688,6 @@
                             const formatted = w.charAt(0).toUpperCase() + w.slice(1);
                             extractedTags.add(formatted);
                         });
-
-                        for (let i = 0; i < words.length - 1; i++) {
-                            const phrase = (words[i].charAt(0).toUpperCase() + words[i].slice(1)) + ' ' +
-                                           (words[i+1].charAt(0).toUpperCase() + words[i+1].slice(1));
-                            if (phrase.length <= 25) {
-                                extractedTags.add(phrase);
-                            }
-                        }
                     }
 
                     if (catText && !stopwords.has(catText.toLowerCase())) extractedTags.add(catText);
@@ -395,256 +700,94 @@
                         this.generating = false;
                     }, 350);
                 }
-            }">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-xs">
-                    <div>
-                        <label class="block font-label-md text-on-surface font-bold">
-                            Tags / Kata Kunci Pencarian (SEO)
-                        </label>
-                        <p class="text-xs text-on-surface-variant">
-                            Pisahkan dengan koma. Kata kunci ini dicocokkan saat calon pembeli mencari di website.
-                        </p>
-                    </div>
-
-                    <button type="button" 
-                            @click="generateTags()" 
-                            :disabled="generating"
-                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-700 text-xs font-bold transition-all shrink-0">
-                        <span class="material-symbols-outlined text-[16px] text-amber-600 dark:text-amber-400" :class="{ 'animate-spin': generating }">
-                            auto_awesome
-                        </span>
-                        <span x-text="generating ? 'Menganalisis Teks...' : '⚡ Generate Tags Otomatis'"></span>
-                    </button>
+             }">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100 dark:border-slate-800">
+                <div class="flex items-center gap-2 text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+                    <span class="material-symbols-outlined text-[18px] text-purple-500">tag</span>
+                    Kata Kunci Pencarian & SEO
                 </div>
 
+                <button type="button" 
+                        @click="generateTags()" 
+                        :disabled="generating"
+                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-700/60 text-xs font-bold transition-all shrink-0 active:scale-95">
+                    <span class="material-symbols-outlined text-[16px] text-amber-600 dark:text-amber-400" :class="{ 'animate-spin': generating }">
+                        auto_awesome
+                    </span>
+                    <span x-text="generating ? 'Menganalisis...' : '⚡ Generate Tags Otomatis'"></span>
+                </button>
+            </div>
+
+            <div>
                 <input type="text" 
                        name="tags" 
                        x-model="tagsString"
                        placeholder="Contoh: Aplikasi Kasir, POS, Toko Online, Laravel 11, PHP MySQL" 
-                       class="w-full pl-4 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-secondary focus:ring-1 focus:ring-secondary/20 text-xs md:text-sm">
-                @error('tags')<span class="text-error text-xs">{{ $message }}</span>@enderror
+                       class="w-full px-4 py-2.5 bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl text-xs md:text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500">
+                @error('tags')<span class="text-rose-500 text-xs mt-1 block">{{ $message }}</span>@enderror
 
-                <div class="mt-2 flex flex-wrap items-center gap-1.5 min-h-[28px]" x-show="tagsList.length > 0">
-                    <span class="text-[11px] text-on-surface-variant font-medium mr-1">Preview Tag:</span>
+                <div class="mt-2.5 flex flex-wrap items-center gap-1.5 min-h-[28px]" x-show="tagsList.length > 0">
+                    <span class="text-[11px] text-slate-400 font-medium mr-1">Preview Tag:</span>
                     <template x-for="(tag, index) in tagsList" :key="index">
-                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/20">
-                            <span class="text-primary/70">#</span>
+                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-sky-500/10 text-sky-700 dark:text-sky-300 border border-sky-500/20">
+                            <span class="text-sky-500">#</span>
                             <span x-text="tag"></span>
-                            <button type="button" @click="removeTag(index)" class="hover:text-error text-on-surface-variant ml-0.5" title="Hapus tag">
+                            <button type="button" @click="removeTag(index)" class="hover:text-rose-500 text-slate-400 ml-0.5">
                                 <span class="material-symbols-outlined text-[14px]">close</span>
                             </button>
                         </span>
                     </template>
                 </div>
+            </div>
+        </div>
 
-                <div class="mt-1.5 flex items-center justify-between text-[11px] text-on-surface-variant">
-                    <span>💡 <em>Tips: Klik tombol <strong>Generate Tags Otomatis</strong> setelah mengisi Nama atau Deskripsi untuk menghasilkan tags relevan secara instan.</em></span>
-                </div>
+        <!-- ========================================== -->
+        <!-- CARD 7: KUSTOMISASI DETAIL (FAQ & BADGES)  -->
+        <!-- ========================================== -->
+        @include('products._custom_fields', ['productItem' => $product])
+
+        <!-- ========================================== -->
+        <!-- CARD 8: STATUS PUBLIKASI                   -->
+        <!-- ========================================== -->
+        <div class="bg-white dark:bg-[#111726] rounded-2xl border border-slate-200/80 dark:border-[#222f49] p-4 md:p-6 shadow-xs space-y-4">
+            <div class="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-slate-800 text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+                <span class="material-symbols-outlined text-[18px] text-teal-500">verified</span>
+                Status Publikasi Produk
             </div>
 
             <div>
-                <label class="block font-label-md text-on-surface mb-xs">Demo URL (Optional)</label>
-                <input type="url" name="demo_url" value="{{ old('demo_url', $product->demo_url) }}" placeholder="https://..." class="w-full pl-4 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-secondary focus:ring-1 focus:ring-secondary/20">
-                @error('demo_url')<span class="text-error text-xs">{{ $message }}</span>@enderror
-            </div>
-
-
-            <div class="p-md bg-surface-container-low border border-outline-variant rounded-lg">
-                <div class="flex justify-between items-center mb-xs">
-                    <label class="block font-label-md text-on-surface">Tautan Unduhan Eksternal <span class="text-error">*</span></label>
-                    <button type="button" onclick="addLink()" class="text-xs bg-primary text-white px-3 py-1 rounded font-bold hover:brightness-110 transition">+ Tambah Link</button>
-                </div>
-                <p class="text-xs text-on-surface-variant mb-4">Tambahkan minimal 1 tautan eksternal (contoh: Google Drive, Mega) yang akan dikirim ke email pembeli.</p>
-                
-                <div id="links-container" class="flex flex-col gap-sm">
-                    @php $links = old('download_links', $product->download_links ?? []); @endphp
-                    @if(!empty($links) && is_array($links))
-                        @foreach($links as $index => $link)
-                        <div class="flex gap-2 items-start">
-                            <div class="flex-1">
-                                <input type="text" name="download_links[{{ $index }}][name]" value="{{ $link['name'] ?? '' }}" placeholder="Nama Link (cth: Source Code)" required class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-sm mb-1">
-                            </div>
-                            <div class="flex-[2]">
-                                <input type="url" name="download_links[{{ $index }}][url]" value="{{ $link['url'] ?? '' }}" placeholder="https://..." required class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-sm">
-                            </div>
-                            <button type="button" onclick="if(document.querySelectorAll('#links-container > div').length > 1) this.parentElement.remove(); else alert('Minimal 1 tautan harus diisi.');" class="p-2 text-error hover:bg-error/10 rounded-lg transition" title="Hapus Link">
-                                <span class="material-symbols-outlined text-sm">delete</span>
-                            </button>
-                        </div>
-                        @endforeach
-                    @else
-                        <div class="flex gap-2 items-start">
-                            <div class="flex-1">
-                                <input type="text" name="download_links[0][name]" placeholder="Nama Link (cth: Source Code)" required class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-sm mb-1">
-                            </div>
-                            <div class="flex-[2]">
-                                <input type="url" name="download_links[0][url]" placeholder="https://..." required class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-sm">
-                            </div>
-                            <button type="button" onclick="if(document.querySelectorAll('#links-container > div').length > 1) this.parentElement.remove(); else alert('Minimal 1 tautan harus diisi.');" class="p-2 text-error hover:bg-error/10 rounded-lg transition" title="Hapus Link">
-                                <span class="material-symbols-outlined text-sm">delete</span>
-                            </button>
-                        </div>
-                    @endif
-                </div>
-            </div>
-
-            @php
-                $initialSavedImages = $product->images->map(function($img) {
-                    return [
-                        'id' => $img->id,
-                        'image_path' => asset('storage/' . $img->image_path),
-                        'is_main' => (bool)$img->is_main,
-                        'deleting' => false,
-                    ];
-                })->values();
-            @endphp
-
-            <div x-data="productImageValidator({{ json_encode($initialSavedImages) }}, {{ $product->id }})">
-                <div class="flex items-center justify-between mb-xs flex-wrap gap-1">
-                    <label class="block font-label-md text-on-surface">Tambah Foto Produk Baru</label>
-                    <span class="text-[11px] text-on-surface-variant flex items-center gap-1">
-                        <span class="material-symbols-outlined text-[14px] text-primary">verified</span>
-                        Maks. <strong>2 MB</strong> per foto (Total maks 5 foto)
-                    </span>
-                </div>
-
-                <!-- Info Ketentuan Ukuran File -->
-                <div class="mb-2 p-2.5 rounded-lg bg-teal-500/10 border border-teal-500/30 text-xs text-teal-800 dark:text-teal-200 flex items-center justify-between gap-2 flex-wrap">
-                    <div class="flex items-center gap-2">
-                        <span class="material-symbols-outlined text-[18px] text-[#00838f] dark:text-teal-400 shrink-0">info</span>
-                        <span><strong>Ketentuan Foto:</strong> Setiap foto maksimal <strong>2 MB</strong> (2.048 KB). Format: JPG, JPEG, PNG, WEBP, GIF.</span>
-                    </div>
-                    <span class="text-[11px] font-semibold text-teal-700 dark:text-teal-300">
-                        Slot tersisa: <strong x-text="remainingSlot"></strong> foto
-                    </span>
-                </div>
-                
-                <div class="relative">
-                    <input type="file" name="images[]" multiple accept=".jpg,.jpeg,.png,.webp,.gif,image/jpeg,image/png,image/webp,image/gif" @change="validateFiles($event)" class="w-full pl-4 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-secondary focus:ring-1 focus:ring-secondary/20 file:mr-4 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer" :class="hasOversized ? 'border-rose-500 ring-1 ring-rose-500/30' : ''">
-                </div>
-
-                <!-- Alert Error Validasi File Melebihi 2MB / Tidak Valid -->
-                <div x-show="errorMessage" x-cloak class="mt-2.5 p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 rounded-lg flex items-start gap-2.5 text-rose-700 dark:text-rose-300 text-xs leading-relaxed">
-                    <span class="material-symbols-outlined text-[20px] shrink-0 text-rose-600 mt-0.5">warning</span>
+                <label class="flex items-center gap-3 cursor-pointer select-none">
+                    <input type="checkbox" name="is_active" value="1" {{ old('is_active', $product->is_active) ? 'checked' : '' }} class="w-5 h-5 rounded-lg border-slate-300 dark:border-slate-700 text-sky-500 focus:ring-0">
                     <div>
-                        <strong class="font-bold block mb-0.5 text-rose-800 dark:text-rose-200">Peringatan Ukuran Foto:</strong>
-                        <span x-text="errorMessage"></span>
+                        <span class="text-xs md:text-sm font-bold text-slate-900 dark:text-white block">Aktifkan Produk di Toko</span>
+                        <span class="text-[11px] text-slate-400">Tampil di etalase toko setelah disetujui platform.</span>
                     </div>
-                </div>
-
-                <!-- Pratinjau Gambar Tambahan Terpilih -->
-                <div x-show="files.length > 0" x-cloak class="mt-3 p-3 bg-surface-container-low border border-outline-variant rounded-lg">
-                    <div class="flex items-center justify-between flex-wrap gap-2 mb-2.5">
-                        <p class="text-xs font-semibold text-on-surface flex items-center gap-1.5">
-                            <span class="material-symbols-outlined text-sm" :class="hasOversized ? 'text-rose-600' : 'text-emerald-600'" x-text="hasOversized ? 'error' : 'check_circle'"></span>
-                            <span x-text="files.length + ' foto baru dipilih (Total: ' + totalSizeFormatted + '):'"></span>
-                        </p>
-                        <span class="text-[11px] font-bold px-2 py-0.5 rounded"
-                              :class="hasOversized ? 'bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300' : 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300'"
-                              x-text="hasOversized ? '⚠️ Ada foto > 2 MB' : '✓ Semua foto aman (< 2 MB)'"></span>
-                    </div>
-                    <div class="flex flex-wrap gap-3">
-                        <template x-for="(f, i) in files" :key="i">
-                            <div class="relative group rounded-lg overflow-hidden w-24 bg-surface-container-lowest shadow-sm border"
-                                 :class="f.isOversized ? 'border-2 border-rose-500' : 'border-outline-variant'">
-                                <img :src="f.previewUrl" class="w-24 h-24 object-cover">
-                                
-                                <!-- Status Badge Ukuran -->
-                                <div class="p-1 text-[10px] truncate text-center font-mono font-bold"
-                                     :class="f.isOversized ? 'bg-rose-600 text-white' : 'bg-surface-container-low text-on-surface'"
-                                     :title="f.name + ' (' + f.size + ')'">
-                                    <span x-text="f.isOversized ? '⚠️ ' + f.size : '✓ ' + f.size"></span>
-                                </div>
-                            </div>
-                        </template>
-                    </div>
-                </div>
-
-                <!-- List Foto Produk yang Sudah Tersimpan -->
-                <div x-show="savedImages.length > 0" x-cloak class="mt-3 p-4 bg-surface-container-lowest border border-outline-variant rounded-lg">
-                    <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
-                        <div class="flex items-center gap-1.5">
-                            <span class="material-symbols-outlined text-primary text-base">photo_library</span>
-                            <span class="text-xs font-bold text-on-surface">
-                                Foto Tersimpan Sekarang (<span x-text="savedImages.length"></span>/5)
-                            </span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="text-[11px] text-on-surface-variant hidden sm:inline">Hover foto untuk jadikan foto utama atau hapus</span>
-                            <button type="button" 
-                                    @click="deleteAllImages()" 
-                                    :disabled="deletingAll"
-                                    class="px-2.5 py-1 text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 dark:bg-red-950/40 dark:text-red-300 dark:hover:bg-red-900/40 border border-red-200 dark:border-red-800 rounded-md transition flex items-center gap-1 disabled:opacity-50 cursor-pointer">
-                                <span class="material-symbols-outlined text-sm" :class="deletingAll ? 'animate-spin' : ''" x-text="deletingAll ? 'progress_activity' : 'delete_sweep'"></span>
-                                <span x-text="deletingAll ? 'Menghapus Semua...' : 'Hapus Semua Foto'">Hapus Semua Foto</span>
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="flex flex-wrap gap-3">
-                        <template x-for="img in savedImages" :key="img.id">
-                            <div class="relative group w-24 h-24 rounded-lg overflow-hidden border transition-all"
-                                 :class="img.is_main ? 'border-primary border-2 shadow-sm' : 'border-outline-variant'">
-                                <img :src="img.image_path" class="w-full h-full object-cover">
-                                
-                                <!-- Loading overlay saat proses hapus foto berlangsung -->
-                                <div x-show="img.deleting" x-cloak class="absolute inset-0 bg-black/75 flex flex-col items-center justify-center gap-1 text-white p-1">
-                                    <span class="material-symbols-outlined animate-spin text-base">progress_activity</span>
-                                    <span class="text-[9px] font-semibold">Menghapus...</span>
-                                </div>
-
-                                <div x-show="!img.deleting" class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1.5 p-1">
-                                    <button x-show="!img.is_main" 
-                                            type="button" 
-                                            @click="setMainImage(img)" 
-                                            class="w-full py-1 bg-white text-black text-[10px] font-bold rounded shadow hover:bg-gray-100 transition cursor-pointer">
-                                        Set Utama
-                                    </button>
-                                    <button type="button" 
-                                            @click="deleteImage(img)" 
-                                            class="w-full py-1 bg-error text-white text-[10px] font-bold rounded shadow hover:bg-red-700 transition cursor-pointer">
-                                        Hapus
-                                    </button>
-                                </div>
-                                
-                                <div x-show="img.is_main" class="absolute top-0 left-0 bg-primary text-white text-[9px] font-bold px-1.5 py-0.5 rounded-br">UTAMA</div>
-                            </div>
-                        </template>
-                    </div>
-                </div>
-
-                <p class="text-xs text-on-surface-variant mt-1.5 flex items-center gap-1">
-                    <span class="material-symbols-outlined text-xs">info</span>
-                    Tipe file dan ukuran dicek secara langsung sebelum diupload untuk mencegah upload lemot atau file berbahaya.
-                </p>
-                @error('images')<span class="text-error text-xs block mt-1">{{ $message }}</span>@enderror
-                @error('images.*')<span class="text-error text-xs block mt-1">{{ $message }}</span>@enderror
-            </div>
-
-            @include('products._custom_fields', ['productItem' => $product])
-
-            <div>
-                <label class="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" name="is_active" value="1" {{ old('is_active', $product->is_active) ? 'checked' : '' }} class="rounded border-outline-variant text-primary focus:ring-primary">
-                    <span class="font-label-md text-on-surface">Aktif (Tampil di Toko)</span>
                 </label>
             </div>
-            
-            <div class="flex items-center justify-between pt-md border-t border-outline-variant flex-wrap gap-2">
-                <div x-show="imageHasError" x-cloak class="text-xs text-rose-600 font-semibold flex items-center gap-1">
-                    <span class="material-symbols-outlined text-sm">error</span>
-                    <span>Ada foto yang melebihi batas 2 MB. Harap ganti foto sebelum menyimpan.</span>
-                </div>
-                <div class="ml-auto">
-                    <button type="submit" :disabled="submitting || imageHasError" class="px-md py-2 bg-primary text-white rounded-lg font-label-md font-bold hover:brightness-110 transition shadow flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed" :class="imageHasError ? 'bg-slate-400 hover:bg-slate-400 cursor-not-allowed' : ''">
-                        <span x-show="submitting" x-cloak class="material-symbols-outlined animate-spin text-sm">progress_activity</span>
-                        <span x-text="submitting ? 'Memperbarui Produk...' : 'Update Product'">Update Product</span>
-                    </button>
-                </div>
-            </div>
-        </form>
+        </div>
 
-    </div>
+        <!-- ========================================== -->
+        <!-- FORM FOOTER ACTION BAR                     -->
+        <!-- ========================================== -->
+        <div class="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-slate-800 flex-wrap gap-3">
+            <div x-show="imageHasError" x-cloak class="text-xs text-rose-600 font-semibold flex items-center gap-1 w-full sm:w-auto">
+                <span class="material-symbols-outlined text-sm">error</span>
+                <span>Ada foto yang melebihi batas 2 MB. Harap ganti foto sebelum menyimpan.</span>
+            </div>
+
+            <div class="flex items-center gap-3 w-full sm:w-auto sm:ml-auto">
+                <a href="{{ route('tenant.products.index') }}" class="flex-1 sm:flex-none px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs sm:text-sm font-bold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-center active:scale-95">
+                    Batal
+                </a>
+                <button type="submit" :disabled="submitting || imageHasError" class="flex-1 sm:flex-none px-6 py-2.5 bg-[#00838f] hover:bg-[#00727d] text-white rounded-xl text-xs sm:text-sm font-bold transition-all shadow-xs flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95" :class="imageHasError ? 'bg-slate-400 cursor-not-allowed' : ''">
+                    <span x-show="submitting" x-cloak class="material-symbols-outlined animate-spin text-sm">progress_activity</span>
+                    <span x-text="submitting ? 'Memperbarui Produk...' : 'Update Produk'">Update Produk</span>
+                </button>
+            </div>
+        </div>
+
+    </form>
+
 </div>
 
 <script>
@@ -814,7 +957,7 @@
 
                 if (oversizedList.length > 0) {
                     this.hasOversized = true;
-                    this.errorMessage = `Ukuran foto melebihi batas 2 MB: ${oversizedList.join(', ')}. Input otomatis dikosongkan agar server tidak error saat disimpan. Mohon kompres foto tersebut atau gunakan foto di bawah 2 MB.`;
+                    this.errorMessage = `Ukuran foto melebihi batas 2 MB: ${oversizedList.join(', ')}. Harap kompres foto atau gunakan foto di bawah 2 MB.`;
                     input.value = '';
                     window.dispatchEvent(new CustomEvent('image-validation-state', { detail: { hasError: true } }));
                     return;
@@ -828,65 +971,57 @@
 
     function addLink() {
         const container = document.getElementById('links-container');
-        const index = Date.now(); // use timestamp to avoid index collision on edit
+        const index = Date.now();
         
         const row = document.createElement('div');
-        row.className = 'flex gap-2 items-start';
+        row.className = 'flex flex-col sm:flex-row gap-2 items-stretch sm:items-center p-2.5 sm:p-0 bg-white dark:bg-[#111726] sm:bg-transparent rounded-xl border sm:border-0 border-slate-200 dark:border-[#222f49]';
         row.innerHTML = `
             <div class="flex-1">
-                <input type="text" name="download_links[${index}][name]" placeholder="Link Name (e.g., Source Code)" required class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-sm mb-1">
+                <input type="text" name="download_links[${index}][name]" placeholder="Nama Link (cth: Source Code)" required class="w-full px-3 py-2 bg-slate-50 sm:bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl text-xs md:text-sm text-slate-900 dark:text-white">
             </div>
             <div class="flex-[2]">
-                <input type="url" name="download_links[${index}][url]" placeholder="https://..." required class="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-sm">
+                <input type="url" name="download_links[${index}][url]" placeholder="https://drive.google.com/..." required class="w-full px-3 py-2 bg-slate-50 sm:bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl text-xs md:text-sm text-slate-900 dark:text-white">
             </div>
-            <button type="button" onclick="this.parentElement.remove()" class="p-2 text-error hover:bg-error/10 rounded-lg transition" title="Remove Link">
-                <span class="material-symbols-outlined text-sm">delete</span>
-            </button>
+            <div class="flex justify-end sm:block">
+                <button type="button" onclick="if(document.querySelectorAll('#links-container > div').length > 1) this.closest('.flex').remove(); else alert('Minimal 1 tautan harus diisi.');" class="p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-xl transition-colors flex items-center gap-1 text-xs" title="Hapus Link">
+                    <span class="material-symbols-outlined text-base">delete</span>
+                    <span class="sm:hidden text-xs font-semibold">Hapus</span>
+                </button>
+            </div>
         `;
         container.appendChild(row);
     }
 </script>
 
-<!-- Quill Rich Text Editor (Toolbox Area Text) -->
+<!-- Quill Rich Text Editor -->
 <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
 <style>
     .ql-toolbar.ql-snow {
-        border-top-left-radius: 0.5rem;
-        border-top-right-radius: 0.5rem;
+        border-top-left-radius: 0.75rem;
+        border-top-right-radius: 0.75rem;
         background-color: #f8fafc;
-        border-color: #CBD5E1;
+        border-color: #e2e8f0;
     }
     .ql-container.ql-snow {
-        border-bottom-left-radius: 0.5rem;
-        border-bottom-right-radius: 0.5rem;
+        border-bottom-left-radius: 0.75rem;
+        border-bottom-right-radius: 0.75rem;
         background-color: #ffffff;
-        border-color: #CBD5E1;
+        border-color: #e2e8f0;
         font-family: inherit;
         font-size: 0.875rem;
     }
     .dark .ql-toolbar.ql-snow {
-        background-color: rgb(var(--theme-surface-container) / 1);
-        border-color: rgb(var(--theme-outline-variant) / 0.8);
+        background-color: #0c1220;
+        border-color: #222f49;
     }
     .dark .ql-container.ql-snow {
-        background-color: rgb(var(--theme-surface-lowest) / 1);
-        border-color: rgb(var(--theme-outline-variant) / 0.8);
+        background-color: #090d16;
+        border-color: #222f49;
         color: #f1f5f9;
     }
-    .dark .ql-snow .ql-stroke {
-        stroke: #cbd5e1;
-    }
-    .dark .ql-snow .ql-fill {
-        fill: #cbd5e1;
-    }
-    .dark .ql-snow .ql-picker {
-        color: #cbd5e1;
-    }
-    .dark .ql-snow .ql-picker-options {
-        background-color: rgb(var(--theme-surface-container) / 1);
-        border-color: rgb(var(--theme-outline-variant) / 0.8);
-        color: #cbd5e1;
-    }
+    .dark .ql-snow .ql-stroke { stroke: #cbd5e1; }
+    .dark .ql-snow .ql-fill { fill: #cbd5e1; }
+    .dark .ql-snow .ql-picker { color: #cbd5e1; }
 </style>
 <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
 <script>
@@ -894,7 +1029,6 @@
         var editorElem = document.getElementById('editor-container');
         if (!editorElem || editorElem.__quill_initialized) return;
 
-        // Clear existing toolbar/editor if re-initialized
         editorElem.innerHTML = '';
         var prevToolbar = editorElem.previousElementSibling;
         if (prevToolbar && prevToolbar.classList.contains('ql-toolbar')) {
@@ -922,18 +1056,16 @@
             quill.root.innerHTML = descriptionInput.value;
         }
 
-        // Realtime sync to hidden input on every change
         quill.on('text-change', function() {
             var html = quill.root.innerHTML;
             descriptionInput.value = (html === '<p><br></p>' || quill.getText().trim().length === 0) ? '' : html;
         });
 
-        // Add custom styles to match theme
         var toolbar = editorElem.previousElementSibling;
         if (toolbar && toolbar.classList.contains('ql-toolbar')) {
-            toolbar.classList.add('bg-surface-container', 'rounded-t-lg');
+            toolbar.classList.add('rounded-t-xl');
         }
-        editorElem.classList.add('border-t-0', 'rounded-b-lg');
+        editorElem.classList.add('border-t-0', 'rounded-b-xl');
 
         var productForm = editorElem.closest('form');
         if (productForm) {

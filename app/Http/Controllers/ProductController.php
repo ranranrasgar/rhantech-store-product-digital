@@ -384,46 +384,72 @@ class ProductController extends Controller
         }
 
         $cleanQuery = ltrim($query, '@');
+        $words = array_filter(explode(' ', $query));
 
-        // Cari toko / akun
+        // Cari toko / akun (mendekati nama toko, slug, atau user)
         $stores = \App\Models\Store::query()
             ->withCount(['products' => function($q) {
                 $q->published();
             }])
-            ->where(function($q) use ($query, $cleanQuery) {
+            ->where(function($q) use ($query, $cleanQuery, $words) {
                 $q->where('name', 'like', "%{$query}%")
                   ->orWhere('slug', 'like', "%{$cleanQuery}%")
                   ->orWhereHas('user', function($uq) use ($query) {
                       $uq->where('name', 'like', "%{$query}%");
                   });
+                if (count($words) > 1) {
+                    $q->orWhere(function($sub) use ($words) {
+                        foreach ($words as $w) {
+                            $sub->where('name', 'like', "%{$w}%");
+                        }
+                    });
+                }
             })
-            ->take(4)
+            ->take(5)
             ->get()
             ->map(function($store) {
                 return [
                     'id' => $store->id,
                     'name' => $store->name,
                     'slug' => $store->slug,
-                    'logo' => $store->logo ? asset('storage/' . $store->logo) : 'https://ui-avatars.com/api/?name=' . urlencode($store->name) . '&background=0284c7&color=fff',
+                    'logo' => $store->logo ? asset('storage/' . $store->logo) : 'https://ui-avatars.com/api/?name=' . urlencode($store->name) . '&background=00838f&color=fff',
                     'products_count' => $store->products_count,
                     'url' => route('store.show', $store->slug),
                     'is_pro' => (bool)$store->is_pro,
                 ];
             });
 
-        // Cari produk
+        // Cari produk (mendekati nama produk, slug, tag, deskripsi, atau nama toko)
         $products = Product::query()
-            ->published()
-            ->where(function($q) use ($query) {
-                $q->where('name', 'like', "%{$query}%")
-                  ->orWhere('tags', 'like', "%{$query}%");
+            ->where(function($q) {
+                $q->published();
+                if (auth()->check() && auth()->user()->store) {
+                    $q->orWhere('store_id', auth()->user()->store->id);
+                }
             })
-            ->with(['images'])
-            ->take(4)
+            ->where(function($q) use ($query, $words) {
+                $q->where('name', 'like', "%{$query}%")
+                  ->orWhere('slug', 'like', "%{$query}%")
+                  ->orWhere('tags', 'like', "%{$query}%")
+                  ->orWhere('short_description', 'like', "%{$query}%")
+                  ->orWhereHas('store', function($sq) use ($query) {
+                      $sq->where('name', 'like', "%{$query}%");
+                  });
+                if (count($words) > 1) {
+                    $q->orWhere(function($sub) use ($words) {
+                        foreach ($words as $w) {
+                            $sub->where('name', 'like', "%{$w}%");
+                        }
+                    });
+                }
+            })
+            ->with(['images', 'store'])
+            ->take(6)
             ->get()
             ->map(function($p) {
                 $img = $p->images->firstWhere('is_main', true) ?? $p->images->first();
                 $price = ($p->discount_price && $p->discount_price > 0 && $p->discount_price < $p->price) ? $p->discount_price : $p->price;
+                $isMine = auth()->check() && auth()->user()->store && $p->store_id === auth()->user()->store->id;
                 return [
                     'id' => $p->id,
                     'name' => $p->name,
@@ -431,6 +457,9 @@ class ProductController extends Controller
                     'price_formatted' => 'Rp' . number_format($price, 0, ',', '.'),
                     'image' => $img ? asset('storage/' . $img->image_path) : null,
                     'url' => route('products.show', $p->slug),
+                    'edit_url' => $isMine ? route('tenant.products.edit', $p->id) : null,
+                    'is_mine' => $isMine,
+                    'store_name' => $p->store->name ?? '',
                 ];
             });
 

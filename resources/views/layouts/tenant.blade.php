@@ -91,13 +91,20 @@
 @vite(['resources/css/app.css'])
 @livewireStyles
 <style>
-/* ── Light/Dark adaptive sidebar & topbar ── */
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+html, body {
+    overflow-x: hidden;
+    max-width: 100vw;
+    width: 100%;
+}
 body {
     background: #f0f4f8;
     color: #1a202c;
     min-height: 100vh;
-    display: flex;
     font-family: 'Geist', sans-serif;
+    margin: 0;
+    padding: 0;
 }
 /* Dark mode override */
 body.dark, html.dark body {
@@ -204,30 +211,14 @@ html.dark .sidebar-user-email { color: rgba(255,255,255,0.3); }
     border-bottom: 1px solid #e5e7eb;
     position: sticky; top: 0; z-index: 40;
     height: 56px; display: flex; align-items: center;
-    padding: 0 24px; justify-content: space-between;
+    padding: 0 12px; justify-content: space-between;
+    gap: 8px;
     transition: background 0.2s, border-color 0.2s;
 }
-html.dark .tenant-topbar { background: #010409; border-bottom-color: #30363d; }
-.topbar-title { font-size: 15px; font-weight: 700; color: #111827; letter-spacing: -0.3px; margin: 0; }
-html.dark .topbar-title { color: #fff; }
-
-/* Search */
-.topbar-search {
-    display: flex; align-items: center;
-    background: #f3f4f6;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px; padding: 0 12px;
-    gap: 8px; height: 36px; width: 220px;
-    transition: border-color 0.2s, background 0.2s;
+@media (min-width: 768px) {
+    .tenant-topbar { padding: 0 24px; gap: 16px; }
 }
-.topbar-search:focus-within { border-color: #00b3cc; box-shadow: 0 0 0 2px rgba(0,179,204,0.15); }
-.topbar-search input { background: transparent; border: none; outline: none; color: #111827; font-size: 13px; width: 100%; }
-.topbar-search input::placeholder { color: #9ca3af; }
-
-html.dark .topbar-search { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); }
-html.dark .topbar-search:focus-within { border-color: #2f81f7; box-shadow: 0 0 0 2px rgba(47,129,247,0.12); }
-html.dark .topbar-search input { color: #fff; }
-html.dark .topbar-search input::placeholder { color: rgba(255,255,255,0.3); }
+html.dark .tenant-topbar { background: #010409; border-bottom-color: #30363d; }
 
 /* Icon btn */
 .topbar-icon-btn {
@@ -279,24 +270,68 @@ html.dark .sidebar-logout-btn { color: rgba(255,255,255,0.3); }
 html.dark .sidebar-logout-btn:hover { color: #f87171; }
 .html-dark-border { border-color: #e5e7eb !important; }
 html.dark .html-dark-border { border-bottom-color: #30363d !important; }
-</style>
 
-<style>
 /* Responsive overrides */
-@media (max-width: 768px) {
-    .tenant-sidebar { transform: translateX(-100%); transition: transform 0.3s ease-in-out; }
-    .tenant-sidebar.open { transform: translateX(0); }
-    .tenant-main { margin-left: 0 !important; width: 100%; }
-    .topbar-search { display: none !important; }
+.tenant-main {
+    margin-left: 240px;
+    width: calc(100% - 240px);
+    max-width: calc(100% - 240px);
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    box-sizing: border-box;
+    transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), width 0.3s cubic-bezier(0.4, 0, 0.2, 1), max-width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (max-width: 1023px) {
+    .tenant-sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .tenant-sidebar.open {
+        transform: translateX(0);
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.25);
+    }
+    .tenant-main {
+        margin-left: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    .topbar-search {
+        display: none !important;
+    }
+}
+@media (min-width: 1024px) {
+    .tenant-sidebar.collapsed {
+        transform: translateX(-100%);
+    }
+    .tenant-main.collapsed {
+        margin-left: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
 }
 </style>
 </head>
-<body x-data="{ sidebarOpen: false }">
+<body x-data="{ 
+    sidebarOpen: false, 
+    sidebarCollapsed: localStorage.getItem('tenant_sidebar_collapsed') === 'true',
+    toggleSidebar() {
+        if (window.innerWidth < 1024) {
+            this.sidebarOpen = !this.sidebarOpen;
+        } else {
+            this.sidebarCollapsed = !this.sidebarCollapsed;
+            localStorage.setItem('tenant_sidebar_collapsed', this.sidebarCollapsed);
+            setTimeout(() => { window.dispatchEvent(new Event('resize')); }, 320);
+        }
+    }
+}">
 <!-- Mobile Sidebar Overlay -->
 <div x-show="sidebarOpen" @click="sidebarOpen = false" style="position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:45; display:none;" x-transition.opacity></div>
 
 <!-- Sidebar -->
-<aside class="tenant-sidebar" :class="sidebarOpen ? 'open' : ''">
+<aside class="tenant-sidebar" :class="{ 'open': sidebarOpen, 'collapsed': sidebarCollapsed }">
     <!-- Brand -->
     <a href="{{ url('/') }}" class="sidebar-brand">
         <span class="brand-dot-s"></span>
@@ -416,20 +451,145 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
 </aside>
 
 <!-- Main Content -->
-<main class="tenant-main" style="flex:1; margin-left:240px; display:flex; flex-direction:column; min-height:100vh;">
+<main class="tenant-main pb-20 md:pb-0" :class="{ 'collapsed': sidebarCollapsed }">
     <!-- Top bar -->
     <header class="tenant-topbar">
-        <div style="display:flex; align-items:center; gap:12px;">
-            <button @click="sidebarOpen = !sidebarOpen" class="topbar-icon-btn md:hidden" style="display:flex; width:36px; height:36px;">
-                <span class="material-symbols-outlined" style="font-size:20px;">menu</span>
+        <div class="flex items-center gap-2 md:gap-3 flex-1 min-w-0 pr-1 md:pr-2">
+            <button type="button" @click="toggleSidebar()" class="topbar-icon-btn active:scale-95 transition-transform" style="display:flex; width:36px; height:36px; shrink-0;" title="Toggle Sidebar">
+                <span class="material-symbols-outlined" style="font-size:22px;" x-text="sidebarCollapsed ? 'menu_open' : 'menu'">menu</span>
             </button>
-            <h2 class="topbar-title truncate max-w-[120px] sm:max-w-xs md:max-w-none" style="display: block;">@yield('title')</h2>
+
+            <!-- Universal Live Search: Produk & Toko (Mendekati) -->
+            <div class="relative flex-1 max-w-sm md:max-w-md lg:max-w-xl min-w-0" x-data="tenantGlobalSearch()">
+                <div class="relative flex items-center w-full">
+                    <span class="material-symbols-outlined absolute left-3 text-slate-400 dark:text-slate-500 pointer-events-none text-[18px]">search</span>
+                    <input 
+                        type="text" 
+                        x-model="query" 
+                        @input.debounce.250ms="search()" 
+                        @focus="if(query.trim().length >= 2) open = true"
+                        @keydown.escape="open = false"
+                        @keydown.enter.prevent="submitSearch()"
+                        placeholder="Cari produk atau toko..." 
+                        autocomplete="off"
+                        class="w-full pl-9 pr-8 py-1.5 md:py-2 text-xs md:text-sm bg-slate-100 dark:bg-[#161b22] border border-slate-200 dark:border-[#30363d] rounded-xl text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-[#00838f] focus:ring-2 focus:ring-[#00838f]/20 transition-all"
+                    >
+                    <button 
+                        type="button" 
+                        x-show="query.length > 0 && !loading" 
+                        @click="query = ''; results = { stores: [], products: [] }; open = false" 
+                        class="absolute right-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-0.5 rounded-full"
+                        style="display: none;"
+                    >
+                        <span class="material-symbols-outlined text-[16px]">close</span>
+                    </button>
+                    <div x-show="loading" class="absolute right-2.5" style="display: none;">
+                        <span class="inline-block w-4 h-4 border-2 border-[#00838f] border-t-transparent rounded-full animate-spin"></span>
+                    </div>
+                </div>
+
+                <!-- Dropdown Results Autocomplete -->
+                <div 
+                    x-show="open && (results.stores.length > 0 || results.products.length > 0 || noResults)" 
+                    @click.outside="open = false" 
+                    x-transition:enter="transition ease-out duration-150"
+                    x-transition:enter-start="opacity-0 translate-y-1"
+                    x-transition:enter-end="opacity-100 translate-y-0"
+                    x-transition:leave="transition ease-in duration-100"
+                    x-transition:leave-start="opacity-100 translate-y-0"
+                    x-transition:leave-end="opacity-0 translate-y-1"
+                    class="absolute left-0 right-0 top-full mt-1.5 bg-white dark:bg-[#161b22] border border-slate-200 dark:border-[#30363d] rounded-2xl shadow-xl z-50 overflow-hidden max-h-[75vh] overflow-y-auto"
+                    style="display: none;"
+                >
+                    <!-- Stores Section -->
+                    <template x-if="results.stores.length > 0">
+                        <div class="p-2 border-b border-slate-100 dark:border-[#222f49]">
+                            <div class="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 flex items-center justify-between">
+                                <span>Toko Terkait</span>
+                                <span class="text-[10px] lowercase" x-text="results.stores.length + ' ditemukan'"></span>
+                            </div>
+                            <div class="space-y-1 mt-1">
+                                <template x-for="st in results.stores" :key="'store-'+st.id">
+                                    <a :href="st.url" class="flex items-center justify-between p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors group">
+                                        <div class="flex items-center gap-2.5 min-w-0">
+                                            <img :src="st.logo" :alt="st.name" class="w-8 h-8 rounded-full object-cover border border-slate-200 dark:border-slate-700 shrink-0">
+                                            <div class="min-w-0">
+                                                <div class="flex items-center gap-1.5">
+                                                    <span class="text-xs font-bold text-slate-800 dark:text-slate-200 truncate group-hover:text-[#00838f] transition-colors" x-text="st.name"></span>
+                                                    <template x-if="st.is_pro">
+                                                        <span class="bg-amber-500 text-white text-[9px] px-1 py-0.2 rounded font-black tracking-wide">PRO</span>
+                                                    </template>
+                                                </div>
+                                                <div class="text-[11px] text-slate-400 truncate" x-text="'@' + st.slug + ' • ' + st.products_count + ' produk'"></div>
+                                            </div>
+                                        </div>
+                                        <span class="material-symbols-outlined text-slate-300 dark:text-slate-600 group-hover:text-[#00838f] text-[18px] shrink-0">chevron_right</span>
+                                    </a>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+
+                    <!-- Products Section -->
+                    <template x-if="results.products.length > 0">
+                        <div class="p-2">
+                            <div class="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 flex items-center justify-between">
+                                <span>Produk Digital</span>
+                                <span class="text-[10px] lowercase" x-text="results.products.length + ' ditemukan'"></span>
+                            </div>
+                            <div class="space-y-1 mt-1">
+                                <template x-for="prod in results.products" :key="'prod-'+prod.id">
+                                    <div class="flex items-center justify-between p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors group">
+                                        <a :href="prod.url" class="flex items-center gap-2.5 min-w-0 flex-1">
+                                            <template x-if="prod.image">
+                                                <img :src="prod.image" :alt="prod.name" class="w-9 h-9 rounded-lg object-cover border border-slate-200 dark:border-slate-700 shrink-0">
+                                            </template>
+                                            <template x-if="!prod.image">
+                                                <div class="w-9 h-9 rounded-lg bg-teal-50 dark:bg-teal-950/40 border border-teal-100 dark:border-teal-900/40 text-[#00838f] flex items-center justify-center shrink-0">
+                                                    <span class="material-symbols-outlined text-[20px]">package_2</span>
+                                                </div>
+                                            </template>
+                                            <div class="min-w-0 flex-1">
+                                                <div class="text-xs font-bold text-slate-800 dark:text-slate-200 truncate group-hover:text-[#00838f] transition-colors" x-text="prod.name"></div>
+                                                <div class="flex items-center gap-2 text-[11px] text-slate-400">
+                                                    <span class="font-semibold text-emerald-600 dark:text-emerald-400" x-text="prod.price_formatted"></span>
+                                                    <template x-if="prod.store_name">
+                                                        <span class="truncate" x-text="'• ' + prod.store_name"></span>
+                                                    </template>
+                                                    <template x-if="prod.is_mine">
+                                                        <span class="px-1.5 py-0.2 rounded bg-teal-100 dark:bg-teal-950 text-[#00838f] dark:text-teal-300 text-[10px] font-bold">Milik Anda</span>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <template x-if="prod.is_mine && prod.edit_url">
+                                            <a :href="prod.edit_url" class="ml-2 px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-[#00838f] hover:text-white text-slate-600 dark:text-slate-300 text-[11px] font-bold transition-colors shrink-0" title="Edit Produk">
+                                                Edit
+                                            </a>
+                                        </template>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+
+                    <!-- No Results -->
+                    <div x-show="noResults" class="p-6 text-center text-xs text-slate-400">
+                        <span class="material-symbols-outlined text-3xl mb-1 text-slate-300 dark:text-slate-600">search_off</span>
+                        <p>Tidak ada produk atau toko yang cocok dengan "<span class="font-bold text-slate-700 dark:text-slate-200" x-text="query"></span>"</p>
+                    </div>
+
+                    <!-- Footer: Search All in Public Products -->
+                    <div class="p-2 bg-slate-50 dark:bg-slate-900/80 border-t border-slate-100 dark:border-[#222f49] text-center">
+                        <button type="button" @click="submitSearch()" class="text-xs font-bold text-[#00838f] hover:underline flex items-center justify-center gap-1 w-full py-1 cursor-pointer">
+                            <span>Lihat semua hasil di katalog produk</span>
+                            <span class="material-symbols-outlined text-[14px]">open_in_new</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div style="display:flex; align-items:center; gap:8px;">
-            <form action="{{ route('help.index') }}" method="GET" class="topbar-search hidden md:flex" target="_blank">
-                <span class="material-symbols-outlined" style="font-size:16px; line-height:1; display:flex; align-items:center; color:rgba(255,255,255,0.3);">search</span>
-                <input type="text" name="q" placeholder="Cari panduan..." autocomplete="off">
-            </form>
+        <div style="display:flex; align-items:center; gap:8px; shrink-0;">
             <a href="{{ route('help.index') }}" target="_blank" class="topbar-icon-btn" title="Pusat Bantuan & Panduan">
                 <span class="material-symbols-outlined" style="font-size:20px;">help</span>
             </a>
@@ -472,11 +632,109 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
     <!-- Page Content -->
     @yield('content')
 </main>
+
+<!-- Mobile Native Bottom Navigation Bar (Dock Bar) -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#0d1117]/95 backdrop-blur-md border-t border-slate-200/80 dark:border-slate-800/80 px-2 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-lg transition-transform duration-200" style="-webkit-tap-highlight-color: transparent;">
+    <div class="grid grid-cols-5 items-center justify-around max-w-md mx-auto text-center">
+        <!-- Beranda -->
+        <a href="{{ route('tenant.dashboard') }}" class="flex flex-col items-center justify-center py-1 select-none active:scale-90 transition-transform {{ request()->routeIs('tenant.dashboard') ? 'text-[#00838f] dark:text-teal-400 font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200' }}">
+            <div class="relative">
+                <span class="material-symbols-outlined text-[24px] {{ request()->routeIs('tenant.dashboard') ? 'fill-1' : '' }}">space_dashboard</span>
+                @if(request()->routeIs('tenant.dashboard'))
+                    <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-[#00838f] dark:bg-teal-400"></span>
+                @endif
+            </div>
+            <span class="text-[10px] mt-0.5 tracking-tight">Beranda</span>
+        </a>
+
+        <!-- Katalog -->
+        <a href="{{ route('tenant.products.index') }}" class="flex flex-col items-center justify-center py-1 select-none active:scale-90 transition-transform {{ request()->routeIs('tenant.products.*') ? 'text-[#00838f] dark:text-teal-400 font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200' }}">
+            <div class="relative">
+                <span class="material-symbols-outlined text-[24px]">inventory_2</span>
+                @if(request()->routeIs('tenant.products.*'))
+                    <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-[#00838f] dark:bg-teal-400"></span>
+                @endif
+            </div>
+            <span class="text-[10px] mt-0.5 tracking-tight">Produk</span>
+        </a>
+
+        <!-- Pesanan -->
+        <a href="{{ route('tenant.orders.index') }}" class="flex flex-col items-center justify-center py-1 select-none active:scale-90 transition-transform relative {{ request()->routeIs('tenant.orders.*') ? 'text-[#00838f] dark:text-teal-400 font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200' }}">
+            <div class="relative">
+                <span class="material-symbols-outlined text-[24px]">receipt_long</span>
+                @if(request()->routeIs('tenant.orders.*'))
+                    <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-[#00838f] dark:bg-teal-400"></span>
+                @endif
+            </div>
+            <span class="text-[10px] mt-0.5 tracking-tight">Pesanan</span>
+        </a>
+
+        <!-- Keuangan -->
+        <a href="{{ route('tenant.payouts.index') }}" class="flex flex-col items-center justify-center py-1 select-none active:scale-90 transition-transform {{ request()->routeIs('tenant.payouts.*') || request()->routeIs('tenant.balance.*') ? 'text-[#00838f] dark:text-teal-400 font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200' }}">
+            <div class="relative">
+                <span class="material-symbols-outlined text-[24px]">account_balance_wallet</span>
+                @if(request()->routeIs('tenant.payouts.*') || request()->routeIs('tenant.balance.*'))
+                    <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-[#00838f] dark:bg-teal-400"></span>
+                @endif
+            </div>
+            <span class="text-[10px] mt-0.5 tracking-tight">Keuangan</span>
+        </a>
+
+        <!-- Menu Toko (Drawer Trigger) -->
+        <button type="button" @click="sidebarOpen = true" class="flex flex-col items-center justify-center py-1 select-none active:scale-90 transition-transform text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 cursor-pointer">
+            <span class="material-symbols-outlined text-[24px]">grid_view</span>
+            <span class="text-[10px] mt-0.5 tracking-tight">Menu Toko</span>
+        </button>
+    </div>
+</nav>
+
 @include('components.firebase-init')
 <div x-data="firebaseManager" x-init="initFirebase()" style="display:none;"></div>
 @include('components.theme-manager')
 @include('components.popup-ad-modal')
 @include('components.pwa-install-prompt')
+<script>
+function tenantGlobalSearch() {
+    return {
+        query: '',
+        open: false,
+        loading: false,
+        noResults: false,
+        results: { stores: [], products: [] },
+        async search() {
+            const q = this.query.trim();
+            if (q.length < 2) {
+                this.results = { stores: [], products: [] };
+                this.open = false;
+                this.noResults = false;
+                return;
+            }
+            this.loading = true;
+            try {
+                const res = await fetch(`/api/search-suggest?q=${encodeURIComponent(q)}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    this.results = data;
+                    const hasStores = data.stores && data.stores.length > 0;
+                    const hasProducts = data.products && data.products.length > 0;
+                    this.noResults = !hasStores && !hasProducts;
+                    this.open = true;
+                }
+            } catch (err) {
+                console.error('Error fetching search results:', err);
+            } finally {
+                this.loading = false;
+            }
+        },
+        submitSearch() {
+            const q = this.query.trim();
+            if (q.length > 0) {
+                window.location.href = `/products?search=${encodeURIComponent(q)}`;
+            }
+        }
+    };
+}
+</script>
 @livewireScripts
 @stack('scripts')
 </body></html>

@@ -397,7 +397,7 @@
                         <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">group</span> <span x-text="followersCount"></span> Pengikut</span>
                     </div>
 
-                    {{-- Sosmed di Desktop (Icon Only) --}}
+                    {{-- Sosmed di Desktop (Monokrom / Netral Elegan) --}}
                     @php $socialLinks = is_array($store->social_links) ? $store->social_links : []; @endphp
                     @if(count($socialLinks) > 0)
                         <div class="flex items-center gap-2 mt-3 overflow-x-auto hide-scrollbar">
@@ -406,19 +406,10 @@
                                     $socPlatform = strtolower($soc['platform'] ?? 'custom');
                                     $socName = $soc['name'] ?? ucfirst($socPlatform);
                                     $socUrl = $soc['url'] ?? '#';
-                                    $bgClass = match($socPlatform) {
-                                        'instagram' => 'bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888] text-white',
-                                        'tiktok' => 'bg-black text-white border border-white/20',
-                                        'whatsapp' => 'bg-[#25D366] text-white',
-                                        'youtube' => 'bg-[#FF0000] text-white',
-                                        'facebook' => 'bg-[#1877F2] text-white',
-                                        'x', 'twitter' => 'bg-black text-white border border-white/20',
-                                        'telegram' => 'bg-[#229ED9] text-white',
-                                        'github' => 'bg-[#24292e] text-white',
-                                        default => 'bg-white/20 text-white backdrop-blur-sm'
-                                    };
                                 @endphp
-                                <a href="{{ $socUrl }}" target="_blank" rel="noopener noreferrer" class="w-8 h-8 rounded-full flex items-center justify-center shadow-xs hover:scale-110 transition-transform {{ $bgClass }}" title="{{ $socName }}">
+                                <a href="{{ $socUrl }}" target="_blank" rel="noopener noreferrer" 
+                                   class="w-8 h-8 rounded-full flex items-center justify-center bg-white/15 hover:bg-white text-white hover:text-slate-900 border border-white/20 backdrop-blur-md shadow-xs hover:scale-110 active:scale-95 transition-all" 
+                                   title="{{ $socName }}">
                                     <x-store-social-icon :platform="$socPlatform" class="w-4 h-4" />
                                 </a>
                             @endforeach

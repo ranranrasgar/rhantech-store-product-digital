@@ -118,8 +118,6 @@ Route::middleware(['auth', 'verified', 'is_tenant'])->prefix('dashboard')->name(
     Route::patch('products/image/{image}/set-main', [\App\Http\Controllers\Tenant\ProductController::class, 'setMainImage'])->name('products.image.set_main');
     
     Route::get('orders', [\App\Http\Controllers\Tenant\OrderController::class, 'index'])->name('orders.index');
-    Route::put('orders/{order}', [\App\Http\Controllers\Tenant\OrderController::class, 'update'])->name('orders.update');
-    Route::delete('orders/{order}', [\App\Http\Controllers\Tenant\OrderController::class, 'destroy'])->name('orders.destroy');
     Route::patch('orders/{order}/mark-paid', [\App\Http\Controllers\Tenant\OrderController::class, 'markPaid'])->name('orders.mark_paid');
     Route::post('orders/{order}/resend-email', [\App\Http\Controllers\Tenant\OrderController::class, 'resendEmail'])->name('orders.resend_email');
     

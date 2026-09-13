@@ -66,7 +66,23 @@ class OrderController extends Controller
         // Execute query
         $orders = $query->latest()->paginate(20)->withQueryString();
 
-        return view('tenant.orders.index', compact('orders', 'products', 'tab', 'store'));
+        // Calculate counts for tabs
+        $baseCountQuery = Order::where(function ($q) use ($store) {
+            $q->whereHas('orderItems.product', function ($sub) use ($store) {
+                $sub->where('products.store_id', $store->id);
+            })->orWhereHas('product', function ($sub) use ($store) {
+                $sub->where('products.store_id', $store->id);
+            });
+        });
+
+        $counts = [
+            'all' => (clone $baseCountQuery)->count(),
+            'completed' => (clone $baseCountQuery)->whereIn('status', ['paid', 'downloaded'])->count(),
+            'pending' => (clone $baseCountQuery)->where('status', 'pending')->count(),
+            'cancelled' => (clone $baseCountQuery)->where('status', 'failed')->count(),
+        ];
+
+        return view('tenant.orders.index', compact('orders', 'products', 'tab', 'store', 'counts'));
     }
 
     private function checkOrderAccess(Order $order)
@@ -86,39 +102,6 @@ class OrderController extends Controller
         }
     }
 
-    public function update(Request $request, Order $order)
-    {
-        $this->checkOrderAccess($order);
-
-        $validated = $request->validate([
-            'customer_name' => 'required|string|max:255',
-            'customer_email' => 'required|email|max:255',
-            'customer_phone' => 'nullable|string|max:20',
-        ]);
-
-        $order->update($validated);
-
-        return back()->with('success', 'Detail pesanan berhasil diperbarui.');
-    }
-
-    public function destroy(Order $order)
-    {
-        $this->checkOrderAccess($order);
-
-        $invoice = $order->invoice_number;
-        $orderId = $order->id;
-
-        // Bersihkan notifikasi terkait pesanan ini dari lonceng
-        \App\Models\AppNotification::where('data->order_id', $orderId)
-            ->orWhere('data->invoice', $invoice)
-            ->orWhere('title', 'like', "%{$invoice}%")
-            ->orWhere('body', 'like', "%{$invoice}%")
-            ->delete();
-
-        $order->delete();
-
-        return back()->with('success', 'Pesanan beserta riwayat notifikasinya berhasil dihapus.');
-    }
 
     public function markPaid(Order $order)
     {
@@ -165,15 +148,45 @@ class OrderController extends Controller
         $this->checkOrderAccess($order);
 
         if (!in_array($order->status, ['paid', 'downloaded'])) {
-            return back()->with('error', 'Hanya pesanan lunas yang dapat dikirim ulang emailnya.');
+            return back()->with('error', 'Hanya pesanan lunas yang dapat dikirim ulang link produknya.');
         }
 
+        // Pastikan download_token ada agar link unduhan tidak error
+        if (empty($order->download_token)) {
+            $order->update(['download_token' => \Illuminate\Support\Str::random(60)]);
+        }
+
+        // Pastikan relasi produk dan item ter-load
+        $order->loadMissing(['orderItems.product', 'product']);
+
+        $mailSent = true;
+        $mailError = null;
         try {
             \Illuminate\Support\Facades\Mail::to($order->customer_email)->send(new \App\Mail\OrderPaidMail($order));
-            return back()->with('success', 'Email produk berhasil dikirim ulang ke ' . $order->customer_email);
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Failed to send OrderPaidMail: ' . $e->getMessage());
-            return back()->with('error', 'Gagal mengirim email: ' . $e->getMessage());
+        } catch (\Throwable $e) {
+            $mailSent = false;
+            $mailError = $e->getMessage();
+            \Illuminate\Support\Facades\Log::error('Failed to send OrderPaidMail: ' . $mailError);
         }
+
+        // Kirim Push Notification FCM & Notifikasi Lonceng ke Pembeli
+        try {
+            app(\App\Services\FirebaseService::class)->notifyOrderLinkResent($order);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning("FCM notifyOrderLinkResent failed: " . $e->getMessage());
+        }
+
+        $firstItem = $order->orderItems->first();
+        $productName = $firstItem->product->name ?? ($order->product->name ?? 'Produk Digital');
+        $msg = $mailSent 
+            ? "Link produk '{$productName}' berhasil dikirim ke {$order->customer_email} dan push notifikasi terkirim!" 
+            : "Push notifikasi link produk berhasil dikirim (Catatan email: {$mailError})";
+
+        return back()
+            ->with($mailSent ? 'success' : 'warning', $msg)
+            ->with('fcm_notification', [
+                'title' => "📥 Link Produk Terkirim: #{$order->invoice_number}",
+                'body' => "Tautan akses produk telah dikirim ke {$order->customer_email} beserta push notifikasi ke pembeli."
+            ]);
     }
 }

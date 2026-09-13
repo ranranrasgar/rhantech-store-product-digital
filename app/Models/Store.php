@@ -82,6 +82,9 @@ class Store extends Model
         return $this->hasMany(Product::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\Project>
+     */
     public function projects()
     {
         return $this->hasMany(Project::class);

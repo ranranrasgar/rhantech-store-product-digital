@@ -52,7 +52,7 @@
                 
                 <!-- Saved Bank Debit Card Showcase -->
                 @if(!empty($store->bank_account_info))
-                    <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white p-6 shadow-xl border border-slate-800 flex flex-col justify-between min-h-[200px] group">
+                    <div class="relative overflow-hidden rounded-2xl bg-slate-900 text-white p-6 shadow-md border border-slate-800 flex flex-col justify-between min-h-[200px] group">
                         <div class="absolute -right-6 -bottom-6 w-36 h-36 bg-sky-500/10 rounded-full blur-2xl pointer-events-none"></div>
                         
                         <!-- Card Top Bar -->

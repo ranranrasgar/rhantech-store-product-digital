@@ -27,7 +27,7 @@
             <div class="flex items-center gap-2 mb-1">
                 <h1 class="text-xl font-black text-slate-900 dark:text-white">Portofolio & Proyek Toko</h1>
                 @if($store->isPro())
-                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-black bg-gradient-to-r from-amber-400 to-yellow-300 text-slate-950 shadow-sm border border-yellow-200">
+                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-black bg-amber-400 text-slate-950 shadow-xs border border-amber-300">
                         ★ TOKO PRO
                     </span>
                 @else
@@ -41,12 +41,12 @@
 
         <div>
             @if($store->isPro())
-                <a href="{{ route('tenant.projects.create') }}" class="px-4 py-2.5 rounded-xl bg-primary text-white font-bold text-xs shadow-md shadow-primary/25 hover:bg-primary/90 transition-all flex items-center gap-1.5 cursor-pointer">
+                <a href="{{ route('tenant.projects.create') }}" class="px-4 py-2.5 rounded-xl bg-primary text-white font-bold text-xs shadow-xs hover:bg-primary/90 transition-all flex items-center gap-1.5 cursor-pointer">
                     <span class="material-symbols-outlined text-[18px]">add</span>
                     <span>Tambah Proyek Baru</span>
                 </a>
             @else
-                <button type="button" @click="openProModal()" class="px-4 py-2.5 rounded-xl font-black text-xs text-slate-950 shadow-lg hover:scale-105 transition-all flex items-center gap-1.5 cursor-pointer" style="background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #d97706 100%);">
+                <button type="button" @click="openProModal()" class="px-4 py-2.5 rounded-xl font-black text-xs text-slate-950 bg-amber-400 hover:bg-amber-300 shadow-xs transition-all flex items-center gap-1.5 cursor-pointer">
                     <span class="material-symbols-outlined text-[18px]">bolt</span>
                     <span>Buka Modul Portofolio PRO</span>
                 </button>
@@ -55,9 +55,9 @@
     </div>
 
     @if(!$store->isPro())
-        <div class="p-6 rounded-3xl bg-gradient-to-r from-amber-500/10 via-amber-400/5 to-transparent border border-amber-400/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div class="p-6 rounded-3xl bg-white dark:bg-[#111726] border border-slate-200/90 dark:border-[#222f49] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs">
             <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-500 flex items-center justify-center shrink-0">
+                <div class="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center shrink-0 border border-amber-500/20">
                     <span class="material-symbols-outlined text-2xl">folder_special</span>
                 </div>
                 <div>
@@ -65,7 +65,7 @@
                     <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Tingkatkan closing rate toko hingga 4x lipat dengan membuktikan kualitas karya digital Anda langsung di etalase toko publik.</p>
                 </div>
             </div>
-            <a href="{{ route('tenant.pro.index') }}" class="px-4 py-2 rounded-xl text-xs font-black text-slate-950 shadow-md shrink-0 cursor-pointer" style="background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #d97706 100%);">
+            <a href="{{ route('tenant.pro.index') }}" class="px-4 py-2 rounded-xl text-xs font-black text-slate-950 bg-amber-400 hover:bg-amber-300 shadow-xs shrink-0 cursor-pointer transition-colors">
                 Upgrade ke PRO
             </a>
         </div>

@@ -334,23 +334,23 @@
                 </div>
 
                 <!-- Strategic Recommendations Banner -->
-                <div class="bg-gradient-to-r from-sky-500/10 via-indigo-500/10 to-sky-500/5 dark:from-sky-950/30 dark:via-indigo-950/20 dark:to-[#0c1220] border border-sky-200/80 dark:border-sky-900/40 rounded-2xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-5">
+                <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-5 shadow-xs">
                     <div class="flex items-start gap-4">
-                        <div class="w-12 h-12 rounded-xl bg-sky-500 text-white flex items-center justify-center shrink-0 shadow-md shadow-sky-500/20">
+                        <div class="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 text-[#00838f] dark:text-teal-400 flex items-center justify-center shrink-0">
                             <span class="material-symbols-outlined text-[24px]">rocket_launch</span>
                         </div>
                         <div>
-                            <h4 class="text-sm font-bold text-slate-900 dark:text-white">Tingkatkan Omset Toko dengan Dekorasi & Promo</h4>
+                            <h4 class="text-sm font-bold text-slate-900 dark:text-white">Tingkatkan Omset Toko dengan Dekorasi &amp; Promo</h4>
                             <p class="text-xs text-slate-600 dark:text-slate-300 mt-1 max-w-2xl">
                                 Toko yang memiliki banner promosi menarik, deskripsi produk lengkap dengan tautan demo, dan kode kupon diskon terbukti meningkatkan konversi hingga 3x lipat.
                             </p>
                         </div>
                     </div>
                     <div class="flex items-center gap-3 shrink-0">
-                        <a href="{{ route('tenant.appearance.index') }}" class="px-4 py-2 rounded-xl bg-white dark:bg-[#161f33] border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-800 dark:text-white hover:bg-slate-50 dark:hover:bg-[#1d273d] transition-all shadow-sm">
+                        <a href="{{ route('tenant.appearance.index') }}" class="px-4 py-2 rounded-xl bg-white dark:bg-[#161f33] border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-800 dark:text-white hover:bg-slate-50 dark:hover:bg-[#1d273d] transition-all shadow-xs">
                             Dekorasi Toko
                         </a>
-                        <a href="{{ route('tenant.campaigns.index') }}" class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-xs font-bold text-white shadow-md shadow-sky-500/20 transition-all">
+                        <a href="{{ route('tenant.campaigns.index') }}" class="px-4 py-2 rounded-xl bg-[#00838f] hover:bg-[#00727d] text-xs font-bold text-white transition-all shadow-xs">
                             Buat Promo
                         </a>
                     </div>

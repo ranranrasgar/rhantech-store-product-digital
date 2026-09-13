@@ -3,31 +3,502 @@
 @section('title', 'Dashboard Toko')
 
 @section('content')
-<div class="flex-1 overflow-y-auto p-4 md:p-8 bg-[#f8fafc] dark:bg-[#090d16] text-[#0f172a] dark:text-[#f1f5f9] transition-colors duration-200">
-    <div class="max-w-7xl mx-auto space-y-8">
+@php
+    $storeSlug = $store ? ($store->slug ?: 'toko-' . $store->id) : 'toko';
+    $storeDirectUrl = url('/' . $storeSlug);
+    $storeTokoUrl = $store ? route('store.show', $storeSlug) : url('/');
+    $encodedUrl = urlencode($storeDirectUrl);
+    $storeTitle = $store->name ?? 'Toko Saya';
+    $shareMessage = "Kunjungi toko digital resmi {$storeTitle} di Rhantech untuk melihat berbagai produk digital, source code, dan template terbaik: {$storeDirectUrl}";
+    $encodedMsg = urlencode($shareMessage);
+@endphp
+
+<div class="flex-1 overflow-y-auto p-3 sm:p-4 md:p-8 bg-[#f8fafc] dark:bg-[#090d16] text-[#0f172a] dark:text-[#f1f5f9] transition-colors duration-200"
+     x-data="{
+        copied: false,
+        showQrModal: false,
+        storeUrl: '{{ $storeDirectUrl }}',
+        copyToClipboard() {
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(this.storeUrl).then(() => {
+                    this.triggerCopied();
+                }).catch(() => {
+                    this.fallbackCopy();
+                });
+            } else {
+                this.fallbackCopy();
+            }
+        },
+        fallbackCopy() {
+            const input = document.getElementById('store-link-input-mobile') || document.getElementById('store-link-input');
+            if (input) {
+                input.select();
+                document.execCommand('copy');
+                this.triggerCopied();
+            }
+        },
+        triggerCopied() {
+            this.copied = true;
+            setTimeout(() => { this.copied = false; }, 2500);
+        },
+        shareNative() {
+            if (navigator.share) {
+                navigator.share({
+                    title: '{{ addslashes($storeTitle) }}',
+                    text: '{{ addslashes($shareMessage) }}',
+                    url: this.storeUrl
+                }).catch(() => {});
+            } else {
+                this.copyToClipboard();
+            }
+        }
+     }">
+    <div class="max-w-7xl mx-auto">
+
+        <!-- ========================================================================= -->
+        <!-- MOBILE NATIVE APP VIEW (Visible on Mobile < 768px Only)                   -->
+        <!-- ========================================================================= -->
+        <div class="block md:hidden space-y-4 pb-8">
+            <!-- 1. Native Mobile Top Profile & Header Card -->
+            <div class="bg-white dark:bg-[#111726] border border-slate-200/90 dark:border-slate-800/80 rounded-2xl p-4 shadow-xs">
+                <div class="flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-3 min-w-0">
+                        <div class="w-12 h-12 rounded-2xl p-0.5 bg-slate-200 dark:bg-slate-700 shrink-0 overflow-hidden shadow-xs">
+                            @if($store && $store->logo)
+                                <img src="{{ asset('storage/' . $store->logo) }}" alt="{{ $store->name }}" class="w-full h-full object-cover rounded-[14px]">
+                            @else
+                                <div class="w-full h-full bg-[#00838f] rounded-[14px] flex items-center justify-center font-black text-lg text-white">
+                                    {{ strtoupper(substr($store->name ?? 'T', 0, 2)) }}
+                                </div>
+                            @endif
+                        </div>
+                        <div class="min-w-0">
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                <h1 class="text-base font-extrabold text-slate-900 dark:text-white truncate">
+                                    {{ $store->name ?? 'Toko Saya' }}
+                                </h1>
+                            </div>
+                            <div class="flex items-center gap-2 mt-0.5">
+                                <span class="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400">
+                                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                    Merchant Partner
+                                </span>
+                                @if(auth()->check() && auth()->user()->store && auth()->user()->store->isPro())
+                                    <span class="bg-amber-500 text-white text-[9px] px-1.5 py-0.2 rounded font-black tracking-wide">PRO</span>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Public Store Link Pill -->
+                    @if($store && $store->slug)
+                    <a href="{{ route('store.show', $store->slug) }}" target="_blank" class="px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all flex items-center gap-1 shrink-0 active:scale-95 shadow-2xs">
+                        <span class="material-symbols-outlined text-[16px] text-slate-400">storefront</span>
+                        <span>Toko</span>
+                    </a>
+                    @endif
+                </div>
+            </div>
+
+            <!-- 2. Native Wallet & Finance Card (Dompet Seller) -->
+            <div class="rounded-2xl bg-white dark:bg-[#111726] border border-slate-200/90 dark:border-[#222f49] p-4 sm:p-5 shadow-xs relative overflow-hidden">
+                <div class="relative z-10">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-1.5 text-slate-500 dark:text-slate-400 text-xs font-semibold">
+                            <span class="material-symbols-outlined text-[18px] text-slate-700 dark:text-slate-300">account_balance_wallet</span>
+                            <span>Saldo Toko Siap Ditarik</span>
+                        </div>
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-[10px] font-bold text-slate-600 dark:text-slate-300">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Otomatis
+                        </span>
+                    </div>
+
+                    <div class="mt-2 text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
+                        Rp {{ number_format($totalSales ?? 0, 0, ',', '.') }}
+                    </div>
+
+                    <!-- Wallet Action Bar -->
+                    <div class="mt-4 pt-3 border-t border-slate-100 dark:border-[#222f49] flex items-center justify-between gap-2.5">
+                        <a href="{{ route('tenant.payouts.index') }}" class="flex-1 py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-2xs active:scale-95 text-center">
+                            <span class="material-symbols-outlined text-[17px]">payments</span>
+                            <span>Tarik Dana</span>
+                        </a>
+
+                        <a href="{{ route('tenant.ads.index') }}" class="flex-1 py-2.5 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all flex items-center justify-center gap-1.5 border border-slate-200/80 dark:border-slate-700 active:scale-95 text-center">
+                            <span class="material-symbols-outlined text-[16px] text-slate-500">ads_click</span>
+                            <span class="truncate">Iklan: Rp {{ number_format($adBalance ?? 0, 0, ',', '.') }}</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Native App Quick Action Grid (8 Sleek Modern Tiles) -->
+            <div class="bg-white dark:bg-[#111726] border border-slate-200/90 dark:border-slate-800/80 rounded-2xl p-3.5 shadow-xs">
+                <div class="grid grid-cols-4 gap-2 text-center">
+                    <!-- Action 1: Tambah Produk -->
+                    <a href="{{ route('tenant.products.create') }}" class="flex flex-col items-center p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 active:scale-95 transition-all group">
+                        <div class="w-11 h-11 rounded-2xl bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 flex items-center justify-center mb-1.5 border border-slate-200/60 dark:border-slate-700/60 shadow-2xs group-hover:bg-slate-900 group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-slate-900 transition-all">
+                            <span class="material-symbols-outlined text-[20px]">add</span>
+                        </div>
+                        <span class="text-[11px] font-semibold text-slate-700 dark:text-slate-300 leading-tight">Tambah Produk</span>
+                    </a>
+
+                    <!-- Action 2: Pesanan Penjualan -->
+                    <a href="{{ route('tenant.orders.index') }}" class="flex flex-col items-center p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 active:scale-95 transition-all group relative">
+                        <div class="w-11 h-11 rounded-2xl bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 flex items-center justify-center mb-1.5 border border-slate-200/60 dark:border-slate-700/60 shadow-2xs group-hover:bg-slate-900 group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-slate-900 transition-all relative">
+                            <span class="material-symbols-outlined text-[20px]">receipt_long</span>
+                            @if(($pendingOrdersCount ?? 0) > 0)
+                                <span class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-500 text-white text-[9px] font-black flex items-center justify-center ring-2 ring-white dark:ring-slate-900">
+                                    {{ $pendingOrdersCount }}
+                                </span>
+                            @endif
+                        </div>
+                        <span class="text-[11px] font-semibold text-slate-700 dark:text-slate-300 leading-tight">Pesanan</span>
+                    </a>
+
+                    <!-- Action 3: Pusat Iklan -->
+                    <a href="{{ route('tenant.ads.index') }}" class="flex flex-col items-center p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 active:scale-95 transition-all group relative">
+                        <div class="w-11 h-11 rounded-2xl bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 flex items-center justify-center mb-1.5 border border-slate-200/60 dark:border-slate-700/60 shadow-2xs group-hover:bg-slate-900 group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-slate-900 transition-all relative">
+                            <span class="material-symbols-outlined text-[20px]">campaign</span>
+                            @if(isset($hasClaimedWelcomeVoucher) && !$hasClaimedWelcomeVoucher)
+                                <span class="absolute -top-1 -right-1 px-1 rounded-full bg-rose-500 text-white text-[8px] font-black uppercase tracking-wider">
+                                    Bonus
+                                </span>
+                            @endif
+                        </div>
+                        <span class="text-[11px] font-semibold text-slate-700 dark:text-slate-300 leading-tight">Iklan Toko</span>
+                    </a>
+
+                    <!-- Action 4: Tampilan & Tema -->
+                    <a href="{{ route('tenant.appearance.index') }}" class="flex flex-col items-center p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 active:scale-95 transition-all group">
+                        <div class="w-11 h-11 rounded-2xl bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 flex items-center justify-center mb-1.5 border border-slate-200/60 dark:border-slate-700/60 shadow-2xs group-hover:bg-slate-900 group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-slate-900 transition-all">
+                            <span class="material-symbols-outlined text-[20px]">palette</span>
+                        </div>
+                        <span class="text-[11px] font-semibold text-slate-700 dark:text-slate-300 leading-tight">Dekorasi</span>
+                    </a>
+
+                    <!-- Action 5: Rekening Bank -->
+                    <a href="{{ route('tenant.bank.index') }}" class="flex flex-col items-center p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 active:scale-95 transition-all group">
+                        <div class="w-11 h-11 rounded-2xl bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 flex items-center justify-center mb-1.5 border border-slate-200/60 dark:border-slate-700/60 shadow-2xs group-hover:bg-slate-900 group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-slate-900 transition-all">
+                            <span class="material-symbols-outlined text-[20px]">credit_card</span>
+                        </div>
+                        <span class="text-[11px] font-semibold text-slate-700 dark:text-slate-300 leading-tight">Rekening</span>
+                    </a>
+
+                    <!-- Action 6: Bagikan Toko (Share) -->
+                    <button type="button" @click="shareNative()" class="flex flex-col items-center p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 active:scale-95 transition-all group cursor-pointer">
+                        <div class="w-11 h-11 rounded-2xl bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 flex items-center justify-center mb-1.5 border border-slate-200/60 dark:border-slate-700/60 shadow-2xs group-hover:bg-slate-900 group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-slate-900 transition-all">
+                            <span class="material-symbols-outlined text-[20px]">share</span>
+                        </div>
+                        <span class="text-[11px] font-semibold text-slate-700 dark:text-slate-300 leading-tight">Bagikan</span>
+                    </button>
+
+                    <!-- Action 7: Analitik Performa -->
+                    <a href="{{ route('tenant.performance.index') }}" class="flex flex-col items-center p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 active:scale-95 transition-all group">
+                        <div class="w-11 h-11 rounded-2xl bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 flex items-center justify-center mb-1.5 border border-slate-200/60 dark:border-slate-700/60 shadow-2xs group-hover:bg-slate-900 group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-slate-900 transition-all">
+                            <span class="material-symbols-outlined text-[20px]">monitoring</span>
+                        </div>
+                        <span class="text-[11px] font-semibold text-slate-700 dark:text-slate-300 leading-tight">Analitik</span>
+                    </a>
+
+                    <!-- Action 8: Pusat Bantuan -->
+                    <a href="{{ route('help.index') }}" target="_blank" class="flex flex-col items-center p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 active:scale-95 transition-all group">
+                        <div class="w-11 h-11 rounded-2xl bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 flex items-center justify-center mb-1.5 border border-slate-200/60 dark:border-slate-700/60 shadow-2xs group-hover:bg-slate-900 group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-slate-900 transition-all">
+                            <span class="material-symbols-outlined text-[20px]">help</span>
+                        </div>
+                        <span class="text-[11px] font-semibold text-slate-700 dark:text-slate-300 leading-tight">Bantuan</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 4. Horizontal Swipeable Metric Chips (Statistik Kilat) -->
+            <div>
+                <div class="flex items-center justify-between px-1 mb-2">
+                    <h2 class="text-xs font-extrabold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                        Ringkasan Toko
+                    </h2>
+                    <span class="text-[11px] text-slate-400 font-medium">Geser untuk melihat »</span>
+                </div>
+
+                <div class="flex gap-2.5 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-none" style="-webkit-overflow-scrolling: touch;">
+                    <!-- Metric Card 1: Pengunjung -->
+                    <div class="snap-start shrink-0 w-[145px] bg-white dark:bg-[#111726] border border-slate-200/90 dark:border-slate-800/80 rounded-2xl p-3.5 shadow-xs">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400">Pengunjung</span>
+                            <span class="w-6 h-6 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-[15px]">visibility</span>
+                            </span>
+                        </div>
+                        <div class="text-lg font-black text-slate-900 dark:text-white">
+                            {{ number_format($totalVisitors ?? 0) }}
+                        </div>
+                        <div class="text-[10px] text-slate-400 mt-0.5 truncate">
+                            {{ number_format($productViews ?? 0) }} view produk
+                        </div>
+                    </div>
+
+                    <!-- Metric Card 2: Pesanan Sukses -->
+                    <div class="snap-start shrink-0 w-[145px] bg-white dark:bg-[#111726] border border-slate-200/90 dark:border-slate-800/80 rounded-2xl p-3.5 shadow-xs">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400">Order Sukses</span>
+                            <span class="w-6 h-6 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-[15px]">verified</span>
+                            </span>
+                        </div>
+                        <div class="text-lg font-black text-slate-900 dark:text-white">
+                            {{ number_format($completedOrdersCount ?? 0) }}
+                        </div>
+                        <div class="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold mt-0.5">
+                            {{ $totalOrdersCount > 0 ? round(($completedOrdersCount / $totalOrdersCount) * 100) : 100 }}% Sukses
+                        </div>
+                    </div>
+
+                    <!-- Metric Card 3: Menunggu Bayar -->
+                    <div class="snap-start shrink-0 w-[145px] bg-white dark:bg-[#111726] border border-slate-200/90 dark:border-slate-800/80 rounded-2xl p-3.5 shadow-xs">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400">Tertunda</span>
+                            <span class="w-6 h-6 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-[15px]">schedule</span>
+                            </span>
+                        </div>
+                        <div class="text-lg font-black text-slate-900 dark:text-white">
+                            {{ number_format($pendingOrdersCount ?? 0) }}
+                        </div>
+                        <div class="text-[10px] text-amber-600 dark:text-amber-400 font-bold mt-0.5">
+                            Menunggu bayar
+                        </div>
+                    </div>
+
+                    <!-- Metric Card 4: Katalog Produk -->
+                    <div class="snap-start shrink-0 w-[145px] bg-white dark:bg-[#111726] border border-slate-200/90 dark:border-slate-800/80 rounded-2xl p-3.5 shadow-xs">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400">Produk Aktif</span>
+                            <span class="w-6 h-6 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-[15px]">inventory_2</span>
+                            </span>
+                        </div>
+                        <div class="text-lg font-black text-slate-900 dark:text-white">
+                            {{ number_format($activeProducts ?? 0) }}
+                        </div>
+                        <div class="text-[10px] text-slate-400 mt-0.5">
+                            Dari {{ number_format($totalProducts ?? 0) }} produk
+                        </div>
+                    </div>
+
+                    <!-- Metric Card 5: Pengikut Toko -->
+                    <div class="snap-start shrink-0 w-[145px] bg-white dark:bg-[#111726] border border-slate-200/90 dark:border-slate-800/80 rounded-2xl p-3.5 shadow-xs">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400">Pengikut</span>
+                            <span class="w-6 h-6 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-[15px]">group</span>
+                            </span>
+                        </div>
+                        <div class="text-lg font-black text-slate-900 dark:text-white">
+                            {{ number_format($followersCount ?? 0) }}
+                        </div>
+                        <div class="text-[10px] text-slate-500 font-bold mt-0.5">
+                            Pelanggan setia
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. Native Mini Sales Trend Chart -->
+            <div class="bg-white dark:bg-[#111726] border border-slate-200/90 dark:border-slate-800/80 rounded-2xl p-4 shadow-xs">
+                <div class="flex items-center justify-between gap-2 pb-3 border-b border-slate-100 dark:border-[#222f49]">
+                    <div class="flex items-center gap-2">
+                        <span class="w-7 h-7 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[18px]">monitoring</span>
+                        </span>
+                        <h3 class="text-sm font-bold text-slate-900 dark:text-white">Tren Penjualan</h3>
+                    </div>
+
+                    <!-- Segmented Control Switcher -->
+                    <div class="flex items-center gap-1 bg-slate-100 dark:bg-slate-800/80 p-0.5 rounded-xl border border-slate-200/60 dark:border-slate-700/60">
+                        <button type="button" id="btnTenantPeriodMonthlyMobile" onclick="switchTenantTrendPeriod('monthly')" class="px-2.5 py-1 text-[11px] font-bold rounded-lg transition-all bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs cursor-pointer">
+                            6 Bulan
+                        </button>
+                        <button type="button" id="btnTenantPeriodDailyMobile" onclick="switchTenantTrendPeriod('daily')" class="px-2.5 py-1 text-[11px] font-bold rounded-lg transition-all text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700 cursor-pointer">
+                            Harian
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mt-3 relative h-48 w-full">
+                    <canvas id="tenantSalesChartMobile"></canvas>
+                </div>
+
+                <div class="mt-3 pt-2.5 border-t border-slate-100 dark:border-[#222f49] flex items-center justify-between text-xs">
+                    <span class="text-slate-500 dark:text-slate-400 text-[11px]">Total Pendapatan:</span>
+                    <span id="tenantPeriodTotalMobile" class="font-extrabold text-slate-900 dark:text-white text-sm">
+                        Rp {{ number_format(array_sum($monthlySales ?? []), 0, ',', '.') }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- 6. Native Recent Orders Section -->
+            <div class="bg-white dark:bg-[#111726] border border-slate-200/90 dark:border-slate-800/80 rounded-2xl p-4 shadow-xs">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-slate-700 dark:text-slate-300 text-[20px]">receipt_long</span>
+                        <h3 class="text-sm font-bold text-slate-900 dark:text-white">Pesanan Terkini</h3>
+                    </div>
+                    <a href="{{ route('tenant.orders.index') }}" class="text-xs font-bold text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors flex items-center gap-0.5">
+                        Semua <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+                    </a>
+                </div>
+
+                <div class="divide-y divide-slate-100 dark:divide-slate-800/80">
+                    @forelse($recentOrders as $order)
+                    @php
+                        $tenantItems = $order->orderItems->filter(function($item) use ($store) {
+                            return $item->product && $item->product->store_id == $store->id;
+                        });
+                        $firstItem = $tenantItems->first() ?? $order->orderItems->first();
+                        $firstProduct = $firstItem ? $firstItem->product : $order->product;
+                        $amountForTenant = $tenantItems->isNotEmpty() ? $tenantItems->sum(function($item){ return $item->price * $item->quantity; }) : $order->amount;
+                    @endphp
+                    <div class="py-3 first:pt-0 last:pb-0 flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <div class="w-11 h-11 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 flex items-center justify-center shrink-0 overflow-hidden text-slate-500">
+                                @if($firstProduct && $firstProduct->images->count() > 0)
+                                    @php $img = $firstProduct->images->where('is_main', true)->first() ?? $firstProduct->images->first(); @endphp
+                                    <img src="{{ asset('storage/' . $img->image_path) }}" class="w-full h-full object-cover">
+                                @else
+                                    <span class="material-symbols-outlined text-[20px]">code</span>
+                                @endif
+                            </div>
+                            <div class="min-w-0">
+                                <h4 class="text-xs font-bold text-slate-900 dark:text-white truncate">
+                                    {{ $firstProduct->name ?? 'Produk Digital' }}
+                                </h4>
+                                <div class="flex items-center gap-1.5 text-[10px] text-slate-400 mt-0.5 font-mono">
+                                    <span>#{{ substr($order->invoice_number, -8) }}</span>
+                                    <span>•</span>
+                                    <span>{{ $order->created_at->diffForHumans() }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-right shrink-0">
+                            <div class="text-xs font-extrabold text-slate-900 dark:text-white">
+                                Rp {{ number_format($amountForTenant, 0, ',', '.') }}
+                            </div>
+                            <div class="mt-0.5">
+                                @if($order->status === 'paid' || $order->status === 'downloaded')
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                                        Sukses
+                                    </span>
+                                @elseif($order->status === 'failed')
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20">
+                                        Gagal
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                                        Pending
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                    @empty
+                    <div class="py-6 text-center text-slate-400">
+                        <span class="material-symbols-outlined text-3xl mb-1 opacity-40">shopping_bag</span>
+                        <p class="text-xs">Belum ada transaksi penjualan baru.</p>
+                    </div>
+                    @endforelse
+                </div>
+            </div>
+
+            <!-- 7. Native Share & QR Quick Sheet Trigger -->
+            <div class="bg-white dark:bg-[#111726] border border-slate-200/90 dark:border-[#222f49] rounded-2xl p-4 shadow-xs">
+                <div class="flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <div class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center justify-center shrink-0">
+                            <span class="material-symbols-outlined text-[20px]">qr_code_2</span>
+                        </div>
+                        <div class="min-w-0">
+                            <div class="text-xs font-bold text-slate-900 dark:text-white truncate">Bagikan Tautan Toko</div>
+                            <div class="text-[10px] text-slate-400 truncate">Siap dipasang di bio IG & TikTok</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1.5 shrink-0">
+                        <button type="button" @click="copyToClipboard()" class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all active:scale-95 cursor-pointer shadow-2xs" :class="copied ? 'bg-emerald-600 text-white' : 'bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100'">
+                            <span x-text="copied ? 'Tersalin!' : 'Salin'"></span>
+                        </button>
+                        <button type="button" @click="showQrModal = true" class="p-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all active:scale-95 cursor-pointer" title="QR Code">
+                            <span class="material-symbols-outlined text-[18px]">qr_code</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 8. Native Top Products Section -->
+            <div class="bg-white dark:bg-[#111726] border border-slate-200/90 dark:border-slate-800/80 rounded-2xl p-4 shadow-xs">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-sm font-bold text-slate-900 dark:text-white">Koleksi Produk</h3>
+                    <a href="{{ route('tenant.products.index') }}" class="text-xs font-bold text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors">
+                        Lihat Semua
+                    </a>
+                </div>
+
+                <div class="space-y-2.5">
+                    @forelse($topProducts as $prod)
+                    <div class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-100 dark:border-slate-800/60">
+                        <div class="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 overflow-hidden shrink-0 flex items-center justify-center">
+                            @if($prod->images->count() > 0)
+                                @php $prodImg = $prod->images->where('is_main', true)->first() ?? $prod->images->first(); @endphp
+                                <img src="{{ asset('storage/' . $prodImg->image_path) }}" class="w-full h-full object-cover">
+                            @else
+                                <span class="material-symbols-outlined text-slate-400 text-[18px]">inventory_2</span>
+                            @endif
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="text-xs font-bold text-slate-900 dark:text-white truncate">{{ $prod->name }}</h4>
+                            <div class="text-xs font-bold text-slate-900 dark:text-white">
+                                Rp {{ number_format($prod->discount_price ?? $prod->price, 0, ',', '.') }}
+                            </div>
+                        </div>
+                        <a href="{{ route('tenant.products.edit', $prod) }}" class="p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-white transition-colors" title="Edit">
+                            <span class="material-symbols-outlined text-[18px]">edit</span>
+                        </a>
+                    </div>
+                    @empty
+                    <div class="py-4 text-center text-slate-400 text-xs">
+                        Belum ada produk yang diunggah.
+                    </div>
+                    @endforelse
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================================================= -->
+        <!-- DESKTOP VIEW (Visible on Desktop >= 768px Only - 100% UNTOUCHED ORIGINAL) -->
+        <!-- ========================================================================= -->
+        <div class="hidden md:block space-y-8">
 
         <!-- Header Hero & Quick Info -->
-        <div class="rounded-2xl bg-[#00838f] text-white p-6 md:p-7 border border-[#00727d] dark:border-teal-700">
+        <div class="rounded-2xl bg-white dark:bg-[#111726] border border-slate-200/90 dark:border-[#222f49] p-6 md:p-7 shadow-xs">
             <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                 <div class="flex items-center gap-4">
-                    <div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl p-1 bg-white/15 border border-white/25 overflow-hidden shrink-0">
+                    <div class="w-16 h-16 md:w-20 md:h-20 rounded-2xl p-1 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden shrink-0">
                         @if($store && $store->logo)
                             <img src="{{ asset('storage/' . $store->logo) }}" alt="{{ $store->name }}" class="w-full h-full object-cover rounded-xl">
                         @else
-                            <div class="w-full h-full bg-white/20 rounded-xl flex items-center justify-center font-black text-2xl text-white">
+                            <div class="w-full h-full bg-[#00838f] rounded-xl flex items-center justify-center font-black text-2xl text-white">
                                 {{ strtoupper(substr($store->name ?? 'T', 0, 2)) }}
                             </div>
                         @endif
                     </div>
                     <div>
-                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 border border-white/25 text-xs font-semibold text-teal-50 mb-2">
-                            <span class="w-2 h-2 rounded-full bg-emerald-300"></span>
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2 border border-slate-200 dark:border-slate-700">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
                             Merchant Partner
                         </div>
-                        <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight text-white flex items-center gap-2">
+                        <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
                             {{ $store->name ?? 'Toko Saya' }}
                         </h1>
-                        <p class="text-xs md:text-sm text-teal-100 mt-1 max-w-xl line-clamp-1">
+                        <p class="text-xs md:text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-xl line-clamp-1">
                             {{ $store->description ?: 'Kelola produk digital, pantau penjualan, dan tingkatkan penghasilan Anda.' }}
                         </p>
                     </div>
@@ -36,13 +507,13 @@
                 <!-- Action Hub Buttons -->
                 <div class="flex flex-wrap items-center gap-3">
                     @if($store && $store->slug)
-                    <a href="{{ route('store.show', $store->slug) }}" target="_blank" class="px-4 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 border border-white/30 text-white text-xs md:text-sm font-semibold transition-colors flex items-center gap-2">
+                    <a href="{{ route('store.show', $store->slug) }}" target="_blank" class="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-xs md:text-sm font-semibold transition-colors flex items-center gap-2">
                         <span class="material-symbols-outlined text-[18px]">storefront</span>
                         Lihat Toko Publik
                     </a>
                     @endif
-                    <a href="{{ route('tenant.products.create') }}" class="px-5 py-2.5 rounded-xl bg-white text-[#00838f] hover:bg-teal-50 text-xs md:text-sm font-bold transition-colors flex items-center gap-2">
-                        <span class="material-symbols-outlined text-[18px]">add_circle</span>
+                    <a href="{{ route('tenant.products.create') }}" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs md:text-sm font-bold transition-all flex items-center gap-2 shadow-2xs active:scale-95">
+                        <span class="material-symbols-outlined text-[18px]">add</span>
                         Tambah Produk
                     </a>
                 </div>
@@ -218,8 +689,8 @@
                     <div class="flex items-center gap-2 shrink-0">
                         <!-- Copy Button -->
                         <button type="button" @click="copyToClipboard()"
-                                class="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl font-bold text-xs transition-colors cursor-pointer"
-                                :class="copied ? 'bg-emerald-600 text-white' : 'bg-[#00838f] hover:bg-[#00727d] text-white'">
+                                class="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl font-bold text-xs transition-all active:scale-95 cursor-pointer shadow-2xs"
+                                :class="copied ? 'bg-emerald-600 text-white' : 'bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100'">
                             <span class="material-symbols-outlined text-[17px]" x-text="copied ? 'check_circle' : 'content_copy'"></span>
                             <span x-text="copied ? 'Tersalin! 🎉' : 'Salin Tautan'"></span>
                         </button>
@@ -487,7 +958,7 @@
                     <button type="button" 
                             id="btnTenantPeriodMonthly" 
                             onclick="switchTenantTrendPeriod('monthly')"
-                            class="px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all bg-sky-600 text-white shadow-xs cursor-pointer">
+                            class="px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs cursor-pointer">
                         Bulanan (6 Bln)
                     </button>
                     <button type="button" 
@@ -626,11 +1097,11 @@
             <!-- Right Area: Store Products & Performance Quick Guide (5 cols) -->
             <div class="lg:col-span-5 space-y-6">
                 
-                <!-- Pusat Iklan Toko & Promosi Platform (Biru Langit Theme) -->
-                <div class="bg-gradient-to-br from-sky-500/10 via-cyan-500/5 to-transparent dark:from-sky-950/20 dark:to-transparent border border-sky-200/90 dark:border-slate-800 rounded-2xl p-5 md:p-6 bg-white dark:bg-[#111726] relative overflow-hidden shadow-sm">
+                <!-- Pusat Iklan Toko & Promosi Platform -->
+                <div class="bg-white dark:bg-[#111726] border border-slate-200/90 dark:border-[#222f49] rounded-2xl p-5 md:p-6 relative overflow-hidden shadow-xs">
                     <div class="flex items-center justify-between mb-3">
                         <div class="flex items-center gap-2.5">
-                            <div class="w-9 h-9 rounded-xl bg-sky-100 dark:bg-sky-950/50 text-sky-600 dark:text-sky-400 flex items-center justify-center shrink-0">
+                            <div class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-[#00838f] dark:text-teal-400 flex items-center justify-center shrink-0">
                                 <span class="material-symbols-outlined text-[20px]">ads_click</span>
                             </div>
                             <div>
@@ -638,13 +1109,13 @@
                                 <p class="text-[11px] text-slate-500 dark:text-slate-400">Tingkatkan penjualan dengan iklan bersponsor</p>
                             </div>
                         </div>
-                        <span class="px-2 py-0.5 rounded-full bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 text-[10px] font-bold">Rhantech Ads</span>
+                        <span class="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-[10px] font-bold">Rhantech Ads</span>
                     </div>
 
                     @if(isset($hasClaimedWelcomeVoucher) && !$hasClaimedWelcomeVoucher)
-                    <div class="my-3 p-3 rounded-xl bg-gradient-to-r from-sky-50 to-cyan-50 dark:from-sky-950/40 dark:to-cyan-950/20 border border-sky-200 dark:border-sky-800 flex items-center justify-between gap-2">
+                    <div class="my-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex items-center justify-between gap-2">
                         <div class="flex items-center gap-2">
-                            <span class="material-symbols-outlined text-sky-600 dark:text-sky-400 text-[20px]">redeem</span>
+                            <span class="material-symbols-outlined text-[#00838f] text-[20px]">redeem</span>
                             <div>
                                 <div class="text-xs font-black text-slate-900 dark:text-white">Bonus Saldo Rp500.000</div>
                                 <div class="text-[10px] text-slate-500 dark:text-slate-400">Tingkatkan kunjungan toko hingga +30%</div>
@@ -652,7 +1123,7 @@
                         </div>
                         <form action="{{ route('tenant.ads.claim-voucher') }}" method="POST">
                             @csrf
-                            <button type="submit" class="px-3 py-1.5 rounded-lg bg-[#0284c7] hover:bg-[#0369a1] text-white text-[11px] font-bold shadow-xs cursor-pointer" style="background: #0284c7 !important; color: #ffffff !important;">
+                            <button type="submit" class="px-3 py-1.5 rounded-lg bg-[#00838f] hover:bg-[#00727d] text-white text-[11px] font-bold shadow-xs cursor-pointer">
                                 Klaim
                             </button>
                         </form>
@@ -791,6 +1262,46 @@
 
             </div>
 
+        </div><!-- Closing hidden md:block space-y-8 -->
+
+        <!-- Modal QR Code Toko (Shared by Desktop and Mobile) -->
+        <div x-show="showQrModal" x-cloak style="display: none;"
+             class="fixed inset-0 z-50 overflow-y-auto bg-black/60 flex items-center justify-center p-4">
+            <div @click.outside="showQrModal = false"
+                 class="bg-white dark:bg-[#111726] border border-slate-200 dark:border-[#222f49] rounded-2xl p-6 max-w-sm w-full text-center relative">
+                <button type="button" @click="showQrModal = false" 
+                        class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-white p-1 rounded-full">
+                    <span class="material-symbols-outlined text-[20px]">close</span>
+                </button>
+
+                <div class="w-12 h-12 rounded-2xl bg-teal-500/10 text-[#00838f] dark:text-teal-400 flex items-center justify-center mx-auto mb-3">
+                    <span class="material-symbols-outlined text-2xl">qr_code_2</span>
+                </div>
+
+                <h3 class="text-base font-black text-slate-900 dark:text-white mb-1">QR Code Toko Anda</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">
+                    Scan dengan kamera HP untuk langsung membuka toko: <span class="font-bold text-[#00838f] dark:text-teal-400">{{ $storeTitle }}</span>
+                </p>
+
+                <div class="p-3 bg-white rounded-xl border border-slate-200 inline-block mb-4">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data={{ $encodedUrl }}" 
+                         alt="QR Code Toko {{ $storeTitle }}"
+                         class="w-48 h-48 rounded-lg object-contain mx-auto">
+                </div>
+
+                <div class="space-y-2">
+                    <a href="https://api.qrserver.com/v1/create-qr-code/?size=500x500&data={{ $encodedUrl }}&download=1"
+                       target="_blank" download="qr-toko-{{ $storeSlug }}.png"
+                       class="w-full py-2.5 px-4 bg-[#00838f] hover:bg-[#00727d] text-white font-bold text-xs rounded-xl transition-colors flex items-center justify-center gap-1.5">
+                        <span class="material-symbols-outlined text-[16px]">download</span>
+                        <span>Download Gambar QR Code</span>
+                    </a>
+                    <button type="button" @click="copyToClipboard(); showQrModal = false;"
+                            class="w-full py-2 px-4 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold text-xs rounded-xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+                        Salin Tautan Saja
+                    </button>
+                </div>
+            </div>
         </div>
 
     </div>
@@ -799,6 +1310,7 @@
 <script>
     (function() {
         let tenantSalesChartInstance = null;
+        let tenantSalesChartMobileInstance = null;
         let currentTrendPeriod = 'monthly';
 
         const revMonthlyLabels = @json($monthLabels ?? []);
@@ -808,111 +1320,206 @@
         const currentMonthName = @json($currentMonthName ?? 'Bulan Ini');
 
         function initTenantSalesChart() {
-            const canvas = document.getElementById('tenantSalesChart');
-            if (!canvas || typeof Chart === 'undefined') return;
+            if (typeof Chart === 'undefined') return;
 
-            const existing = Chart.getChart(canvas);
-            if (existing) existing.destroy();
-            if (tenantSalesChartInstance) {
-                try { tenantSalesChartInstance.destroy(); } catch(e) {}
-                tenantSalesChartInstance = null;
-            }
-
-            const ctx = canvas.getContext('2d');
+            const isDark = document.documentElement.classList.contains('dark') || document.body.classList.contains('dark');
             const isDaily = currentTrendPeriod === 'daily';
             const labels = isDaily ? revDailyLabels : revMonthlyLabels;
             const data = isDaily ? revDailyData : revMonthlyData;
             const barPct = isDaily ? 0.75 : 0.55;
 
-            const isDark = document.documentElement.classList.contains('dark') || document.body.classList.contains('dark');
+            // --- 1. Desktop Chart ---
+            const canvas = document.getElementById('tenantSalesChart');
+            if (canvas) {
+                const existing = Chart.getChart(canvas);
+                if (existing) existing.destroy();
+                if (tenantSalesChartInstance) {
+                    try { tenantSalesChartInstance.destroy(); } catch(e) {}
+                    tenantSalesChartInstance = null;
+                }
 
-            // Modern gradient for bars
-            let gradient = ctx.createLinearGradient(0, 0, 0, 240);
-            if (isDaily) {
-                gradient.addColorStop(0, 'rgba(14, 165, 233, 0.9)'); // sky-500
-                gradient.addColorStop(1, 'rgba(14, 165, 233, 0.25)');
-            } else {
-                gradient.addColorStop(0, 'rgba(2, 132, 199, 0.95)'); // sky-600
-                gradient.addColorStop(1, 'rgba(2, 132, 199, 0.3)');
-            }
+                const ctx = canvas.getContext('2d');
+                let gradient = ctx.createLinearGradient(0, 0, 0, 240);
+                if (isDaily) {
+                    gradient.addColorStop(0, 'rgba(14, 165, 233, 0.9)'); // sky-500
+                    gradient.addColorStop(1, 'rgba(14, 165, 233, 0.25)');
+                } else {
+                    gradient.addColorStop(0, 'rgba(2, 132, 199, 0.95)'); // sky-600
+                    gradient.addColorStop(1, 'rgba(2, 132, 199, 0.3)');
+                }
 
-            tenantSalesChartInstance = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Penjualan (Rp)',
-                        data: data,
-                        backgroundColor: gradient,
-                        hoverBackgroundColor: isDaily ? '#0284c7' : '#0369a1',
-                        borderRadius: isDaily ? 3 : 6,
-                        borderSkipped: false,
-                        barPercentage: barPct,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    interaction: {
-                        mode: 'index',
-                        intersect: false,
+                tenantSalesChartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Penjualan (Rp)',
+                            data: data,
+                            backgroundColor: gradient,
+                            hoverBackgroundColor: isDaily ? '#0284c7' : '#0369a1',
+                            borderRadius: isDaily ? 3 : 6,
+                            borderSkipped: false,
+                            barPercentage: barPct,
+                        }]
                     },
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            backgroundColor: isDark ? '#0F172A' : '#1E293B',
-                            padding: 12,
-                            cornerRadius: 8,
-                            titleFont: { family: 'Geist', size: 13, weight: 'bold' },
-                            bodyFont: { family: 'Geist', size: 14, weight: '600' },
-                            callbacks: {
-                                title: function(items) {
-                                    if (!items.length) return '';
-                                    if (currentTrendPeriod === 'daily') {
-                                        return 'Tanggal ' + items[0].label + ' ' + currentMonthName;
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false,
+                        },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: isDark ? '#0F172A' : '#1E293B',
+                                padding: 12,
+                                cornerRadius: 8,
+                                titleFont: { family: 'Geist', size: 13, weight: 'bold' },
+                                bodyFont: { family: 'Geist', size: 14, weight: '600' },
+                                callbacks: {
+                                    title: function(items) {
+                                        if (!items.length) return '';
+                                        if (currentTrendPeriod === 'daily') {
+                                            return 'Tanggal ' + items[0].label + ' ' + currentMonthName;
+                                        }
+                                        return 'Bulan ' + items[0].label;
+                                    },
+                                    label: function(context) {
+                                        return 'Penjualan: Rp ' + Number(context.parsed.y).toLocaleString('id-ID');
                                     }
-                                    return 'Bulan ' + items[0].label;
-                                },
-                                label: function(context) {
-                                    return 'Penjualan: Rp ' + Number(context.parsed.y).toLocaleString('id-ID');
                                 }
                             }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            grid: { display: false, drawBorder: false },
-                            ticks: {
-                                autoSkip: true,
-                                maxTicksLimit: isDaily ? 16 : 12,
-                                font: { family: 'Geist', size: 11 },
-                                color: isDark ? '#94A3B8' : '#64748B'
-                            }
                         },
-                        y: {
-                            grid: {
-                                color: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)',
-                                drawBorder: false
+                        scales: {
+                            x: {
+                                grid: { display: false, drawBorder: false },
+                                ticks: {
+                                    autoSkip: true,
+                                    maxTicksLimit: isDaily ? 16 : 12,
+                                    font: { family: 'Geist', size: 11 },
+                                    color: isDark ? '#94A3B8' : '#64748B'
+                                }
                             },
-                            ticks: {
-                                font: { family: 'Geist', size: 11 },
-                                color: isDark ? '#94A3B8' : '#64748B',
-                                callback: function(v) {
-                                    if (v >= 1000000) return (v / 1000000) + 'M';
-                                    if (v >= 1000) return (v / 1000) + 'K';
-                                    return v;
+                            y: {
+                                grid: {
+                                    color: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)',
+                                    drawBorder: false
+                                },
+                                ticks: {
+                                    font: { family: 'Geist', size: 11 },
+                                    color: isDark ? '#94A3B8' : '#64748B',
+                                    callback: function(v) {
+                                        if (v >= 1000000) return (v / 1000000) + 'M';
+                                        if (v >= 1000) return (v / 1000) + 'K';
+                                        return v;
+                                    }
                                 }
                             }
                         }
                     }
-                }
-            });
+                });
+            }
 
-            // Update Total Periode Ini text
+            // --- 2. Mobile Mini Chart ---
+            const canvasMobile = document.getElementById('tenantSalesChartMobile');
+            if (canvasMobile) {
+                const existingM = Chart.getChart(canvasMobile);
+                if (existingM) existingM.destroy();
+                if (tenantSalesChartMobileInstance) {
+                    try { tenantSalesChartMobileInstance.destroy(); } catch(e) {}
+                    tenantSalesChartMobileInstance = null;
+                }
+
+                const ctxM = canvasMobile.getContext('2d');
+                let gradientM = ctxM.createLinearGradient(0, 0, 0, 180);
+                if (isDaily) {
+                    gradientM.addColorStop(0, 'rgba(14, 165, 233, 0.9)');
+                    gradientM.addColorStop(1, 'rgba(14, 165, 233, 0.2)');
+                } else {
+                    gradientM.addColorStop(0, 'rgba(2, 132, 199, 0.95)');
+                    gradientM.addColorStop(1, 'rgba(2, 132, 199, 0.25)');
+                }
+
+                tenantSalesChartMobileInstance = new Chart(ctxM, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Penjualan (Rp)',
+                            data: data,
+                            backgroundColor: gradientM,
+                            hoverBackgroundColor: isDaily ? '#0284c7' : '#0369a1',
+                            borderRadius: 4,
+                            borderSkipped: false,
+                            barPercentage: isDaily ? 0.7 : 0.5,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false,
+                        },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: isDark ? '#0F172A' : '#1E293B',
+                                padding: 8,
+                                cornerRadius: 6,
+                                titleFont: { family: 'Geist', size: 11, weight: 'bold' },
+                                bodyFont: { family: 'Geist', size: 12, weight: '600' },
+                                callbacks: {
+                                    title: function(items) {
+                                        if (!items.length) return '';
+                                        return (currentTrendPeriod === 'daily' ? 'Tgl ' : 'Bln ') + items[0].label;
+                                    },
+                                    label: function(context) {
+                                        return 'Rp ' + Number(context.parsed.y).toLocaleString('id-ID');
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: { display: false, drawBorder: false },
+                                ticks: {
+                                    autoSkip: true,
+                                    maxTicksLimit: isDaily ? 8 : 6,
+                                    font: { family: 'Geist', size: 10 },
+                                    color: isDark ? '#94A3B8' : '#64748B'
+                                }
+                            },
+                            y: {
+                                grid: {
+                                    color: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)',
+                                    drawBorder: false
+                                },
+                                ticks: {
+                                    font: { family: 'Geist', size: 10 },
+                                    color: isDark ? '#94A3B8' : '#64748B',
+                                    callback: function(v) {
+                                        if (v >= 1000000) return (v / 1000000) + 'M';
+                                        if (v >= 1000) return (v / 1000) + 'K';
+                                        return v;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Update Total Periode Ini text for Desktop & Mobile
             const totalSum = data.reduce((acc, val) => acc + (Number(val) || 0), 0);
             const totalElem = document.getElementById('tenantPeriodTotal');
             if (totalElem) {
                 totalElem.textContent = 'Rp ' + Number(totalSum).toLocaleString('id-ID');
+            }
+            const totalElemMobile = document.getElementById('tenantPeriodTotalMobile');
+            if (totalElemMobile) {
+                totalElemMobile.textContent = 'Rp ' + Number(totalSum).toLocaleString('id-ID');
             }
         }
 
@@ -922,16 +1529,26 @@
             const btnDaily = document.getElementById('btnTenantPeriodDaily');
             const subtitle = document.getElementById('tenantTrendSubtitle');
 
-            const activeClass = "px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all bg-sky-600 text-white shadow-xs cursor-pointer";
+            const btnMonthlyM = document.getElementById('btnTenantPeriodMonthlyMobile');
+            const btnDailyM = document.getElementById('btnTenantPeriodDailyMobile');
+
+            const activeClass = "px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs cursor-pointer";
             const inactiveClass = "px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700 cursor-pointer";
+
+            const activeClassM = "px-2.5 py-1 text-[11px] font-bold rounded-lg transition-all bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs cursor-pointer";
+            const inactiveClassM = "px-2.5 py-1 text-[11px] font-bold rounded-lg transition-all text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700 cursor-pointer";
 
             if (period === 'daily') {
                 if (btnDaily) btnDaily.className = activeClass;
                 if (btnMonthly) btnMonthly.className = inactiveClass;
+                if (btnDailyM) btnDailyM.className = activeClassM;
+                if (btnMonthlyM) btnMonthlyM.className = inactiveClassM;
                 if (subtitle) subtitle.textContent = "Grafik penjualan harian per tanggal di bulan " + currentMonthName;
             } else {
                 if (btnMonthly) btnMonthly.className = activeClass;
                 if (btnDaily) btnDaily.className = inactiveClass;
+                if (btnMonthlyM) btnMonthlyM.className = activeClassM;
+                if (btnDailyM) btnDailyM.className = inactiveClassM;
                 if (subtitle) subtitle.textContent = "Grafik pendapatan riil 6 bulan terakhir";
             }
 

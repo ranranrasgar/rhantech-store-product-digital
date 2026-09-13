@@ -18,7 +18,7 @@ use Illuminate\Notifications\Notifiable;
  * @method static \App\Models\User findOrFail($id, array $columns = [])
  * @method static \App\Models\User|null first(array $columns = [])
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
- * @method bool|null delete()
+ * @method bool|null delete($id = null)
  */
 class User extends Authenticatable implements MustVerifyEmail
 {

@@ -299,6 +299,42 @@ class FirebaseService
     }
 
     /**
+     * Event: Kirim Ulang Link Produk Digital (Push Notification FCM & Lonceng)
+     * Penerima: Pembeli
+     */
+    public function notifyOrderLinkResent(Order $order): void
+    {
+        try {
+            $order->loadMissing(['orderItems.product', 'product']);
+            $firstItem = $order->orderItems->first();
+            $productTitle = $firstItem->product->name ?? ($order->product->name ?? 'Produk Digital');
+            $title = "📥 Link Akses Produk: #{$order->invoice_number}";
+            $body = "Link unduhan untuk '{$productTitle}' telah dikirim ulang. Klik di sini untuk mengunduh sekarang.";
+            $buyerUrl = !empty($order->download_token) ? route('products.download', $order->download_token) : url('/tenant/purchases');
+            $buyer = User::where('email', $order->customer_email)->first();
+
+            // 1. Catat ke lonceng Pembeli
+            if ($buyer) {
+                $this->recordNotification($buyer->id, 'buyer', 'order_download_link', $title, $body, $buyerUrl, 'download', [
+                    'order_id' => $order->id,
+                    'invoice' => $order->invoice_number,
+                    'download_url' => $buyerUrl,
+                ]);
+            }
+
+            // 2. Kirim Push Notification FCM ke perangkat Pembeli
+            $this->notifyBuyer($order, $title, $body, $buyerUrl, [
+                'type' => 'order_download_link',
+                'order_id' => (string) $order->id,
+                'invoice' => (string) $order->invoice_number,
+                'url' => $buyerUrl,
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('notifyOrderLinkResent Error: ' . $e->getMessage());
+        }
+    }
+
+    /**
      * Catat notifikasi ke database agar muncul di lonceng navbar (Admin, Tenant, Pembeli)
      */
     public function recordNotification(?int $userId, ?string $targetRole, string $type, string $title, string $body, ?string $url = null, string $icon = 'notifications', array $data = []): void

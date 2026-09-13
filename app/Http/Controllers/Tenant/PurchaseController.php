@@ -14,9 +14,32 @@ class PurchaseController extends Controller
         $user = Auth::user();
 
         // Cari semua pesanan di mana customer_email sama dengan email user
-        // Karena sistem ini tidak pakai user_id di order, melainkan email
-        $query = Order::where('customer_email', $user->email)
-            ->with(['product', 'orderItems.product.images', 'reviews']);
+        $baseQuery = Order::where('customer_email', $user->email);
+
+        // Counts untuk badge tab
+        $counts = [
+            'all' => (clone $baseQuery)->count(),
+            'completed' => (clone $baseQuery)->whereIn('status', ['paid', 'downloaded'])->count(),
+            'pending' => (clone $baseQuery)->where('status', 'pending')->count(),
+            'cancelled' => (clone $baseQuery)->where('status', 'failed')->count(),
+        ];
+
+        $query = (clone $baseQuery)
+            ->with(['product.store', 'orderItems.product.store', 'orderItems.product.images', 'reviews']);
+
+        // Filter pencarian invoice atau nama produk
+        if ($request->filled('search')) {
+            $search = trim($request->input('search'));
+            $query->where(function($q) use ($search) {
+                $q->where('invoice_number', 'like', "%{$search}%")
+                  ->orWhereHas('orderItems.product', function($pq) use ($search) {
+                      $pq->where('name', 'like', "%{$search}%");
+                  })
+                  ->orWhereHas('product', function($pq) use ($search) {
+                      $pq->where('name', 'like', "%{$search}%");
+                  });
+            });
+        }
 
         // Tab filter (mirip dengan halaman riwayat penjualan)
         $tab = $request->input('tab', 'all');
@@ -30,6 +53,6 @@ class PurchaseController extends Controller
 
         $purchases = $query->latest()->paginate(10)->withQueryString();
 
-        return view('tenant.purchases.index', compact('purchases', 'tab'));
+        return view('tenant.purchases.index', compact('purchases', 'tab', 'counts'));
     }
 }

@@ -7,6 +7,7 @@ use App\Models\Store;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
+use App\Models\Project;
 use App\Models\User;
 use App\Mail\StoreStatusChangedMail;
 use App\Services\FirebaseService;
@@ -403,9 +404,22 @@ class StoreController extends Controller
                 $product->delete();
             }
 
-            // 9. Hapus Project Toko jika ada
-            $projects = $store->projects()->get();
+            // 9. Hapus Project Toko jika ada (beserta thumbnail, brosur, & galeri gambar)
+            $projects = $store->projects()->with('images')->get();
+            /** @var Project $project */
             foreach ($projects as $project) {
+                if ($project->thumbnail && Storage::disk('public')->exists($project->thumbnail)) {
+                    Storage::disk('public')->delete($project->thumbnail);
+                }
+                if ($project->brochure_file && Storage::disk('public')->exists($project->brochure_file)) {
+                    Storage::disk('public')->delete($project->brochure_file);
+                }
+                foreach ($project->images as $img) {
+                    if ($img->image && Storage::disk('public')->exists($img->image)) {
+                        Storage::disk('public')->delete($img->image);
+                    }
+                }
+                $project->images()->delete();
                 $project->delete();
             }
 

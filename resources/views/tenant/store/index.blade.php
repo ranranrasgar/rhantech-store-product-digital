@@ -3,113 +3,197 @@
 @section('title', 'Profil & Pengaturan')
 
 @section('content')
-<div class="flex-1 overflow-y-auto p-4 md:p-8 bg-[#f8fafc] dark:bg-[#090d16] text-[#0f172a] dark:text-[#f1f5f9] transition-colors duration-200" x-data="{ tab: 'profil' }">
-    <div class="max-w-4xl mx-auto space-y-6">
+<div class="flex-1 overflow-y-auto p-3.5 sm:p-4 md:p-8 bg-[#f8fafc] dark:bg-[#090d16] text-[#0f172a] dark:text-[#f1f5f9] transition-colors duration-200" 
+     x-data="{ 
+         tab: '{{ request('tab', 'profil') }}',
+         platforms: [
+             { key: 'instagram', name: 'Instagram', icon: 'photo_camera', placeholder: 'https://instagram.com/username' },
+             { key: 'tiktok', name: 'TikTok', icon: 'music_video', placeholder: 'https://tiktok.com/@username' },
+             { key: 'facebook', name: 'Facebook', icon: 'public', placeholder: 'https://facebook.com/namahalaman' },
+             { key: 'youtube', name: 'YouTube', icon: 'smart_display', placeholder: 'https://youtube.com/@channel' },
+             { key: 'whatsapp', name: 'WhatsApp', icon: 'chat', placeholder: '08123456789 atau 628123456789' },
+             { key: 'x', name: 'X / Twitter', icon: 'tag', placeholder: 'https://x.com/username' },
+             { key: 'telegram', name: 'Telegram', icon: 'send', placeholder: 'https://t.me/username' },
+             { key: 'github', name: 'GitHub', icon: 'code', placeholder: 'https://github.com/username' },
+             { key: 'website', name: 'Website / Portofolio', icon: 'language', placeholder: 'https://domainanda.com' },
+             { key: 'custom', name: 'Custom Lainnya', icon: 'link', placeholder: 'https://...' }
+         ],
+         socialItems: {{ json_encode(!empty($store->social_links) && is_array($store->social_links) ? $store->social_links : [
+             ['platform' => 'instagram', 'name' => 'Instagram', 'url' => ''],
+             ['platform' => 'whatsapp', 'name' => 'WhatsApp', 'url' => '']
+         ]) }},
+         addItem(platformKey = 'custom') {
+             const p = this.platforms.find(x => x.key === platformKey) || { name: 'Custom', key: 'custom' };
+             this.socialItems.push({
+                 platform: p.key,
+                 name: p.name,
+                 url: ''
+             });
+         },
+         removeItem(index) {
+             this.socialItems.splice(index, 1);
+         },
+         getIcon(platform) {
+             const p = this.platforms.find(x => x.key === platform);
+             return p ? p.icon : 'link';
+         },
+         getPlaceholder(platform) {
+             const p = this.platforms.find(x => x.key === platform);
+             return p ? p.placeholder : 'https://...';
+         },
+         onPlatformChange(index, event) {
+             const selectedKey = event.target.value;
+             const p = this.platforms.find(x => x.key === selectedKey);
+             if (p && (!this.socialItems[index].name || this.platforms.some(pl => pl.name === this.socialItems[index].name))) {
+                 this.socialItems[index].name = p.name;
+             }
+         },
+         currentTheme: localStorage.getItem('rhantech-theme') || (document.documentElement.classList.contains('dark') ? 'dark' : 'light')
+     }">
+    <div class="max-w-4xl mx-auto space-y-4 md:space-y-6 pb-12">
         
-        <!-- Header -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <!-- Flash Session Alerts -->
+        @if(session('success'))
+            <div class="p-3.5 md:p-4 rounded-xl md:rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300 text-xs md:text-sm font-semibold flex items-center gap-2.5 shadow-2xs">
+                <span class="material-symbols-outlined text-emerald-600 dark:text-emerald-400 text-[20px]">check_circle</span>
+                <span>{{ session('success') }}</span>
+            </div>
+        @endif
+
+        @if(session('warning'))
+            <div class="p-3.5 md:p-4 rounded-xl md:rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 text-amber-800 dark:text-amber-300 text-xs md:text-sm font-semibold flex items-center gap-2.5 shadow-2xs">
+                <span class="material-symbols-outlined text-amber-600 dark:text-amber-400 text-[20px]">warning</span>
+                <span>{{ session('warning') }}</span>
+            </div>
+        @endif
+
+        @if($errors->any())
+            <div class="p-3.5 md:p-4 rounded-xl md:rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/60 text-rose-800 dark:text-rose-300 text-xs md:text-sm space-y-1 shadow-2xs">
+                <div class="font-bold flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[18px]">error</span> Mohon periksa kesalahan input:
+                </div>
+                <ul class="list-disc pl-6 text-[11px] space-y-0.5">
+                    @foreach($errors->all() as $err)
+                        <li>{{ $err }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <!-- ========================================================================= -->
+        <!-- HEADER (Mobile & Desktop)                                                 -->
+        <!-- ========================================================================= -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-                <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-2.5">
+                <h1 class="text-xl md:text-3xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
                     Profil &amp; Pengaturan
                 </h1>
-                <p class="text-xs md:text-sm text-slate-500 dark:text-slate-400 mt-1">
-                    Kelola identitas profil, nama brand/kreator, tautan URL, media sosial, dan data rekening pencairan saldo.
+                <p class="text-[11px] md:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+                    Identitas brand, tautan URL bio link, media sosial, dan data rekening pencairan.
                 </p>
             </div>
             
             @if(isset($store) && $store->slug)
-            <div class="flex items-center gap-3">
-                <a href="{{ route('store.show', $store->slug) }}" target="_blank" class="px-4 py-2.5 rounded-xl bg-white dark:bg-[#111726] border border-slate-200 dark:border-[#222f49] hover:bg-slate-50 dark:hover:bg-[#161f33] text-slate-700 dark:text-slate-200 text-xs md:text-sm font-semibold transition-all shadow-sm flex items-center gap-2">
-                    <span class="material-symbols-outlined text-[18px] text-sky-500">
+            <div class="flex items-center gap-2 shrink-0">
+                <a href="{{ route('store.show', $store->slug) }}" target="_blank" class="w-full sm:w-auto px-3.5 py-2 rounded-xl bg-white dark:bg-[#111726] border border-slate-200/90 dark:border-[#222f49] hover:bg-slate-50 dark:hover:bg-[#161f33] text-slate-700 dark:text-slate-200 text-xs font-bold transition-all shadow-2xs flex items-center justify-center gap-1.5 active:scale-95">
+                    <span class="material-symbols-outlined text-[17px] text-[#00838f]">
                         {{ ($store->store_mode ?? 'store') === 'profile' ? 'contact_page' : (($store->store_mode ?? 'store') === 'hybrid' ? 'layers' : 'storefront') }}
                     </span>
-                    <span>Lihat Halaman Publik ({{ ucfirst($store->store_mode ?? 'store') }})</span>
+                    <span>Lihat Halaman Publik</span>
                     <span class="material-symbols-outlined text-[14px] opacity-60">open_in_new</span>
                 </a>
             </div>
             @endif
         </div>
 
-        @if(session('success'))
-            <div class="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs md:text-sm font-semibold flex items-center gap-2.5 shadow-sm">
-                <span class="material-symbols-outlined text-[20px]">check_circle</span>
-                <span>{{ session('success') }}</span>
-            </div>
-        @endif
+        <!-- ========================================================================= -->
+        <!-- HORIZONTAL SWIPEABLE PILL TABS (Mobile & Desktop)                         -->
+        <!-- ========================================================================= -->
+        <div class="flex items-center gap-2 overflow-x-auto pb-1 -mx-3.5 px-3.5 sm:mx-0 sm:px-0 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden" style="scrollbar-width: none; -ms-overflow-style: none;">
+            <button type="button" @click="tab = 'profil'" 
+                    class="shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+                    :class="tab === 'profil' ? 'bg-[#00838f] text-white shadow-2xs' : 'bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] text-slate-600 dark:text-slate-300 active:scale-95'">
+                <span class="material-symbols-outlined text-[17px]">badge</span>
+                <span>Profil Utama</span>
+            </button>
 
-        @if(session('warning'))
-            <div class="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 text-xs md:text-sm font-semibold flex items-center gap-2.5 shadow-sm">
-                <span class="material-symbols-outlined text-[20px]">warning</span>
-                <span>{{ session('warning') }}</span>
-            </div>
-        @endif
+            <button type="button" @click="tab = 'sosmed'" 
+                    class="shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+                    :class="tab === 'sosmed' ? 'bg-[#00838f] text-white shadow-2xs' : 'bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] text-slate-600 dark:text-slate-300 active:scale-95'">
+                <span class="material-symbols-outlined text-[17px]">share</span>
+                <span>Media Sosial</span>
+                <span class="px-1.5 py-0.2 rounded-full text-[10px]" :class="tab === 'sosmed' ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'" x-text="socialItems.length"></span>
+            </button>
 
-        <!-- Main Card Form -->
-        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl shadow-sm overflow-hidden">
+            <button type="button" @click="tab = 'rekening'" 
+                    class="shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+                    :class="tab === 'rekening' ? 'bg-[#00838f] text-white shadow-2xs' : 'bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] text-slate-600 dark:text-slate-300 active:scale-95'">
+                <span class="material-symbols-outlined text-[17px]">credit_card</span>
+                <span>Rekening Bank</span>
+            </button>
+
+            <button type="button" @click="tab = 'sistem'" 
+                    class="shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
+                    :class="tab === 'sistem' ? 'bg-[#00838f] text-white shadow-2xs' : 'bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] text-slate-600 dark:text-slate-300 active:scale-95'">
+                <span class="material-symbols-outlined text-[17px]">tune</span>
+                <span>Pengaturan Sistem</span>
+            </button>
+        </div>
+
+        <!-- ========================================================================= -->
+        <!-- MAIN FORM CARD                                                            -->
+        <!-- ========================================================================= -->
+        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl shadow-2xs overflow-hidden">
             
-            <!-- Navigation Tabs (Hanya Profil, Sosmed, Rekening - Mode & Bio Link diatur di Desain Tampilan) -->
-            <div class="border-b border-slate-100 dark:border-[#222f49] px-6 flex items-center gap-8 overflow-x-auto hide-scrollbar bg-slate-50/50 dark:bg-[#0c1220]/50">
-                <button type="button" @click="tab = 'profil'" :class="tab === 'profil' ? 'text-sky-600 dark:text-sky-400 border-sky-600 dark:border-sky-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200'" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 flex items-center gap-2 cursor-pointer">
-                    <span class="material-symbols-outlined text-[18px]">badge</span> Profil Utama
-                </button>
-                <button type="button" @click="tab = 'sosmed'" :class="tab === 'sosmed' ? 'text-sky-600 dark:text-sky-400 border-sky-600 dark:border-sky-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200'" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 flex items-center gap-2 cursor-pointer">
-                    <span class="material-symbols-outlined text-[18px]">share</span> Media Sosial
-                </button>
-                <button type="button" @click="tab = 'rekening'" :class="tab === 'rekening' ? 'text-sky-600 dark:text-sky-400 border-sky-600 dark:border-sky-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200'" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 flex items-center gap-2 cursor-pointer">
-                    <span class="material-symbols-outlined text-[18px]">credit_card</span> Rekening Bank
-                </button>
-                <button type="button" @click="tab = 'sistem'" :class="tab === 'sistem' ? 'text-sky-600 dark:text-sky-400 border-sky-600 dark:border-sky-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200'" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 flex items-center gap-2 cursor-pointer">
-                    <span class="material-symbols-outlined text-[18px]">tune</span> Pengaturan Sistem
-                </button>
-            </div>
-
-            <form action="{{ route('tenant.store.store') }}" method="POST" enctype="multipart/form-data" class="p-6 md:p-8 space-y-6">
+            <form action="{{ route('tenant.store.store') }}" method="POST" enctype="multipart/form-data" class="p-4 sm:p-6 md:p-8 space-y-5" onsubmit="const btn = this.querySelector('button[type=submit]'); btn.disabled = true; btn.classList.add('opacity-75', 'cursor-not-allowed'); btn.innerHTML = '<span class=\'material-symbols-outlined text-[18px] animate-spin\'>progress_activity</span><span>Menyimpan...</span>';">
                 @csrf
 
-                <!-- Callout Banner ke Desain Tampilan -->
-                <div class="p-4 rounded-2xl bg-gradient-to-r from-sky-500/10 via-indigo-500/10 to-transparent border border-sky-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-                    <div class="flex items-center gap-3 text-slate-700 dark:text-slate-200">
-                        <span class="p-2 rounded-xl bg-sky-500 text-white shrink-0 shadow-sm">
-                            <span class="material-symbols-outlined text-[20px] block">palette</span>
+                <!-- Banner Informasi ke Desain Tampilan -->
+                <div class="p-3.5 rounded-xl bg-teal-50/50 dark:bg-teal-950/20 border border-teal-100 dark:border-teal-900/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                    <div class="flex items-center gap-2.5 text-slate-700 dark:text-slate-200">
+                        <span class="p-2 rounded-lg bg-teal-100 dark:bg-teal-950 text-[#00838f] dark:text-teal-400 shrink-0">
+                            <span class="material-symbols-outlined text-[18px] block">palette</span>
                         </span>
                         <div>
-                            <p class="font-bold text-slate-900 dark:text-white">Ingin mengatur Mode Halaman &amp; Tautan Bio Link?</p>
-                            <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Pilihan Mode Halaman (Bio Link / Toko / Hybrid), tema warna, dan daftar tautan link dikelola di <strong>Desain Tampilan</strong>.</p>
+                            <p class="font-bold text-slate-900 dark:text-white text-xs">Atur Tampilan &amp; Tombol Bio Link</p>
+                            <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Mode Halaman, warna tema, banner, dan tombol link diatur di <strong>Desain Tampilan</strong>.</p>
                         </div>
                     </div>
-                    <a href="{{ route('tenant.appearance.index') }}" class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs whitespace-nowrap transition-all shadow-sm flex items-center gap-1.5 shrink-0 w-fit">
+                    <a href="{{ route('tenant.appearance.index') }}" class="px-3.5 py-1.5 rounded-xl bg-[#00838f] hover:bg-[#00727d] text-white font-bold text-[11px] whitespace-nowrap transition-all shadow-2xs flex items-center justify-center gap-1 shrink-0 w-full sm:w-auto active:scale-95">
                         <span>Buka Desain Tampilan</span>
-                        <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+                        <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
                     </a>
                 </div>
 
-                <!-- TAB 1: PROFIL UTAMA -->
-                <div x-show="tab === 'profil'" class="space-y-6">
+                <!-- ================================================================= -->
+                <!-- TAB 1: PROFIL UTAMA                                               -->
+                <!-- ================================================================= -->
+                <div x-show="tab === 'profil'" class="space-y-5">
                     
                     <!-- Logo / Foto Profil -->
-                    <div>
+                    <div class="p-4 rounded-xl bg-slate-50 dark:bg-[#0c1220] border border-slate-200/80 dark:border-[#222f49]">
                         <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">
                             Foto Profil / Logo Brand
                         </label>
-                        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-5">
-                            <div class="w-24 h-24 rounded-2xl bg-slate-100 dark:bg-slate-800 border-2 border-dashed border-slate-200 dark:border-slate-700 overflow-hidden flex items-center justify-center shrink-0 shadow-inner">
+                        <div class="flex flex-col sm:flex-row items-center sm:items-center gap-4 text-center sm:text-left">
+                            <div class="relative w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-white dark:bg-[#111726] border-2 border-dashed border-slate-300 dark:border-slate-700 overflow-hidden flex items-center justify-center shrink-0">
                                 @if(isset($store) && $store->logo)
                                     <img id="logo-preview" src="{{ asset('storage/' . $store->logo) }}" alt="Logo" class="w-full h-full object-cover">
                                 @else
-                                    <img id="logo-preview" src="https://ui-avatars.com/api/?name={{ urlencode($store->name ?? 'Toko') }}&background=0284c7&color=fff" alt="Logo" class="w-full h-full object-cover">
+                                    <img id="logo-preview" src="https://ui-avatars.com/api/?name={{ urlencode($store->name ?? 'Toko') }}&background=00838f&color=fff" alt="Logo" class="w-full h-full object-cover">
                                 @endif
                             </div>
-                            <div class="flex-1 min-w-0">
+                            <div class="flex-1 min-w-0 w-full">
                                 <input type="file" name="logo" id="logo-input" accept="image/*" class="block w-full text-xs text-slate-500 dark:text-slate-400
-                                  file:mr-4 file:py-2.5 file:px-4
+                                  file:mr-3 file:py-2 file:px-3.5
                                   file:rounded-xl file:border-0
                                   file:text-xs file:font-bold
-                                  file:bg-sky-500/10 file:text-sky-600
-                                  dark:file:bg-sky-500/20 dark:file:text-sky-400
-                                  hover:file:bg-sky-500/20
+                                  file:bg-teal-50 file:text-[#00838f]
+                                  dark:file:bg-teal-950/60 dark:file:text-teal-300
+                                  hover:file:bg-teal-100
                                   transition-all cursor-pointer
                                 " onchange="previewImage(event)">
-                                <p class="text-[11px] text-slate-400 mt-2">Disarankan rasio 1:1 (persegi). Format: JPG, PNG, WEBP. Maks. 2MB.</p>
+                                <p class="text-[11px] text-slate-400 mt-1.5">Disarankan rasio 1:1 (persegi). Format: JPG, PNG, WEBP. Maks 2MB.</p>
                                 @error('logo') <span class="text-xs text-rose-500 mt-1 block">{{ $message }}</span> @enderror
                             </div>
                         </div>
@@ -117,56 +201,56 @@
 
                     <!-- Nama Profil / Toko -->
                     <div>
-                        <label for="name" class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
+                        <label for="name" class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
                             Nama Profil / Toko <span class="text-rose-500">*</span>
                         </label>
                         <input type="text" id="name" name="name" value="{{ old('name', $store->name ?? '') }}" required
-                            class="w-full px-4 py-2.5 text-xs md:text-sm bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 text-slate-900 dark:text-white transition-all" placeholder="Contoh: Gudang Source Aplikasi Web & Mobile / Ranran Studio">
+                            class="w-full px-3.5 py-2.5 text-xs md:text-sm bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00838f]/20 focus:border-[#00838f] text-slate-900 dark:text-white transition-all placeholder-slate-400" placeholder="Contoh: R-Tech Studio / Gudang Source Code">
                         @error('name') <span class="text-xs text-rose-500 mt-1 block">{{ $message }}</span> @enderror
                     </div>
 
                     <!-- Custom URL / Slug / Username Bio Link -->
                     <div>
-                        <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center justify-between mb-1.5">
                             <label for="slug" class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                                 Tautan URL / Username Bio Link
                             </label>
-                            <span class="text-[11px] text-slate-400">Bebas ditentukan sendiri (unik)</span>
+                            <span class="text-[10px] text-slate-400">Bebas ditentukan (unik)</span>
                         </div>
-                        <div class="flex items-center rounded-xl bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] overflow-hidden focus-within:ring-2 focus-within:ring-sky-500/20 focus-within:border-sky-500">
-                            <span class="px-3.5 py-2.5 text-xs md:text-sm font-semibold text-slate-400 border-r border-slate-200 dark:border-[#222f49] bg-slate-100/60 dark:bg-[#111726] select-none whitespace-nowrap">
+                        <div class="flex items-center rounded-xl bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] overflow-hidden focus-within:ring-2 focus-within:ring-[#00838f]/20 focus-within:border-[#00838f]">
+                            <span class="px-3 py-2.5 text-xs font-semibold text-slate-400 border-r border-slate-200 dark:border-[#222f49] bg-slate-100/70 dark:bg-[#111726] select-none whitespace-nowrap">
                                 {{ url('/') }}/
                             </span>
-                            <input type="text" id="slug" name="slug" value="{{ old('slug', $store->slug ?? '') }}" placeholder="gudang-aplikasi"
-                                class="flex-1 px-3.5 py-2.5 text-xs md:text-sm bg-transparent border-0 focus:outline-none text-slate-900 dark:text-white font-mono">
+                            <input type="text" id="slug" name="slug" value="{{ old('slug', $store->slug ?? '') }}" placeholder="nama-toko"
+                                class="flex-1 px-3 py-2.5 text-xs md:text-sm bg-transparent border-0 focus:outline-none text-slate-900 dark:text-white font-mono">
                         </div>
-                        <p class="text-[11px] text-slate-400 mt-1.5">
-                            Gunakan huruf kecil, angka, atau strip (-). Contoh: <strong class="text-sky-600 dark:text-sky-400">gudang-aplikasi</strong> sehingga alamat tokomu menjadi <span class="font-mono text-[11px]">{{ url('/') }}/gudang-aplikasi</span>
+                        <p class="text-[11px] text-slate-400 mt-1">
+                            Gunakan huruf kecil, angka, atau tanda strip (-). Contoh: <strong class="text-[#00838f] dark:text-teal-400">r-tech</strong> sehingga alamat tokomu menjadi <span class="font-mono text-[10px]">{{ url('/') }}/r-tech</span>
                         </p>
                         @error('slug') <span class="text-xs text-rose-500 mt-1 block font-semibold">{{ $message }}</span> @enderror
 
                         @if(!empty($store->slug))
                         <div x-data="{ copied: false, url: '{{ url('/' . $store->slug) }}' }" 
-                             class="mt-3 p-3 rounded-2xl bg-sky-50/70 dark:bg-sky-950/20 border border-sky-200/80 dark:border-sky-800/40 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
-                            <div class="flex items-center gap-2 min-w-0 text-xs text-sky-800 dark:text-sky-300">
-                                <span class="material-symbols-outlined text-[18px] text-sky-500 shrink-0">link</span>
+                             class="mt-2.5 p-3 rounded-xl bg-teal-50/70 dark:bg-teal-950/30 border border-teal-200/80 dark:border-teal-800/40 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <div class="flex items-center gap-2 min-w-0 text-xs text-teal-900 dark:text-teal-300">
+                                <span class="material-symbols-outlined text-[17px] text-[#00838f] shrink-0">link</span>
                                 <div class="truncate">
-                                    <span class="text-[10px] uppercase font-bold text-sky-600 dark:text-sky-400 block sm:inline mr-1">Tautan Publik:</span>
+                                    <span class="text-[10px] uppercase font-bold text-[#00838f] dark:text-teal-400 mr-1">Tautan Publik:</span>
                                     <strong class="font-mono text-xs select-all text-slate-900 dark:text-white">{{ url('/' . $store->slug) }}</strong>
                                 </div>
                             </div>
                             <div class="flex items-center gap-2 shrink-0">
                                 <button type="button" 
                                         @click="navigator.clipboard.writeText(url); copied = true; setTimeout(() => copied = false, 2000)"
-                                        class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all shadow-xs flex items-center gap-1 cursor-pointer"
-                                        :class="copied ? 'bg-emerald-500 text-white' : 'bg-sky-500 hover:bg-sky-400 text-white'">
-                                    <span class="material-symbols-outlined text-[15px]" x-text="copied ? 'check' : 'content_copy'"></span>
-                                    <span x-text="copied ? 'Tersalin!' : 'Salin Bio Link'"></span>
+                                        class="px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all shadow-2xs flex items-center gap-1 cursor-pointer active:scale-95"
+                                        :class="copied ? 'bg-emerald-600 text-white' : 'bg-[#00838f] hover:bg-[#00727d] text-white'">
+                                    <span class="material-symbols-outlined text-[14px]" x-text="copied ? 'check' : 'content_copy'"></span>
+                                    <span x-text="copied ? 'Tersalin!' : 'Salin'"></span>
                                 </button>
                                 <a href="{{ route('store.show', $store->slug) }}" target="_blank"
-                                   class="px-3 py-1.5 rounded-xl bg-white dark:bg-slate-800 border border-sky-200 dark:border-sky-800 text-xs font-bold text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-slate-700 transition-colors flex items-center gap-1 shadow-xs">
-                                    <span class="material-symbols-outlined text-[15px]">open_in_new</span>
-                                    <span>Tes Buka</span>
+                                   class="px-2.5 py-1.5 rounded-lg bg-white dark:bg-slate-800 border border-teal-200 dark:border-teal-800 text-xs font-bold text-[#00838f] dark:text-teal-400 hover:bg-teal-50 dark:hover:bg-slate-700 transition-colors flex items-center gap-1 shadow-2xs active:scale-95">
+                                    <span class="material-symbols-outlined text-[14px]">open_in_new</span>
+                                    <span>Buka</span>
                                 </a>
                             </div>
                         </div>
@@ -175,100 +259,50 @@
 
                     <!-- Deskripsi / Bio Singkat -->
                     <div>
-                        <label for="description" class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
+                        <label for="description" class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
                             Bio / Deskripsi Singkat
                         </label>
                         <textarea id="description" name="description" rows="3" 
-                            class="w-full px-4 py-2.5 text-xs md:text-sm bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 text-slate-900 dark:text-white transition-all leading-relaxed" placeholder="Tulis bio profil atau deskripsi singkat toko Anda...">{{ old('description', $store->description ?? '') }}</textarea>
+                            class="w-full px-3.5 py-2.5 text-xs md:text-sm bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00838f]/20 focus:border-[#00838f] text-slate-900 dark:text-white transition-all leading-relaxed placeholder-slate-400" placeholder="Tulis bio profil atau deskripsi singkat toko Anda...">{{ old('description', $store->description ?? '') }}</textarea>
                         @error('description') <span class="text-xs text-rose-500 mt-1 block">{{ $message }}</span> @enderror
                     </div>
 
+                    <!-- Alamat Fisik / Domisili -->
                     <div class="pt-4 border-t border-slate-100 dark:border-[#1d273d]">
-                        <h3 class="text-sm font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-1.5">
-                            <span class="material-symbols-outlined text-[18px] text-sky-500">location_on</span> Lokasi &amp; Alamat (Opsional)
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2 flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-[16px] text-[#00838f]">location_on</span> Wilayah Domisili (Opsional)
                         </h3>
-
-                        <!-- Alamat Fisik / Domisili -->
-                        <div class="space-y-4">
-                            <div>
-                                <label for="address" class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
-                                    Kota / Wilayah Domisili (Opsional)
-                                </label>
-                                <textarea id="address" name="address" rows="2" 
-                                    class="w-full px-4 py-2.5 text-xs md:text-sm bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 text-slate-900 dark:text-white transition-all" placeholder="Kota, Provinsi, Indonesia">{{ old('address', $store->address ?? '') }}</textarea>
-                                @error('address') <span class="text-xs text-rose-500 mt-1 block">{{ $message }}</span> @enderror
-                            </div>
-                        </div>
+                        <textarea id="address" name="address" rows="2" 
+                            class="w-full px-3.5 py-2.5 text-xs md:text-sm bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00838f]/20 focus:border-[#00838f] text-slate-900 dark:text-white transition-all placeholder-slate-400" placeholder="Kota, Provinsi, Indonesia">{{ old('address', $store->address ?? '') }}</textarea>
+                        @error('address') <span class="text-xs text-rose-500 mt-1 block">{{ $message }}</span> @enderror
                     </div>
 
                 </div>
 
-                <!-- TAB 2: MEDIA SOSIAL TOKO -->
-                <div x-show="tab === 'sosmed'" class="space-y-6" style="display: none;"
-                     x-data="{
-                         platforms: [
-                             { key: 'instagram', name: 'Instagram', icon: 'photo_camera', placeholder: 'https://instagram.com/username' },
-                             { key: 'tiktok', name: 'TikTok', icon: 'music_video', placeholder: 'https://tiktok.com/@username' },
-                             { key: 'facebook', name: 'Facebook', icon: 'public', placeholder: 'https://facebook.com/namahalaman' },
-                             { key: 'youtube', name: 'YouTube', icon: 'smart_display', placeholder: 'https://youtube.com/@channel' },
-                             { key: 'whatsapp', name: 'WhatsApp', icon: 'chat', placeholder: '08123456789 atau 628123456789' },
-                             { key: 'x', name: 'X / Twitter', icon: 'tag', placeholder: 'https://x.com/username' },
-                             { key: 'telegram', name: 'Telegram', icon: 'send', placeholder: 'https://t.me/username' },
-                             { key: 'github', name: 'GitHub', icon: 'code', placeholder: 'https://github.com/username' },
-                             { key: 'website', name: 'Website / Portofolio', icon: 'language', placeholder: 'https://domainanda.com' },
-                             { key: 'custom', name: 'Custom Lainnya', icon: 'link', placeholder: 'https://...' }
-                         ],
-                         socialItems: {{ json_encode(!empty($store->social_links) && is_array($store->social_links) ? $store->social_links : [
-                             ['platform' => 'instagram', 'name' => 'Instagram', 'url' => ''],
-                             ['platform' => 'whatsapp', 'name' => 'WhatsApp', 'url' => '']
-                         ]) }},
-                         addItem(platformKey = 'custom') {
-                             const p = this.platforms.find(x => x.key === platformKey) || { name: 'Custom', key: 'custom' };
-                             this.socialItems.push({
-                                 platform: p.key,
-                                 name: p.name,
-                                 url: ''
-                             });
-                         },
-                         removeItem(index) {
-                             this.socialItems.splice(index, 1);
-                         },
-                         getIcon(platform) {
-                             const p = this.platforms.find(x => x.key === platform);
-                             return p ? p.icon : 'link';
-                         },
-                         getPlaceholder(platform) {
-                             const p = this.platforms.find(x => x.key === platform);
-                             return p ? p.placeholder : 'https://...';
-                         },
-                         onPlatformChange(index, event) {
-                             const selectedKey = event.target.value;
-                             const p = this.platforms.find(x => x.key === selectedKey);
-                             if (p && (!this.socialItems[index].name || this.platforms.some(pl => pl.name === this.socialItems[index].name))) {
-                                 this.socialItems[index].name = p.name;
-                             }
-                         }
-                     }">
+                <!-- ================================================================= -->
+                <!-- TAB 2: MEDIA SOSIAL TOKO                                          -->
+                <!-- ================================================================= -->
+                <div x-show="tab === 'sosmed'" class="space-y-5" style="display: none;">
                     <div>
-                        <h3 class="text-sm font-bold text-slate-900 dark:text-white mb-1 flex items-center gap-1.5">
-                            <span class="material-symbols-outlined text-[18px] text-sky-500">share</span> Tautan Media Sosial &amp; Kontak
+                        <h3 class="text-sm font-bold text-slate-900 dark:text-white mb-0.5 flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-[18px] text-[#00838f]">share</span> Tautan Media Sosial &amp; Kontak
                         </h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">
-                            Tautan media sosial yang diisi di sini akan tampil interaktif di halaman profil / toko Anda untuk memudahkan pengunjung menghubungi atau mengikuti Anda.
+                        <p class="text-xs text-slate-500 dark:text-slate-400">
+                            Tautan media sosial akan tampil di profil / toko untuk memudahkan pelanggan menghubungi Anda.
                         </p>
                     </div>
 
                     <!-- Quick Add Platform Badges -->
-                    <div class="p-4 rounded-xl bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] space-y-2">
-                        <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
-                            + Tambah Cepat Platform
+                    <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-[#0c1220] border border-slate-200/80 dark:border-[#222f49] space-y-2">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+                            + Tambah Cepat Platform:
                         </span>
-                        <div class="flex flex-wrap gap-2">
+                        <div class="flex flex-wrap gap-1.5">
                             <template x-for="p in platforms" :key="p.key">
                                 <button type="button" 
                                         @click="addItem(p.key)"
-                                        class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-[#111726] border border-slate-200 dark:border-[#222f49] hover:border-sky-500 hover:text-sky-500 dark:hover:text-sky-400 text-slate-700 dark:text-slate-300 transition-all flex items-center gap-1.5 shadow-xs cursor-pointer">
-                                    <span class="material-symbols-outlined text-[15px]" x-text="p.icon"></span>
+                                        class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-white dark:bg-[#111726] border border-slate-200 dark:border-[#222f49] hover:border-[#00838f] hover:text-[#00838f] dark:hover:text-teal-400 text-slate-700 dark:text-slate-300 transition-all flex items-center gap-1 active:scale-95 cursor-pointer shadow-2xs">
+                                    <span class="material-symbols-outlined text-[14px]" x-text="p.icon"></span>
                                     <span x-text="p.name"></span>
                                 </button>
                             </template>
@@ -278,17 +312,17 @@
                     <!-- Repeater List -->
                     <div class="space-y-3">
                         <template x-for="(item, index) in socialItems" :key="index">
-                            <div class="p-3.5 sm:p-4 rounded-xl bg-white dark:bg-[#0e1526] border border-slate-200 dark:border-[#222f49] shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center gap-3 transition-all hover:border-slate-300 dark:hover:border-slate-700">
+                            <div class="p-3.5 rounded-xl bg-white dark:bg-[#0e1526] border border-slate-200 dark:border-[#222f49] shadow-2xs flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
                                 
                                 <!-- Platform Select -->
-                                <div class="w-full sm:w-44 shrink-0">
+                                <div class="w-full sm:w-40 shrink-0">
                                     <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Platform</label>
                                     <div class="relative flex items-center">
-                                        <span class="material-symbols-outlined absolute left-2.5 text-[18px] text-sky-500 pointer-events-none" x-text="getIcon(item.platform)"></span>
+                                        <span class="material-symbols-outlined absolute left-2.5 text-[16px] text-[#00838f] pointer-events-none" x-text="getIcon(item.platform)"></span>
                                         <select :name="`social_links[${index}][platform]`" 
                                                 x-model="item.platform" 
                                                 @change="onPlatformChange(index, $event)"
-                                                class="w-full pl-9 pr-7 py-2 text-xs bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-lg text-slate-900 dark:text-white focus:outline-none focus:border-sky-500 font-semibold cursor-pointer">
+                                                class="w-full pl-8 pr-6 py-2 text-xs bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-lg text-slate-900 dark:text-white focus:outline-none focus:border-[#00838f] font-semibold cursor-pointer">
                                             <template x-for="p in platforms" :key="p.key">
                                                 <option :value="p.key" x-text="p.name" :selected="p.key === item.platform"></option>
                                             </template>
@@ -297,13 +331,13 @@
                                 </div>
 
                                 <!-- Custom Display Name -->
-                                <div class="w-full sm:w-48 shrink-0">
+                                <div class="w-full sm:w-44 shrink-0">
                                     <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Nama Tampilan</label>
                                     <input type="text" 
                                            :name="`social_links[${index}][name]`" 
                                            x-model="item.name" 
                                            placeholder="Misal: IG Official"
-                                           class="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-lg text-slate-900 dark:text-white focus:outline-none focus:border-sky-500">
+                                           class="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-lg text-slate-900 dark:text-white focus:outline-none focus:border-[#00838f]">
                                 </div>
 
                                 <!-- URL / Link Input -->
@@ -313,7 +347,7 @@
                                            :name="`social_links[${index}][url]`" 
                                            x-model="item.url" 
                                            :placeholder="getPlaceholder(item.platform)"
-                                           class="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-lg text-slate-900 dark:text-white focus:outline-none focus:border-sky-500 font-mono">
+                                           class="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-lg text-slate-900 dark:text-white focus:outline-none focus:border-[#00838f] font-mono">
                                 </div>
 
                                 <!-- Delete Button -->
@@ -321,8 +355,8 @@
                                     <button type="button" 
                                             @click="removeItem(index)" 
                                             title="Hapus tautan ini"
-                                            class="p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-lg transition-colors cursor-pointer flex items-center justify-center">
-                                        <span class="material-symbols-outlined text-[19px]">delete</span>
+                                            class="p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-lg transition-colors cursor-pointer flex items-center justify-center active:scale-95">
+                                        <span class="material-symbols-outlined text-[18px]">delete</span>
                                         <span class="sm:hidden text-xs font-semibold ml-1">Hapus</span>
                                     </button>
                                 </div>
@@ -330,164 +364,112 @@
                         </template>
 
                         <div x-show="socialItems.length === 0" class="p-6 text-center text-slate-400 text-xs border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl">
-                            Belum ada tautan media sosial. Klik tombol tambah di atas untuk menambahkan link Instagram, WhatsApp, TikTok, Facebook, dll.
+                            Belum ada tautan media sosial. Klik tombol tambah di atas untuk menambahkan link Instagram, WhatsApp, TikTok, dll.
                         </div>
                     </div>
 
-                    <div class="pt-2">
+                    <div class="pt-1">
                         <button type="button" 
                                 @click="addItem('custom')" 
-                                class="px-4 py-2 rounded-xl text-xs font-bold text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-950/30 border border-sky-200 dark:border-sky-800 hover:bg-sky-100 dark:hover:bg-sky-900/40 transition-colors flex items-center gap-1.5 cursor-pointer">
+                                class="px-3.5 py-2 rounded-xl text-xs font-bold text-[#00838f] dark:text-teal-400 bg-teal-50 dark:bg-teal-950/30 border border-teal-200 dark:border-teal-800 hover:bg-teal-100 dark:hover:bg-teal-900/40 transition-colors flex items-center gap-1.5 cursor-pointer active:scale-95">
                             <span class="material-symbols-outlined text-[16px]">add_circle</span>
-                            <span>Tambah Tautan Kustom</span>
+                            <span>Tambah Tautan Lain</span>
                         </button>
                     </div>
                 </div>
 
-                <!-- TAB 3: REKENING BANK -->
-                <div x-show="tab === 'rekening'" class="space-y-6" style="display: none;">
+                <!-- ================================================================= -->
+                <!-- TAB 3: REKENING BANK                                              -->
+                <!-- ================================================================= -->
+                <div x-show="tab === 'rekening'" class="space-y-5" style="display: none;">
                     <div>
-                        <h3 class="text-sm font-bold text-slate-900 dark:text-white mb-1 flex items-center gap-1.5">
+                        <h3 class="text-sm font-bold text-slate-900 dark:text-white mb-0.5 flex items-center gap-1.5">
                             <span class="material-symbols-outlined text-[18px] text-emerald-500">account_balance</span> Rekening Pencairan Saldo
                         </h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">
-                            Data rekening ini digunakan saat Anda mengajukan penarikan saldo penghasilan.
+                        <p class="text-xs text-slate-500 dark:text-slate-400">
+                            Data rekening ini digunakan saat Anda mengajukan penarikan saldo penghasilan toko.
                         </p>
                     </div>
 
                     <div>
-                        <label for="bank_account_info" class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
+                        <label for="bank_account_info" class="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
                             Informasi Rekening Bank Lengkap <span class="text-rose-500">*</span>
                         </label>
                         <textarea id="bank_account_info" name="bank_account_info" rows="5" 
-                            class="w-full px-4 py-3 text-xs md:text-sm bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 text-slate-900 dark:text-white transition-all font-mono leading-relaxed" placeholder="Contoh:&#10;Bank BCA&#10;No. Rekening: 4370351509&#10;Atas Nama: RANRAN RAHAYU">{{ old('bank_account_info', $store->bank_account_info ?? '') }}</textarea>
-                        <p class="text-[11px] text-slate-400 mt-2">Pastikan nama pemilik rekening sesuai dengan nama identitas Anda untuk kelancaran verifikasi pencairan.</p>
+                            class="w-full px-3.5 py-2.5 text-xs md:text-sm bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00838f]/20 focus:border-[#00838f] text-slate-900 dark:text-white transition-all font-mono leading-relaxed placeholder-slate-400" placeholder="Contoh:&#10;Bank BCA&#10;No. Rekening: 4370351509&#10;Atas Nama: RANRAN RAHAYU">{{ old('bank_account_info', $store->bank_account_info ?? '') }}</textarea>
+                        <p class="text-[11px] text-slate-400 mt-1.5">Pastikan nama pemilik rekening sesuai dengan identitas Anda agar proses pencairan saldo berjalan lancar.</p>
                         @error('bank_account_info') <span class="text-xs text-rose-500 mt-1 block">{{ $message }}</span> @enderror
                     </div>
                 </div>
 
-                <!-- Persetujuan Kontrak Elektronik & Regulasi RI (Khusus Buka Toko Baru atau Informasi Status Legalitas) -->
-                @if(!isset($store) || empty($store->id))
-                <div class="p-5 rounded-2xl bg-sky-50/60 dark:bg-sky-950/20 border-2 border-sky-200/80 dark:border-sky-800/50 space-y-3">
-                    <div class="flex items-start gap-3">
-                        <span class="p-2 bg-sky-500 text-white rounded-xl shrink-0 mt-0.5 shadow-sm">
-                            <span class="material-symbols-outlined text-[20px]">gavel</span>
-                        </span>
-                        <div>
-                            <h4 class="text-xs md:text-sm font-bold text-slate-900 dark:text-white">Persetujuan Kontrak Elektronik & Kepatuhan Hukum RI</h4>
-                            <p class="text-[11px] md:text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">
-                                Berdasarkan UU ITE No. 1/2024, PP No. 80/2019 (PMSE), UU Hak Cipta No. 28/2014, dan UU Perlindungan Data Pribadi No. 27/2022, setiap penjual wajib menyatakan persetujuan secara sah sebelum mengaktifkan toko.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="pl-0 sm:pl-11 space-y-3">
-                        <div class="p-3 bg-white dark:bg-[#0c1220] rounded-xl border border-sky-100 dark:border-sky-900/40 text-[11px] text-slate-600 dark:text-slate-300 space-y-1.5">
-                            <p class="font-semibold text-slate-800 dark:text-slate-200">Klausul Kewajiban Penjual (Tenant):</p>
-                            <ul class="list-disc pl-4 space-y-1 text-slate-500 dark:text-slate-400">
-                                <li>Menjamin bahwa seluruh produk digital yang dijual adalah karya asli atau memiliki hak lisensi distribusi resmi (<strong>Dilarang keras script bajakan/nulled/cracked</strong>).</li>
-                                <li>Bertanggung jawab penuh atas kualitas produk, keaslian link download, dan layanan purna jual kepada pembeli.</li>
-                                <li>Menyetujui bahwa platform Rhantech berhak melakukan penonaktifan sementara (*Notice and Takedown*) atau pembekuan akun jika terdapat laporan pelanggaran HAKI yang sah.</li>
-                            </ul>
-                        </div>
-
-                        <label class="flex items-start gap-3 cursor-pointer select-none">
-                            <input type="checkbox" name="agree_terms" value="1" required
-                                   class="mt-1 w-4 h-4 text-sky-600 border-slate-300 rounded focus:ring-sky-500 shrink-0 cursor-pointer">
-                            <span class="text-xs text-slate-700 dark:text-slate-300 leading-snug">
-                                Saya telah membaca, memahami, dan menyetujui 
-                                <a href="{{ route('legal.terms') }}" target="_blank" class="text-sky-600 dark:text-sky-400 font-bold hover:underline">Syarat & Ketentuan Layanan</a>, 
-                                <a href="{{ route('legal.copyright') }}" target="_blank" class="text-sky-600 dark:text-sky-400 font-bold hover:underline">Kebijakan Hak Cipta & Lisensi (HAKI)</a>, 
-                                <a href="{{ route('legal.refund') }}" target="_blank" class="text-sky-600 dark:text-sky-400 font-bold hover:underline">Kebijakan Refund</a>, serta 
-                                <a href="{{ route('legal.privacy') }}" target="_blank" class="text-sky-600 dark:text-sky-400 font-bold hover:underline">Kebijakan Privasi (UU PDP)</a> Rhantech.
-                            </span>
-                        </label>
-                        @error('agree_terms') <span class="text-xs text-rose-500 font-semibold block">{{ $message }}</span> @enderror
-                    </div>
-                </div>
-                @else
-                <div class="p-4 rounded-2xl bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] flex items-center justify-between gap-4 text-xs">
-                    <div class="flex items-center gap-2.5">
-                        <span class="material-symbols-outlined text-[18px] text-emerald-500">verified_user</span>
-                        <span class="text-slate-600 dark:text-slate-400">
-                            Kontrak Elektronik Toko Disetujui pada: <strong class="text-slate-800 dark:text-slate-200">{{ $store->terms_accepted_at ? $store->terms_accepted_at->format('d M Y, H:i') : 'Saat Pendaftaran Toko' }}</strong>
-                            @if($store->terms_accepted_ip)
-                                <span class="text-slate-400 text-[11px]">(IP: {{ $store->terms_accepted_ip }})</span>
-                            @endif
-                        </span>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <a href="{{ route('legal.terms') }}" target="_blank" class="text-sky-600 dark:text-sky-400 hover:underline font-semibold text-[11px]">Syarat & Ketentuan ↗</a>
-                        <a href="{{ route('legal.copyright') }}" target="_blank" class="text-sky-600 dark:text-sky-400 hover:underline font-semibold text-[11px]">Hak Cipta ↗</a>
-                    </div>
-                </div>
-                @endif
-
-                <!-- TAB 4: PENGATURAN SISTEM -->
-                <div x-show="tab === 'sistem'" class="space-y-6" style="display: none;" x-data="{ currentTheme: localStorage.getItem('rhantech-theme') || (document.documentElement.classList.contains('dark') ? 'dark' : 'light') }">
+                <!-- ================================================================= -->
+                <!-- TAB 4: PENGATURAN SISTEM                                          -->
+                <!-- ================================================================= -->
+                <div x-show="tab === 'sistem'" class="space-y-6" style="display: none;">
+                    
                     <!-- 1. Mode Tema Sistem (Dark / Light Mode) -->
                     <div>
                         <div class="flex items-center gap-2 mb-1">
-                            <span class="material-symbols-outlined text-sky-500 text-[20px]">palette</span>
-                            <h3 class="text-base font-bold text-slate-900 dark:text-white">Mode Tema Tampilan Sistem</h3>
+                            <span class="material-symbols-outlined text-[#00838f] text-[20px]">palette</span>
+                            <h3 class="text-sm md:text-base font-bold text-slate-900 dark:text-white">Mode Tema Tampilan Sistem</h3>
                         </div>
-                        <p class="text-xs text-slate-500 dark:text-slate-400">Pilih tema antarmuka (Mode Terang atau Gelap) yang nyaman untuk mata Anda saat mengelola dashboard.</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Pilih tema antarmuka yang nyaman untuk mata Anda saat mengelola toko.</p>
                     </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                         <!-- Light Mode -->
                         <div @click="currentTheme = 'light'; localStorage.setItem('rhantech-theme', 'light'); document.documentElement.classList.remove('dark'); document.documentElement.dataset.theme = 'light'; document.documentElement.style.colorScheme = 'light';"
-                             class="p-5 rounded-2xl border-2 transition-all cursor-pointer shadow-xs relative overflow-hidden bg-white text-slate-800"
-                             :class="currentTheme === 'light' ? 'border-sky-500 ring-2 ring-sky-500/20' : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'">
-                            <div class="flex items-center justify-between mb-3">
-                                <span class="p-2.5 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center shadow-xs">
-                                    <span class="material-symbols-outlined text-[22px]">light_mode</span>
+                             class="p-4 rounded-2xl border-2 transition-all cursor-pointer shadow-2xs relative overflow-hidden bg-white text-slate-800 active:scale-95"
+                             :class="currentTheme === 'light' ? 'border-[#00838f] ring-2 ring-[#00838f]/20' : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'">
+                            <div class="flex items-center justify-between mb-2.5">
+                                <span class="p-2 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-[20px]">light_mode</span>
                                 </span>
-                                <span x-show="currentTheme === 'light'" class="flex items-center gap-1 text-sky-600 font-bold text-xs bg-sky-50 px-2.5 py-1 rounded-full border border-sky-200">
-                                    <span class="material-symbols-outlined text-[15px]">check_circle</span> Aktif
+                                <span x-show="currentTheme === 'light'" class="flex items-center gap-1 text-[#00838f] font-bold text-xs bg-teal-50 px-2.5 py-0.5 rounded-full border border-teal-200">
+                                    <span class="material-symbols-outlined text-[14px]">check_circle</span> Aktif
                                 </span>
                             </div>
                             <h4 class="font-extrabold text-sm text-slate-900">Mode Terang (Light)</h4>
-                            <p class="text-xs text-slate-500 mt-1 leading-relaxed">Latar belakang putih bersih dan kontras tajam, optimal untuk penggunaan siang hari.</p>
+                            <p class="text-xs text-slate-500 mt-0.5 leading-relaxed">Latar belakang bersih dan kontras tajam, optimal untuk penggunaan siang hari.</p>
                         </div>
 
                         <!-- Dark Mode -->
                         <div @click="currentTheme = 'dark'; localStorage.setItem('rhantech-theme', 'dark'); document.documentElement.classList.add('dark'); document.documentElement.dataset.theme = 'dark'; document.documentElement.style.colorScheme = 'dark';"
-                             class="p-5 rounded-2xl border-2 transition-all cursor-pointer shadow-xs relative overflow-hidden bg-slate-900 text-white"
-                             :class="currentTheme === 'dark' ? 'border-sky-500 ring-2 ring-sky-500/20' : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'">
-                            <div class="flex items-center justify-between mb-3">
-                                <span class="p-2.5 rounded-xl bg-indigo-950 text-sky-400 flex items-center justify-center shadow-xs">
-                                    <span class="material-symbols-outlined text-[22px]">dark_mode</span>
+                             class="p-4 rounded-2xl border-2 transition-all cursor-pointer shadow-2xs relative overflow-hidden bg-slate-900 text-white active:scale-95"
+                             :class="currentTheme === 'dark' ? 'border-[#00838f] ring-2 ring-[#00838f]/20' : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'">
+                            <div class="flex items-center justify-between mb-2.5">
+                                <span class="p-2 rounded-xl bg-indigo-950 text-teal-400 flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-[20px]">dark_mode</span>
                                 </span>
-                                <span x-show="currentTheme === 'dark'" class="flex items-center gap-1 text-sky-400 font-bold text-xs bg-sky-950/80 px-2.5 py-1 rounded-full border border-sky-800">
-                                    <span class="material-symbols-outlined text-[15px]">check_circle</span> Aktif
+                                <span x-show="currentTheme === 'dark'" class="flex items-center gap-1 text-teal-300 font-bold text-xs bg-teal-950/80 px-2.5 py-0.5 rounded-full border border-teal-800">
+                                    <span class="material-symbols-outlined text-[14px]">check_circle</span> Aktif
                                 </span>
                             </div>
                             <h4 class="font-extrabold text-sm text-white">Mode Gelap (Dark)</h4>
-                            <p class="text-xs text-slate-400 mt-1 leading-relaxed">Latar belakang gelap elegan, nyaman dan mengurangi ketegangan mata di malam hari.</p>
+                            <p class="text-xs text-slate-400 mt-0.5 leading-relaxed">Latar belakang gelap elegan, nyaman dan mengurangi ketegangan mata di malam hari.</p>
                         </div>
                     </div>
 
                     <!-- 2. Mode Halaman Publik Toko -->
-                    <div class="pt-6 border-t border-slate-100 dark:border-[#222f49]">
-                        <div class="mb-4">
+                    <div class="pt-5 border-t border-slate-100 dark:border-[#222f49]">
+                        <div class="mb-3">
                             <div class="flex items-center gap-2 mb-1">
-                                <span class="material-symbols-outlined text-sky-500 text-[20px]">devices</span>
-                                <h3 class="text-base font-bold text-slate-900 dark:text-white">Mode Halaman Publik Toko</h3>
+                                <span class="material-symbols-outlined text-[#00838f] text-[20px]">devices</span>
+                                <h3 class="text-sm md:text-base font-bold text-slate-900 dark:text-white">Mode Halaman Publik Toko</h3>
                             </div>
-                            <p class="text-xs text-slate-500 dark:text-slate-400">Atur tampilan utama yang dilihat oleh pembeli saat mengunjungi link toko Anda.</p>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Atur tampilan utama yang dilihat pembeli saat mengunjungi link toko Anda.</p>
                         </div>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                             @php
                                 $selectedStoreMode = old('store_mode', $store->store_mode ?? 'store');
                             @endphp
-                            <label class="p-4 rounded-xl border-2 cursor-pointer transition-all flex flex-col justify-between bg-white dark:bg-[#0c1220] hover:border-slate-300 dark:hover:border-slate-600 has-[:checked]:border-sky-500 has-[:checked]:bg-sky-50/40 dark:has-[:checked]:bg-sky-950/30 shadow-2xs">
-                                <div class="flex items-center justify-between mb-3">
-                                    <span class="p-2 rounded-lg bg-sky-500/10 text-sky-600 dark:text-sky-400 flex items-center justify-center">
-                                        <span class="material-symbols-outlined text-[20px]">storefront</span>
+                            <label class="p-3.5 rounded-xl border-2 cursor-pointer transition-all flex flex-col justify-between bg-white dark:bg-[#0c1220] hover:border-slate-300 dark:hover:border-slate-600 has-[:checked]:border-[#00838f] has-[:checked]:bg-teal-50/40 dark:has-[:checked]:bg-teal-950/30 shadow-2xs active:scale-95">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="p-1.5 rounded-lg bg-teal-500/10 text-[#00838f] dark:text-teal-400 flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-[18px]">storefront</span>
                                     </span>
-                                    <input type="radio" name="store_mode" value="store" {{ $selectedStoreMode === 'store' ? 'checked' : '' }} class="text-sky-600 focus:ring-sky-500 w-4 h-4">
+                                    <input type="radio" name="store_mode" value="store" {{ $selectedStoreMode === 'store' ? 'checked' : '' }} class="text-[#00838f] focus:ring-[#00838f] w-4 h-4">
                                 </div>
                                 <div>
                                     <span class="font-bold text-xs text-slate-900 dark:text-white block mb-0.5">Toko Digital</span>
@@ -495,12 +477,12 @@
                                 </div>
                             </label>
 
-                            <label class="p-4 rounded-xl border-2 cursor-pointer transition-all flex flex-col justify-between bg-white dark:bg-[#0c1220] hover:border-slate-300 dark:hover:border-slate-600 has-[:checked]:border-sky-500 has-[:checked]:bg-sky-50/40 dark:has-[:checked]:bg-sky-950/30 shadow-2xs">
-                                <div class="flex items-center justify-between mb-3">
-                                    <span class="p-2 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
-                                        <span class="material-symbols-outlined text-[20px]">contact_page</span>
+                            <label class="p-3.5 rounded-xl border-2 cursor-pointer transition-all flex flex-col justify-between bg-white dark:bg-[#0c1220] hover:border-slate-300 dark:hover:border-slate-600 has-[:checked]:border-[#00838f] has-[:checked]:bg-teal-50/40 dark:has-[:checked]:bg-teal-950/30 shadow-2xs active:scale-95">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-[18px]">contact_page</span>
                                     </span>
-                                    <input type="radio" name="store_mode" value="profile" {{ $selectedStoreMode === 'profile' ? 'checked' : '' }} class="text-sky-600 focus:ring-sky-500 w-4 h-4">
+                                    <input type="radio" name="store_mode" value="profile" {{ $selectedStoreMode === 'profile' ? 'checked' : '' }} class="text-[#00838f] focus:ring-[#00838f] w-4 h-4">
                                 </div>
                                 <div>
                                     <span class="font-bold text-xs text-slate-900 dark:text-white block mb-0.5">Bio Link</span>
@@ -508,12 +490,12 @@
                                 </div>
                             </label>
 
-                            <label class="p-4 rounded-xl border-2 cursor-pointer transition-all flex flex-col justify-between bg-white dark:bg-[#0c1220] hover:border-slate-300 dark:hover:border-slate-600 has-[:checked]:border-sky-500 has-[:checked]:bg-sky-50/40 dark:has-[:checked]:bg-sky-950/30 shadow-2xs">
-                                <div class="flex items-center justify-between mb-3">
-                                    <span class="p-2 rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
-                                        <span class="material-symbols-outlined text-[20px]">layers</span>
+                            <label class="p-3.5 rounded-xl border-2 cursor-pointer transition-all flex flex-col justify-between bg-white dark:bg-[#0c1220] hover:border-slate-300 dark:hover:border-slate-600 has-[:checked]:border-[#00838f] has-[:checked]:bg-teal-50/40 dark:has-[:checked]:bg-teal-950/30 shadow-2xs active:scale-95">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-[18px]">layers</span>
                                     </span>
-                                    <input type="radio" name="store_mode" value="hybrid" {{ $selectedStoreMode === 'hybrid' ? 'checked' : '' }} class="text-sky-600 focus:ring-sky-500 w-4 h-4">
+                                    <input type="radio" name="store_mode" value="hybrid" {{ $selectedStoreMode === 'hybrid' ? 'checked' : '' }} class="text-[#00838f] focus:ring-[#00838f] w-4 h-4">
                                 </div>
                                 <div>
                                     <span class="font-bold text-xs text-slate-900 dark:text-white block mb-0.5">Hybrid</span>
@@ -524,14 +506,56 @@
                     </div>
                 </div>
 
-                <!-- Action Submit Button -->
-                <div class="pt-6 border-t border-slate-100 dark:border-[#1d273d] flex items-center justify-end gap-3">
-                    <a href="{{ route('tenant.dashboard') }}" class="px-5 py-2.5 text-xs md:text-sm font-semibold border border-slate-200 dark:border-[#222f49] text-slate-600 dark:text-slate-300 rounded-xl hover:bg-slate-100 dark:hover:bg-[#161f33] transition-colors">
+                <!-- Persetujuan Kontrak Elektronik & Regulasi RI (Khusus Buka Toko Baru) -->
+                @if(!isset($store) || empty($store->id))
+                <div class="p-4 rounded-xl bg-teal-50/60 dark:bg-teal-950/20 border-2 border-teal-200/80 dark:border-teal-800/50 space-y-3">
+                    <div class="flex items-start gap-2.5">
+                        <span class="p-1.5 bg-[#00838f] text-white rounded-lg shrink-0 mt-0.5">
+                            <span class="material-symbols-outlined text-[18px]">gavel</span>
+                        </span>
+                        <div>
+                            <h4 class="text-xs md:text-sm font-bold text-slate-900 dark:text-white">Persetujuan Kontrak Elektronik & Kepatuhan Hukum RI</h4>
+                            <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">
+                                Berdasarkan UU ITE No. 1/2024, PP No. 80/2019 (PMSE), dan UU Hak Cipta No. 28/2014, setiap penjual wajib menyatakan persetujuan secara sah sebelum mengaktifkan toko.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2.5">
+                        <label class="flex items-start gap-2.5 cursor-pointer select-none">
+                            <input type="checkbox" name="agree_terms" value="1" required
+                                   class="mt-1 w-4 h-4 text-[#00838f] border-slate-300 rounded focus:ring-[#00838f] shrink-0 cursor-pointer">
+                            <span class="text-xs text-slate-700 dark:text-slate-300 leading-snug">
+                                Saya menyetujui seluruh 
+                                <a href="{{ route('legal.terms') }}" target="_blank" class="text-[#00838f] font-bold hover:underline">Syarat & Ketentuan</a> serta 
+                                <a href="{{ route('legal.copyright') }}" target="_blank" class="text-[#00838f] font-bold hover:underline">Kebijakan Hak Cipta (HAKI)</a>.
+                            </span>
+                        </label>
+                        @error('agree_terms') <span class="text-xs text-rose-500 font-semibold block">{{ $message }}</span> @enderror
+                    </div>
+                </div>
+                @else
+                <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[17px] text-emerald-500 shrink-0">verified_user</span>
+                        <span class="text-slate-600 dark:text-slate-400 text-[11px]">
+                            Kontrak Elektronik Toko: <strong class="text-slate-800 dark:text-slate-200">{{ $store->terms_accepted_at ? $store->terms_accepted_at->format('d M Y, H:i') : 'Terverifikasi' }}</strong>
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <a href="{{ route('legal.terms') }}" target="_blank" class="text-[#00838f] dark:text-teal-400 hover:underline font-semibold text-[11px]">Syarat &amp; Ketentuan ↗</a>
+                    </div>
+                </div>
+                @endif
+
+                <!-- Submit Action Buttons (Mobile & Desktop Responsive) -->
+                <div class="pt-4 border-t border-slate-100 dark:border-[#1d273d] flex flex-col sm:flex-row items-center justify-end gap-2.5">
+                    <a href="{{ route('tenant.dashboard') }}" class="w-full sm:w-auto text-center px-4 py-2.5 text-xs font-semibold border border-slate-200 dark:border-[#222f49] text-slate-600 dark:text-slate-300 rounded-xl hover:bg-slate-100 dark:hover:bg-[#161f33] transition-colors active:scale-95">
                         Batal
                     </a>
-                    <button type="submit" class="px-6 py-2.5 text-xs md:text-sm font-bold text-white bg-sky-500 hover:bg-sky-400 rounded-xl shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 transition-all flex items-center gap-2 cursor-pointer">
-                        <span class="material-symbols-outlined text-[18px]">check_circle</span>
-                        {{ isset($store) && $store->id ? 'Simpan Profil & Pengaturan' : 'Buka Halaman Sekarang' }}
+                    <button type="submit" class="w-full sm:w-auto px-5 py-2.5 text-xs md:text-sm font-bold text-white bg-[#00838f] hover:bg-[#00727d] rounded-xl shadow-2xs active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+                        <span class="material-symbols-outlined text-[17px]">check_circle</span>
+                        <span>{{ isset($store) && $store->id ? 'Simpan Profil & Pengaturan' : 'Buka Toko Sekarang' }}</span>
                     </button>
                 </div>
 

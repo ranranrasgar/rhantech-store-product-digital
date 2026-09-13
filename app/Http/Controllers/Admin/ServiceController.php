@@ -15,7 +15,7 @@ class ServiceController extends Controller
     {
         $totalServices = Service::count();
         $activeServices = Service::where('is_active', true)->count();
-        
+
         $services = Service::latest()->paginate(10);
         return view('admin.services.index', compact('services', 'totalServices', 'activeServices'));
     }
