@@ -5,6 +5,8 @@
 
 {{-- Mobile marquee & slider styling --}}
 <style>
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 @keyframes marquee-scroll {
     0%   { transform: translateX(0); }
     100% { transform: translateX(-50%); }
@@ -793,11 +795,11 @@
             $comboCategories = $categories->slice(3);
         @endphp
 
-        <div class="flex flex-wrap items-center gap-1.5 px-0.5">
+        <div class="flex items-center gap-1.5 overflow-x-auto hide-scrollbar scroll-smooth py-0.5 px-0.5 whitespace-nowrap" style="-ms-overflow-style: none; scrollbar-width: none;">
             {{-- 3 Kategori yang terlihat langsung --}}
             @foreach($visibleCategories as $cat)
                 <a href="{{ route('products.index', ['category' => $cat->id]) }}" 
-                   class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold bg-surface dark:bg-slate-800 border border-outline-variant hover:border-primary text-on-surface dark:text-gray-200 shrink-0 shadow-2xs hover:shadow-xs transition-colors"
+                   class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold bg-surface dark:bg-slate-800 border border-outline-variant hover:border-primary text-on-surface dark:text-gray-200 shrink-0 shadow-2xs hover:shadow-xs transition-colors whitespace-nowrap"
                    wire:navigate>
                     <span>{{ $cat->name }}</span>
                     @if($cat->products_count > 0)
@@ -808,10 +810,10 @@
 
             {{-- Sisanya masuk ke combo box --}}
             @if($comboCategories->count() > 0)
-            <div class="relative shrink-0 flex-1 min-w-[130px] max-w-[180px]">
+            <div class="relative shrink-0 min-w-[130px] max-w-[180px]">
                 <select onchange="if(this.value) window.location.href = this.value" 
                         aria-label="Pilih Kategori Lainnya"
-                        class="w-full appearance-none pl-3 pr-7 py-1.5 rounded-full text-xs font-semibold bg-surface dark:bg-slate-800 border border-outline-variant text-on-surface dark:text-gray-200 shadow-2xs hover:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-all cursor-pointer truncate">
+                        class="w-full appearance-none pl-3 pr-7 py-1.5 rounded-full text-xs font-semibold bg-surface dark:bg-slate-800 border border-outline-variant text-on-surface dark:text-gray-200 shadow-2xs hover:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-all cursor-pointer truncate whitespace-nowrap">
                     <option value="">+ Lainnya ({{ $comboCategories->count() }})</option>
                     <option value="{{ route('products.index') }}">Semua Kategori</option>
                     @foreach($comboCategories as $cCat)
