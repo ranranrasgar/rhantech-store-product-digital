@@ -939,14 +939,28 @@
                         <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px] text-primary">image</span> Total File: <strong class="text-on-surface ml-0.5">{{ number_format($mediaStats['file_count'] ?? 0) }} file</strong></span>
                     </div>
                 </div>
-                <form action="{{ route('admin.company.backup_media') }}" method="POST">
-                    @csrf
-                    <button type="submit" onclick="this.disabled=true; this.innerHTML='<span class=\'material-symbols-outlined text-[16px] animate-spin\'>sync</span> Mengompres media...'; this.form.submit();"
-                            class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-sm whitespace-nowrap cursor-pointer">
-                        <span class="material-symbols-outlined text-[18px]">archive</span>
-                        Buat Backup Media (.zip)
-                    </button>
-                </form>
+                <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap shrink-0">
+                    <!-- Tombol 1: Buat Backup Media -->
+                    <form action="{{ route('admin.company.backup_media') }}" method="POST">
+                        @csrf
+                        <button type="submit" onclick="this.disabled=true; this.innerHTML='<span class=\'material-symbols-outlined text-[16px] animate-spin\'>sync</span> Mengompres media...'; this.form.submit();"
+                                class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm whitespace-nowrap cursor-pointer">
+                            <span class="material-symbols-outlined text-[17px]">archive</span>
+                            Buat Backup Media (.zip)
+                        </button>
+                    </form>
+
+                    <!-- Tombol 2: Restore Media (Sebaris Langsung) -->
+                    <form action="{{ route('admin.company.restore_media') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <label class="px-4 py-2.5 bg-surface-container hover:bg-surface-container-high border border-outline-variant text-on-surface rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-2xs whitespace-nowrap cursor-pointer">
+                            <span class="material-symbols-outlined text-[17px] text-emerald-600">unarchive</span>
+                            <span>Restore Media (.zip)</span>
+                            <input type="file" name="media_zip" accept=".zip" required class="hidden"
+                                   onchange="if(this.files[0] && confirm('File ' + this.files[0].name + ' siap dipulihkan. Mulai restore media sekarang?')) { this.form.submit(); } else { this.value=''; }">
+                        </label>
+                    </form>
+                </div>
             </div>
 
             {{-- Daftar Backup Media --}}
@@ -1001,28 +1015,7 @@
                 </table>
             </div>
 
-            {{-- Restore Media --}}
-            <div class="p-6 border-t border-outline-variant bg-surface-container-lowest">
-                <h4 class="text-xs font-bold text-on-surface uppercase tracking-wider mb-1 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-[16px] text-emerald-600">unarchive</span>
-                    Restore Media &amp; Gambar dari File ZIP
-                </h4>
-                <p class="text-xs text-on-surface-variant mb-4">
-                    Unggah file backup media <strong>.zip</strong> untuk mengekstrak ulang file gambar &amp; asset ke direktori media publik. File dengan nama sama akan diperbarui otomatis.
-                </p>
-                <form action="{{ route('admin.company.restore_media') }}" method="POST" enctype="multipart/form-data"
-                      onsubmit="return confirm('Restore media akan mengekstrak file ke storage publik. Lanjutkan?');"
-                      class="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
-                    @csrf
-                    <input type="file" name="media_zip" accept=".zip" required
-                           class="block text-xs text-on-surface-variant file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-surface-container file:text-on-surface hover:file:bg-surface-container-high transition-all cursor-pointer">
-                    <button type="submit"
-                            class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-sm whitespace-nowrap cursor-pointer">
-                        <span class="material-symbols-outlined text-[16px]">unarchive</span>
-                        Restore Media
-                    </button>
-                </form>
-            </div>
+
         </div>
 
         <!-- SECTION 2: BACKUP DATABASE -->
@@ -1038,14 +1031,28 @@
                     </div>
                     <p class="text-xs text-on-surface-variant mt-1.5">Buat backup database MySQL ke server dan unduh kapan saja dalam format <strong>.sql</strong>.</p>
                 </div>
-                <form action="{{ route('admin.company.backup') }}" method="POST">
-                    @csrf
-                    <button type="submit" onclick="this.disabled=true; this.innerHTML='<span class=\'material-symbols-outlined text-[16px] animate-spin\'>sync</span> Membuat backup...'; this.form.submit();"
-                            class="px-5 py-2.5 bg-primary text-on-primary rounded-xl text-xs font-bold hover:brightness-110 transition-all flex items-center gap-2 shadow-sm whitespace-nowrap cursor-pointer">
-                        <span class="material-symbols-outlined text-[16px]">add_circle</span>
-                        Buat Backup Database
-                    </button>
-                </form>
+                <div class="flex items-center gap-2 flex-wrap sm:flex-nowrap shrink-0">
+                    <!-- Tombol 1: Buat Backup Database -->
+                    <form action="{{ route('admin.company.backup') }}" method="POST">
+                        @csrf
+                        <button type="submit" onclick="this.disabled=true; this.innerHTML='<span class=\'material-symbols-outlined text-[16px] animate-spin\'>sync</span> Membuat backup...'; this.form.submit();"
+                                class="px-4 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm whitespace-nowrap cursor-pointer">
+                            <span class="material-symbols-outlined text-[17px]">add_circle</span>
+                            Buat Backup Database
+                        </button>
+                    </form>
+
+                    <!-- Tombol 2: Restore Database (.sql) -->
+                    <form action="{{ route('admin.company.restore') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <label class="px-4 py-2.5 bg-surface-container hover:bg-surface-container-high border border-outline-variant text-on-surface rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-2xs whitespace-nowrap cursor-pointer">
+                            <span class="material-symbols-outlined text-[17px] text-amber-500">restore</span>
+                            <span>Restore Database (.sql)</span>
+                            <input type="file" name="sql_file" accept=".sql,.txt" required class="hidden"
+                                   onchange="if(this.files[0] && confirm('⚠️ PERHATIAN: Restore akan menimpa database dengan file ' + this.files[0].name + '. Lanjutkan?')) { this.form.submit(); } else { this.value=''; }">
+                        </label>
+                    </form>
+                </div>
             </div>
 
             {{-- Daftar Backup Database --}}
@@ -1097,28 +1104,7 @@
                 </table>
             </div>
 
-            {{-- Restore Database --}}
-            <div class="p-6 border-t border-outline-variant bg-surface-container-lowest">
-                <h4 class="text-xs font-bold text-on-surface uppercase tracking-wider mb-1 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-[16px] text-amber-500">restore</span>
-                    Restore Database dari File SQL
-                </h4>
-                <p class="text-xs text-on-surface-variant mb-4">
-                    ⚠️ <strong>Hati-hati:</strong> Restore akan menimpa data yang ada. Pastikan sudah backup terlebih dahulu.
-                </p>
-                <form action="{{ route('admin.company.restore') }}" method="POST" enctype="multipart/form-data"
-                      onsubmit="return confirm('PERHATIAN: Restore akan menimpa database yang ada. Lanjutkan?');"
-                      class="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
-                    @csrf
-                    <input type="file" name="sql_file" accept=".sql,.txt" required
-                           class="block text-xs text-on-surface-variant file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-surface-container file:text-on-surface hover:file:bg-surface-container-high transition-all cursor-pointer">
-                    <button type="submit"
-                            class="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-sm whitespace-nowrap">
-                        <span class="material-symbols-outlined text-[16px]">restore</span>
-                        Restore Sekarang
-                    </button>
-                </form>
-            </div>
+
         </div>
     </div>
 
