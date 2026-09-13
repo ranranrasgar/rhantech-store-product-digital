@@ -58,11 +58,13 @@
                 <button type="button" @click="tab = 'rekening'" :class="tab === 'rekening' ? 'text-sky-600 dark:text-sky-400 border-sky-600 dark:border-sky-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200'" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 flex items-center gap-2 cursor-pointer">
                     <span class="material-symbols-outlined text-[18px]">credit_card</span> Rekening Bank
                 </button>
+                <button type="button" @click="tab = 'sistem'" :class="tab === 'sistem' ? 'text-sky-600 dark:text-sky-400 border-sky-600 dark:border-sky-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200'" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 flex items-center gap-2 cursor-pointer">
+                    <span class="material-symbols-outlined text-[18px]">tune</span> Pengaturan Sistem
+                </button>
             </div>
 
             <form action="{{ route('tenant.store.store') }}" method="POST" enctype="multipart/form-data" class="p-6 md:p-8 space-y-6">
                 @csrf
-                <input type="hidden" name="store_mode" value="{{ old('store_mode', $store->store_mode ?? 'store') }}">
 
                 <!-- Callout Banner ke Desain Tampilan -->
                 <div class="p-4 rounded-2xl bg-gradient-to-r from-sky-500/10 via-indigo-500/10 to-transparent border border-sky-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
@@ -420,6 +422,107 @@
                     </div>
                 </div>
                 @endif
+
+                <!-- TAB 4: PENGATURAN SISTEM -->
+                <div x-show="tab === 'sistem'" class="space-y-6" style="display: none;" x-data="{ currentTheme: localStorage.getItem('rhantech-theme') || (document.documentElement.classList.contains('dark') ? 'dark' : 'light') }">
+                    <!-- 1. Mode Tema Sistem (Dark / Light Mode) -->
+                    <div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="material-symbols-outlined text-sky-500 text-[20px]">palette</span>
+                            <h3 class="text-base font-bold text-slate-900 dark:text-white">Mode Tema Tampilan Sistem</h3>
+                        </div>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Pilih tema antarmuka (Mode Terang atau Gelap) yang nyaman untuk mata Anda saat mengelola dashboard.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <!-- Light Mode -->
+                        <div @click="currentTheme = 'light'; localStorage.setItem('rhantech-theme', 'light'); document.documentElement.classList.remove('dark'); document.documentElement.dataset.theme = 'light'; document.documentElement.style.colorScheme = 'light';"
+                             class="p-5 rounded-2xl border-2 transition-all cursor-pointer shadow-xs relative overflow-hidden bg-white text-slate-800"
+                             :class="currentTheme === 'light' ? 'border-sky-500 ring-2 ring-sky-500/20' : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="p-2.5 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center shadow-xs">
+                                    <span class="material-symbols-outlined text-[22px]">light_mode</span>
+                                </span>
+                                <span x-show="currentTheme === 'light'" class="flex items-center gap-1 text-sky-600 font-bold text-xs bg-sky-50 px-2.5 py-1 rounded-full border border-sky-200">
+                                    <span class="material-symbols-outlined text-[15px]">check_circle</span> Aktif
+                                </span>
+                            </div>
+                            <h4 class="font-extrabold text-sm text-slate-900">Mode Terang (Light)</h4>
+                            <p class="text-xs text-slate-500 mt-1 leading-relaxed">Latar belakang putih bersih dan kontras tajam, optimal untuk penggunaan siang hari.</p>
+                        </div>
+
+                        <!-- Dark Mode -->
+                        <div @click="currentTheme = 'dark'; localStorage.setItem('rhantech-theme', 'dark'); document.documentElement.classList.add('dark'); document.documentElement.dataset.theme = 'dark'; document.documentElement.style.colorScheme = 'dark';"
+                             class="p-5 rounded-2xl border-2 transition-all cursor-pointer shadow-xs relative overflow-hidden bg-slate-900 text-white"
+                             :class="currentTheme === 'dark' ? 'border-sky-500 ring-2 ring-sky-500/20' : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="p-2.5 rounded-xl bg-indigo-950 text-sky-400 flex items-center justify-center shadow-xs">
+                                    <span class="material-symbols-outlined text-[22px]">dark_mode</span>
+                                </span>
+                                <span x-show="currentTheme === 'dark'" class="flex items-center gap-1 text-sky-400 font-bold text-xs bg-sky-950/80 px-2.5 py-1 rounded-full border border-sky-800">
+                                    <span class="material-symbols-outlined text-[15px]">check_circle</span> Aktif
+                                </span>
+                            </div>
+                            <h4 class="font-extrabold text-sm text-white">Mode Gelap (Dark)</h4>
+                            <p class="text-xs text-slate-400 mt-1 leading-relaxed">Latar belakang gelap elegan, nyaman dan mengurangi ketegangan mata di malam hari.</p>
+                        </div>
+                    </div>
+
+                    <!-- 2. Mode Halaman Publik Toko -->
+                    <div class="pt-6 border-t border-slate-100 dark:border-[#222f49]">
+                        <div class="mb-4">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="material-symbols-outlined text-sky-500 text-[20px]">devices</span>
+                                <h3 class="text-base font-bold text-slate-900 dark:text-white">Mode Halaman Publik Toko</h3>
+                            </div>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Atur tampilan utama yang dilihat oleh pembeli saat mengunjungi link toko Anda.</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                            @php
+                                $selectedStoreMode = old('store_mode', $store->store_mode ?? 'store');
+                            @endphp
+                            <label class="p-4 rounded-xl border-2 cursor-pointer transition-all flex flex-col justify-between bg-white dark:bg-[#0c1220] hover:border-slate-300 dark:hover:border-slate-600 has-[:checked]:border-sky-500 has-[:checked]:bg-sky-50/40 dark:has-[:checked]:bg-sky-950/30 shadow-2xs">
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="p-2 rounded-lg bg-sky-500/10 text-sky-600 dark:text-sky-400 flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-[20px]">storefront</span>
+                                    </span>
+                                    <input type="radio" name="store_mode" value="store" {{ $selectedStoreMode === 'store' ? 'checked' : '' }} class="text-sky-600 focus:ring-sky-500 w-4 h-4">
+                                </div>
+                                <div>
+                                    <span class="font-bold text-xs text-slate-900 dark:text-white block mb-0.5">Toko Digital</span>
+                                    <span class="text-[11px] text-slate-500 dark:text-slate-400 leading-snug block">Katalog e-commerce produk digital lengkap dengan filter & kategori.</span>
+                                </div>
+                            </label>
+
+                            <label class="p-4 rounded-xl border-2 cursor-pointer transition-all flex flex-col justify-between bg-white dark:bg-[#0c1220] hover:border-slate-300 dark:hover:border-slate-600 has-[:checked]:border-sky-500 has-[:checked]:bg-sky-50/40 dark:has-[:checked]:bg-sky-950/30 shadow-2xs">
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="p-2 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-[20px]">contact_page</span>
+                                    </span>
+                                    <input type="radio" name="store_mode" value="profile" {{ $selectedStoreMode === 'profile' ? 'checked' : '' }} class="text-sky-600 focus:ring-sky-500 w-4 h-4">
+                                </div>
+                                <div>
+                                    <span class="font-bold text-xs text-slate-900 dark:text-white block mb-0.5">Bio Link</span>
+                                    <span class="text-[11px] text-slate-500 dark:text-slate-400 leading-snug block">Tampilan tombol tautan media sosial & produk gaya Linktree/Lynk.id.</span>
+                                </div>
+                            </label>
+
+                            <label class="p-4 rounded-xl border-2 cursor-pointer transition-all flex flex-col justify-between bg-white dark:bg-[#0c1220] hover:border-slate-300 dark:hover:border-slate-600 has-[:checked]:border-sky-500 has-[:checked]:bg-sky-50/40 dark:has-[:checked]:bg-sky-950/30 shadow-2xs">
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="p-2 rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-[20px]">layers</span>
+                                    </span>
+                                    <input type="radio" name="store_mode" value="hybrid" {{ $selectedStoreMode === 'hybrid' ? 'checked' : '' }} class="text-sky-600 focus:ring-sky-500 w-4 h-4">
+                                </div>
+                                <div>
+                                    <span class="font-bold text-xs text-slate-900 dark:text-white block mb-0.5">Hybrid</span>
+                                    <span class="text-[11px] text-slate-500 dark:text-slate-400 leading-snug block">Kombinasi fleksibel tombol tautan bio link dan etalase katalog produk.</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Action Submit Button -->
                 <div class="pt-6 border-t border-slate-100 dark:border-[#1d273d] flex items-center justify-end gap-3">

@@ -432,7 +432,6 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
             <h2 class="topbar-title truncate max-w-[120px] sm:max-w-xs md:max-w-none" style="display: block;">@yield('title')</h2>
         </div>
         <div style="display:flex; align-items:center; gap:8px;">
-            <x-theme-toggle />
             <form action="{{ route('help.index') }}" method="GET" class="topbar-search hidden md:flex" target="_blank">
                 <span class="material-symbols-outlined" style="font-size:16px; line-height:1; display:flex; align-items:center; color:rgba(255,255,255,0.3);">search</span>
                 <input type="text" name="q" placeholder="Cari panduan..." autocomplete="off">
@@ -465,6 +464,9 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
                     @endphp
                     <a href="{{ $storeUrl }}" target="_blank" class="dropdown-item-link">
                         <span class="material-symbols-outlined" style="font-size:16px;">storefront</span> Lihat Toko
+                    </a>
+                    <a href="{{ route('tenant.store.index', ['tab' => 'sistem']) }}" class="dropdown-item-link">
+                        <span class="material-symbols-outlined" style="font-size:16px;">tune</span> Pengaturan Sistem
                     </a>
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf
