@@ -83,4 +83,23 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(FcmToken::class);
     }
+
+    public function getAvatarUrlAttribute(): string
+    {
+        if (!empty($this->avatar)) {
+            if (\Illuminate\Support\Str::startsWith($this->avatar, ['http://', 'https://'])) {
+                return $this->avatar;
+            }
+            return asset('storage/' . $this->avatar);
+        }
+
+        return 'https://ui-avatars.com/api/?name=' . urlencode($this->name ?? 'User') . '&background=0284c7&color=fff&bold=true';
+    }
+
+    public function getAvatarFallbackSvgAttribute(): string
+    {
+        $initial = strtoupper(substr($this->name ?? 'U', 0, 1));
+        $svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><rect width="40" height="40" rx="20" fill="#0284c7"/><text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" fill="#ffffff" font-family="sans-serif" font-weight="bold" font-size="18">' . $initial . '</text></svg>';
+        return 'data:image/svg+xml;utf8,' . rawurlencode($svg);
+    }
 }

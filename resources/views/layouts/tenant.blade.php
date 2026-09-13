@@ -400,14 +400,7 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
 
     <!-- User -->
     <div class="sidebar-user">
-        @if(auth()->user()->avatar)
-            <img src="{{ Str::startsWith(auth()->user()->avatar, 'http') ? auth()->user()->avatar : asset('storage/' . auth()->user()->avatar) }}" 
-                 referrerpolicy="no-referrer"
-                 style="width:34px; height:34px; border-radius:50%; border:2px solid rgba(0,179,204,0.4); flex-shrink:0; object-fit:cover;">
-        @else
-            <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name ?? 'Admin') }}&background=0d2240&color=00b3cc"
-                 style="width:34px; height:34px; border-radius:50%; border:2px solid rgba(0,179,204,0.4); flex-shrink:0; object-fit:cover;">
-        @endif
+        <x-user-avatar style="width:34px; height:34px; border-radius:50%; border:2px solid rgba(0,179,204,0.4); flex-shrink:0;" />
         <div style="flex:1; min-width:0;">
             <div class="sidebar-user-name">{{ auth()->user()->name ?? 'Admin' }}</div>
             <div class="sidebar-user-email">{{ auth()->user()->email ?? '' }}</div>
@@ -444,11 +437,7 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
             </button>
             <div style="position:relative;" x-data="{ open: false }">
                 <button class="topbar-icon-btn" @click="open = !open" @click.outside="open = false" style="padding:0; width:34px; height:34px; border-radius:50%; overflow:hidden; border:2px solid transparent; transition:border-color 0.2s;">
-                    @if(auth()->user()->avatar)
-                        <img src="{{ Str::startsWith(auth()->user()->avatar, 'http') ? auth()->user()->avatar : asset('storage/' . auth()->user()->avatar) }}" referrerpolicy="no-referrer" style="width:100%; height:100%; object-fit:cover;">
-                    @else
-                        <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name ?? 'Admin') }}&background=00b3cc&color=fff" style="width:100%; height:100%; object-fit:cover;">
-                    @endif
+                    <x-user-avatar style="width:100%; height:100%; object-fit:cover;" />
                 </button>
                 <div x-show="open" class="topbar-dropdown" style="display:none;" x-transition>
                     <a href="{{ route('tenant.profile.index') }}" style="display:block; padding:10px 12px 8px; border-bottom:1px solid #e5e7eb; margin-bottom:4px; text-decoration:none; transition:background 0.2s;" class="html-dark-border hover-bg-gray">

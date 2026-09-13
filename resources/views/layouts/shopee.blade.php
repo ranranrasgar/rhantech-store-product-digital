@@ -374,7 +374,7 @@
                 <a href="{{ route('login') }}" class="header-action-btn primary">Masuk</a>
             @else
                 <div class="flex items-center gap-2 text-white/75">
-                    <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=0d2240&color=00d4ff" class="w-5 h-5 rounded-full border border-white/30">
+                    <x-user-avatar class="w-5 h-5 border border-white/30" />
                     <span class="text-[12px]">{{ auth()->user()->name }}</span>
                 </div>
             @endguest
@@ -520,7 +520,7 @@
             <a href="{{ route('login') }}" class="header-action-btn primary md:hidden text-xs !py-2 !px-3 !rounded-xl font-bold whitespace-nowrap shadow-sm">Masuk</a>
             @else
             <a href="{{ route('tenant.dashboard') }}" class="md:hidden flex items-center p-0.5 rounded-full ring-2 ring-[#00d4ff]/40" title="Akun Saya">
-                <img src="{{ auth()->user()->avatar ? (Str::startsWith(auth()->user()->avatar, 'http') ? auth()->user()->avatar : asset('storage/' . auth()->user()->avatar)) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=0d2240&color=00d4ff' }}" class="w-8 h-8 rounded-full object-cover">
+                <x-user-avatar class="w-8 h-8" />
             </a>
             @endguest
         </div>

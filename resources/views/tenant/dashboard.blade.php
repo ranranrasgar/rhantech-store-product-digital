@@ -748,11 +748,7 @@
                             <div class="flex items-center justify-between gap-3 p-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-[#161f33] transition-colors border border-slate-100 dark:border-slate-800/60">
                                 <div class="flex items-center gap-3 min-w-0">
                                     <div class="w-9 h-9 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700 shrink-0">
-                                        @if($follower->avatar)
-                                            <img src="{{ asset('storage/' . $follower->avatar) }}" alt="{{ $follower->name }}" class="w-full h-full object-cover">
-                                        @else
-                                            <img src="https://ui-avatars.com/api/?name={{ urlencode($follower->name) }}&background=ec4899&color=fff&size=80" alt="{{ $follower->name }}" class="w-full h-full object-cover">
-                                        @endif
+                                        <x-user-avatar :user="$follower" class="w-full h-full" />
                                     </div>
                                     <div class="min-w-0">
                                         <div class="text-xs font-bold text-slate-900 dark:text-white truncate">{{ $follower->name }}</div>

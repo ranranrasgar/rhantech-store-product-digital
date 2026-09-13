@@ -317,7 +317,7 @@
                         <!-- User Avatar Dropdown -->
                         <div class="relative" x-data="{ open: false }">
                             <button @click="open = !open" @click.outside="open = false" class="flex items-center gap-2 focus:outline-none rounded-full ring-2 ring-transparent hover:ring-primary/20 transition-all">
-                                <img src="{{ auth()->user()->avatar ? (Str::startsWith(auth()->user()->avatar, 'http') ? auth()->user()->avatar : asset('storage/' . auth()->user()->avatar)) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=0284c7&color=fff' }}" alt="Avatar" referrerpolicy="no-referrer" class="w-9 h-9 rounded-full object-cover">
+                                <x-user-avatar class="w-9 h-9" />
                             </button>
                             
                             <!-- Dropdown Menu -->
@@ -481,7 +481,7 @@
                 @else
                     <div class="relative" x-data="{ open: false }">
                         <button @click="open = !open" @click.outside="open = false" class="flex items-center focus:outline-none p-0.5 rounded-full ring-2 ring-[#00d4ff]/40">
-                            <img src="{{ auth()->user()->avatar ? (Str::startsWith(auth()->user()->avatar, 'http') ? auth()->user()->avatar : asset('storage/' . auth()->user()->avatar)) : 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name) . '&background=0d2240&color=00d4ff' }}" class="w-8 h-8 rounded-full object-cover">
+                            <x-user-avatar class="w-8 h-8" />
                         </button>
                         <div x-show="open" style="display: none;" class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl py-2 z-50 text-xs">
                             <div class="px-3 py-1.5 border-b border-gray-100 dark:border-gray-800">

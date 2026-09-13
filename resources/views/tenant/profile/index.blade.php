@@ -34,13 +34,7 @@
                 <!-- Avatar Section -->
                 <div class="flex flex-col sm:flex-row sm:items-center gap-6 pb-8 border-b border-slate-100 dark:border-[#222f49]">
                     <div class="relative inline-block">
-                        @if(auth()->user()->avatar)
-                            <img src="{{ Str::startsWith(auth()->user()->avatar, 'http') ? auth()->user()->avatar : asset('storage/' . auth()->user()->avatar) }}" referrerpolicy="no-referrer"
-                                 class="w-20 h-20 md:w-24 md:h-24 rounded-full object-cover border-4 border-white dark:border-[#161f33] shadow-sm">
-                        @else
-                            <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name ?? 'Admin') }}&background=0284c7&color=fff" 
-                                 class="w-20 h-20 md:w-24 md:h-24 rounded-full object-cover border-4 border-white dark:border-[#161f33] shadow-sm">
-                        @endif
+                        <x-user-avatar class="w-20 h-20 md:w-24 md:h-24 border-4 border-white dark:border-[#161f33] shadow-sm" />
                         <label for="avatar_input" class="absolute bottom-0 right-0 bg-sky-600 hover:bg-sky-700 text-white w-8 h-8 rounded-full flex items-center justify-center cursor-pointer shadow-md transition-colors border-2 border-white dark:border-[#161f33]">
                             <span class="material-symbols-outlined text-[16px]">edit</span>
                         </label>
