@@ -98,7 +98,7 @@
                                 @endif
                             </span>
                         </div>
-                        <a href="{{ route('help.show', 'panduan-lengkap-penarikan-saldo-penjualan-toko-payout-withdraw') }}" target="_blank" class="text-sky-600 dark:text-sky-400 hover:underline flex items-center gap-1 font-medium">
+                        <a href="{{ route('help.show', 'panduan-aturan-resmi-penarikan-dana-payout-hasil-penjualan-tenant') }}" target="_blank" class="text-sky-600 dark:text-sky-400 hover:underline flex items-center gap-1 font-medium">
                             <span>Info Penarikan</span>
                             <span class="material-symbols-outlined text-[14px]">open_in_new</span>
                         </a>

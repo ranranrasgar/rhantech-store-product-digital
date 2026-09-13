@@ -40,6 +40,14 @@ class HelpController extends Controller
 
     public function show($slug)
     {
+        $aliases = [
+            'panduan-lengkap-penarikan-saldo-penjualan-toko-payout-withdraw' => 'panduan-aturan-resmi-penarikan-dana-payout-hasil-penjualan-tenant',
+        ];
+
+        if (isset($aliases[$slug])) {
+            return redirect()->route('help.show', $aliases[$slug]);
+        }
+
         $article = HelpArticle::where('slug', $slug)
             ->where('is_published', true)
             ->firstOrFail();
