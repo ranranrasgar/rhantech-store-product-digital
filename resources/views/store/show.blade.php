@@ -188,7 +188,9 @@
                                 <span class="bg-amber-500/20 text-amber-500 text-[10px] font-black px-1.5 py-0.2 rounded uppercase shrink-0">PRO</span>
                             @endif
                         </h3>
-                        <p class="text-xs text-on-surface-variant">Media Sosial & Bagikan Toko</p>
+                        <p class="text-xs text-amber-600 dark:text-amber-400 font-bold flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[15px]">loyalty</span> Program Kemitraan & Afiliasi
+                        </p>
                     </div>
                 </div>
                 <button type="button" 
@@ -199,162 +201,113 @@
             </div>
 
             <!-- Modal Body (Scrollable) -->
-            <div class="p-5 space-y-5 overflow-y-auto hide-scrollbar">
+            <div class="p-5 space-y-4 overflow-y-auto hide-scrollbar">
                 
-                <!-- 1. MEDIA SOSIAL RESMI TOKO -->
-                <div>
-                    <div class="flex items-center justify-between mb-3">
-                        <span class="text-xs font-bold uppercase tracking-wider text-on-surface-variant flex items-center gap-1.5">
-                            <span class="material-symbols-outlined text-[16px] text-primary">diversity_3</span>
-                            <span>Media Sosial Resmi</span>
-                        </span>
-                        @if(count($socialLinks) > 0)
-                            <span class="text-[11px] font-semibold text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full">{{ count($socialLinks) }} Saluran</span>
-                        @endif
-                    </div>
-
-                    @if(count($socialLinks) > 0)
-                        <div class="grid grid-cols-2 gap-2.5">
-                            @foreach($socialLinks as $soc)
-                                @php
-                                    $socPlatform = strtolower($soc['platform'] ?? 'custom');
-                                    $socName = $soc['name'] ?? ucfirst($socPlatform);
-                                    $socUrl = $soc['url'] ?? '#';
-                                    $brandStyle = match($socPlatform) {
-                                        'instagram' => 'hover:border-[#dc2743]/50 bg-rose-500/5 hover:bg-rose-500/10 text-rose-600 dark:text-rose-400',
-                                        'tiktok' => 'hover:border-black/50 dark:hover:border-white/50 bg-slate-500/5 hover:bg-slate-500/10 text-slate-900 dark:text-white',
-                                        'whatsapp' => 'hover:border-[#25D366]/50 bg-emerald-500/5 hover:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
-                                        'youtube' => 'hover:border-[#FF0000]/50 bg-red-500/5 hover:bg-red-500/10 text-red-600 dark:text-red-400',
-                                        'facebook' => 'hover:border-[#1877F2]/50 bg-blue-500/5 hover:bg-blue-500/10 text-blue-600 dark:text-blue-400',
-                                        'x', 'twitter' => 'hover:border-slate-800 dark:hover:border-white/50 bg-slate-500/5 hover:bg-slate-500/10 text-slate-900 dark:text-white',
-                                        'telegram' => 'hover:border-[#229ED9]/50 bg-sky-500/5 hover:bg-sky-500/10 text-sky-600 dark:text-sky-400',
-                                        'github' => 'hover:border-slate-700 bg-slate-500/5 hover:bg-slate-500/10 text-slate-800 dark:text-slate-200',
-                                        default => 'hover:border-primary/50 bg-primary/5 hover:bg-primary/10 text-primary'
-                                    };
-                                    $iconBadge = match($socPlatform) {
-                                        'instagram' => 'bg-gradient-to-tr from-[#f09433] via-[#dc2743] to-[#bc1888] text-white',
-                                        'tiktok' => 'bg-black text-white',
-                                        'whatsapp' => 'bg-[#25D366] text-white',
-                                        'youtube' => 'bg-[#FF0000] text-white',
-                                        'facebook' => 'bg-[#1877F2] text-white',
-                                        'x', 'twitter' => 'bg-black text-white',
-                                        'telegram' => 'bg-[#229ED9] text-white',
-                                        'github' => 'bg-[#24292e] text-white',
-                                        default => 'bg-primary text-white'
-                                    };
-                                @endphp
-                                <a href="{{ $socUrl }}" 
-                                   target="_blank" 
-                                   rel="noopener noreferrer" 
-                                   class="flex items-center gap-2.5 p-2.5 rounded-xl border border-outline-variant/70 {{ $brandStyle }} active:scale-95 transition-all group">
-                                    <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 shadow-xs {{ $iconBadge }}">
-                                        <x-store-social-icon :platform="$socPlatform" class="w-4 h-4" />
-                                    </div>
-                                    <div class="min-w-0 flex-1">
-                                        <div class="text-xs font-bold text-on-surface truncate">{{ $socName }}</div>
-                                        <div class="text-[10px] text-on-surface-variant flex items-center gap-0.5">
-                                            <span>Buka</span>
-                                            <span class="material-symbols-outlined text-[12px] group-hover:translate-x-0.5 transition-transform">arrow_outward</span>
-                                        </div>
-                                    </div>
-                                </a>
-                            @endforeach
-                        </div>
-                    @else
-                        <div class="bg-surface-container/50 dark:bg-slate-800/50 rounded-xl p-3.5 text-center border border-dashed border-outline-variant">
-                            <p class="text-xs text-on-surface-variant">Toko ini belum menambahkan tautan media sosial resmi.</p>
-                            @if(auth()->check() && auth()->id() === $store->user_id)
-                                <a href="{{ route('tenant.store.index') }}" class="inline-flex items-center gap-1.5 mt-2 text-xs font-bold text-primary hover:underline">
-                                    <span class="material-symbols-outlined text-[15px]">add_circle</span>
-                                    <span>+ Atur Media Sosial Sekarang</span>
-                                </a>
-                            @endif
-                        </div>
-                    @endif
-                </div>
-
-                <!-- 2. BAGIKAN TAUTAN PROFIL TOKO -->
-                <div>
-                    <span class="text-xs font-bold uppercase tracking-wider text-on-surface-variant flex items-center gap-1.5 mb-2.5">
-                        <span class="material-symbols-outlined text-[16px] text-primary">link</span>
-                        <span>Bagikan Tautan Profil</span>
-                    </span>
-                    
-                    <div class="flex items-center gap-2 p-1.5 bg-surface-container dark:bg-slate-800 rounded-xl border border-outline-variant">
-                        <input type="text" 
-                               readonly 
-                               value="{{ url('/' . $store->slug) }}" 
-                               class="bg-transparent border-0 text-xs font-medium text-on-surface px-2.5 flex-1 focus:outline-none focus:ring-0 truncate select-all">
-                        <button type="button" 
-                                @click="copyStoreLink()" 
-                                :class="shareCopied ? 'bg-emerald-600 text-white' : 'bg-primary text-white hover:bg-primary/90'"
-                                class="px-3.5 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 active:scale-95 shadow-xs cursor-pointer">
-                            <span class="material-symbols-outlined text-[15px]" x-text="shareCopied ? 'check' : 'content_copy'">content_copy</span>
-                            <span x-text="shareCopied ? 'Tersalin!' : 'Salin'">Salin</span>
-                        </button>
-                    </div>
-
-                    <!-- Tombol Cepat Bagikan -->
-                    <div class="grid grid-cols-2 gap-2 mt-2.5">
-                        <a href="https://api.whatsapp.com/send?text={{ urlencode('Kunjungi toko resmi ' . $store->name . ' di ' . url('/' . $store->slug)) }}" 
-                           target="_blank" 
-                           rel="noopener noreferrer"
-                           class="flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-[#25D366]/15 hover:bg-[#25D366]/25 text-[#25D366] text-xs font-bold border border-[#25D366]/30 transition-all active:scale-95">
-                            <x-store-social-icon platform="whatsapp" class="w-4 h-4" />
-                            <span>WhatsApp</span>
-                        </a>
-
-                        <button type="button" 
-                                @click="nativeShare()" 
-                                class="flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface text-xs font-bold border border-outline-variant transition-all active:scale-95 cursor-pointer">
-                            <span class="material-symbols-outlined text-[16px]">share</span>
-                            <span>Lainnya</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- 3. LINK REFERRAL AFILIASI KHUSUS ANDA (DAPATKAN KOMISI) -->
                 @if(isset($myAffiliateLink))
-                <div class="p-4 bg-gradient-to-r from-amber-500/10 via-sky-500/10 to-indigo-500/10 border border-amber-500/30 rounded-2xl space-y-2.5">
+                <!-- 1. LINK REFERRAL AFILIASI AKTIF -->
+                <div class="p-4 bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-emerald-500/10 border border-amber-500/30 rounded-2xl space-y-3">
                     <div class="flex items-center justify-between">
                         <span class="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
-                            <span class="material-symbols-outlined text-[17px]">loyalty</span>
-                            <span>Link Afiliasi Anda (Komisi {{ (float)($store->default_affiliate_commission ?? 10) }}%)</span>
+                            <span class="material-symbols-outlined text-[18px]">loyalty</span>
+                            <span>Link Afiliasi Anda</span>
                         </span>
-                        <span class="text-[9px] font-black px-2 py-0.5 rounded-full bg-amber-500 text-white shadow-2xs">AKTIF</span>
+                        <span class="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-emerald-500 text-white shadow-xs flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[12px]">check_circle</span>
+                            KOMISI {{ (float)($store->default_affiliate_commission ?? 10) }}% AKTIF
+                        </span>
                     </div>
-                    <p class="text-[11px] text-on-surface-variant leading-relaxed">
-                        Bagikan link khusus Anda di bawah ini ke medsos / teman. Dapatkan komisi <strong>{{ (float)($store->default_affiliate_commission ?? 10) }}%</strong> otomatis dari setiap pembelian yang masuk melalui link ini!
+
+                    <p class="text-xs text-on-surface leading-relaxed">
+                        Bagikan link khusus Anda di bawah ini. Anda otomatis mendapatkan komisi <strong class="text-emerald-600 dark:text-emerald-400 font-black">{{ (float)($store->default_affiliate_commission ?? 10) }}%</strong> dari setiap pembelian yang masuk melalui link ini!
                     </p>
-                    <div class="flex items-center gap-2 p-1.5 bg-surface dark:bg-slate-800 rounded-xl border border-amber-500/30">
+
+                    <!-- Input Box & Tombol Salin -->
+                    <div class="flex items-center gap-2 p-1.5 bg-surface dark:bg-slate-800 rounded-xl border border-amber-500/40 shadow-xs">
                         <input type="text" 
                                readonly 
                                value="{{ $myAffiliateLink }}" 
                                id="affiliate_ref_link"
-                               class="bg-transparent border-0 text-xs font-mono font-bold text-amber-600 dark:text-amber-400 px-2 flex-1 focus:outline-none focus:ring-0 truncate select-all">
+                               class="bg-transparent border-0 text-xs font-mono font-bold text-amber-700 dark:text-amber-400 px-2.5 flex-1 focus:outline-none focus:ring-0 truncate select-all">
                         <button type="button" 
-                                onclick="navigator.clipboard.writeText('{{ $myAffiliateLink }}'); alert('Link afiliasi Anda berhasil disalin:\n{{ $myAffiliateLink }}\n\nBagikan link ini untuk mulai mendapatkan komisi!');"
-                                class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-xs font-bold transition flex items-center gap-1 shadow-xs cursor-pointer shrink-0">
-                            <span class="material-symbols-outlined text-[15px]">content_copy</span>
-                            <span>Salin</span>
+                                @click="navigator.clipboard.writeText('{{ $myAffiliateLink }}'); shareCopied = true; setTimeout(() => shareCopied = false, 2500)"
+                                class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 shadow-xs active:scale-95 cursor-pointer shrink-0">
+                            <span class="material-symbols-outlined text-[16px]" x-text="shareCopied ? 'check' : 'content_copy'">content_copy</span>
+                            <span x-text="shareCopied ? 'Tersalin!' : 'Salin'">Salin</span>
                         </button>
                     </div>
-                    <div class="flex items-center justify-between text-[10px] text-on-surface-variant pt-1 border-t border-amber-500/20">
-                        <span>Kode Referral: <strong class="font-mono text-on-surface">{{ $myAffiliateCode }}</strong></span>
-                        <a href="{{ route('tenant.payouts.index') }}" class="text-sky-500 hover:underline font-bold">Cek Saldo Komisi &rarr;</a>
+
+                    <!-- Tombol Cepat Bagikan Link Afiliasi -->
+                    <div class="grid grid-cols-2 gap-2 pt-1">
+                        <a href="https://api.whatsapp.com/send?text={{ urlencode('Beli produk digital pilihan di ' . $store->name . ' melalui tautan rekomendasi saya: ' . $myAffiliateLink) }}" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                           class="flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-[#25D366]/15 hover:bg-[#25D366]/25 text-[#25D366] text-xs font-bold border border-[#25D366]/30 transition-all active:scale-95">
+                            <x-store-social-icon platform="whatsapp" class="w-4 h-4" />
+                            <span>Kirim WhatsApp</span>
+                        </a>
+
+                        <button type="button" 
+                                @click="if (navigator.share) { navigator.share({ title: '{{ addslashes($store->name) }}', text: 'Beli produk digital di {{ addslashes($store->name) }} melalui link ini:', url: '{{ $myAffiliateLink }}' }); } else { navigator.clipboard.writeText('{{ $myAffiliateLink }}'); shareCopied = true; setTimeout(() => shareCopied = false, 2500); }" 
+                                class="flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface text-xs font-bold border border-outline-variant transition-all active:scale-95 cursor-pointer">
+                            <span class="material-symbols-outlined text-[16px]">share</span>
+                            <span>Bagikan Lainnya</span>
+                        </button>
+                    </div>
+
+                    <!-- Kode Referral & Link Cek Saldo Komisi -->
+                    <div class="flex items-center justify-between text-[11px] text-on-surface-variant pt-2 border-t border-amber-500/20">
+                        <span>Kode Referral: <strong class="font-mono text-on-surface text-xs font-bold">{{ $myAffiliateCode }}</strong></span>
+                        <a href="{{ route('tenant.payouts.index') }}?tab=mitra_referral" class="text-primary hover:underline font-bold flex items-center gap-0.5">
+                            <span>Cek Saldo Komisi</span>
+                            <span class="material-symbols-outlined text-[13px]">arrow_forward</span>
+                        </a>
                     </div>
                 </div>
-                @elseif(!auth()->check())
-                <div class="p-3.5 bg-amber-500/5 border border-amber-500/20 rounded-2xl flex items-center justify-between gap-3 text-xs">
-                    <div>
-                        <div class="font-bold text-on-surface flex items-center gap-1 text-amber-600">
-                            <span class="material-symbols-outlined text-[16px]">monetization_on</span>
-                            Ingin Dapatkan Komisi {{ (float)($store->default_affiliate_commission ?? 10) }}%?
-                        </div>
-                        <div class="text-[11px] text-on-surface-variant">Login untuk otomatis mendapatkan link referral afiliasi Anda.</div>
+
+                <!-- 2. INFO CARA KERJA KOMISI AFILIASI -->
+                <div class="p-3.5 bg-surface-container/60 dark:bg-slate-800/60 rounded-xl border border-outline-variant/60 space-y-2">
+                    <span class="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[15px] text-primary">info</span>
+                        <span>Cara Kerja Afiliasi:</span>
+                    </span>
+                    <ul class="text-[11px] text-on-surface-variant space-y-1.5 pl-4 list-disc marker:text-primary">
+                        <li>Bagikan link referral Anda ke media sosial, teman, grup WhatsApp, atau komunitas.</li>
+                        <li>Ketika ada pembeli yang mengklik link Anda dan bertransaksi di toko ini, sistem mencatat komisi Anda secara otomatis.</li>
+                        <li>Komisi <strong class="text-on-surface">{{ (float)($store->default_affiliate_commission ?? 10) }}%</strong> langsung masuk ke saldo akun Anda dan dapat dicairkan kapan saja.</li>
+                    </ul>
+                </div>
+
+                @elseif(auth()->check() && auth()->id() === $store->user_id)
+                <!-- TAMPILAN UNTUK PEMILIK TOKO SENDIRI -->
+                <div class="p-4 bg-primary/10 border border-primary/20 rounded-2xl space-y-3">
+                    <div class="flex items-center gap-2 text-primary font-bold text-sm">
+                        <span class="material-symbols-outlined text-[20px]">store</span>
+                        <span>Anda adalah Pemilik Toko Ini</span>
                     </div>
-                    <a href="{{ route('login') }}?redirect={{ urlencode(url('/' . $store->slug)) }}" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-xs font-bold transition shrink-0">
-                        Login Mitra
+                    <p class="text-xs text-on-surface-variant leading-relaxed">
+                        Pengunjung dan mitra yang membuka toko Anda otomatis mendapatkan link referral dengan bagi hasil komisi <strong class="text-primary font-bold">{{ (float)($store->default_affiliate_commission ?? 10) }}%</strong>.
+                    </p>
+                    <a href="{{ route('tenant.affiliates.index') }}" class="inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-primary hover:bg-primary/90 text-white rounded-xl text-xs font-bold transition shadow-xs">
+                        <span class="material-symbols-outlined text-[16px]">settings</span>
+                        <span>Kelola Mitra & Atur Komisi Toko</span>
+                    </a>
+                </div>
+
+                @else
+                <!-- PENGUNJUNG BELUM LOGIN -->
+                <div class="p-5 bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-primary/10 border border-amber-500/30 rounded-2xl space-y-3.5 text-center">
+                    <div class="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-600 flex items-center justify-center mx-auto shadow-xs">
+                        <span class="material-symbols-outlined text-2xl">monetization_on</span>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-sm text-on-surface">Dapatkan Komisi {{ (float)($store->default_affiliate_commission ?? 10) }}%</h4>
+                        <p class="text-xs text-on-surface-variant mt-1 leading-relaxed">
+                            Jadilah mitra afiliasi toko ini! Login atau buat akun untuk mendapatkan tautan referral unik dan mulai raih penghasilan dari setiap penjualan.
+                        </p>
+                    </div>
+                    <a href="{{ route('login') }}?redirect={{ urlencode(url('/' . $store->slug)) }}" class="inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-bold transition shadow-sm">
+                        <span class="material-symbols-outlined text-[16px]">login</span>
+                        <span>Login / Daftar Jadi Mitra</span>
                     </a>
                 </div>
                 @endif
@@ -476,22 +429,12 @@
                     </button>
                     @endif
 
-                    @if(isset($myAffiliateLink))
                     <button type="button" 
                             @click="shareModalOpen = true" 
-                            class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 border border-emerald-400 text-white rounded font-bold transition-colors flex items-center gap-1.5 cursor-pointer shadow-md"
-                            title="Dapatkan komisi {{ (float)($store->default_affiliate_commission ?? 10) }}% dengan membagikan link afiliasi toko ini">
-                        <span class="material-symbols-outlined text-[18px]">attach_money</span>
-                        <span>Afiliasi ({{ (float)($store->default_affiliate_commission ?? 10) }}%)</span>
-                    </button>
-                    @endif
-
-                    <button type="button" 
-                            @click="shareModalOpen = true" 
-                            class="px-4 py-2 bg-white/15 hover:bg-white/25 border border-white/30 text-white rounded font-bold transition-colors flex items-center gap-2 cursor-pointer"
-                            title="Bagikan & Media Sosial">
-                        <span class="material-symbols-outlined text-[18px]">share</span>
-                        <span>Bagikan</span>
+                            class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 border border-emerald-400 text-white rounded font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-md active:scale-95"
+                            title="Program Afiliasi Toko (Komisi {{ (float)($store->default_affiliate_commission ?? 10) }}%)">
+                        <span class="material-symbols-outlined text-[18px]">loyalty</span>
+                        <span>Link Afiliasi ({{ (float)($store->default_affiliate_commission ?? 10) }}%)</span>
                     </button>
                 </div>
             </div>
@@ -585,26 +528,13 @@
                     </button>
                 @endif
 
-                @if(isset($myAffiliateLink))
-                    <!-- Affiliate Button -->
-                    <button type="button" 
-                            @click="shareModalOpen = true" 
-                            class="py-1.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-95 border border-emerald-400 text-white text-xs font-bold transition-all flex items-center justify-center gap-1 cursor-pointer shadow-sm shrink-0"
-                            title="Bagikan Link Afiliasi (Komisi {{ (float)($store->default_affiliate_commission ?? 10) }}%)">
-                        <span class="material-symbols-outlined text-[16px]">attach_money</span>
-                        <span>Afiliasi {{ (float)($store->default_affiliate_commission ?? 10) }}%</span>
-                    </button>
-                @endif
-
-                <!-- Share & Social Store Button -->
+                <!-- Affiliate Button -->
                 <button type="button" 
                         @click="shareModalOpen = true" 
-                        class="w-8 h-8 rounded-xl bg-white/15 hover:bg-white/25 active:scale-95 border border-white/25 backdrop-blur-md text-white transition-all flex items-center justify-center cursor-pointer shadow-sm shrink-0 relative"
-                        title="Bagikan & Media Sosial">
-                    <span class="material-symbols-outlined text-[17px]">share</span>
-                    @if(count($socialLinks) > 0)
-                        <span class="absolute -top-0.5 -right-0.5 w-2 h-2 bg-emerald-400 border border-[#0d1322] rounded-full" title="Tersedia Media Sosial"></span>
-                    @endif
+                        class="py-1.5 px-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-95 border border-emerald-400 text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm shrink-0"
+                        title="Program Afiliasi Toko (Komisi {{ (float)($store->default_affiliate_commission ?? 10) }}%)">
+                    <span class="material-symbols-outlined text-[16px]">loyalty</span>
+                    <span>Afiliasi {{ (float)($store->default_affiliate_commission ?? 10) }}%</span>
                 </button>
             </div>
         </div>
