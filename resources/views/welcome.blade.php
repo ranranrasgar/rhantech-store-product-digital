@@ -710,7 +710,7 @@
      2. Produk Populer 2-column compact grid
      ========================================================================= --}}
 <div class="block md:hidden">
-    {{-- TOKO PILIHAN MARQUEE SLIDER --}}
+    {{-- TOKO PILIHAN (BISA DIGESER KANAN KIRI OLEH USER) --}}
     @if(isset($topStores) && $topStores->count() > 0)
     <section class="py-4 border-b border-outline-variant/30 bg-surface/50">
         <div class="px-4 mb-2.5 flex items-center justify-between">
@@ -724,57 +724,56 @@
                 Lihat Semua <span class="material-symbols-outlined text-[12px]">arrow_forward</span>
             </a>
         </div>
-        <div class="store-marquee-wrap">
-            <div class="store-marquee-track gap-2.5" style="padding: 2px 14px;">
-                @for($repeat = 0; $repeat < 2; $repeat++)
-                    @foreach($topStores as $store)
-                    @php
-                        $storeDesc = $store->description ?: ($store->bio ?: 'Kreator produk digital & template terpercaya.');
-                    @endphp
-                    <a href="{{ route('store.show', $store->slug) }}" class="store-slide-card" wire:navigate>
-                        @if($store->logo)
-                            <img src="{{ asset('storage/' . $store->logo) }}" alt="{{ $store->name }}" class="store-slide-logo"
-                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-                            <div class="store-slide-logo-fallback" style="display:none;">{{ strtoupper(substr($store->name, 0, 1)) }}</div>
-                        @else
-                            <div class="store-slide-logo-fallback">{{ strtoupper(substr($store->name, 0, 1)) }}</div>
-                        @endif
-                        <div class="min-w-0 flex-1">
-                            <div class="flex items-center justify-between gap-1 mb-0.5">
-                                <p class="font-black text-xs text-on-background dark:text-white truncate leading-tight">{{ $store->name }}</p>
-                                <span class="inline-flex items-center gap-0.5 px-1 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 font-black text-[9px] shrink-0">
-                                    <span class="text-amber-500 text-[10px]">★</span> {{ number_format($store->rating ?? 4.9, 1) }}
-                                </span>
-                            </div>
-                            <p class="text-[10px] text-on-surface-variant/80 dark:text-slate-400 line-clamp-1 leading-snug">
-                                {{ $storeDesc }}
-                            </p>
-                            <div class="flex items-center justify-between gap-2 mt-1.5 pt-1 border-t border-outline-variant/30 text-[9.5px]">
-                                <span class="inline-flex items-center gap-1 font-bold text-primary">
-                                    <span class="material-symbols-outlined text-[12px]">inventory_2</span>
-                                    <span>{{ $store->products_count ?? 0 }} Produk</span>
-                                </span>
-                                @if(!empty($store->sales_count) && $store->sales_count > 0)
-                                    <span class="text-on-surface-variant font-medium">
-                                        {{ $store->sales_count }} Terjual
-                                    </span>
-                                @else
-                                    <span class="inline-flex items-center gap-1">
-                                        <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
-                                        <span class="text-emerald-600 dark:text-emerald-400 font-semibold">Aktif</span>
-                                    </span>
-                                @endif
-                            </div>
+        {{-- Touch/Drag Interactive Swipeable Track --}}
+        <div class="overflow-x-auto hide-scrollbar scroll-smooth py-1 -mx-0 px-4">
+            <div class="flex items-stretch gap-2.5 w-max">
+                @foreach($topStores as $store)
+                @php
+                    $storeDesc = $store->description ?: ($store->bio ?: 'Kreator produk digital & template terpercaya.');
+                @endphp
+                <a href="{{ route('store.show', $store->slug) }}" class="store-slide-card shrink-0 select-none cursor-pointer" wire:navigate>
+                    @if($store->logo)
+                        <img src="{{ asset('storage/' . $store->logo) }}" alt="{{ $store->name }}" class="store-slide-logo"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                        <div class="store-slide-logo-fallback" style="display:none;">{{ strtoupper(substr($store->name, 0, 1)) }}</div>
+                    @else
+                        <div class="store-slide-logo-fallback">{{ strtoupper(substr($store->name, 0, 1)) }}</div>
+                    @endif
+                    <div class="min-w-0 flex-1">
+                        <div class="flex items-center justify-between gap-1 mb-0.5">
+                            <p class="font-black text-xs text-on-background dark:text-white truncate leading-tight">{{ $store->name }}</p>
+                            <span class="inline-flex items-center gap-0.5 px-1 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 font-black text-[9px] shrink-0">
+                                <span class="text-amber-500 text-[10px]">★</span> {{ number_format($store->rating ?? 4.9, 1) }}
+                            </span>
                         </div>
-                    </a>
-                    @endforeach
-                @endfor
+                        <p class="text-[10px] text-on-surface-variant/80 dark:text-slate-400 line-clamp-1 leading-snug">
+                            {{ $storeDesc }}
+                        </p>
+                        <div class="flex items-center justify-between gap-2 mt-1.5 pt-1 border-t border-outline-variant/30 text-[9.5px]">
+                            <span class="inline-flex items-center gap-1 font-bold text-primary">
+                                <span class="material-symbols-outlined text-[12px]">inventory_2</span>
+                                <span>{{ $store->products_count ?? 0 }} Produk</span>
+                            </span>
+                            @if(!empty($store->sales_count) && $store->sales_count > 0)
+                                <span class="text-on-surface-variant font-medium">
+                                    {{ $store->sales_count }} Terjual
+                                </span>
+                            @else
+                                <span class="inline-flex items-center gap-1">
+                                    <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
+                                    <span class="text-emerald-600 dark:text-emerald-400 font-semibold">Aktif</span>
+                                </span>
+                            @endif
+                        </div>
+                    </div>
+                </a>
+                @endforeach
             </div>
         </div>
     </section>
     @endif
 
-    {{-- KATEGORI PRODUK DIGITAL (MOBILE HORIZONTAL CHIP SCROLLER) --}}
+    {{-- KATEGORI PRODUK DIGITAL (3 KATEGORI UTAMA + COMBO BOX LAINNYA) --}}
     @if(isset($categories) && $categories->count() > 0)
     <section class="py-3 px-3 border-b border-outline-variant/30 bg-surface/30">
         <div class="flex items-center justify-between gap-2 mb-2 px-1">
@@ -788,16 +787,17 @@
                 Katalog
             </a>
         </div>
-        <div class="flex items-center gap-2 overflow-x-auto hide-scrollbar pb-1 -mx-3 px-3">
-            <a href="{{ route('products.index') }}" 
-               class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-primary text-white shadow-xs shrink-0"
-               wire:navigate>
-                <span class="material-symbols-outlined text-[14px]">apps</span>
-                <span>Semua</span>
-            </a>
-            @foreach($categories as $cat)
+
+        @php
+            $visibleCategories = $categories->take(3);
+            $comboCategories = $categories->slice(3);
+        @endphp
+
+        <div class="flex flex-wrap items-center gap-1.5 px-0.5">
+            {{-- 3 Kategori yang terlihat langsung --}}
+            @foreach($visibleCategories as $cat)
                 <a href="{{ route('products.index', ['category' => $cat->id]) }}" 
-                   class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold bg-surface dark:bg-slate-800 border border-outline-variant hover:border-primary text-on-surface dark:text-gray-200 shrink-0 shadow-xs transition-colors"
+                   class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold bg-surface dark:bg-slate-800 border border-outline-variant hover:border-primary text-on-surface dark:text-gray-200 shrink-0 shadow-2xs hover:shadow-xs transition-colors"
                    wire:navigate>
                     <span>{{ $cat->name }}</span>
                     @if($cat->products_count > 0)
@@ -805,6 +805,26 @@
                     @endif
                 </a>
             @endforeach
+
+            {{-- Sisanya masuk ke combo box --}}
+            @if($comboCategories->count() > 0)
+            <div class="relative shrink-0 flex-1 min-w-[130px] max-w-[180px]">
+                <select onchange="if(this.value) window.location.href = this.value" 
+                        aria-label="Pilih Kategori Lainnya"
+                        class="w-full appearance-none pl-3 pr-7 py-1.5 rounded-full text-xs font-semibold bg-surface dark:bg-slate-800 border border-outline-variant text-on-surface dark:text-gray-200 shadow-2xs hover:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-all cursor-pointer truncate">
+                    <option value="">+ Lainnya ({{ $comboCategories->count() }})</option>
+                    <option value="{{ route('products.index') }}">Semua Kategori</option>
+                    @foreach($comboCategories as $cCat)
+                        <option value="{{ route('products.index', ['category' => $cCat->id]) }}">
+                            {{ $cCat->name }} ({{ $cCat->products_count }})
+                        </option>
+                    @endforeach
+                </select>
+                <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none text-on-surface-variant">
+                    <span class="material-symbols-outlined text-[15px]">expand_more</span>
+                </div>
+            </div>
+            @endif
         </div>
     </section>
     @endif

@@ -65,8 +65,7 @@
         $reqType = request('type');
         $reqStore = request('store');
     @endphp
-    <div class="pt-3 border-t border-gray-100 dark:border-gray-700"
-         x-data="{ showAll: {{ ($reqCat && $categories->slice(5)->pluck('id')->contains($reqCat)) ? 'true' : 'false' }} }">
+    <div class="pt-3 border-t border-gray-100 dark:border-gray-700">
         <h3 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2.5 flex items-center justify-between">
             <span>Kategori Produk</span>
             <span class="text-[11px] font-normal lowercase opacity-75">({{ $categories->count() }})</span>
@@ -83,9 +82,9 @@
                 </span>
             </button>
 
-            @foreach($categories as $cIdx => $cat)
+            {{-- 3 Kategori Teratas yang terlihat langsung --}}
+            @foreach($categories->take(3) as $cat)
             <button type="button" 
-                    x-show="showAll || {{ $cIdx < 5 ? 'true' : 'false' }} || category == '{{ $cat->id }}'"
                     @click="setCategory('{{ $cat->id }}')" 
                     class="w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-xs md:text-sm text-left transition-all"
                     :class="category == '{{ $cat->id }}' ? 'bg-primary/10 text-primary font-bold border-l-4 border-primary' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700'">
@@ -105,16 +104,28 @@
                 @endif
             </button>
             @endforeach
-        </div>
 
-        @if($categories->count() > 5)
-        <button type="button" 
-                @click="showAll = !showAll"
-                class="w-full mt-1.5 py-1 px-2.5 text-[11px] font-bold text-sky-600 dark:text-sky-400 hover:text-sky-700 dark:hover:text-sky-300 flex items-center justify-between rounded-lg hover:bg-sky-50 dark:hover:bg-sky-950/30 transition-colors cursor-pointer">
-            <span x-text="showAll ? 'Sembunyikan' : '+ Lihat {{ $categories->count() - 5 }} lainnya'"></span>
-            <span class="material-symbols-outlined text-[16px] transition-transform duration-200" :class="showAll ? 'rotate-180' : ''">expand_more</span>
-        </button>
-        @endif
+            {{-- Sisanya masuk ke combo box --}}
+            @if($categories->count() > 3)
+            <div class="pt-1.5">
+                <label for="cat-combo-{{ $suffix ?? 'desktop' }}" class="sr-only">Pilih Kategori Lainnya</label>
+                <div class="relative">
+                    <select id="cat-combo-{{ $suffix ?? 'desktop' }}"
+                            x-model="category" 
+                            @change="fetchProducts(true)" 
+                            class="w-full appearance-none pl-3 pr-8 py-2 text-xs bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg border border-gray-200 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all cursor-pointer font-medium">
+                        <option value="">-- Kategori Lainnya ({{ $categories->count() - 3 }}) --</option>
+                        @foreach($categories->slice(3) as $remCat)
+                            <option value="{{ $remCat->id }}">{{ $remCat->name }} ({{ $remCat->products_count ?? 0 }})</option>
+                        @endforeach
+                    </select>
+                    <div class="absolute inset-y-0 right-0 flex items-center pr-2.5 pointer-events-none text-gray-400">
+                        <span class="material-symbols-outlined text-[16px]">unfold_more</span>
+                    </div>
+                </div>
+            </div>
+            @endif
+        </div>
     </div>
 
     {{-- Filter Tipe / Platform --}}

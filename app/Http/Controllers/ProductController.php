@@ -199,6 +199,27 @@ class ProductController extends Controller
         // Gabungkan: Toko beriklan di posisi awal sebagai rekomendasi, diikuti toko dengan views terbanyak
         $sponsoredStores = $adStores->concat($popularStores);
 
+        // Prioritas Produk Beriklan Aktif (Diurutkan berdasarkan bid_price tertinggi, lalu iklan terbaru)
+        $sponsoredAds = \App\Models\SellerAd::activeAndFunded()
+            ->whereNotNull('product_id')
+            ->with([
+                'product' => function ($q) {
+                    $q->published()->with('images');
+                },
+                'store:id,name,slug'
+            ])
+            ->orderBy('bid_price', 'desc')
+            ->orderBy('id', 'desc')
+            ->get()
+            ->filter(fn($ad) => !is_null($ad->product))
+            ->unique('product_id');
+
+        // Rekam impresi iklan untuk produk beriklan di banner strip
+        if ($sponsoredAds->isNotEmpty()) {
+            \App\Models\SellerAd::whereIn('id', $sponsoredAds->pluck('id'))
+                ->increment('views_count');
+        }
+
         // Toko / Akun yang cocok dengan kata kunci pencarian
         $matchedStores = collect();
         if ($request->filled('search')) {
@@ -222,7 +243,7 @@ class ProductController extends Controller
                 ->get();
         }
 
-        return view('products.index', compact('products', 'categories', 'types', 'stores', 'banners', 'topProducts', 'sponsoredStores', 'matchedStores'));
+        return view('products.index', compact('products', 'categories', 'types', 'stores', 'banners', 'topProducts', 'sponsoredStores', 'matchedStores', 'sponsoredAds'));
     }
 
     public function show(Request $request, string $slug)

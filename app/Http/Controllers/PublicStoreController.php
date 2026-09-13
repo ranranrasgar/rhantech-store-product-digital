@@ -185,8 +185,11 @@ class PublicStoreController extends Controller
 
     /**
      * Toggle follow status for the store.
+     *
+     * @param  \App\Models\Store|string|int  $store
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function toggleFollow($store)
+    public function toggleFollow(Store|string|int $store)
     {
         $user = Auth::user();
         if (!$user) {

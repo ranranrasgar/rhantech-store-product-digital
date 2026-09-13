@@ -140,8 +140,11 @@ class AppearanceController extends Controller
 
     /**
      * Helper sanitasi daftar link bio
+     *
+     * @param array|null $links
+     * @return array
      */
-    private function sanitizeProfileLinks($links): array
+    private function sanitizeProfileLinks(?array $links = null): array
     {
         $profileLinks = [];
         if (is_array($links)) {

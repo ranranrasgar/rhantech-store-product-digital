@@ -292,6 +292,77 @@
     </div>
 
     {{-- ── SEAMLESS SPONSORED STORE CAROUSEL STRIP (TOKO REKOMENDASI TERVERIFIKASI) ── --}}
+    @php
+        $mobileAds = $sponsoredAds ?? collect();
+        if ($mobileAds->isEmpty() && isset($sponsoredStores)) {
+            $mobileAds = $sponsoredStores->flatMap(function($store) {
+                return $store->ads ? $store->ads->where('status', 'active')->filter(fn($a) => !is_null($a->product)) : collect();
+            })->sortByDesc('bid_price')->unique('product_id');
+        }
+    @endphp
+
+    {{-- ── KHUSUS MOBILE: HANYA PRODUK BERIKLAN (URUT BID TERTINGGI, TANPA NAMA TOKO) ── --}}
+    @if($mobileAds->isNotEmpty())
+    <div class="lg:hidden mb-5 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 p-3 bg-white/40 dark:bg-slate-900/40 backdrop-blur-xs transition-all relative overflow-hidden shadow-2xs">
+        {{-- Header Bersponsor (Tanpa nama toko) --}}
+        <div class="flex items-center justify-between gap-2 mb-2 px-0.5">
+            <div class="flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-[#0284c7] shadow-[0_0_8px_#38bdf8] animate-pulse"></span>
+                <span class="text-[11px] font-bold text-slate-800 dark:text-slate-200">Produk Bersponsor</span>
+            </div>
+            <span class="text-[9px] font-extrabold text-[#0284c7] dark:text-sky-400 bg-sky-50 dark:bg-sky-950/60 px-1.5 py-0.5 rounded border border-sky-200/80 dark:border-sky-800/60 uppercase tracking-wider">Iklan</span>
+        </div>
+
+        {{-- Daftar Produk Beriklan Terurut (Horizontal Scroll) --}}
+        <div class="overflow-x-auto hide-scrollbar py-0.5 min-w-0 scroll-smooth -mx-0.5 px-0.5">
+            <div class="flex items-center gap-2">
+                @foreach($mobileAds as $ad)
+                    @php
+                        $p = $ad->product;
+                        $pImg = $p->images->where('is_main', true)->first() ?? $p->images->first();
+                        $hasDisc = $p->discount_price && $p->discount_price > 0 && $p->discount_price < $p->price;
+                        $pPrice = $hasDisc ? $p->discount_price : $p->price;
+                        $pLink = route('products.show', ['slug' => $p->slug, 'ad_id' => $ad->id]);
+                    @endphp
+                    <a href="{{ $pLink }}" 
+                       class="group/pmini flex items-center gap-2 p-1.5 pr-2.5 rounded-xl border border-slate-200/80 dark:border-slate-800 bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-800 hover:border-sky-400 dark:hover:border-sky-500 transition-all shadow-2xs hover:shadow-xs shrink-0 w-[160px] sm:w-[175px] min-w-0 relative overflow-hidden">
+                        
+                        <!-- Thumbnail -->
+                        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-800 shrink-0 relative">
+                            @if($pImg)
+                                <img src="{{ asset('storage/' . $pImg->image_path) }}" alt="{{ $p->name }}" class="w-full h-full object-cover group-hover/pmini:scale-105 transition-transform duration-200">
+                            @else
+                                <div class="w-full h-full flex items-center justify-center text-slate-400">
+                                    <span class="material-symbols-outlined text-sm">inventory_2</span>
+                                </div>
+                            @endif
+                            <span class="absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-[#0284c7] ring-1 ring-white dark:ring-slate-900" title="Produk Bersponsor"></span>
+                        </div>
+
+                        <!-- Info Produk (Nama & Harga Saja, Tanpa Nama Toko) -->
+                        <div class="min-w-0 flex-1 flex flex-col justify-center">
+                            <h4 class="text-[11px] font-bold text-slate-800 dark:text-slate-100 truncate group-hover/pmini:text-[#0284c7] transition-colors leading-tight mb-0.5" title="{{ $p->name }}">
+                                {{ $p->name }}
+                            </h4>
+                            <div class="flex items-baseline gap-1 flex-wrap min-w-0">
+                                <span class="text-[10.5px] sm:text-[11px] font-black text-[#0284c7] shrink-0 leading-none">
+                                    Rp{{ number_format($pPrice, 0, ',', '.') }}
+                                </span>
+                                @if($hasDisc)
+                                <span class="text-[8px] sm:text-[8.5px] text-slate-400 line-through truncate max-w-full leading-none">
+                                    Rp{{ number_format($p->price, 0, ',', '.') }}
+                                </span>
+                                @endif
+                            </div>
+                        </div>
+                    </a>
+                @endforeach
+            </div>
+        </div>
+    </div>
+    @endif
+
+    {{-- ── DESKTOP: SEAMLESS SPONSORED STORE CAROUSEL STRIP (TOKO REKOMENDASI TERVERIFIKASI) ── --}}
     @if(isset($sponsoredStores) && $sponsoredStores->count() > 0)
     <div x-data="{
             activeStoreIndex: 0,
@@ -349,7 +420,7 @@
          @mouseleave="totalStores > 1 && startAutoPlay()"
          @touchstart.passive="handleTouchStart($event)"
          @touchend.passive="handleTouchEnd($event)"
-         class="mb-6 rounded-xl border border-slate-200/80 dark:border-slate-800/80 p-3 md:py-2.5 md:px-4 bg-white/40 dark:bg-slate-900/40 backdrop-blur-xs transition-all relative overflow-hidden">
+         class="hidden lg:block mb-6 rounded-xl border border-slate-200/80 dark:border-slate-800/80 p-3 md:py-2.5 md:px-4 bg-white/40 dark:bg-slate-900/40 backdrop-blur-xs transition-all relative overflow-hidden">
         
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
             
