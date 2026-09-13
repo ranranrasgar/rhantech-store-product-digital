@@ -183,7 +183,6 @@
     z-index: 50;
     box-shadow: 0 4px 25px rgba(0,0,0,0.45);
     padding-top: env(safe-area-inset-top, 0px);
-    overflow: hidden;
 }
 .site-header::before {
     content: '';
@@ -206,6 +205,7 @@
     height: 2.5px;
     background: linear-gradient(90deg, transparent 0%, rgba(56, 189, 248, 0.8) 30%, rgba(251, 191, 36, 0.7) 55%, rgba(0, 212, 255, 0.8) 80%, transparent 100%);
     z-index: 2;
+    pointer-events: none;
 }
 .header-logo {
     font-size: 22px; font-weight: 900;
@@ -519,9 +519,51 @@
             @guest
             <a href="{{ route('login') }}" class="header-action-btn primary md:hidden text-xs !py-2 !px-3 !rounded-xl font-bold whitespace-nowrap shadow-sm">Masuk</a>
             @else
-            <a href="{{ route('tenant.dashboard') }}" class="md:hidden flex items-center p-0.5 rounded-full ring-2 ring-[#00d4ff]/40" title="Akun Saya">
-                <x-user-avatar class="w-8 h-8" />
-            </a>
+            <div class="relative md:hidden" x-data="{ open: false }" @click.outside="open = false">
+                <button type="button"
+                        @click="open = !open" 
+                        class="flex items-center focus:outline-none p-0.5 rounded-full ring-2 ring-[#00d4ff]/40 cursor-pointer active:scale-95 transition-transform"
+                        aria-haspopup="true"
+                        :aria-expanded="open"
+                        title="Menu Akun">
+                    <x-user-avatar class="w-8 h-8" />
+                </button>
+                <div x-show="open" 
+                     x-cloak 
+                     style="display: none;" 
+                     x-transition:enter="transition ease-out duration-150"
+                     x-transition:enter-start="transform opacity-0 scale-95"
+                     x-transition:enter-end="transform opacity-100 scale-100"
+                     x-transition:leave="transition ease-in duration-100"
+                     x-transition:leave-start="transform opacity-100 scale-100"
+                     x-transition:leave-end="transform opacity-0 scale-95"
+                     class="absolute right-0 mt-2 w-52 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl py-2 z-50 text-xs">
+                    <div class="px-3.5 py-2 border-b border-slate-100 dark:border-slate-800">
+                        <p class="font-bold text-slate-800 dark:text-white truncate">{{ auth()->user()->name }}</p>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400 truncate">{{ auth()->user()->email }}</p>
+                    </div>
+                    @if(strtolower(auth()->user()->role ?? '') === 'admin')
+                    <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2.5 px-3.5 py-2 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                        <span class="material-symbols-outlined text-[17px] text-primary">admin_panel_settings</span> Dashboard Admin
+                    </a>
+                    @endif
+                    <a href="{{ route('tenant.dashboard') }}" class="flex items-center gap-2.5 px-3.5 py-2 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                        <span class="material-symbols-outlined text-[17px] text-[#00d4ff]">storefront</span> Dashboard Toko
+                    </a>
+                    <a href="{{ route('tenant.purchases.index') }}" class="flex items-center gap-2.5 px-3.5 py-2 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                        <span class="material-symbols-outlined text-[17px] text-amber-500">receipt_long</span> Riwayat Belanja
+                    </a>
+                    <a href="{{ route('tenant.profile.index') }}" class="flex items-center gap-2.5 px-3.5 py-2 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                        <span class="material-symbols-outlined text-[17px] text-emerald-500">person</span> Profil Saya
+                    </a>
+                    <form method="POST" action="{{ route('logout') }}" class="border-t border-slate-100 dark:border-slate-800 mt-1 pt-1">
+                        @csrf
+                        <button type="submit" class="w-full text-left flex items-center gap-2.5 px-3.5 py-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors font-medium">
+                            <span class="material-symbols-outlined text-[17px]">logout</span> Keluar
+                        </button>
+                    </form>
+                </div>
+            </div>
             @endguest
         </div>
     </div>
