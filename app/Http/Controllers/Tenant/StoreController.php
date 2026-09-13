@@ -172,6 +172,13 @@ class StoreController extends Controller
             $data['terms_accepted_ip'] = $request->ip();
             $newStore = $user->store()->create($data);
 
+            // Notifikasi Push FCM ke Platform / Admin
+            try {
+                app(\App\Services\FirebaseService::class)->notifyNewStoreCreated($newStore);
+            } catch (\Throwable $fcmEx) {
+                \Illuminate\Support\Facades\Log::warning('FCM notifyNewStoreCreated error: ' . $fcmEx->getMessage());
+            }
+
             $message = '🎉 Selamat! Toko "' . $newStore->name . '" berhasil dibuka! Buka menu Iklan Toko & Promosi untuk mengklaim Bonus Saldo Iklan Rp500.000!';
             return redirect()->route('tenant.dashboard')->with('success', $message);
         }

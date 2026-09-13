@@ -267,6 +267,72 @@
                     </div>
                 </div>
 
+                <!-- Produk Paling Banyak Dilihat Section -->
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                <span class="material-symbols-outlined text-[20px] text-purple-600 dark:text-purple-400">visibility</span>
+                                Produk Paling Banyak Dilihat
+                            </h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Produk digital dengan jumlah kunjungan dan minat tertinggi dari pengunjung toko.</p>
+                        </div>
+                        <button @click="tab = 'produk'" class="text-xs font-bold text-sky-600 dark:text-sky-400 hover:underline flex items-center gap-1 cursor-pointer">
+                            Semua Produk <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        @forelse($mostViewedProducts->take(4) as $index => $prod)
+                        @php
+                            $viewsCount = (int) ($prod->views ?? 0);
+                            $pct = $maxProductViews > 0 ? round(($viewsCount / $maxProductViews) * 100) : 0;
+                            $pImg = $prod->images->where('is_main', true)->first() ?? $prod->images->first();
+                        @endphp
+                        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-4 flex flex-col justify-between relative group hover:border-purple-500/50 transition-colors">
+                            <div class="flex items-start gap-3">
+                                <div class="relative w-14 h-14 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden shrink-0 flex items-center justify-center">
+                                    @if($pImg)
+                                        <img src="{{ asset('storage/' . $pImg->image_path) }}" class="w-full h-full object-cover">
+                                    @else
+                                        <span class="material-symbols-outlined text-slate-400">inventory_2</span>
+                                    @endif
+                                    <span class="absolute top-1 left-1 w-5 h-5 rounded-md bg-black/75 text-white text-[10px] font-black flex items-center justify-center">
+                                        #{{ $index + 1 }}
+                                    </span>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <h4 class="font-bold text-xs text-slate-900 dark:text-white truncate" title="{{ $prod->name }}">
+                                        {{ $prod->name }}
+                                    </h4>
+                                    <span class="text-[11px] text-slate-400 block mt-0.5 truncate">{{ $prod->category->name ?? 'Umum' }}</span>
+                                    <div class="font-bold text-xs text-slate-900 dark:text-white mt-1">
+                                        Rp {{ number_format($prod->discount_price ?? $prod->price, 0, ',', '.') }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 pt-3 border-t border-slate-100 dark:border-[#222f49]">
+                                <div class="flex items-center justify-between text-xs mb-1.5">
+                                    <span class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Total Dilihat</span>
+                                    <span class="inline-flex items-center gap-1 font-extrabold text-xs text-purple-600 dark:text-purple-400">
+                                        <span class="material-symbols-outlined text-[14px]">visibility</span>
+                                        {{ number_format($viewsCount) }} kali
+                                    </span>
+                                </div>
+                                <div class="w-full h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                                    <div class="h-full bg-purple-500 rounded-full transition-all duration-500" style="width: {{ max(6, $pct) }}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        @empty
+                        <div class="col-span-full py-8 text-center text-slate-400 border border-dashed border-slate-200 dark:border-slate-800 rounded-2xl">
+                            <p class="text-xs">Belum ada produk yang dilihat oleh pengunjung.</p>
+                        </div>
+                        @endforelse
+                    </div>
+                </div>
+
                 <!-- Strategic Recommendations Banner -->
                 <div class="bg-gradient-to-r from-sky-500/10 via-indigo-500/10 to-sky-500/5 dark:from-sky-950/30 dark:via-indigo-950/20 dark:to-[#0c1220] border border-sky-200/80 dark:border-sky-900/40 rounded-2xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-5">
                     <div class="flex items-start gap-4">
@@ -297,7 +363,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <h3 class="text-base font-bold text-slate-900 dark:text-white">Peringkat & Performa Produk Digital</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Produk digital unggulan di toko Anda yang sering dilihat dan dibeli.</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Urutan produk digital dari yang paling sering dilihat hingga penjualan tertinggi.</p>
                     </div>
                     <a href="{{ route('tenant.products.create') }}" class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs font-bold shadow-md shadow-sky-500/25 transition-all flex items-center gap-1.5">
                         <span class="material-symbols-outlined text-[16px]">add_circle</span> Tambah Produk
@@ -308,18 +374,26 @@
                     <table class="w-full text-left text-xs md:text-sm whitespace-nowrap">
                         <thead class="bg-slate-50 dark:bg-[#0c1220] border-b border-slate-200/80 dark:border-[#222f49] text-slate-500 dark:text-slate-400 uppercase tracking-wider text-[11px] font-bold">
                             <tr>
-                                <th class="p-4 pl-6">Produk Digital</th>
+                                <th class="p-4 pl-6">Peringkat & Produk Digital</th>
                                 <th class="p-4">Kategori</th>
+                                <th class="p-4">Total Dilihat (Views)</th>
                                 <th class="p-4">Harga Jual</th>
                                 <th class="p-4">Status</th>
                                 <th class="p-4 pr-6 text-right">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-100 dark:divide-[#1d273d]">
-                            @forelse($topProducts as $product)
+                            @forelse($mostViewedProducts as $index => $product)
+                            @php
+                                $views = (int) ($product->views ?? 0);
+                                $pct = $maxProductViews > 0 ? round(($views / $maxProductViews) * 100) : 0;
+                            @endphp
                             <tr class="hover:bg-slate-50/70 dark:hover:bg-[#161f33]/60 transition-colors">
                                 <td class="p-4 pl-6">
                                     <div class="flex items-center gap-3">
+                                        <span class="w-6 text-center text-xs font-black text-slate-400 group-hover:text-slate-600">
+                                            #{{ $index + 1 }}
+                                        </span>
                                         <div class="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center shrink-0 overflow-hidden text-slate-400">
                                             @if($product->images->count() > 0)
                                                 @php $pImg = $product->images->where('is_main', true)->first() ?? $product->images->first(); @endphp
@@ -340,6 +414,17 @@
                                 </td>
                                 <td class="p-4 text-slate-600 dark:text-slate-300">
                                     {{ $product->category->name ?? 'Umum' }}
+                                </td>
+                                <td class="p-4">
+                                    <div class="flex items-center gap-2">
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800/60">
+                                            <span class="material-symbols-outlined text-[15px]">visibility</span>
+                                            {{ number_format($views) }}x
+                                        </span>
+                                    </div>
+                                    <div class="w-24 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden mt-1.5">
+                                        <div class="h-full bg-purple-500 rounded-full" style="width: {{ max(6, $pct) }}%"></div>
+                                    </div>
                                 </td>
                                 <td class="p-4 font-bold text-slate-900 dark:text-white">
                                     Rp {{ number_format($product->discount_price ?? $product->price, 0, ',', '.') }}
@@ -373,6 +458,19 @@
                             </tr>
                             @empty
                             <tr>
+                                <td colspan="6" class="p-12 text-center text-slate-400">
+                                    <span class="material-symbols-outlined text-4xl mb-2 opacity-50">inventory_2</span>
+                                    <p class="text-sm">Belum ada produk yang didaftarkan pada toko Anda.</p>
+                                    <a href="{{ route('tenant.products.create') }}" class="mt-3 inline-flex items-center gap-1 text-xs font-bold text-sky-600 dark:text-sky-400 hover:underline">
+                                        <span class="material-symbols-outlined text-[14px]">add</span> Tambah Produk Sekarang
+                                    </a>
+                                </td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
                                 <td colspan="5" class="p-12 text-center text-slate-400">
                                     <span class="material-symbols-outlined text-4xl mb-2 opacity-50">inventory_2</span>
                                     <p class="text-sm">Belum ada produk yang didaftarkan pada toko Anda.</p>

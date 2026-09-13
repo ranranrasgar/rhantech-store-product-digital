@@ -522,6 +522,12 @@ class CheckoutController extends Controller
                 \Illuminate\Support\Facades\Log::error("Failed to send free order email: " . $e->getMessage());
             }
 
+            try {
+                app(\App\Services\FirebaseService::class)->notifyOrderStatusChanged($order, 'paid');
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::warning("FCM Free Order Notification failed: " . $e->getMessage());
+            }
+
             return redirect()->route('tenant.purchases.index')
                 ->with('success', '🎉 Selamat! Kupon voucher 100% diterapkan! Pesanan Anda GRATIS dan file siap langsung diunduh!');
         }
@@ -562,6 +568,13 @@ class CheckoutController extends Controller
             $snapToken = \Midtrans\Snap::getSnapToken($params);
             $order->update(['snap_token' => $snapToken]);
             
+            // Kirim notifikasi push FCM pesanan baru (Tenant, Admin, Pembeli)
+            try {
+                app(\App\Services\FirebaseService::class)->notifyOrderCreated($order);
+            } catch (\Throwable $fcmEx) {
+                \Illuminate\Support\Facades\Log::warning("FCM Order Created Notification failed: " . $fcmEx->getMessage());
+            }
+
             // Clear cart & voucher
             session()->forget(['cart', 'checkout_selected_ids', 'applied_voucher']);
             
@@ -664,9 +677,23 @@ class CheckoutController extends Controller
                         } catch (\Exception $e) {
                             \Illuminate\Support\Facades\Log::error("Failed to send order email: " . $e->getMessage());
                         }
+
+                        // Trigger FCM Push Notifications (Lunas: Buyer, Store Owner, Admin)
+                        try {
+                            app(\App\Services\FirebaseService::class)->notifyOrderStatusChanged($order, 'paid');
+                        } catch (\Throwable $fcmEx) {
+                            \Illuminate\Support\Facades\Log::warning("FCM checkStatus Paid Notification failed: " . $fcmEx->getMessage());
+                        }
                     }
                 } elseif (in_array($trxStatus, ['cancel', 'deny', 'expire'])) {
                     $order->update(['status' => 'failed']);
+
+                    // Trigger FCM Push Notifications (Batal/Expired)
+                    try {
+                        app(\App\Services\FirebaseService::class)->notifyOrderStatusChanged($order, 'failed');
+                    } catch (\Throwable $fcmEx) {
+                        \Illuminate\Support\Facades\Log::warning("FCM checkStatus Failed Notification failed: " . $fcmEx->getMessage());
+                    }
                 }
             }
         } catch (\Exception $e) {

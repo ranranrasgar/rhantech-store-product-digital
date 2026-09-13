@@ -150,6 +150,20 @@ class WebhookController extends Controller
                             ->update(['status' => 'active']);
 
                         Log::info("Ad Topup #{$orderId} settled successfully! Saldo Rp{$adTransaction->amount} added to store #{$adTransaction->store_id}");
+
+                        // Push Notifikasi ke Pemilik Toko
+                        try {
+                            if ($adTransaction->store && $adTransaction->store->user_id) {
+                                app(\App\Services\FirebaseService::class)->sendToUser(
+                                    $adTransaction->store->user_id,
+                                    'Top Up Saldo Iklan Berhasil! 📢',
+                                    "Saldo iklan sebesar Rp " . number_format($adTransaction->amount, 0, ',', '.') . " berhasil ditambahkan ke toko Anda.",
+                                    url('/tenant/ads')
+                                );
+                            }
+                        } catch (\Throwable $fcmEx) {
+                            Log::warning("FCM Ad topup notification failed: " . $fcmEx->getMessage());
+                        }
                     }
                 } elseif (in_array($trxStatus, ['cancel', 'deny', 'expire'])) {
                     $adTransaction->update(['status' => 'failed']);
@@ -176,6 +190,20 @@ class WebhookController extends Controller
                         ]);
 
                         Log::info("Pro Subscription #{$orderId} settled successfully via webhook! Store #{$proSubscription->store_id} is now PRO ({$proSubscription->plan}).");
+
+                        // Push Notifikasi ke Pemilik Toko
+                        try {
+                            if ($proSubscription->store && $proSubscription->store->user_id) {
+                                app(\App\Services\FirebaseService::class)->sendToUser(
+                                    $proSubscription->store->user_id,
+                                    'Selamat! Toko Anda Resmi PRO ⭐',
+                                    "Paket {$proSubscription->plan} berhasil diaktifkan. Nikmati fitur eksklusif toko PRO Anda!",
+                                    url('/tenant/pro-dashboard')
+                                );
+                            }
+                        } catch (\Throwable $fcmEx) {
+                            Log::warning("FCM Pro subscription notification failed: " . $fcmEx->getMessage());
+                        }
                     }
                 } elseif (in_array($trxStatus, ['cancel', 'deny', 'expire'])) {
                     $proSubscription->update(['payment_status' => 'failed']);
@@ -272,10 +300,24 @@ class WebhookController extends Controller
                             Log::error("Failed to send order email: " . $mailEx->getMessage());
                         }
                     }
+
+                    // Kirim Push Notification FCM (Multi-actor: Pembeli, Toko, Platform Admin)
+                    try {
+                        app(\App\Services\FirebaseService::class)->notifyOrderStatusChanged($order, 'paid');
+                    } catch (\Throwable $fcmEx) {
+                        Log::warning("FCM Webhook Paid Notification failed: " . $fcmEx->getMessage());
+                    }
                 }
             } elseif (in_array($trxStatus, ['cancel', 'deny', 'expire'])) {
                 if ($order->status !== 'paid' && $order->status !== 'downloaded') {
                     $order->update(['status' => 'failed']);
+
+                    // Kirim Push Notification FCM jika dibatalkan/expired (Pembeli & Toko)
+                    try {
+                        app(\App\Services\FirebaseService::class)->notifyOrderStatusChanged($order, 'failed');
+                    } catch (\Throwable $fcmEx) {
+                        Log::warning("FCM Webhook Failed Notification failed: " . $fcmEx->getMessage());
+                    }
                 }
             } elseif ($trxStatus === 'pending') {
                 if ($order->status !== 'paid' && $order->status !== 'downloaded') {

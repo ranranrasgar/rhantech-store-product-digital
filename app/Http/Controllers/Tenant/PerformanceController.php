@@ -52,12 +52,15 @@ class PerformanceController extends Controller
         $activeProducts = (int) ($productStats->active ?? 0);
         $productViews = (int) ($productStats->total_views ?? 0);
 
-        // Top performing products
+        // Top performing products & Produk Paling Banyak Dilihat
         $topProducts = $store->products()
-            ->with(['images'])
-            ->latest()
-            ->take(5)
+            ->with(['images', 'category'])
+            ->orderByDesc('views')
+            ->take(10)
             ->get();
+
+        $mostViewedProducts = $topProducts;
+        $maxProductViews = max(1, (int) $mostViewedProducts->max('views'));
 
         // Total Pengunjung / Visitor (Toko + Produk)
         $storeViews = (int) ($store->views ?? 0);
@@ -79,6 +82,8 @@ class PerformanceController extends Controller
             'totalProducts',
             'activeProducts',
             'topProducts',
+            'mostViewedProducts',
+            'maxProductViews',
             'conversionRate',
             'averageOrderValue'
         ));

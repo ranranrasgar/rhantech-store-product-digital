@@ -40,6 +40,7 @@ Route::post('/checkout/apply-voucher', [\App\Http\Controllers\CheckoutController
 Route::post('/checkout/remove-voucher', [\App\Http\Controllers\CheckoutController::class, 'removeVoucher'])->name('checkout.remove_voucher');
 Route::get('/checkout/store-vouchers', [\App\Http\Controllers\CheckoutController::class, 'getStoreVouchers'])->name('checkout.store_vouchers');
 Route::get('/payment/{invoice_number}', [\App\Http\Controllers\CheckoutController::class, 'payment'])->name('checkout.payment');
+Route::get('/payment/{invoice_number}/finish', [\App\Http\Controllers\CheckoutController::class, 'checkStatus'])->name('checkout.finish');
 // Legacy redirect from /toko/{slug} to /{slug}
 Route::get('/toko/{slug}', function (string $slug, \Illuminate\Http\Request $request) {
     $queryString = $request->getQueryString();
@@ -176,6 +177,13 @@ Route::middleware(['auth', 'verified', 'is_tenant'])->prefix('dashboard')->name(
     Route::post('chat/send', [\App\Http\Controllers\Tenant\ChatController::class, 'sendMessage'])->name('chat.send');
 });
 
+// Global FCM Token Registration Endpoint
+Route::post('/fcm-token', [\App\Http\Controllers\FcmController::class, 'storeToken'])->name('fcm.store');
+
+// Navbar Bell Notifications Endpoint
+Route::get('/notifications/data', [\App\Http\Controllers\NotificationController::class, 'getNotifications'])->name('notifications.data');
+Route::post('/notifications/mark-as-read', [\App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('notifications.mark_as_read');
+
 // Buyer Floating Chat Routes (Authenticated users)
 Route::middleware(['auth'])->prefix('chat')->name('chat.')->group(function () {
     Route::get('/conversations', [\App\Http\Controllers\ChatController::class, 'getConversations'])->name('conversations');
@@ -259,6 +267,55 @@ Route::get('/storage/{path}', function (string $path) {
     $r2Url = rtrim(config('filesystems.disks.r2.url', 'https://cdn.rhantech.com'), '/') . '/' . ltrim($path, '/');
     return redirect()->away($r2Url, 302);
 })->where('path', '.*');
+
+// Route Pengujian Push Notifikasi FCM Interaktif & Multi-skenario
+Route::get('/test-fcm-push', function (\Illuminate\Http\Request $request, \App\Services\FirebaseService $firebase) {
+    $tokens = \App\Models\FcmToken::pluck('token')->unique()->toArray();
+    $tokenCount = count($tokens);
+    $action = $request->query('action');
+
+    if ($action) {
+        if ($action === 'order') {
+            $order = \App\Models\Order::with('orderItems.product.store')->first();
+            if ($order) {
+                $firebase->notifyOrderCreated($order);
+            }
+        } elseif ($action === 'paid') {
+            $order = \App\Models\Order::with('orderItems.product.store')->first();
+            if ($order) {
+                $firebase->notifyOrderStatusChanged($order, 'paid');
+            }
+        } elseif ($action === 'store') {
+            $store = \App\Models\Store::with('user')->first();
+            if ($store) {
+                $firebase->notifyNewStoreCreated($store);
+            }
+        } else {
+            // General broadcast
+            if ($tokenCount > 0) {
+                $firebase->sendNotificationToTokens(
+                    $tokens,
+                    '🔔 Tes Notifikasi RHanTech!',
+                    'Halo! Push Notifikasi FCM berhasil diterima di perangkat Anda pada ' . now()->format('H:i:s') . ' WIB.',
+                    url('/'),
+                    ['type' => 'test_push']
+                );
+            }
+        }
+    }
+
+    if ($request->wantsJson() || $request->has('json')) {
+        return response()->json([
+            'status' => 'success',
+            'message' => $action ? "Notifikasi skenario [{$action}] berhasil diproses!" : 'Status FCM dicek.',
+            'fcm_tokens_registered' => $tokenCount,
+            'firebase_project' => config('services.firebase.project_id') ?: env('FIREBASE_PROJECT_ID'),
+            'service_account_configured' => $firebase->isConfigured(),
+        ]);
+    }
+
+    return view('test-fcm', compact('tokenCount'));
+});
 
 // Direct Store Profile Link Detail: http://127.0.0.1:8000/<nama-toko>/<link-id> (e.g., http://127.0.0.1:8000/ranranrasgar/kwenorgxerve)
 Route::get('/{slug}/{linkId}', [\App\Http\Controllers\PublicStoreController::class, 'showLinkDetail'])

@@ -309,10 +309,7 @@
                 @else
                     <div class="flex items-center gap-3 ml-2">
                         <!-- Notification Bell -->
-                        <button class="relative p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors">
-                            <span class="material-symbols-outlined">notifications</span>
-                            <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-error rounded-full border border-surface"></span>
-                        </button>
+                        <x-navbar-notification-bell role="buyer" />
 
                         <!-- User Avatar Dropdown -->
                         <div class="relative" x-data="{ open: false }">

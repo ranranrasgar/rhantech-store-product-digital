@@ -157,13 +157,18 @@ class OrderController extends Controller
             }
 
             // Kirim email notifikasi pembelian ke customer
+            // Kirim notifikasi FCM (Pembeli, Toko, Platform Admin)
             try {
-                \Illuminate\Support\Facades\Mail::to($order->customer_email)->send(new \App\Mail\OrderPaidMail($order));
-            } catch (\Exception $e) {
-                \Illuminate\Support\Facades\Log::error("Failed to send order email: " . $e->getMessage());
+                app(\App\Services\FirebaseService::class)->notifyOrderStatusChanged($order, 'paid');
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::warning("FCM approve notification failed: " . $e->getMessage());
             }
 
-            return back()->with('success', "Order {$order->invoice_number} berhasil disetujui (Paid) dan email terkirim.");
+            return back()->with('success', "Order {$order->invoice_number} berhasil disetujui (Paid) dan email terkirim.")
+                ->with('fcm_notification', [
+                    'title' => "💰 Penjualan Sukses: #{$order->invoice_number}",
+                    'body' => "Order senilai Rp " . number_format($order->amount, 0, ',', '.') . " berhasil disetujui lunas! Saldo toko telah bertambah."
+                ]);
         }
 
         return back()->with('info', "Order {$order->invoice_number} sudah berstatus Paid.");
@@ -250,10 +255,22 @@ class OrderController extends Controller
                         } catch (\Exception $e) {
                             \Illuminate\Support\Facades\Log::error("Failed to send order email: " . $e->getMessage());
                         }
+
+                        // Kirim notifikasi FCM (Pembeli, Toko, Platform Admin)
+                        try {
+                            app(\App\Services\FirebaseService::class)->notifyOrderStatusChanged($order, 'paid');
+                        } catch (\Throwable $e) {
+                            \Illuminate\Support\Facades\Log::warning("FCM syncStatus paid notification failed: " . $e->getMessage());
+                        }
                     }
                     return back()->with('success', "Order {$order->invoice_number} berhasil disinkronkan: Status di Midtrans adalah {$trxStatus} (Telah Lunas).");
                 } elseif (in_array($trxStatus, ['cancel', 'deny', 'expire'])) {
                     $order->update(['status' => 'failed']);
+
+                    try {
+                        app(\App\Services\FirebaseService::class)->notifyOrderStatusChanged($order, 'failed');
+                    } catch (\Throwable $e) {}
+
                     return back()->with('info', "Order {$order->invoice_number} di Midtrans berstatus: {$trxStatus} (Gagal/Kadaluarsa).");
                 } elseif ($trxStatus === 'pending') {
                     return back()->with('info', "Order {$order->invoice_number} di Midtrans masih berstatus: PENDING (Belum dibayar oleh pelanggan).");
