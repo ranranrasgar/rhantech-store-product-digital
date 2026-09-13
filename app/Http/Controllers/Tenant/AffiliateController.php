@@ -134,11 +134,18 @@ class AffiliateController extends Controller
             'default_affiliate_commission' => 'required|numeric|min:0|max:100',
         ]);
 
+        $newRate = $validated['default_affiliate_commission'];
+
         $store->update([
-            'default_affiliate_commission' => $validated['default_affiliate_commission'],
+            'default_affiliate_commission' => $newRate,
         ]);
 
-        return back()->with('success', "Default komisi afiliasi toko berhasil diatur menjadi {$validated['default_affiliate_commission']}%!");
+        // Otomatis sinkronkan juga komisi semua mitra toko ini agar selalu seragam dan tidak membingungkan
+        \App\Models\Affiliate::where('store_id', $store->id)->update([
+            'commission_rate' => $newRate,
+        ]);
+
+        return back()->with('success', "Komisi toko berhasil diubah menjadi {$newRate}%, dan komisi seluruh mitra otomatis diperbarui!");
     }
 
     public function destroy(\App\Models\Affiliate $affiliate)
