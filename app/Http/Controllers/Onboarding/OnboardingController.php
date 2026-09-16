@@ -38,6 +38,9 @@ class OnboardingController extends Controller
     public function saveStore(Request $request)
     {
         $user = Auth::user();
+        if ($user->hasCompletedOnboarding() || $user->store()->exists()) {
+            return redirect()->route('tenant.dashboard')->with('info', 'Anda sudah memiliki toko.');
+        }
         $mode = session('onboarding_mode', 'store');
 
         $reservedSlugs = [

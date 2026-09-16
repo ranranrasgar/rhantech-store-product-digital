@@ -55,9 +55,13 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
 
-            // Prevent redirecting into raw JSON chat/api endpoints
+            // Prevent redirecting into raw JSON chat/api endpoints or onboarding for completed users
             $intended = session()->get('url.intended');
-            if ($intended && (str_contains($intended, '/chat') || str_contains($intended, '/api'))) {
+            if ($intended && (
+                str_contains($intended, '/chat') ||
+                str_contains($intended, '/api') ||
+                (str_contains($intended, '/onboarding') && Auth::user()->hasCompletedOnboarding())
+            )) {
                 session()->forget('url.intended');
             }
 

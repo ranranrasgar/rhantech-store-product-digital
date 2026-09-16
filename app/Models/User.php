@@ -78,7 +78,17 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function hasCompletedOnboarding(): bool
     {
-        return $this->onboarding_completed_at !== null;
+        if ($this->onboarding_completed_at !== null) {
+            return true;
+        }
+
+        // Jika user sudah memiliki toko, otomatis dianggap selesai onboarding
+        if ($this->store()->exists()) {
+            $this->updateQuietly(['onboarding_completed_at' => now()]);
+            return true;
+        }
+
+        return false;
     }
 
     public function store()
