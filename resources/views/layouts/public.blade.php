@@ -227,10 +227,10 @@
 }
 .search-bar-wrap input::placeholder { color: rgba(255,255,255,0.45); }
 .search-bar-wrap button {
-    background: linear-gradient(135deg, #00b3cc, #0077a8);
+    background: #0284c7;
     border: none; color: #fff;
     padding: 10px 18px;
-    cursor: pointer; transition: opacity 0.2s;
+    cursor: pointer; transition: background 0.15s;
     display: flex; align-items: center; justify-content: center;
     line-height: 1;
 }
@@ -238,7 +238,7 @@
     line-height: 1;
     display: block;
 }
-.search-bar-wrap button:hover { opacity: 0.85; }
+.search-bar-wrap button:hover { background: #0369a1; }
 .header-action-btn {
     display: flex; align-items: center; gap: 6px;
     color: rgba(255,255,255,0.75);
@@ -251,12 +251,11 @@
 }
 .header-action-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
 .header-action-btn.primary {
-    background: linear-gradient(135deg, #00b3cc, #0077a8);
+    background: #0284c7;
     color: #fff;
     font-weight: 700;
-    box-shadow: 0 2px 10px rgba(0,179,204,0.35);
 }
-.header-action-btn.primary:hover { opacity: 0.9; background: linear-gradient(135deg, #00b3cc, #0077a8); }
+.header-action-btn.primary:hover { background: #0369a1; }
 .search-tag {
     color: rgba(255,255,255,0.55); font-size: 11.5px;
     transition: color 0.15s;
@@ -299,11 +298,15 @@
                 <a class="nav-link {{ request()->routeIs('clients.*') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-secondary transition-colors duration-200" href="{{ route('clients.index') }}" wire:navigate>Clients</a>
                 <a class="nav-link {{ request()->routeIs('contact') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-secondary transition-colors duration-200" href="{{ url('/contact') }}" wire:navigate>Contact</a>
             </div>
-            <div class="flex items-center gap-sm">
+            <div class="flex items-center gap-2">
                 @guest
-                    <a class="hidden md:inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-gradient-to-r from-teal-500 to-[#00838f] hover:from-teal-600 hover:to-[#00707a] text-white rounded-xl font-bold text-xs sm:text-sm shadow-md shadow-teal-500/20 hover:shadow-teal-500/30 active:scale-95 transition-all duration-200" href="{{ route('register') }}">
-                        <span class="material-symbols-outlined text-[18px]">rocket_launch</span>
-                        <span>Buat Toko &amp; Bio Link</span>
+                    <a class="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-200 hover:text-sky-600 dark:hover:text-sky-400 px-3 py-2 transition-colors flex items-center gap-1" href="{{ route('login') }}" wire:navigate>
+                        <span class="material-symbols-outlined text-[17px]">login</span>
+                        <span>Login</span>
+                    </a>
+                    <a class="hidden md:inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-sky-500 hover:bg-sky-600 text-white rounded-xl font-bold text-xs sm:text-sm active:scale-95 transition-all duration-150 shadow-sm" href="{{ route('register') }}" wire:navigate>
+                        <span class="material-symbols-outlined text-[17px]">rocket_launch</span>
+                        <span>Buat Website / Project</span>
                     </a>
                 @else
                     <div class="flex items-center gap-3 ml-2">
@@ -473,7 +476,7 @@
                 </a>
 
                 @guest
-                    <a href="{{ route('login') }}" class="header-action-btn primary text-xs !py-2 !px-3 !rounded-xl font-bold whitespace-nowrap shadow-sm">Masuk</a>
+                    <a href="{{ route('login') }}" class="header-action-btn primary text-xs !py-2 !px-3 !rounded-xl font-bold whitespace-nowrap shadow-sm">Login</a>
                 @else
                     <div class="relative" x-data="{ open: false }" @click.outside="open = false">
                         <button type="button"
