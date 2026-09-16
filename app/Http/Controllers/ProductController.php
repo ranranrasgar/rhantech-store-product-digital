@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use App\Models\Product;
 
@@ -343,8 +344,8 @@ class ProductController extends Controller
         $userReview = null;
         $userOrder = null;
 
-        if (\Illuminate\Support\Facades\Auth::check()) {
-            $user = \Illuminate\Support\Facades\Auth::user();
+        if (Auth::check()) {
+            $user = Auth::user();
             $userOrder = \App\Models\Order::where('customer_email', $user->email)
                 ->whereIn('status', ['paid', 'downloaded'])
                 ->whereHas('orderItems', function ($q) use ($product) {
@@ -420,11 +421,13 @@ class ProductController extends Controller
             });
 
         // Cari produk (mendekati nama produk, slug, tag, deskripsi, atau nama toko)
+        $userStoreId = Auth::user()?->store?->id;
+
         $products = Product::query()
-            ->where(function($q) {
+            ->where(function($q) use ($userStoreId) {
                 $q->published();
-                if (auth()->check() && auth()->user()->store) {
-                    $q->orWhere('store_id', auth()->user()->store->id);
+                if ($userStoreId) {
+                    $q->orWhere('store_id', $userStoreId);
                 }
             })
             ->where(function($q) use ($query, $words) {
@@ -446,10 +449,10 @@ class ProductController extends Controller
             ->with(['images', 'store'])
             ->take(6)
             ->get()
-            ->map(function($p) {
+            ->map(function($p) use ($userStoreId) {
                 $img = $p->images->firstWhere('is_main', true) ?? $p->images->first();
                 $price = ($p->discount_price && $p->discount_price > 0 && $p->discount_price < $p->price) ? $p->discount_price : $p->price;
-                $isMine = auth()->check() && auth()->user()->store && $p->store_id === auth()->user()->store->id;
+                $isMine = $userStoreId && (int)$p->store_id === (int)$userStoreId;
                 return [
                     'id' => $p->id,
                     'name' => $p->name,
