@@ -5,6 +5,39 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property int $id
+ * @property int $store_id
+ * @property string $reference_no
+ * @property string $type
+ * @property numeric $amount
+ * @property numeric $tax_amount
+ * @property numeric $total_amount
+ * @property string|null $payment_method
+ * @property string $status
+ * @property string|null $snap_token
+ * @property string|null $description
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Store $store
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AdTransaction newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AdTransaction newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AdTransaction query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AdTransaction whereAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AdTransaction whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AdTransaction whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AdTransaction whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AdTransaction wherePaymentMethod($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AdTransaction whereReferenceNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AdTransaction whereSnapToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AdTransaction whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AdTransaction whereStoreId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AdTransaction whereTaxAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AdTransaction whereTotalAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AdTransaction whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AdTransaction whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class AdTransaction extends Model
 {
     use HasFactory;

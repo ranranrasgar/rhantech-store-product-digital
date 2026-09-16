@@ -5,6 +5,33 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property int $id
+ * @property string $title
+ * @property string|null $description
+ * @property array<array-key, mixed>|null $images
+ * @property string|null $link_url
+ * @property string|null $link_text
+ * @property string $target_audience
+ * @property bool $is_active
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read string $target_label
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PopupAd newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PopupAd newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PopupAd query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PopupAd whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PopupAd whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PopupAd whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PopupAd whereImages($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PopupAd whereIsActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PopupAd whereLinkText($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PopupAd whereLinkUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PopupAd whereTargetAudience($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PopupAd whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PopupAd whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class PopupAd extends Model
 {
     use HasFactory;

@@ -245,7 +245,7 @@ Route::middleware(['auth', 'is_admin'])->prefix('admin')->name('admin.')->group(
     Route::delete('messages/bulk-destroy', [ContactMessageController::class, 'bulkDestroy'])->name('messages.bulk-destroy');
     Route::patch('messages/{message}/toggle-read', [ContactMessageController::class, 'toggleRead'])->name('messages.toggle-read');
     Route::post('messages/{message}/reply', [ContactMessageController::class, 'reply'])->name('messages.reply');
-    Route::resource('messages', ContactMessageController::class);
+    Route::resource('messages', ContactMessageController::class)->only(['index', 'show', 'destroy']);
     Route::resource('gateway_apps', \App\Http\Controllers\Admin\GatewayAppController::class);
     Route::resource('popup_ads', \App\Http\Controllers\Admin\PopupAdController::class);
     

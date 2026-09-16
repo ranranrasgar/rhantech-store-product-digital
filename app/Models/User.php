@@ -19,6 +19,51 @@ use Illuminate\Notifications\Notifiable;
  * @method static \App\Models\User|null first(array $columns = [])
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
  * @method bool|null delete($id = null)
+ * @property int $id
+ * @property string $name
+ * @property string $email
+ * @property string|null $phone
+ * @property \Illuminate\Support\Carbon|null $email_verified_at
+ * @property string|null $password
+ * @property string|null $provider_name
+ * @property string|null $provider_id
+ * @property string|null $avatar
+ * @property numeric $credit_balance
+ * @property \Illuminate\Support\Carbon|null $credit_expires_at
+ * @property bool $is_new_member_credit_claimed
+ * @property \Illuminate\Support\Carbon|null $onboarding_completed_at
+ * @property string $role
+ * @property string|null $remember_token
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\FcmToken> $fcmTokens
+ * @property-read int|null $fcm_tokens_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Store> $followingStores
+ * @property-read int|null $following_stores_count
+ * @property-read string $avatar_fallback_svg
+ * @property-read string $avatar_url
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
+ * @property-read int|null $notifications_count
+ * @property-read \App\Models\Store|null $store
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereAvatar($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereCreditBalance($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereCreditExpiresAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereEmailVerifiedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereIsNewMemberCreditClaimed($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereOnboardingCompletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePassword($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePhone($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereProviderId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereProviderName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRememberToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRole($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
  */
 class User extends Authenticatable implements MustVerifyEmail
 {

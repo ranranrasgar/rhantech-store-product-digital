@@ -6,6 +6,55 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property int $id
+ * @property int $store_id
+ * @property int|null $product_id
+ * @property string $name
+ * @property string $type
+ * @property string $budget_type
+ * @property numeric|null $daily_budget
+ * @property string $period_type
+ * @property \Illuminate\Support\Carbon|null $start_date
+ * @property \Illuminate\Support\Carbon|null $end_date
+ * @property string $bidding_mode
+ * @property numeric $bid_price
+ * @property array<array-key, mixed>|null $target_keywords
+ * @property string $display_mode
+ * @property string $status
+ * @property int $views_count
+ * @property int $clicks_count
+ * @property numeric $spent_amount
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Product|null $product
+ * @property-read \App\Models\Store $store
+ * @method static Builder<static>|SellerAd activeAndFunded()
+ * @method static Builder<static>|SellerAd newModelQuery()
+ * @method static Builder<static>|SellerAd newQuery()
+ * @method static Builder<static>|SellerAd query()
+ * @method static Builder<static>|SellerAd whereBidPrice($value)
+ * @method static Builder<static>|SellerAd whereBiddingMode($value)
+ * @method static Builder<static>|SellerAd whereBudgetType($value)
+ * @method static Builder<static>|SellerAd whereClicksCount($value)
+ * @method static Builder<static>|SellerAd whereCreatedAt($value)
+ * @method static Builder<static>|SellerAd whereDailyBudget($value)
+ * @method static Builder<static>|SellerAd whereDisplayMode($value)
+ * @method static Builder<static>|SellerAd whereEndDate($value)
+ * @method static Builder<static>|SellerAd whereId($value)
+ * @method static Builder<static>|SellerAd whereName($value)
+ * @method static Builder<static>|SellerAd wherePeriodType($value)
+ * @method static Builder<static>|SellerAd whereProductId($value)
+ * @method static Builder<static>|SellerAd whereSpentAmount($value)
+ * @method static Builder<static>|SellerAd whereStartDate($value)
+ * @method static Builder<static>|SellerAd whereStatus($value)
+ * @method static Builder<static>|SellerAd whereStoreId($value)
+ * @method static Builder<static>|SellerAd whereTargetKeywords($value)
+ * @method static Builder<static>|SellerAd whereType($value)
+ * @method static Builder<static>|SellerAd whereUpdatedAt($value)
+ * @method static Builder<static>|SellerAd whereViewsCount($value)
+ * @mixin \Eloquent
+ */
 class SellerAd extends Model
 {
     use HasFactory;

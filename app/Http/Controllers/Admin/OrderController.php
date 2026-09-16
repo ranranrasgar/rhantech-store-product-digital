@@ -63,7 +63,7 @@ class OrderController extends Controller
         // 5. Filter Periode
         $period = $request->input('period', '');
         if ($period === 'today') {
-            $query->whereDate('created_at', Carbon::today());
+            $query->whereDate('created_at', '=', Carbon::today(), 'and');
         } elseif ($period === '7_days') {
             $query->where('created_at', '>=', Carbon::now()->subDays(7));
         } elseif ($period === '28_days') {
@@ -71,14 +71,14 @@ class OrderController extends Controller
         } elseif ($period === '30_days') {
             $query->where('created_at', '>=', Carbon::now()->subDays(30));
         } elseif ($period === 'this_month') {
-            $query->whereMonth('created_at', Carbon::now()->month)
-                  ->whereYear('created_at', Carbon::now()->year);
+            $query->whereMonth('created_at', '=', Carbon::now()->month, 'and')
+                  ->whereYear('created_at', '=', Carbon::now()->year, 'and');
         } elseif ($period === 'custom') {
             if ($request->filled('start_date')) {
-                $query->whereDate('created_at', '>=', $request->input('start_date'));
+                $query->whereDate('created_at', '>=', $request->input('start_date'), 'and');
             }
             if ($request->filled('end_date')) {
-                $query->whereDate('created_at', '<=', $request->input('end_date'));
+                $query->whereDate('created_at', '<=', $request->input('end_date'), 'and');
             }
         }
 

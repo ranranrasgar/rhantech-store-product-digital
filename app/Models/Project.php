@@ -8,6 +8,58 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @mixin \Illuminate\Database\Eloquent\Builder
  * @method bool|null delete($id = null)
+ * @property int $id
+ * @property int|null $store_id
+ * @property int|null $client_id
+ * @property int|null $project_category_id
+ * @property int|null $project_type_id
+ * @property string $title
+ * @property string $slug
+ * @property string|null $short_description
+ * @property string|null $description
+ * @property string|null $thumbnail
+ * @property string|null $project_url
+ * @property string|null $order_url
+ * @property string|null $brochure_file
+ * @property array<array-key, mixed>|null $technologies
+ * @property \Illuminate\Support\Carbon|null $completed_at
+ * @property int $is_featured
+ * @property string $status
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Client|null $client
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Client> $clients
+ * @property-read int|null $clients_count
+ * @property-read string $thumbnail_url
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProjectImage> $images
+ * @property-read int|null $images_count
+ * @property-read \App\Models\ProjectCategory|null $projectCategory
+ * @property-read \App\Models\ProjectType|null $projectType
+ * @property-read \App\Models\Store|null $store
+ * @method static \Database\Factories\ProjectFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Project newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Project newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Project query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Project whereBrochureFile($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Project whereClientId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Project whereCompletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Project whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Project whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Project whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Project whereIsFeatured($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Project whereOrderUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Project whereProjectCategoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Project whereProjectTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Project whereProjectUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Project whereShortDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Project whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Project whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Project whereStoreId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Project whereTechnologies($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Project whereThumbnail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Project whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Project whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class Project extends Model
 {

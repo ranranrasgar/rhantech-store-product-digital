@@ -336,6 +336,40 @@
                 </div>
             </div>
 
+            <!-- 5b. Native Activity Chart Mobile (View, Klik, Order 7 Hari) -->
+            <div class="bg-white dark:bg-[#111726] border border-slate-200/90 dark:border-slate-800/80 rounded-2xl p-4 shadow-xs">
+                <div class="flex items-center justify-between gap-2 pb-3 border-b border-slate-100 dark:border-[#222f49]">
+                    <div class="flex items-center gap-2">
+                        <span class="w-7 h-7 rounded-lg bg-sky-500/10 text-sky-600 dark:text-sky-400 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[18px]">show_chart</span>
+                        </span>
+                        <h3 class="text-sm font-bold text-slate-900 dark:text-white">Aktivitas 7 Hari</h3>
+                    </div>
+                    <div class="flex items-center gap-1.5 text-[10px] font-bold flex-wrap justify-end">
+                        <span class="flex items-center gap-1 text-purple-600 dark:text-purple-400"><span class="w-2 h-2 rounded-full bg-purple-500"></span>View</span>
+                        <span class="flex items-center gap-1 text-sky-600 dark:text-sky-400"><span class="w-2 h-2 rounded-full bg-sky-500"></span>Klik</span>
+                        <span class="flex items-center gap-1 text-emerald-600 dark:text-emerald-400"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>Order</span>
+                    </div>
+                </div>
+                <div class="mt-3 relative h-44 w-full">
+                    <canvas id="tenantActivityChartMobile"></canvas>
+                </div>
+                <div class="mt-3 pt-2.5 border-t border-slate-100 dark:border-[#222f49] grid grid-cols-3 gap-2 text-center">
+                    <div>
+                        <div class="text-xs font-black text-purple-600 dark:text-purple-400">{{ number_format($activityTotalViews ?? 0) }}</div>
+                        <div class="text-[10px] text-slate-400">Views</div>
+                    </div>
+                    <div>
+                        <div class="text-xs font-black text-sky-600 dark:text-sky-400">{{ number_format($activityTotalClicks ?? 0) }}</div>
+                        <div class="text-[10px] text-slate-400">Klik</div>
+                    </div>
+                    <div>
+                        <div class="text-xs font-black text-emerald-600 dark:text-emerald-400">{{ number_format($activityTotalOrders ?? 0) }}</div>
+                        <div class="text-[10px] text-slate-400">Order</div>
+                    </div>
+                </div>
+            </div>
+
             <!-- 6. Native Recent Orders Section -->
             <div class="bg-white dark:bg-[#111726] border border-slate-200/90 dark:border-slate-800/80 rounded-2xl p-4 shadow-xs">
                 <div class="flex items-center justify-between mb-3">
@@ -1105,6 +1139,51 @@
                 </div>
             </div>
 
+            <!-- 7-Day Activity Trend Chart: View Toko, Klik Produk, Order -->
+            <div class="bg-white dark:bg-[#111726] border border-slate-200/60 dark:border-[#222f49] rounded-2xl p-5 shadow-xs">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-[18px] text-sky-500">show_chart</span>
+                            Tren Aktivitas Toko (7 Hari Terakhir)
+                        </h3>
+                        <p class="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">View halaman toko, klik produk, dan order masuk per hari</p>
+                    </div>
+                    <!-- Summary Pills -->
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20">
+                            <span class="w-2 h-2 rounded-full bg-purple-500"></span>
+                            {{ number_format($activityTotalViews ?? 0) }} Views
+                        </span>
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20">
+                            <span class="w-2 h-2 rounded-full bg-sky-500"></span>
+                            {{ number_format($activityTotalClicks ?? 0) }} Klik
+                        </span>
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                            {{ number_format($activityTotalOrders ?? 0) }} Order
+                        </span>
+                        @if(($activityConversionRate ?? 0) > 0)
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                            <span class="material-symbols-outlined text-[13px]">trending_up</span>
+                            {{ $activityConversionRate ?? 0 }}% Konversi
+                        </span>
+                        @endif
+                    </div>
+                </div>
+
+                <div class="relative h-56 w-full">
+                    <canvas id="tenantActivityChart"></canvas>
+                </div>
+
+                <div class="mt-3 pt-3 border-t border-slate-100 dark:border-[#222f49] flex flex-wrap items-center gap-x-5 gap-y-1.5 text-[11px] text-slate-500 dark:text-slate-400">
+                    <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span> View Halaman Toko</span>
+                    <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-sky-500"></span> Klik / Lihat Produk</span>
+                    <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Order Masuk</span>
+                    <span class="ml-auto text-[10px] text-slate-400">*Data 7 hari terakhir</span>
+                </div>
+            </div>
+
             <!-- Grid 2 Columns: Produk Terbanyak Diklik (Left) & Kata Kunci Dicari (Right) -->
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 <!-- Produk Terbanyak Diklik / Dilihat (7 cols) -->
@@ -1541,6 +1620,134 @@
         const revDailyData = @json($dailySales ?? []);
         const currentMonthName = @json($currentMonthName ?? 'Bulan Ini');
 
+        // Activity Chart Data (7-day: Views, Clicks, Orders)
+        const activityLabels = @json($activityChartLabels ?? []);
+        const activityViews = @json($activityViewsData ?? []);
+        const activityClicks = @json($activityClicksData ?? []);
+        const activityOrders = @json($activityOrdersData ?? []);
+
+        let tenantActivityChartInstance = null;
+        let tenantActivityChartMobileInstance = null;
+
+        function initTenantActivityChart() {
+            if (typeof Chart === 'undefined') return;
+            const isDark = document.documentElement.classList.contains('dark') || document.body.classList.contains('dark');
+
+            const commonOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: isDark ? '#0F172A' : '#1E293B',
+                        padding: 12,
+                        cornerRadius: 8,
+                        titleFont: { size: 12, weight: 'bold' },
+                        bodyFont: { size: 12 },
+                        callbacks: {
+                            label: function(ctx) {
+                                const icons = ['👁', '🖱', '🛒'];
+                                return ' ' + ctx.dataset.label + ': ' + ctx.parsed.y;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { size: 11 }, color: isDark ? '#94A3B8' : '#64748B' }
+                    },
+                    y: {
+                        grid: { color: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)', drawBorder: false },
+                        ticks: {
+                            font: { size: 11 },
+                            color: isDark ? '#94A3B8' : '#64748B',
+                            precision: 0
+                        }
+                    }
+                }
+            };
+
+            const chartData = {
+                labels: activityLabels,
+                datasets: [
+                    {
+                        label: 'View Toko',
+                        data: activityViews,
+                        borderColor: '#a855f7',
+                        backgroundColor: 'rgba(168, 85, 247, 0.12)',
+                        borderWidth: 2.5,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#a855f7',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 1.5,
+                        pointHoverRadius: 6,
+                    },
+                    {
+                        label: 'Klik Produk',
+                        data: activityClicks,
+                        borderColor: '#0ea5e9',
+                        backgroundColor: 'rgba(14, 165, 233, 0.10)',
+                        borderWidth: 2.5,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#0ea5e9',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 1.5,
+                        pointHoverRadius: 6,
+                    },
+                    {
+                        label: 'Order Masuk',
+                        data: activityOrders,
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.12)',
+                        borderWidth: 2.5,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 5,
+                        pointBackgroundColor: '#10b981',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointHoverRadius: 7,
+                    }
+                ]
+            };
+
+            // Desktop
+            const canvas = document.getElementById('tenantActivityChart');
+            if (canvas) {
+                const existing = Chart.getChart(canvas);
+                if (existing) existing.destroy();
+                if (tenantActivityChartInstance) { try { tenantActivityChartInstance.destroy(); } catch(e) {} }
+                tenantActivityChartInstance = new Chart(canvas.getContext('2d'), {
+                    type: 'line',
+                    data: chartData,
+                    options: commonOptions
+                });
+            }
+
+            // Mobile
+            const canvasM = document.getElementById('tenantActivityChartMobile');
+            if (canvasM) {
+                const existingM = Chart.getChart(canvasM);
+                if (existingM) existingM.destroy();
+                if (tenantActivityChartMobileInstance) { try { tenantActivityChartMobileInstance.destroy(); } catch(e) {} }
+                const mobileOpts = JSON.parse(JSON.stringify(commonOptions));
+                mobileOpts.scales.x.ticks.font = { size: 9 };
+                mobileOpts.scales.y.ticks.font = { size: 9 };
+                tenantActivityChartMobileInstance = new Chart(canvasM.getContext('2d'), {
+                    type: 'line',
+                    data: chartData,
+                    options: mobileOpts
+                });
+            }
+        }
+
+
         function initTenantSalesChart() {
             if (typeof Chart === 'undefined') return;
 
@@ -1779,12 +1986,19 @@
 
         if (document.readyState !== 'loading') {
             initTenantSalesChart();
+            initTenantActivityChart();
         } else {
-            document.addEventListener('DOMContentLoaded', initTenantSalesChart);
+            document.addEventListener('DOMContentLoaded', function() {
+                initTenantSalesChart();
+                initTenantActivityChart();
+            });
         }
 
         document.addEventListener('livewire:navigated', function() {
-            setTimeout(initTenantSalesChart, 50);
+            setTimeout(function() {
+                initTenantSalesChart();
+                initTenantActivityChart();
+            }, 50);
         });
     })();
 </script>

@@ -7,6 +7,26 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
+/**
+ * @property int $id
+ * @property string $keyword
+ * @property int $hits
+ * @property int $results_count
+ * @property \Illuminate\Support\Carbon|null $last_searched_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductSearch newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductSearch newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductSearch query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductSearch whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductSearch whereHits($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductSearch whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductSearch whereKeyword($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductSearch whereLastSearchedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductSearch whereResultsCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ProductSearch whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class ProductSearch extends Model
 {
     use HasFactory;

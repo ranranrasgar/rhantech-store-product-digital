@@ -148,18 +148,18 @@
                             <span class="material-symbols-outlined text-[15px]">verified</span>
                             {{ $heroBadge ?: 'Marketplace Produk Digital' }}
                         </span>
-                        <h1 class="text-2xl sm:text-3xl md:text-display-lg font-black text-on-background dark:text-white text-balance leading-tight tracking-tight">
+                        <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-on-background dark:text-white text-balance leading-[1.15] tracking-tight">
                             @if(!empty($heroTitle) && $heroTitle !== 'We Build Digital Experiences' && $heroTitle !== 'Brand & Developer Aplikasi Digital Terbaik')
                                 @if(Str::contains($heroTitle, '&'))
                                     @php
                                         $parts = explode('&', $heroTitle, 2);
                                     @endphp
-                                    {{ trim($parts[0]) }} &amp; <span class="text-primary font-black">{{ trim($parts[1]) }}</span>
+                                    {{ trim($parts[0]) }} &amp; <span class="text-primary font-extrabold">{{ trim($parts[1]) }}</span>
                                 @else
                                     {{ $heroTitle }}
                                 @endif
                             @else
-                                Developer &amp; <span class="text-primary font-black">Aplikasi Siap Pakai</span>
+                                Developer &amp; <span class="text-primary font-extrabold">Aplikasi Siap Pakai</span>
                             @endif
                         </h1>
                         <p class="text-xs sm:text-sm md:text-body-lg text-on-surface-variant max-w-2xl mt-2 text-balance leading-relaxed">
@@ -388,14 +388,14 @@
                     </span>
                     @endif
 
-                    <h1 class="text-3xl sm:text-4xl md:text-display-lg font-black text-on-background dark:text-white mb-4 md:mb-6 text-balance leading-tight tracking-tight">
+                    <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-[54px] font-extrabold text-on-background dark:text-white mb-4 md:mb-6 text-balance leading-[1.15] tracking-tight">
                         @if(Str::contains($heroTitle, '&'))
                             @php
                                 $parts = explode('&', $heroTitle, 2);
                             @endphp
-                            {{ trim($parts[0]) }} &amp; <span class="text-primary font-black">{{ trim($parts[1]) }}</span>
+                            {{ trim($parts[0]) }} &amp; <span class="text-primary font-extrabold">{{ trim($parts[1]) }}</span>
                         @elseif(Str::contains($heroTitle, 'Digital'))
-                            {!! Str::replace('Digital', '<span class="text-primary font-black">Digital</span>', e($heroTitle)) !!}
+                            {!! Str::replace('Digital', '<span class="text-primary font-extrabold">Digital</span>', e($heroTitle)) !!}
                         @else
                             {{ $heroTitle }}
                         @endif

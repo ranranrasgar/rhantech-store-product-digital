@@ -13,6 +13,7 @@ class ContactMessageController extends Controller
 {
     public function index(Request $request)
     {
+        /** @var \Illuminate\Database\Eloquent\Builder<ContactMessage> $query */
         $query = ContactMessage::query();
 
         // 1. Filter Pencarian (Search)
@@ -30,7 +31,7 @@ class ContactMessageController extends Controller
 
         // 2. Filter Status (unread / read)
         if ($request->input('status') === 'unread') {
-            $query->whereNull('read_at');
+            $query->where('read_at', null);
         } elseif ($request->input('status') === 'read') {
             $query->whereNotNull('read_at');
         }
@@ -44,9 +45,9 @@ class ContactMessageController extends Controller
         }
 
         // Metrik Ringkasan
-        $totalCount = ContactMessage::count();
-        $unreadCount = ContactMessage::whereNull('read_at')->count();
-        $readCount = ContactMessage::whereNotNull('read_at')->count();
+        $totalCount = ContactMessage::count('*');
+        $unreadCount = ContactMessage::whereNull('read_at')->count('*');
+        $readCount = ContactMessage::whereNotNull('read_at')->count('*');
 
         $messages = $query->latest()->paginate(15)->withQueryString();
 

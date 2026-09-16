@@ -5,6 +5,94 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property int $id
+ * @property int|null $store_id
+ * @property string $name
+ * @property string $slug
+ * @property string|null $description
+ * @property string|null $short_description
+ * @property string|null $tags
+ * @property int|null $product_category_id
+ * @property int|null $product_type_id
+ * @property int|null $help_category_id
+ * @property string|null $demo_url
+ * @property numeric $price
+ * @property numeric $affiliate_commission_rate
+ * @property int $is_affiliate_enabled
+ * @property numeric|null $discount_price
+ * @property string|null $file_path
+ * @property array<array-key, mixed>|null $download_links
+ * @property array<array-key, mixed>|null $highlights
+ * @property array<array-key, mixed>|null $package_includes
+ * @property array<array-key, mixed>|null $system_requirements
+ * @property array<array-key, mixed>|null $guarantees
+ * @property array<array-key, mixed>|null $faqs
+ * @property numeric|null $rating_override
+ * @property-read int|null $reviews_count
+ * @property int|null $sales_count
+ * @property int $is_active
+ * @property string $approval_status
+ * @property string|null $rejection_reason
+ * @property int $views
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\SellerAd|null $activeAd
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SellerAd> $ads
+ * @property-read int|null $ads_count
+ * @property-read \App\Models\ProductCategory|null $category
+ * @property-read mixed $active_discount_campaign
+ * @property-read float $effective_rating
+ * @property-read int $effective_reviews_count
+ * @property-read array $tags_array
+ * @property-read \App\Models\HelpCategory|null $helpCategory
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductImage> $images
+ * @property-read int|null $images_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Order> $orders
+ * @property-read int|null $orders_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductReview> $reviews
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Store> $showcases
+ * @property-read int|null $showcases_count
+ * @property-read \App\Models\Store|null $store
+ * @property-read \App\Models\ProductType|null $type
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product approved()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product published()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereAffiliateCommissionRate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereApprovalStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereDemoUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereDiscountPrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereDownloadLinks($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereFaqs($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereFilePath($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereGuarantees($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereHelpCategoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereHighlights($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereIsActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereIsAffiliateEnabled($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product wherePackageIncludes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product wherePrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereProductCategoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereProductTypeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereRatingOverride($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereRejectionReason($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereReviewsCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereSalesCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereShortDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereStoreId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereSystemRequirements($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereTags($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereViews($value)
+ * @mixin \Eloquent
+ */
 class Product extends Model
 {
     use HasFactory;

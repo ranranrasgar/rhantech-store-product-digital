@@ -39,6 +39,7 @@
 
     html,
     body {
+        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         transition: background-color 180ms ease, color 180ms ease;
     }
 

@@ -156,7 +156,7 @@ class ProductController extends Controller
         // Banner Toko Rekomendasi & Beriklan (Carousel Slide Bergantian)
         $adStores = \App\Models\Store::where('ad_balance', '>', 0)
             ->whereHas('ads', function ($q) {
-                $q->activeAndFunded()->whereNotNull('product_id');
+                $q->activeAndFunded()->whereNotNull('product_id', 'and');
             })
             ->with([
                 'ads' => function ($q) {
@@ -297,7 +297,7 @@ class ProductController extends Controller
                         $todaySpent = \App\Models\AdTransaction::where('store_id', $ad->store_id)
                             ->where('type', 'deduction')
                             ->where('description', 'like', '%#AD-' . $ad->id . '%')
-                            ->whereDate('created_at', \Carbon\Carbon::today())
+                            ->whereDate('created_at', '=', \Carbon\Carbon::today(), 'and')
                             ->sum('amount');
 
                         if ($todaySpent >= (float) $ad->daily_budget) {
