@@ -14,9 +14,9 @@
     <link rel="icon" type="image/png" href="{{ $store->logo ? asset('storage/'.$store->logo) : (isset($company) && $company->favicon ? '/storage/'.$company->favicon : '/favicon.ico') }}" />
     <link rel="shortcut icon" type="image/png" href="{{ $store->logo ? asset('storage/'.$store->logo) : (isset($company) && $company->favicon ? '/storage/'.$company->favicon : '/favicon.ico') }}" />
 
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com" rel="preconnect"/>
-    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet"/>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script id="tailwind-config">
         tailwind.config = {

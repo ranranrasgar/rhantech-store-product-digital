@@ -8,8 +8,22 @@
 <title>@yield('title', 'Admin Panel') - {{ $company->company_name ?? 'Admin' }}</title>
 <link rel="icon" type="image/png" href="{{ isset($company) && $company->favicon ? '/storage/'.$company->favicon : '/favicon.ico' }}" />
     <link rel="shortcut icon" type="image/png" href="{{ isset($company) && $company->favicon ? '/storage/'.$company->favicon : '/favicon.ico' }}" />
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+/* Anti-FOUT: sembunyikan teks icon sampai font Material Symbols selesai dimuat */
+.material-symbols-outlined {
+    font-display: block;
+    visibility: hidden;
+    font-size: inherit;
+    line-height: inherit;
+}
+.fonts-loaded .material-symbols-outlined {
+    visibility: visible;
+}
+</style>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script id="tailwind-config">
@@ -747,4 +761,19 @@ function tenantGlobalSearch() {
 @include('components.file-size-guard')
 @livewireScripts
 @stack('scripts')
+<script>
+// Anti-FOUT: Deteksi font Material Symbols selesai dimuat, lalu tampilkan icon
+(function() {
+    if ('fonts' in document) {
+        document.fonts.ready.then(function() {
+            document.body.classList.add('fonts-loaded');
+        });
+    } else {
+        // Fallback untuk browser lama: tampilkan setelah 500ms
+        setTimeout(function() {
+            document.body.classList.add('fonts-loaded');
+        }, 500);
+    }
+})();
+</script>
 </body></html>
