@@ -90,6 +90,9 @@ class PublicController extends Controller
 
         $topStores = \App\Models\Store::query()
             ->select(['id', 'user_id', 'name', 'slug', 'logo', 'banner', 'description', 'store_mode', 'created_at'])
+            ->whereHas('products', function ($q) {
+                $q->published();
+            })
             ->withCount(['products' => function ($q) {
                 $q->published();
             }])
