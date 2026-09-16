@@ -114,11 +114,15 @@ class Product extends Model
             return round((float)$this->rating_override, 1);
         }
 
+        if (isset($this->attributes['reviews_avg_rating']) && !is_null($this->attributes['reviews_avg_rating'])) {
+            return round((float)$this->attributes['reviews_avg_rating'], 1);
+        }
+
         if ($this->relationLoaded('reviews')) {
-            $avg = $this->reviews->avg('rating');
+            $avg = $this->reviews->where('is_visible', true)->avg('rating');
             if ($avg) return round((float)$avg, 1);
         } else {
-            $avg = $this->reviews()->avg('rating');
+            $avg = $this->reviews()->where('is_visible', true)->avg('rating');
             if ($avg) return round((float)$avg, 1);
         }
 
@@ -134,11 +138,15 @@ class Product extends Model
             return (int)$this->reviews_count;
         }
 
-        if ($this->relationLoaded('reviews')) {
-            return $this->reviews->count();
+        if (isset($this->attributes['reviews_count'])) {
+            return (int)$this->attributes['reviews_count'];
         }
 
-        return $this->reviews()->count();
+        if ($this->relationLoaded('reviews')) {
+            return $this->reviews->where('is_visible', true)->count();
+        }
+
+        return $this->reviews()->where('is_visible', true)->count();
     }
 
     public function ads()
@@ -160,17 +168,17 @@ class Product extends Model
      */
     public function getActiveDiscountCampaignAttribute()
     {
+        static $cachedDiscountCampaigns = null;
+        if ($cachedDiscountCampaigns === null) {
+            $cachedDiscountCampaigns = \App\Models\Campaign::active()
+                ->where('type', 'discount')
+                ->get();
+        }
+
         $storeId = $this->store_id;
-        $campaigns = \App\Models\Campaign::active()
-            ->where('type', 'discount')
-            ->where(function ($query) use ($storeId) {
-                if ($storeId) {
-                    $query->where('store_id', $storeId)->orWhereNull('store_id');
-                } else {
-                    $query->whereNull('store_id');
-                }
-            })
-            ->get();
+        $campaigns = $cachedDiscountCampaigns->filter(function ($c) use ($storeId) {
+            return is_null($c->store_id) || ($storeId && $c->store_id == $storeId);
+        });
             
         foreach ($campaigns as $campaign) {
             if ($campaign->applies_to === 'all') return $campaign;

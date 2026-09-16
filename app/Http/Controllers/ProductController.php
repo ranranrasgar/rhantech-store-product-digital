@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use App\Models\Product;
 
 class ProductController extends Controller
@@ -12,6 +13,8 @@ class ProductController extends Controller
         $isAjax = ($request->ajax() || $request->header('X-Requested-With') === 'XMLHttpRequest' || $request->boolean('ajax'));
 
         $query = Product::with(['store:id,name,slug', 'images', 'category:id,name', 'type:id,name', 'activeAd'])
+            ->withAvg(['reviews' => fn($q) => $q->where('is_visible', true)], 'rating')
+            ->withCount(['reviews' => fn($q) => $q->where('is_visible', true)])
             ->published();
 
         if ($request->filled('category')) {
@@ -150,7 +153,6 @@ class ProductController extends Controller
             ->get();
 
         // Banner Toko Rekomendasi & Beriklan (Carousel Slide Bergantian)
-        // Prioritas 1: Toko yang beriklan aktif (Toko Rekomendasi Bersponsor)
         $adStores = \App\Models\Store::where('ad_balance', '>', 0)
             ->whereHas('ads', function ($q) {
                 $q->activeAndFunded()->whereNotNull('product_id');
@@ -172,7 +174,6 @@ class ProductController extends Controller
             $store->is_sponsored_ad = true;
         });
 
-        // Prioritas 2: Toko yang paling banyak views (Toko Populer) agar slide selalu berputar
         $adStoreIds = $adStores->pluck('id');
         $popularStores = \App\Models\Store::whereNotIn('id', $adStoreIds)
             ->where(function ($q) {
@@ -197,7 +198,6 @@ class ProductController extends Controller
             $store->is_sponsored_ad = false;
         });
 
-        // Gabungkan: Toko beriklan di posisi awal sebagai rekomendasi, diikuti toko dengan views terbanyak
         $sponsoredStores = $adStores->concat($popularStores);
 
         // Prioritas Produk Beriklan Aktif (Diurutkan berdasarkan bid_price tertinggi, lalu iklan terbaru)
