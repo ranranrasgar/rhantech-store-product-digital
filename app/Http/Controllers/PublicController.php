@@ -89,7 +89,7 @@ class PublicController extends Controller
             ->pluck('avg_rating', 'products.store_id');
 
         $topStores = \App\Models\Store::query()
-            ->select(['id', 'user_id', 'name', 'slug', 'logo', 'description', 'store_mode', 'created_at'])
+            ->select(['id', 'user_id', 'name', 'slug', 'logo', 'banner', 'description', 'store_mode', 'created_at'])
             ->withCount(['products' => function ($q) {
                 $q->published();
             }])
@@ -100,13 +100,14 @@ class PublicController extends Controller
                         'images:id,product_id,image_path,is_main',
                         'category:id,name',
                         'reviews:id,product_id,rating,is_visible'
-                    ])
-                    ->take(4);
+                    ]);
             }])
             ->get()
             ->map(function ($store) use ($storeSalesCounts, $storeAvgRatings) {
                 $store->sales_count = (int) ($storeSalesCounts[$store->id] ?? 0);
                 $store->rating = (float) ($storeAvgRatings[$store->id] ?? 4.9);
+                // Batasi produk per toko menjadi 4 teratas
+                $store->setRelation('products', $store->products->take(4));
                 return $store;
             })
             ->sortByDesc('sales_count')

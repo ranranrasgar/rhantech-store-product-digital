@@ -301,8 +301,9 @@
             </div>
             <div class="flex items-center gap-sm">
                 @guest
-                    <a class="hidden md:inline-flex items-center justify-center px-5 py-2 bg-sky-500 hover:bg-sky-600 text-white rounded-lg font-label-md text-label-md font-semibold transition-colors" href="{{ route('register') }}">
-                        <span class="material-symbols-outlined text-[1rem] mr-1">storefront</span> Jualan Sekarang!
+                    <a class="hidden md:inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-gradient-to-r from-teal-500 to-[#00838f] hover:from-teal-600 hover:to-[#00707a] text-white rounded-xl font-bold text-xs sm:text-sm shadow-md shadow-teal-500/20 hover:shadow-teal-500/30 active:scale-95 transition-all duration-200" href="{{ route('register') }}">
+                        <span class="material-symbols-outlined text-[18px]">rocket_launch</span>
+                        <span>Buat Toko &amp; Bio Link</span>
                     </a>
                 @else
                     <div class="flex items-center gap-3 ml-2">

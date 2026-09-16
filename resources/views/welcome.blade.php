@@ -449,31 +449,126 @@
                                         </div>
                                     </div>
 
-                                    <div class="rounded-xl overflow-hidden h-40 sm:h-48 border border-outline-variant relative bg-slate-900 flex items-center justify-center">
-                                        @php
-                                            $tBanner = null;
-                                            $tBannerIsStyle = false;
-                                            if (!empty($tStore->banner)) {
-                                                if (Str::startsWith($tStore->banner, 'linear-gradient') || Str::startsWith($tStore->banner, 'radial-gradient') || Str::startsWith($tStore->banner, '#') || Str::startsWith($tStore->banner, 'rgb')) {
-                                                    $tBanner = $tStore->banner;
-                                                    $tBannerIsStyle = true;
-                                                } else {
-                                                    $tBanner = Str::startsWith($tStore->banner, 'http') ? $tStore->banner : asset('storage/' . $tStore->banner);
-                                                }
-                                            } elseif ($tStore->products->first() && $tStore->products->first()->primary_image_url) {
-                                                $tBanner = $tStore->products->first()->primary_image_url;
-                                            }
-                                        @endphp
-                                        @if($tBanner && $tBannerIsStyle)
-                                            <div class="w-full h-full" style="background: {{ $tBanner }};"></div>
-                                        @elseif($tBanner)
-                                            <img src="{{ $tBanner }}" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                    {{-- Product Thumbnails Showcase (Click to enter store) --}}
+                                    <a href="{{ route('store.show', $tStore->slug) }}" 
+                                       class="group/showcase block rounded-2xl overflow-hidden border border-outline-variant/80 bg-slate-50 dark:bg-slate-900/60 p-3 hover:border-primary hover:shadow-md transition-all duration-300 relative"
+                                       title="Kunjungi {{ $tStore->name }}">
+                                        
+                                        @if($tStore->products && $tStore->products->count() > 0)
+                                            {{-- Section label / preview header --}}
+                                            <div class="flex items-center justify-between mb-2.5 px-0.5">
+                                                <span class="text-[11px] font-bold text-on-surface-variant flex items-center gap-1">
+                                                    <span class="material-symbols-outlined text-[14px] text-primary">shopping_bag</span>
+                                                    <span>Produk Toko</span>
+                                                </span>
+                                                <span class="text-[10px] font-bold text-primary group-hover/showcase:translate-x-0.5 transition-transform flex items-center gap-0.5">
+                                                    <span>Lihat Toko</span>
+                                                    <span class="material-symbols-outlined text-[12px]">arrow_forward</span>
+                                                </span>
+                                            </div>
+
+                                            @if($tStore->products->count() === 1)
+                                                {{-- 1 Product: Hero-style horizontal card --}}
+                                                @php 
+                                                    $p = $tStore->products->first(); 
+                                                    $pImg = $p->images->where('is_main', true)->first() ?? $p->images->first();
+                                                    $effectivePrice = $p->discount_price ?: $p->price;
+                                                @endphp
+                                                <div class="flex items-center gap-3 bg-white dark:bg-slate-800/80 rounded-xl p-2.5 border border-outline-variant/60">
+                                                    <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-700 shrink-0 border border-outline-variant/40">
+                                                        @if($pImg)
+                                                            <img src="{{ asset('storage/' . $pImg->image_path) }}" alt="{{ $p->name }}" class="w-full h-full object-cover group-hover/showcase:scale-105 transition duration-300">
+                                                        @else
+                                                            <div class="w-full h-full flex items-center justify-center text-slate-400">
+                                                                <span class="material-symbols-outlined text-2xl">inventory_2</span>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                    <div class="min-w-0 flex-1">
+                                                        @if($p->category)
+                                                            <span class="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-primary/10 text-primary">{{ $p->category->name }}</span>
+                                                        @endif
+                                                        <h4 class="font-bold text-xs sm:text-sm text-on-surface mt-1 line-clamp-2 leading-snug group-hover/showcase:text-primary transition-colors">
+                                                            {{ $p->name }}
+                                                        </h4>
+                                                        <div class="mt-1.5 flex items-baseline gap-1.5">
+                                                            <span class="font-black text-xs sm:text-sm text-primary">Rp {{ number_format($effectivePrice, 0, ',', '.') }}</span>
+                                                            @if($p->discount_price && $p->discount_price < $p->price)
+                                                                <span class="text-[10px] text-on-surface-variant line-through">Rp {{ number_format($p->price, 0, ',', '.') }}</span>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            @elseif($tStore->products->count() === 2)
+                                                {{-- 2 Products: 2-column grid --}}
+                                                <div class="grid grid-cols-2 gap-2.5">
+                                                    @foreach($tStore->products->take(2) as $p)
+                                                        @php 
+                                                            $pImg = $p->images->where('is_main', true)->first() ?? $p->images->first();
+                                                            $effectivePrice = $p->discount_price ?: $p->price;
+                                                        @endphp
+                                                        <div class="bg-white dark:bg-slate-800/80 rounded-xl p-2 border border-outline-variant/60 flex flex-col justify-between">
+                                                            <div class="w-full h-20 sm:h-24 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-700 mb-1.5 border border-outline-variant/40">
+                                                                @if($pImg)
+                                                                    <img src="{{ asset('storage/' . $pImg->image_path) }}" alt="{{ $p->name }}" class="w-full h-full object-cover group-hover/showcase:scale-105 transition duration-300">
+                                                                @else
+                                                                    <div class="w-full h-full flex items-center justify-center text-slate-400">
+                                                                        <span class="material-symbols-outlined text-xl">inventory_2</span>
+                                                                    </div>
+                                                                @endif
+                                                            </div>
+                                                            <div>
+                                                                <h4 class="font-bold text-[11px] text-on-surface truncate group-hover/showcase:text-primary transition-colors">{{ $p->name }}</h4>
+                                                                <span class="font-black text-[11px] text-primary block mt-0.5">Rp {{ number_format($effectivePrice, 0, ',', '.') }}</span>
+                                                            </div>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+
+                                            @else
+                                                {{-- 3 Products: 3-column grid --}}
+                                                <div class="grid grid-cols-3 gap-2">
+                                                    @foreach($tStore->products->take(3) as $p)
+                                                        @php 
+                                                            $pImg = $p->images->where('is_main', true)->first() ?? $p->images->first();
+                                                            $effectivePrice = $p->discount_price ?: $p->price;
+                                                        @endphp
+                                                        <div class="bg-white dark:bg-slate-800/80 rounded-xl p-1.5 border border-outline-variant/60 flex flex-col">
+                                                            <div class="w-full h-16 sm:h-20 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-700 mb-1 border border-outline-variant/40">
+                                                                @if($pImg)
+                                                                    <img src="{{ asset('storage/' . $pImg->image_path) }}" alt="{{ $p->name }}" class="w-full h-full object-cover group-hover/showcase:scale-105 transition duration-300">
+                                                                @else
+                                                                    <div class="w-full h-full flex items-center justify-center text-slate-400">
+                                                                        <span class="material-symbols-outlined text-lg">inventory_2</span>
+                                                                    </div>
+                                                                @endif
+                                                            </div>
+                                                            <h4 class="font-bold text-[10px] text-on-surface truncate group-hover/showcase:text-primary transition-colors leading-tight">{{ $p->name }}</h4>
+                                                            <span class="font-black text-[10px] text-primary mt-0.5">Rp {{ number_format($effectivePrice, 0, ',', '.') }}</span>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            @endif
+
+                                        @else
+                                            {{-- Store has 0 products yet (e.g. Bio Link or new store) --}}
+                                            <div class="h-36 sm:h-40 rounded-xl bg-gradient-to-br from-teal-500/10 via-sky-500/5 to-purple-500/10 border border-outline-variant/60 p-4 flex flex-col justify-center items-center text-center">
+                                                <div class="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mb-2">
+                                                    <span class="material-symbols-outlined text-2xl">
+                                                        {{ $tStore->store_mode === 'profile' ? 'link' : ($tStore->store_mode === 'hybrid' ? 'auto_awesome' : 'storefront') }}
+                                                    </span>
+                                                </div>
+                                                <p class="font-bold text-xs text-on-surface line-clamp-1">
+                                                    {{ $tStore->description ?: 'Kunjungi profil toko untuk melihat detail dan kontak.' }}
+                                                </p>
+                                                <span class="mt-2.5 inline-flex items-center gap-1 text-[11px] font-bold text-primary bg-white dark:bg-slate-800 px-3 py-1 rounded-full shadow-xs border border-outline-variant/60 group-hover/showcase:bg-primary group-hover/showcase:text-white transition-all">
+                                                    <span>Jelajahi Profil Toko</span>
+                                                    <span class="material-symbols-outlined text-[13px]">arrow_forward</span>
+                                                </span>
+                                            </div>
                                         @endif
-                                        <div class="w-full h-full p-4 flex flex-col justify-center items-center text-center {{ $tBanner ? 'hidden' : 'flex' }}">
-                                            <span class="material-symbols-outlined text-3xl text-white/80 mb-1">storefront</span>
-                                            <span class="text-white font-bold text-sm">{{ $tStore->name }}</span>
-                                        </div>
-                                    </div>
+                                    </a>
 
                                     <div class="flex items-center justify-between pt-2">
                                         <div class="flex gap-1">
