@@ -42,6 +42,28 @@
     color: #fff; display: flex; align-items: center; justify-content: center;
     font-weight: 900; font-size: 16px; flex-shrink: 0;
 }
+@keyframes hero-float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-8px);
+    }
+}
+@keyframes pulse-glow {
+    0%, 100% {
+        box-shadow: 0 10px 25px -5px rgba(0, 131, 143, 0.18), 0 8px 10px -6px rgba(0, 131, 143, 0.12);
+    }
+    50% {
+        box-shadow: 0 20px 35px -5px rgba(0, 131, 143, 0.35), 0 12px 16px -6px rgba(0, 131, 143, 0.25);
+    }
+}
+.animate-hero-float {
+    animation: hero-float 4.5s ease-in-out infinite;
+}
+.animate-pulse-glow {
+    animation: pulse-glow 3s ease-in-out infinite;
+}
 </style>
 
 {{-- =========================================================================
@@ -591,16 +613,121 @@
                         </div>
                     @endif
                     
-                    <!-- Floating Stats Card -->
+                    <!-- Dynamic Animated Floating Stats / Trust Widget -->
                     @if($heroStatsVal || $heroStatsLabel)
-                    <div class="hidden sm:block absolute -bottom-6 -left-6 md:-bottom-8 md:-left-8 bg-surface p-4 md:p-6 rounded-xl border border-outline-variant z-20">
-                        <div class="flex items-center gap-3 md:gap-4">
-                            <div class="p-2.5 md:p-3 bg-[#06B6D4]/10 rounded-full text-[#06B6D4]">
-                                <span class="material-symbols-outlined text-[20px] md:text-[24px]" data-icon="rocket_launch">rocket_launch</span>
+                    <div class="hidden sm:block absolute -bottom-6 -left-6 md:-bottom-7 md:-left-8 z-30 animate-hero-float"
+                         x-data="{
+                            currentStat: 0,
+                            totalStats: 3,
+                            timer: null,
+                            init() {
+                                this.timer = setInterval(() => {
+                                    this.currentStat = (this.currentStat + 1) % this.totalStats;
+                                }, 3500);
+                            }
+                         }"
+                         @mouseenter="clearInterval(timer)"
+                         @mouseleave="timer = setInterval(() => { currentStat = (currentStat + 1) % totalStats; }, 3500)">
+                        <div class="relative overflow-hidden backdrop-blur-xl bg-white/95 dark:bg-[#111726]/95 p-3.5 md:p-4 rounded-2xl border border-teal-500/30 dark:border-teal-400/30 animate-pulse-glow shadow-2xl transition-all duration-300 hover:scale-[1.03] select-none min-w-[240px] md:min-w-[270px]">
+                            {{-- Top animated gradient accent line --}}
+                            <div class="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-teal-400 via-[#00838f] to-sky-400"></div>
+
+                            {{-- Stat Slide 0: Main Hero Stat (e.g. 1356 Jenis Produk Siap Pakai) --}}
+                            <div x-show="currentStat === 0" 
+                                 x-transition:enter="transition ease-out duration-300 transform"
+                                 x-transition:enter-start="opacity-0 translate-y-2 scale-95"
+                                 x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                                 x-transition:leave="transition ease-in duration-200 transform absolute"
+                                 x-transition:leave-start="opacity-100 scale-100"
+                                 x-transition:leave-end="opacity-0 -translate-y-2 scale-95"
+                                 class="flex items-center gap-3">
+                                <div class="w-11 h-11 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-teal-500 to-[#00838f] text-white flex items-center justify-center shadow-lg shadow-teal-500/30 shrink-0">
+                                    <span class="material-symbols-outlined text-[24px]">rocket_launch</span>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <div class="flex items-center gap-1.5">
+                                        <div class="text-base md:text-lg font-black tracking-tight text-slate-900 dark:text-white leading-none">
+                                            {{ $heroStatsVal }}
+                                        </div>
+                                        <span class="inline-flex items-center gap-1 text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 leading-none">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
+                                            Ready
+                                        </span>
+                                    </div>
+                                    <div class="text-[11px] md:text-xs text-slate-500 dark:text-slate-400 font-medium mt-1 truncate">
+                                        {{ $heroStatsLabel }}
+                                    </div>
+                                </div>
                             </div>
-                            <div>
-                                <div class="font-headline-lg text-xl md:text-headline-lg text-primary font-black">{{ $heroStatsVal }}</div>
-                                <div class="font-label-md text-xs md:text-label-md text-on-surface-variant">{{ $heroStatsLabel }}</div>
+
+                            {{-- Stat Slide 1: Fast Automated Transaction & Instant Download --}}
+                            <div x-show="currentStat === 1" 
+                                 x-cloak
+                                 style="display: none;"
+                                 x-transition:enter="transition ease-out duration-300 transform"
+                                 x-transition:enter-start="opacity-0 translate-y-2 scale-95"
+                                 x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                                 x-transition:leave="transition ease-in duration-200 transform absolute"
+                                 x-transition:leave-start="opacity-100 scale-100"
+                                 x-transition:leave-end="opacity-0 -translate-y-2 scale-95"
+                                 class="flex items-center gap-3">
+                                <div class="w-11 h-11 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 text-white flex items-center justify-center shadow-lg shadow-amber-500/30 shrink-0">
+                                    <span class="material-symbols-outlined text-[24px]">bolt</span>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <div class="flex items-center gap-1.5">
+                                        <div class="text-base md:text-lg font-black tracking-tight text-slate-900 dark:text-white leading-none">
+                                            Unduh Instan
+                                        </div>
+                                        <span class="text-[10px] text-amber-500 font-bold flex items-center">⚡ 24/7</span>
+                                    </div>
+                                    <div class="text-[11px] md:text-xs text-slate-500 dark:text-slate-400 font-medium mt-1 truncate">
+                                        QRIS &amp; Transfer Otomatis
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Stat Slide 2: Verified Developer & Security Guarantee --}}
+                            <div x-show="currentStat === 2" 
+                                 x-cloak
+                                 style="display: none;"
+                                 x-transition:enter="transition ease-out duration-300 transform"
+                                 x-transition:enter-start="opacity-0 translate-y-2 scale-95"
+                                 x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                                 x-transition:leave="transition ease-in duration-200 transform absolute"
+                                 x-transition:leave-start="opacity-100 scale-100"
+                                 x-transition:leave-end="opacity-0 -translate-y-2 scale-95"
+                                 class="flex items-center gap-3">
+                                <div class="w-11 h-11 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white flex items-center justify-center shadow-lg shadow-emerald-500/30 shrink-0">
+                                    <span class="material-symbols-outlined text-[24px]">verified_user</span>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <div class="flex items-center gap-1.5">
+                                        <div class="text-base md:text-lg font-black tracking-tight text-slate-900 dark:text-white leading-none">
+                                            100% Bergaransi
+                                        </div>
+                                        <span class="text-[9px] font-black uppercase px-1.5 py-0.5 rounded bg-teal-500/10 text-[#00838f] dark:text-teal-300 border border-teal-500/20">Aman</span>
+                                    </div>
+                                    <div class="text-[11px] md:text-xs text-slate-500 dark:text-slate-400 font-medium mt-1 truncate">
+                                        Developer Terverifikasi
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Bottom micro-bar with indicators & rating --}}
+                            <div class="flex items-center justify-between mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-800 text-[10px]">
+                                <div class="flex items-center gap-1 text-amber-500 font-extrabold tracking-tight">
+                                    <span>★ 4.9/5.0</span>
+                                    <span class="text-slate-400 font-normal">Rating</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <template x-for="i in 3" :key="i">
+                                        <button type="button" 
+                                                @click="currentStat = i - 1"
+                                                class="w-1.5 h-1.5 rounded-full transition-all duration-300"
+                                                :class="currentStat === (i - 1) ? 'w-4 bg-[#00838f] dark:bg-teal-400' : 'bg-slate-300 dark:bg-slate-700 hover:bg-slate-400'"></button>
+                                    </template>
+                                </div>
                             </div>
                         </div>
                     </div>
