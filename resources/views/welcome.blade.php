@@ -47,22 +47,11 @@
         transform: translateY(0px);
     }
     50% {
-        transform: translateY(-8px);
-    }
-}
-@keyframes pulse-glow {
-    0%, 100% {
-        box-shadow: 0 10px 25px -5px rgba(0, 131, 143, 0.18), 0 8px 10px -6px rgba(0, 131, 143, 0.12);
-    }
-    50% {
-        box-shadow: 0 20px 35px -5px rgba(0, 131, 143, 0.35), 0 12px 16px -6px rgba(0, 131, 143, 0.25);
+        transform: translateY(-5px);
     }
 }
 .animate-hero-float {
     animation: hero-float 4.5s ease-in-out infinite;
-}
-.animate-pulse-glow {
-    animation: pulse-glow 3s ease-in-out infinite;
 }
 </style>
 
@@ -628,33 +617,42 @@
                          }"
                          @mouseenter="clearInterval(timer)"
                          @mouseleave="timer = setInterval(() => { currentStat = (currentStat + 1) % totalStats; }, 3500)">
-                        <div class="relative overflow-hidden backdrop-blur-xl bg-white/95 dark:bg-[#111726]/95 p-3.5 md:p-4 rounded-2xl border border-teal-500/30 dark:border-teal-400/30 animate-pulse-glow shadow-2xl transition-all duration-300 hover:scale-[1.03] select-none min-w-[240px] md:min-w-[270px]">
-                            {{-- Top animated gradient accent line --}}
-                            <div class="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-teal-400 via-[#00838f] to-sky-400"></div>
+                        <div class="relative bg-white dark:bg-[#151c2c] p-3.5 sm:p-4 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-[0_12px_30px_-8px_rgba(0,0,0,0.12)] dark:shadow-[0_16px_35px_-8px_rgba(0,0,0,0.6)] ring-1 ring-black/[0.04] dark:ring-white/[0.06] select-none min-w-[250px] md:min-w-[280px]">
+                            
+                            {{-- Header: Clean verified badge (replaces AI-style top gradient border) --}}
+                            <div class="flex items-center justify-between gap-3 pb-2 mb-2.5 border-b border-slate-100 dark:border-slate-800/80">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="relative flex h-2 w-2">
+                                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                                    </span>
+                                    <span class="text-[11px] font-bold text-slate-700 dark:text-slate-300 tracking-tight">Katalog Resmi</span>
+                                </div>
+                                <span class="text-[10px] font-semibold text-slate-400 dark:text-slate-500">Live Update</span>
+                            </div>
 
                             {{-- Stat Slide 0: Main Hero Stat (e.g. 1356 Jenis Produk Siap Pakai) --}}
                             <div x-show="currentStat === 0" 
                                  x-transition:enter="transition ease-out duration-300 transform"
-                                 x-transition:enter-start="opacity-0 translate-y-2 scale-95"
+                                 x-transition:enter-start="opacity-0 translate-y-1 scale-98"
                                  x-transition:enter-end="opacity-100 translate-y-0 scale-100"
                                  x-transition:leave="transition ease-in duration-200 transform absolute"
                                  x-transition:leave-start="opacity-100 scale-100"
-                                 x-transition:leave-end="opacity-0 -translate-y-2 scale-95"
+                                 x-transition:leave-end="opacity-0 -translate-y-1 scale-98"
                                  class="flex items-center gap-3">
-                                <div class="w-11 h-11 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-teal-500 to-[#00838f] text-white flex items-center justify-center shadow-lg shadow-teal-500/30 shrink-0">
-                                    <span class="material-symbols-outlined text-[24px]">rocket_launch</span>
+                                <div class="w-10 h-10 rounded-xl bg-teal-50 dark:bg-teal-950/50 text-[#00838f] dark:text-teal-400 flex items-center justify-center border border-teal-200/60 dark:border-teal-800/50 shrink-0">
+                                    <span class="material-symbols-outlined text-[22px]">rocket_launch</span>
                                 </div>
                                 <div class="min-w-0 flex-1">
                                     <div class="flex items-center gap-1.5">
-                                        <div class="text-base md:text-lg font-black tracking-tight text-slate-900 dark:text-white leading-none">
+                                        <div class="text-base font-black tracking-tight text-slate-900 dark:text-white leading-none">
                                             {{ $heroStatsVal }}
                                         </div>
-                                        <span class="inline-flex items-center gap-1 text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 leading-none">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
+                                        <span class="inline-flex items-center text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                                             Ready
                                         </span>
                                     </div>
-                                    <div class="text-[11px] md:text-xs text-slate-500 dark:text-slate-400 font-medium mt-1 truncate">
+                                    <div class="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-1 truncate">
                                         {{ $heroStatsLabel }}
                                     </div>
                                 </div>
@@ -665,23 +663,23 @@
                                  x-cloak
                                  style="display: none;"
                                  x-transition:enter="transition ease-out duration-300 transform"
-                                 x-transition:enter-start="opacity-0 translate-y-2 scale-95"
+                                 x-transition:enter-start="opacity-0 translate-y-1 scale-98"
                                  x-transition:enter-end="opacity-100 translate-y-0 scale-100"
                                  x-transition:leave="transition ease-in duration-200 transform absolute"
                                  x-transition:leave-start="opacity-100 scale-100"
-                                 x-transition:leave-end="opacity-0 -translate-y-2 scale-95"
+                                 x-transition:leave-end="opacity-0 -translate-y-1 scale-98"
                                  class="flex items-center gap-3">
-                                <div class="w-11 h-11 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 text-white flex items-center justify-center shadow-lg shadow-amber-500/30 shrink-0">
-                                    <span class="material-symbols-outlined text-[24px]">bolt</span>
+                                <div class="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 flex items-center justify-center border border-amber-200/60 dark:border-amber-800/50 shrink-0">
+                                    <span class="material-symbols-outlined text-[22px]">bolt</span>
                                 </div>
                                 <div class="min-w-0 flex-1">
                                     <div class="flex items-center gap-1.5">
-                                        <div class="text-base md:text-lg font-black tracking-tight text-slate-900 dark:text-white leading-none">
+                                        <div class="text-base font-black tracking-tight text-slate-900 dark:text-white leading-none">
                                             Unduh Instan
                                         </div>
-                                        <span class="text-[10px] text-amber-500 font-bold flex items-center">⚡ 24/7</span>
+                                        <span class="text-[10px] text-amber-600 dark:text-amber-400 font-bold">24 Jam</span>
                                     </div>
-                                    <div class="text-[11px] md:text-xs text-slate-500 dark:text-slate-400 font-medium mt-1 truncate">
+                                    <div class="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-1 truncate">
                                         QRIS &amp; Transfer Otomatis
                                     </div>
                                 </div>
@@ -692,40 +690,40 @@
                                  x-cloak
                                  style="display: none;"
                                  x-transition:enter="transition ease-out duration-300 transform"
-                                 x-transition:enter-start="opacity-0 translate-y-2 scale-95"
+                                 x-transition:enter-start="opacity-0 translate-y-1 scale-98"
                                  x-transition:enter-end="opacity-100 translate-y-0 scale-100"
                                  x-transition:leave="transition ease-in duration-200 transform absolute"
                                  x-transition:leave-start="opacity-100 scale-100"
-                                 x-transition:leave-end="opacity-0 -translate-y-2 scale-95"
+                                 x-transition:leave-end="opacity-0 -translate-y-1 scale-98"
                                  class="flex items-center gap-3">
-                                <div class="w-11 h-11 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white flex items-center justify-center shadow-lg shadow-emerald-500/30 shrink-0">
-                                    <span class="material-symbols-outlined text-[24px]">verified_user</span>
+                                <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center border border-emerald-200/60 dark:border-emerald-800/50 shrink-0">
+                                    <span class="material-symbols-outlined text-[22px]">verified_user</span>
                                 </div>
                                 <div class="min-w-0 flex-1">
                                     <div class="flex items-center gap-1.5">
-                                        <div class="text-base md:text-lg font-black tracking-tight text-slate-900 dark:text-white leading-none">
+                                        <div class="text-base font-black tracking-tight text-slate-900 dark:text-white leading-none">
                                             100% Bergaransi
                                         </div>
-                                        <span class="text-[9px] font-black uppercase px-1.5 py-0.5 rounded bg-teal-500/10 text-[#00838f] dark:text-teal-300 border border-teal-500/20">Aman</span>
+                                        <span class="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">Aman</span>
                                     </div>
-                                    <div class="text-[11px] md:text-xs text-slate-500 dark:text-slate-400 font-medium mt-1 truncate">
+                                    <div class="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-1 truncate">
                                         Developer Terverifikasi
                                     </div>
                                 </div>
                             </div>
 
                             {{-- Bottom micro-bar with indicators & rating --}}
-                            <div class="flex items-center justify-between mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-800 text-[10px]">
-                                <div class="flex items-center gap-1 text-amber-500 font-extrabold tracking-tight">
+                            <div class="flex items-center justify-between mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-800/80 text-[10px]">
+                                <div class="flex items-center gap-1 text-amber-500 font-bold tracking-tight">
                                     <span>★ 4.9/5.0</span>
-                                    <span class="text-slate-400 font-normal">Rating</span>
+                                    <span class="text-slate-400 dark:text-slate-500 font-normal">• Teruji</span>
                                 </div>
                                 <div class="flex items-center gap-1">
                                     <template x-for="i in 3" :key="i">
                                         <button type="button" 
                                                 @click="currentStat = i - 1"
-                                                class="w-1.5 h-1.5 rounded-full transition-all duration-300"
-                                                :class="currentStat === (i - 1) ? 'w-4 bg-[#00838f] dark:bg-teal-400' : 'bg-slate-300 dark:bg-slate-700 hover:bg-slate-400'"></button>
+                                                class="h-1.5 rounded-full transition-all duration-300"
+                                                :class="currentStat === (i - 1) ? 'w-3.5 bg-slate-800 dark:bg-slate-200' : 'w-1.5 bg-slate-300 dark:bg-slate-700 hover:bg-slate-400'"></button>
                                     </template>
                                 </div>
                             </div>
