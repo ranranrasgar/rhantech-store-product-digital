@@ -91,6 +91,16 @@
 @vite(['resources/css/app.css'])
 @livewireStyles
 <style>
+/* Hilangkan semua shadow blur & degradasi pada object di dashboard tenant */
+*, ::before, ::after {
+    --tw-shadow: 0 0 #0000 !important;
+    --tw-shadow-colored: 0 0 #0000 !important;
+    --tw-drop-shadow: 0 0 #0000 !important;
+}
+[class*="shadow-"], [class*="shadow"], [class*="drop-shadow"] {
+    box-shadow: none !important;
+    filter: none !important;
+}
 .hide-scrollbar::-webkit-scrollbar { display: none; }
 .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 html, body {
@@ -136,24 +146,20 @@ html.dark .sidebar-brand { border-bottom-color: #30363d; }
 
 .brand-dot-s {
     width: 8px; height: 8px; border-radius: 50%;
-    background: #00b3cc; box-shadow: 0 0 8px rgba(0,179,204,0.5);
-    flex-shrink: 0; animation: pd 2s ease-in-out infinite; display:inline-block;
+    background: #0f172a;
+    flex-shrink: 0; display:inline-block;
 }
-html.dark .brand-dot-s { background: #2f81f7; box-shadow: 0 0 10px rgba(47,129,247,0.4); }
-@keyframes pd {
-    0%,100%{box-shadow:0 0 8px rgba(0,179,204,0.5)} 50%{box-shadow:0 0 18px rgba(0,179,204,0.8)}
-}
-html.dark .brand-dot-s { background: #2f81f7; box-shadow: 0 0 10px rgba(47,129,247,0.4); }
-@keyframes pd-dark { 0%,100%{box-shadow:0 0 8px rgba(47,129,247,0.5)} 50%{box-shadow:0 0 18px rgba(47,129,247,0.8)} }
+html.dark .brand-dot-s { background: #ffffff; }
+
 .brand-name-s {
     font-size: 16px; font-weight: 900; letter-spacing: -0.3px;
     color: #1a202c; line-height: 1.1;
     transition: color 0.2s;
 }
 html.dark .brand-name-s {
-    background: linear-gradient(135deg,#fff,#a8e6f0);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #ffffff;
+    background: none;
+    -webkit-text-fill-color: initial;
 }
 .brand-sub-s { font-size: 10px; color: #9ca3af; letter-spacing: 0.5px; margin-top: 2px; }
 html.dark .brand-sub-s { color: rgba(255,255,255,0.3); }
@@ -176,21 +182,21 @@ html.dark .nav-section-label { color: #8b949e; }
     transition: all 0.15s ease; position: relative;
 }
 .nav-link:hover { background: #f3f4f6; color: #111827; }
-.nav-link.active { background: #e0f7fa; color: #00838f; font-weight: 600; }
+.nav-link.active { background: #0f172a; color: #ffffff; font-weight: 600; }
 .nav-link.active::before {
     content: ''; position: absolute;
     left: -4px; top: 6px; bottom: 6px;
     width: 3px; border-radius: 0 3px 3px 0;
-    background: #00b3cc;
+    background: #0f172a;
 }
 
 html.dark .nav-link { color: #8b949e; }
 html.dark .nav-link:hover { background: #161b22; color: #c9d1d9; }
-html.dark .nav-link.active { background: #161b22; color: #e6edf3; }
-html.dark .nav-link.active::before { background: #2f81f7; }
+html.dark .nav-link.active { background: #ffffff; color: #0f172a; font-weight: 600; }
+html.dark .nav-link.active::before { background: #ffffff; }
 
 .nav-link .material-symbols-outlined { font-size: 18px; width: 20px; text-align: center; flex-shrink: 0; opacity: 0.7; }
-.nav-link.active .material-symbols-outlined { opacity: 1; }
+.nav-link.active .material-symbols-outlined { opacity: 1; color: inherit; }
 
 /* Sidebar user */
 .sidebar-user {
@@ -235,10 +241,10 @@ html.dark .topbar-icon-btn:hover { background: rgba(255,255,255,0.08); color: #f
 .topbar-dropdown {
     position: absolute; right: 0; top: calc(100% + 8px);
     width: 200px; border-radius: 12px; padding: 6px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.15); z-index: 100;
+    box-shadow: none; z-index: 100;
     background: #fff; border: 1px solid #e5e7eb;
 }
-html.dark .topbar-dropdown { background: #161b22; border-color: #30363d; box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
+html.dark .topbar-dropdown { background: #161b22; border-color: #30363d; box-shadow: none; }
 .dropdown-user-name { font-size: 13px; font-weight: 600; color: #111827; }
 html.dark .dropdown-user-name { color: #fff; }
 .dropdown-user-email { font-size: 11px; color: #6b7280; }
@@ -291,7 +297,7 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
     }
     .tenant-sidebar.open {
         transform: translateX(0);
-        box-shadow: 0 0 30px rgba(0, 0, 0, 0.25);
+        box-shadow: none;
     }
     .tenant-main {
         margin-left: 0 !important;
@@ -339,7 +345,7 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
             <div class="brand-name-s" style="display:flex; align-items:center; gap:4px;">
                 {{ $company->company_name ?? 'rhantech' }}
                 @if(auth()->check() && auth()->user()->store && auth()->user()->store->isPro())
-                    <span style="background:linear-gradient(45deg,#f59e0b,#fbbf24); color:#fff; font-size:9px; padding:2px 4px; border-radius:4px; font-weight:800; text-transform:uppercase; box-shadow:0 0 5px rgba(245,158,11,0.5);">PRO</span>
+                    <span style="background:#f59e0b; color:#fff; font-size:9px; padding:2px 5px; border-radius:4px; font-weight:800; text-transform:uppercase;">PRO</span>
                 @endif
             </div>
             <div class="brand-sub-s">Seller Center</div>
@@ -358,6 +364,9 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
         </a>
         <a href="{{ route('tenant.following') }}" class="nav-link {{ request()->routeIs('tenant.following') ? 'active' : '' }}">
             <span class="material-symbols-outlined">storefront</span> Toko yang Diikuti
+        </a>
+        <a href="{{ route('tenant.profile.index') }}" class="nav-link {{ request()->routeIs('tenant.profile.*') ? 'active' : '' }}">
+            <span class="material-symbols-outlined">settings</span> Profil &amp; Pengaturan
         </a>
 
         @if(auth()->user()->store)
@@ -735,6 +744,7 @@ function tenantGlobalSearch() {
     };
 }
 </script>
+@include('components.file-size-guard')
 @livewireScripts
 @stack('scripts')
 </body></html>

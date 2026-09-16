@@ -5,6 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @mixin \Illuminate\Database\Eloquent\Builder
+ * @method static \Illuminate\Database\Eloquent\Builder query()
+ * @method static \App\Models\CompanyProfile|null first(array $columns = [])
+ * @method static \App\Models\CompanyProfile findOrFail($id, array $columns = [])
+ * @method static \App\Models\CompanyProfile create(array $attributes = [])
+ */
 class CompanyProfile extends Model
 {
     use HasFactory;

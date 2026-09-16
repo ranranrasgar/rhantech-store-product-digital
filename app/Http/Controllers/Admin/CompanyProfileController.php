@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use App\Models\CompanyProfile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
@@ -126,13 +127,20 @@ class CompanyProfileController extends Controller
             'hero_badge'        => 'nullable|string|max:255',
             'hero_title'        => 'nullable|string|max:255',
             'hero_subtitle'     => 'nullable|string',
-            'hero_image'        => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:3072',
+            'hero_image'        => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:2048',
             'hero_btn_primary_text'   => 'nullable|string|max:100',
             'hero_btn_primary_url'    => 'nullable|string|max:255',
             'hero_btn_secondary_text' => 'nullable|string|max:100',
             'hero_btn_secondary_url'  => 'nullable|string|max:255',
             'hero_stats_val'    => 'nullable|string|max:50',
             'hero_stats_label'  => 'nullable|string|max:100',
+        ], [
+            'logo.max' => 'Ukuran logo tidak boleh melebihi 2 MB.',
+            'favicon.max' => 'Ukuran favicon tidak boleh melebihi 1 MB.',
+            'hero_image.max' => 'Ukuran gambar hero tidak boleh melebihi 2 MB.',
+            'hero_image.image' => 'File hero harus berupa format gambar valid.',
+            'logo.image' => 'File logo harus berupa format gambar valid.',
+            'favicon.image' => 'File favicon harus berupa format gambar valid.',
         ]);
 
         // Process and normalize social_links repeater
@@ -614,7 +622,17 @@ class CompanyProfileController extends Controller
         return $bytes . ' B';
     }
 
-    protected function optimizeAndStoreImage($file, string $directory, string $disk = 'public', int $maxWidth = 1600, int $maxHeight = 2000): string
+    /**
+     * Optimize and store uploaded image as WebP.
+     *
+     * @param UploadedFile $file
+     * @param string $directory
+     * @param string $disk
+     * @param int $maxWidth
+     * @param int $maxHeight
+     * @return string
+     */
+    protected function optimizeAndStoreImage(UploadedFile $file, string $directory, string $disk = 'public', int $maxWidth = 1600, int $maxHeight = 2000): string
     {
         $extension = strtolower($file->getClientOriginalExtension());
 

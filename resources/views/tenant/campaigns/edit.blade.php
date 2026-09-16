@@ -11,7 +11,7 @@
         <h1 class="text-xl font-bold text-[#333] dark:text-white">Edit Campaign / Promo</h1>
     </div>
 
-    <div class="bg-white dark:bg-[#161b22] border border-gray-200 dark:border-[#30363d] rounded-lg p-6 shadow-sm max-w-4xl" x-data="{ type: '{{ old('type', $campaign->type) }}' }">
+    <div class="bg-white dark:bg-[#161b22] border border-gray-200 dark:border-[#30363d] rounded-lg p-6 max-w-4xl" x-data="{ type: '{{ old('type', $campaign->type) }}' }">
         <form action="{{ route('tenant.campaigns.update', $campaign->id) }}" method="POST">
             @csrf
             @method('PUT')
@@ -60,7 +60,7 @@
                             <button type="button" onclick="setDiscount(10, 'percentage')" class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 font-bold">10%</button>
                             <button type="button" onclick="setDiscount(25, 'percentage')" class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 font-bold">25%</button>
                             <button type="button" onclick="setDiscount(50, 'percentage')" class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 font-bold">50%</button>
-                            <button type="button" onclick="setDiscount(100, 'percentage')" class="px-1.5 py-0.5 rounded bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold shadow-xs">100% GRATIS</button>
+                            <button type="button" onclick="setDiscount(100, 'percentage')" class="px-1.5 py-0.5 rounded bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold">100% GRATIS</button>
                         </div>
                     </div>
                     <input type="number" id="discountValueInput" name="discount_value" value="{{ old('discount_value', rtrim(rtrim($campaign->discount_value, '0'), '.')) }}" class="w-full px-3 py-2 border border-gray-300 dark:border-[#30363d] rounded text-sm bg-white dark:bg-[#0d1117] focus:outline-none focus:border-[#00b3cc]" min="0" step="0.01" required>
@@ -106,8 +106,8 @@
                     
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
                         <label class="flex items-center gap-2.5 p-3 rounded-lg border cursor-pointer transition-all"
-                               :class="appliesTo === 'all' ? 'border-primary bg-primary/5 text-primary font-bold shadow-xs' : 'border-slate-200 dark:border-[#222f49] hover:bg-slate-100 dark:hover:bg-[#161f30] text-slate-700 dark:text-slate-300'">
-                            <input type="radio" name="applies_to" value="all" x-model="appliesTo" class="text-primary focus:ring-primary">
+                               :class="appliesTo === 'all' ? 'border-slate-900 dark:border-white bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white font-bold' : 'border-slate-200 dark:border-[#222f49] hover:bg-slate-100 dark:hover:bg-[#161f30] text-slate-700 dark:text-slate-300'">
+                            <input type="radio" name="applies_to" value="all" x-model="appliesTo" class="text-slate-900 focus:ring-slate-900 dark:text-white dark:focus:ring-white">
                             <div>
                                 <div class="text-xs font-bold">Semua Produk Toko</div>
                                 <div class="text-[10px] opacity-75">Berlaku untuk semua katalog</div>
@@ -115,8 +115,8 @@
                         </label>
 
                         <label class="flex items-center gap-2.5 p-3 rounded-lg border cursor-pointer transition-all"
-                               :class="appliesTo === 'category' ? 'border-primary bg-primary/5 text-primary font-bold shadow-xs' : 'border-slate-200 dark:border-[#222f49] hover:bg-slate-100 dark:hover:bg-[#161f30] text-slate-700 dark:text-slate-300'">
-                            <input type="radio" name="applies_to" value="category" x-model="appliesTo" class="text-primary focus:ring-primary">
+                               :class="appliesTo === 'category' ? 'border-slate-900 dark:border-white bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white font-bold' : 'border-slate-200 dark:border-[#222f49] hover:bg-slate-100 dark:hover:bg-[#161f30] text-slate-700 dark:text-slate-300'">
+                            <input type="radio" name="applies_to" value="category" x-model="appliesTo" class="text-slate-900 focus:ring-slate-900 dark:text-white dark:focus:ring-white">
                             <div>
                                 <div class="text-xs font-bold">Kategori Tertentu</div>
                                 <div class="text-[10px] opacity-75">Pilih kategori khusus</div>
@@ -124,8 +124,8 @@
                         </label>
 
                         <label class="flex items-center gap-2.5 p-3 rounded-lg border cursor-pointer transition-all"
-                               :class="appliesTo === 'product' ? 'border-primary bg-primary/5 text-primary font-bold shadow-xs' : 'border-slate-200 dark:border-[#222f49] hover:bg-slate-100 dark:hover:bg-[#161f30] text-slate-700 dark:text-slate-300'">
-                            <input type="radio" name="applies_to" value="product" x-model="appliesTo" class="text-primary focus:ring-primary">
+                               :class="appliesTo === 'product' ? 'border-slate-900 dark:border-white bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white font-bold' : 'border-slate-200 dark:border-[#222f49] hover:bg-slate-100 dark:hover:bg-[#161f30] text-slate-700 dark:text-slate-300'">
+                            <input type="radio" name="applies_to" value="product" x-model="appliesTo" class="text-slate-900 focus:ring-slate-900 dark:text-white dark:focus:ring-white">
                             <div>
                                 <div class="text-xs font-bold">Produk Tertentu (Pilihan)</div>
                                 <div class="text-[10px] opacity-75">Pilih produk spesifik</div>
@@ -216,7 +216,7 @@
                     <button type="button"
                         @click="selectedColor = '{{ $c['value'] }}'"
                         :class="selectedColor === '{{ $c['value'] }}' ? 'ring-2 ring-offset-2 ring-slate-500 scale-110' : 'opacity-75 hover:opacity-100 hover:scale-105'"
-                        class="w-10 h-10 rounded-xl shadow-md transition-all"
+                        class="w-10 h-10 rounded-xl transition-all"
                         style="background: {{ $c['gradient'] }};"
                         title="{{ $c['label'] }}">
                     </button>
@@ -237,7 +237,7 @@
 
             <div class="flex justify-end gap-3 pt-6 border-t border-gray-200 dark:border-[#30363d]">
                 <a href="{{ route('tenant.campaigns.index') }}" class="px-4 py-2 border border-gray-300 dark:border-[#30363d] rounded text-sm font-medium hover:bg-gray-50 dark:hover:bg-[#30363d]">Batal</a>
-                <button type="submit" class="px-4 py-2 bg-[#00b3cc] dark:bg-[#2f81f7] text-white rounded text-sm font-bold hover:bg-[#00838f] dark:hover:bg-[#1f6feb]">Simpan Perubahan</button>
+                <button type="submit" class="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 rounded-xl text-sm font-bold active:scale-95 transition-all">Simpan Perubahan</button>
             </div>
         </form>
     </div>

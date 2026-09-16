@@ -30,9 +30,9 @@
             @csrf
             
             <!-- Address/Customer Section -->
-            <div class="bg-surface rounded-sm border border-outline-variant shadow-xs mb-6 relative overflow-hidden">
+            <div class="bg-surface rounded-sm border border-outline-variant mb-6 relative overflow-hidden">
                 <!-- Top border accent -->
-                <div class="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-primary via-sky-500 to-emerald-500"></div>
+                <div class="absolute top-0 left-0 w-full h-[3px] bg-sky-500"></div>
                 
                 <div class="p-4 md:p-6">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-2">
@@ -234,7 +234,7 @@
             </div>
 
             <!-- Payment Method & Summary -->
-            <div class="bg-surface rounded-sm border border-outline-variant shadow-xs mb-6 overflow-hidden">
+            <div class="bg-surface rounded-sm border border-outline-variant mb-6 overflow-hidden">
                 <div class="p-4 md:p-6 border-b border-outline-variant flex flex-col md:flex-row md:items-center justify-between gap-3">
                     <div>
                         <h2 class="text-base font-bold text-on-surface">Metode Pembayaran</h2>
@@ -297,7 +297,7 @@
                                 Dengan mengklik tombol <span class="font-bold text-on-surface">"Buat Pesanan"</span>, Anda menyetujui ketentuan transaksi produk digital kami. Invoice dan QR pembayaran otomatis diterbitkan melalui payment gateway Midtrans.
                             @endif
                         </p>
-                        <button type="submit" id="btnSubmitOrder" class="w-full md:w-auto px-8 md:px-12 py-3.5 {{ (!empty($appliedVoucher['is_free']) || (isset($finalAmount) && $finalAmount <= 0)) ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-primary hover:brightness-110' }} text-white rounded-sm text-sm font-bold transition-all shadow-md shadow-primary/20 flex items-center justify-center gap-2 shrink-0 cursor-pointer">
+                        <button type="submit" id="btnSubmitOrder" class="w-full md:w-auto px-8 md:px-12 py-3.5 {{ (!empty($appliedVoucher['is_free']) || (isset($finalAmount) && $finalAmount <= 0)) ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-sky-500 hover:bg-sky-600' }} text-white rounded-sm text-sm font-bold transition-colors flex items-center justify-center gap-2 shrink-0 cursor-pointer">
                             <span class="material-symbols-outlined text-[18px]" id="btnSubmitIcon">{{ (!empty($appliedVoucher['is_free']) || (isset($finalAmount) && $finalAmount <= 0)) ? 'redeem' : 'lock' }}</span>
                             <span id="btnSubmitLabel">{{ (!empty($appliedVoucher['is_free']) || (isset($finalAmount) && $finalAmount <= 0)) ? 'Klaim Produk Gratis' : 'Buat Pesanan' }}</span>
                         </button>
@@ -309,7 +309,7 @@
 
     <!-- Tokopedia Style Voucher Modal -->
     <div id="voucherModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs hidden">
-        <div class="bg-white dark:bg-[#161b22] w-full max-w-2xl rounded-2xl shadow-2xl border border-gray-200 dark:border-[#30363d] overflow-hidden flex flex-col max-h-[85vh] animate-in fade-in zoom-in-95 duration-200">
+        <div class="bg-white dark:bg-[#161b22] w-full max-w-2xl rounded-2xl border border-gray-200 dark:border-[#30363d] overflow-hidden flex flex-col max-h-[85vh] animate-in fade-in zoom-in-95 duration-200">
             <!-- Modal Header -->
             <div class="p-4 sm:p-5 border-b border-gray-200 dark:border-[#30363d] flex items-center justify-between bg-surface-container-low">
                 <div class="flex items-center gap-2">

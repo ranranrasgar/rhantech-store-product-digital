@@ -120,11 +120,6 @@
 
             {{-- Right: Return to Public Store & User Actions --}}
             <div class="flex items-center gap-1.5 sm:gap-3 shrink-0">
-                {{-- Mode switch hanya untuk desktop (disembunyikan di versi mobile) --}}
-                <div class="hidden md:flex items-center">
-                    <x-theme-toggle />
-                </div>
-
                 {{-- Tombol Kembali ke Marketplace / Store Publik --}}
                 <a href="{{ route('products.index') }}" 
                    class="inline-flex items-center gap-1.5 p-2 sm:px-3.5 sm:py-1.5 rounded-xl sm:rounded-lg bg-surface-container border border-outline-variant hover:border-primary hover:text-primary text-xs font-bold text-on-surface transition-all shadow-xs shrink-0" 
@@ -158,7 +153,7 @@
                                 <p class="text-[11px] text-on-surface-variant truncate">{{ auth()->user()->email }}</p>
                             </div>
                             <a href="{{ route('tenant.profile.index') }}" class="flex items-center gap-2 px-4 py-2 text-xs text-on-surface dark:text-slate-200 hover:bg-surface-container transition-colors">
-                                <span class="material-symbols-outlined text-[16px]">account_circle</span> Profil Saya
+                                <span class="material-symbols-outlined text-[16px]">settings</span> Profil &amp; Pengaturan
                             </a>
                             <a href="{{ route('tenant.dashboard') }}" class="flex items-center gap-2 px-4 py-2 text-xs text-on-surface dark:text-slate-200 hover:bg-surface-container transition-colors">
                                 <span class="material-symbols-outlined text-[16px]">storefront</span> Dashboard Toko

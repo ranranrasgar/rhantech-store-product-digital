@@ -6,7 +6,9 @@
 <title>@yield('title', 'Admin Panel') - {{ $company->company_name ?? 'Admin' }}</title>
 <link rel="icon" type="image/png" href="{{ isset($company) && $company->favicon ? '/storage/'.$company->favicon : '/favicon.ico' }}" />
     <link rel="shortcut icon" type="image/png" href="{{ isset($company) && $company->favicon ? '/storage/'.$company->favicon : '/favicon.ico' }}" />
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
 <!-- Global Chart.js & Leaflet Map for Admin Navigation -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -273,7 +275,6 @@
 <h2 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg font-bold text-on-surface dark:text-white truncate max-w-[140px] sm:max-w-xs md:max-w-none">@yield('title')</h2>
 </div>
 <div class="flex items-center gap-md">
-<x-theme-toggle />
 <div class="relative hidden md:flex items-center">
     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
         <span class="material-symbols-outlined text-[18px] leading-none text-on-surface-variant dark:text-gray-400">search</span>
@@ -283,25 +284,67 @@
 
 <!-- Notification Dropdown -->
 <x-navbar-notification-bell role="admin" />
-<div class="relative" x-data="{ open: false }">
-<button @click="open = !open" @click.outside="open = false" class="text-on-surface-variant dark:text-gray-300 hover:text-on-surface dark:hover:text-white hover:bg-surface-variant/50 dark:hover:bg-white/10 p-2 rounded-md transition-colors focus:outline-none">
-<span class="material-symbols-outlined text-[1.25rem]">account_circle</span>
-</button>
-<div x-show="open" style="display: none;" x-transition class="absolute right-0 mt-2 w-48 bg-surface border border-outline-variant rounded-md shadow-lg py-1 z-50 text-on-surface">
-    <div class="px-4 py-2 border-b border-outline-variant/50 mb-1">
-        <div class="text-sm font-bold text-on-surface truncate">{{ auth()->user()->name ?? 'Admin' }}</div>
-        <div class="text-xs text-on-surface-variant truncate">{{ auth()->user()->email ?? '' }}</div>
+<!-- User Avatar & Profile Dropdown -->
+<div class="relative" x-data="{ open: false }" @click.outside="open = false" @keydown.escape.window="open = false">
+    <button @click="open = !open" 
+            type="button"
+            class="flex items-center gap-2 p-1 pl-1.5 pr-2 rounded-full hover:bg-surface-variant/50 dark:hover:bg-white/10 transition-all focus:outline-none border border-outline-variant/50 hover:border-primary/40 cursor-pointer"
+            :class="{ 'border-primary bg-surface-variant/40 dark:bg-white/15': open }"
+            title="Menu Akun Admin">
+        <x-user-avatar class="w-7 h-7 rounded-full object-cover border border-outline-variant/80" />
+        <span class="hidden md:inline-block text-xs font-semibold text-on-surface dark:text-gray-200 max-w-[110px] truncate">
+            {{ auth()->user()->name ?? 'Admin' }}
+        </span>
+        <span class="material-symbols-outlined text-[16px] text-on-surface-variant dark:text-gray-400 transition-transform duration-200"
+              :class="{ 'rotate-180': open }">expand_more</span>
+    </button>
+
+    <div x-show="open" 
+         x-cloak
+         style="display: none;" 
+         x-transition:enter="transition ease-out duration-150"
+         x-transition:enter-start="transform opacity-0 scale-95 -translate-y-1"
+         x-transition:enter-end="transform opacity-100 scale-100 translate-y-0"
+         x-transition:leave="transition ease-in duration-100"
+         x-transition:leave-start="transform opacity-100 scale-100 translate-y-0"
+         x-transition:leave-end="transform opacity-0 scale-95 -translate-y-1"
+         class="absolute right-0 mt-2 w-60 bg-surface dark:bg-[#161f33] border border-outline-variant dark:border-[#222f49] rounded-2xl shadow-xl py-2 z-50 text-on-surface">
+        
+        <div class="px-4 py-3 border-b border-outline-variant/50 dark:border-white/10 bg-surface-container-low/40 dark:bg-white/5">
+            <div class="flex items-center gap-3">
+                <x-user-avatar class="w-10 h-10 rounded-full border-2 border-primary/40 shrink-0" />
+                <div class="min-w-0 flex-1">
+                    <div class="text-sm font-bold text-on-surface dark:text-white truncate">{{ auth()->user()->name ?? 'Admin' }}</div>
+                    <div class="text-xs text-on-surface-variant dark:text-gray-400 truncate">{{ auth()->user()->email ?? '' }}</div>
+                    <span class="inline-block mt-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-500/15 text-amber-600 dark:text-amber-400">
+                        Administrator
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="py-1 text-xs">
+            <a href="{{ route('admin.company.index') }}" class="flex items-center gap-2.5 px-4 py-2 text-on-surface hover:bg-surface-container-low dark:hover:bg-white/5 transition-colors">
+                <span class="material-symbols-outlined text-[18px] text-primary">settings</span> 
+                <span class="font-medium">Pengaturan Sistem</span>
+            </a>
+            <a href="{{ route('tenant.dashboard') }}" class="flex items-center gap-2.5 px-4 py-2 text-on-surface hover:bg-surface-container-low dark:hover:bg-white/5 transition-colors">
+                <span class="material-symbols-outlined text-[18px] text-cyan-500">storefront</span> 
+                <span class="font-medium">Dashboard Toko / Seller</span>
+            </a>
+            <a href="{{ route('home') }}" target="_blank" class="flex items-center gap-2.5 px-4 py-2 text-on-surface hover:bg-surface-container-low dark:hover:bg-white/5 transition-colors">
+                <span class="material-symbols-outlined text-[18px] text-emerald-500">open_in_new</span> 
+                <span class="font-medium">Lihat Website</span>
+            </a>
+        </div>
+
+        <form action="{{ route('logout') }}" method="POST" class="border-t border-outline-variant/50 dark:border-white/10 mt-1 pt-1">
+            @csrf
+            <button type="submit" class="w-full text-left flex items-center gap-2.5 px-4 py-2 text-xs text-error hover:bg-error/10 transition-colors font-medium cursor-pointer">
+                <span class="material-symbols-outlined text-[18px]">logout</span> Logout
+            </button>
+        </form>
     </div>
-    <a href="{{ route('home') }}" target="_blank" class="block px-4 py-2 text-sm text-on-surface hover:bg-surface-container-low transition-colors" wire:navigate>
-        <span class="flex items-center gap-2"><span class="material-symbols-outlined text-[1rem]">open_in_new</span> View Site</span>
-    </a>
-    <form action="{{ route('logout') }}" method="POST">
-        @csrf
-        <button type="submit" class="w-full text-left px-4 py-2 text-sm text-error hover:bg-error/10 transition-colors">
-            <span class="flex items-center gap-2"><span class="material-symbols-outlined text-[1rem]">logout</span> Logout</span>
-        </button>
-    </form>
-</div>
 </div>
 </div>
 </header>
@@ -310,6 +353,7 @@
 </main>
 @include('components.theme-manager')
 @include('components.firebase-init')
+@include('components.file-size-guard')
 @livewireScripts
 @stack('scripts')
 </body></html>

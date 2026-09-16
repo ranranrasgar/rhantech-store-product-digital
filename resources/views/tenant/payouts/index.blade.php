@@ -8,13 +8,13 @@
 
         <!-- Flash Session Alerts -->
         @if (session('success'))
-            <div class="p-3.5 md:p-4 rounded-xl md:rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300 text-xs md:text-sm font-semibold flex items-center gap-2.5 shadow-2xs">
+            <div class="p-3.5 md:p-4 rounded-xl md:rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300 text-xs md:text-sm font-semibold flex items-center gap-2.5">
                 <span class="material-symbols-outlined text-emerald-600 dark:text-emerald-400 text-[20px]">check_circle</span>
                 <span>{{ session('success') }}</span>
             </div>
         @endif
         @if (session('error'))
-            <div class="p-3.5 md:p-4 rounded-xl md:rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/60 text-rose-800 dark:text-rose-300 text-xs md:text-sm font-semibold flex items-center gap-2.5 shadow-2xs">
+            <div class="p-3.5 md:p-4 rounded-xl md:rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/60 text-rose-800 dark:text-rose-300 text-xs md:text-sm font-semibold flex items-center gap-2.5">
                 <span class="material-symbols-outlined text-rose-600 dark:text-rose-400 text-[20px]">error</span>
                 <span>{{ session('error') }}</span>
             </div>
@@ -35,14 +35,14 @@
                         Kelola saldo, pendapatan & pencairan dana
                     </p>
                 </div>
-                <a href="{{ route('tenant.orders.index') }}" class="shrink-0 px-3 py-2 rounded-xl bg-white dark:bg-[#111726] border border-slate-200/90 dark:border-[#222f49] text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center gap-1.5 active:scale-95 transition-all shadow-2xs">
-                    <span class="material-symbols-outlined text-[16px] text-[#00838f]">receipt_long</span>
+                <a href="{{ route('tenant.orders.index') }}" class="shrink-0 px-3 py-2 rounded-xl bg-white dark:bg-[#111726] border border-slate-200/90 dark:border-[#222f49] text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center gap-1.5 active:scale-95 transition-all">
+                    <span class="material-symbols-outlined text-[16px] text-slate-600 dark:text-slate-300">receipt_long</span>
                     <span>Pesanan</span>
                 </a>
             </div>
 
             <!-- Mobile Saldo Dompet & Tarik Dana Card -->
-            <div class="bg-white dark:bg-[#111726] rounded-2xl p-4 border border-slate-200/80 dark:border-[#222f49] shadow-2xs space-y-4">
+            <div class="bg-white dark:bg-[#111726] rounded-2xl p-4 border border-slate-200/80 dark:border-[#222f49] space-y-4">
                 <div class="flex items-center justify-between">
                     <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 flex items-center gap-1">
                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Saldo Siap Ditarik
@@ -62,10 +62,10 @@
                     @csrf
                     <div class="relative">
                         <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">Rp</span>
-                        <input type="number" name="amount" min="10000" max="{{ $store->balance }}" placeholder="Nominal Tarik (Min 10.000)" class="w-full pl-10 pr-3.5 py-2.5 text-xs bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00838f]/20 focus:border-[#00838f] text-slate-900 dark:text-white placeholder-slate-400 transition-all" required {{ $store->balance < 10000 ? 'disabled' : '' }}>
+                        <input type="number" name="amount" min="10000" max="{{ $store->balance }}" placeholder="Nominal Tarik (Min 10.000)" class="w-full pl-10 pr-3.5 py-2.5 text-xs bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 dark:focus:border-white text-slate-900 dark:text-white placeholder-slate-400 transition-all" required {{ $store->balance < 10000 ? 'disabled' : '' }}>
                     </div>
 
-                    <button type="submit" class="w-full py-2.5 px-4 text-xs font-bold bg-[#00838f] hover:bg-[#00727d] text-white rounded-xl active:scale-95 transition-all flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed" {{ $store->balance < 10000 ? 'disabled' : '' }}>
+                    <button type="submit" class="w-full py-2.5 px-4 text-xs font-bold bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 rounded-xl active:scale-95 transition-all flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer" {{ $store->balance < 10000 ? 'disabled' : '' }}>
                         <span class="material-symbols-outlined text-[16px]">account_balance_wallet</span>
                         <span>Ajukan Penarikan Dana</span>
                     </button>
@@ -75,15 +75,15 @@
                 <div class="pt-2 border-t border-slate-100 dark:border-[#1d273d] flex flex-wrap items-center justify-between gap-2 text-[10px] text-slate-400">
                     <span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-[12px] text-emerald-500">check_circle</span> Min Rp10.000</span>
                     <span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-[12px] text-amber-500">schedule</span> 1x24 jam kerja</span>
-                    <span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-[12px] text-[#00838f]">percent</span> Fee {{ $store->getPayoutFeePercentage() }}%</span>
+                    <span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-[12px] text-slate-500">percent</span> Fee {{ $store->getPayoutFeePercentage() }}%</span>
                 </div>
             </div>
 
             <!-- Mobile Rekening Pencairan Card -->
-            <div class="bg-white dark:bg-[#111726] rounded-2xl p-3.5 border border-slate-200/80 dark:border-[#222f49] shadow-2xs flex items-center justify-between gap-3">
+            <div class="bg-white dark:bg-[#111726] rounded-2xl p-3.5 border border-slate-200/80 dark:border-[#222f49] flex items-center justify-between gap-3">
                 <div class="min-w-0 flex-1">
                     <div class="flex items-center gap-1.5 text-[11px] font-bold text-slate-400">
-                        <span class="material-symbols-outlined text-[15px] text-[#00838f]">account_balance</span>
+                        <span class="material-symbols-outlined text-[15px] text-slate-500">account_balance</span>
                         <span>Rekening Tujuan Transfer</span>
                     </div>
                     @if(!empty($store->bank_account_info))
@@ -96,7 +96,7 @@
                         </div>
                     @endif
                 </div>
-                <a href="{{ route('tenant.store.index') }}" class="shrink-0 px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-[#00838f] hover:text-white text-slate-700 dark:text-slate-300 text-[11px] font-bold transition-all active:scale-95">
+                <a href="{{ route('tenant.store.index') }}" class="shrink-0 px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-slate-900 text-slate-700 dark:text-slate-300 text-[11px] font-bold transition-all active:scale-95">
                     {{ empty($store->bank_account_info) ? 'Atur Bank' : 'Ubah' }}
                 </a>
             </div>
@@ -104,7 +104,7 @@
             <!-- Mobile 4 KPI Compact Cards (2x2 Grid) -->
             <div class="grid grid-cols-2 gap-2.5">
                 <!-- 1. Produk Sendiri -->
-                <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-3 shadow-2xs">
+                <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-3">
                     <div class="flex items-center justify-between">
                         <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Produk Sendiri</span>
                         <span class="material-symbols-outlined text-[16px] text-indigo-500">inventory_2</span>
@@ -118,12 +118,12 @@
                 </div>
 
                 <!-- 2. Komisi Afiliasi -->
-                <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-3 shadow-2xs">
+                <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-3">
                     <div class="flex items-center justify-between">
                         <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Komisi Afiliasi</span>
-                        <span class="material-symbols-outlined text-[16px] text-[#00838f]">monetization_on</span>
+                        <span class="material-symbols-outlined text-[16px] text-slate-500">monetization_on</span>
                     </div>
-                    <div class="mt-2 text-sm font-black text-[#00838f] dark:text-teal-400">
+                    <div class="mt-2 text-sm font-black text-slate-900 dark:text-white">
                         Rp {{ number_format($totalAffiliateCommission, 0, ',', '.') }}
                     </div>
                     <div class="mt-0.5 text-[10px] text-slate-400">
@@ -132,7 +132,7 @@
                 </div>
 
                 <!-- 3. Performa Mitra -->
-                <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-3 shadow-2xs">
+                <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-3">
                     <div class="flex items-center justify-between">
                         <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Mitra Toko</span>
                         <span class="material-symbols-outlined text-[16px] text-amber-500">handshake</span>
@@ -146,7 +146,7 @@
                 </div>
 
                 <!-- 4. Sudah Dicairkan -->
-                <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-3 shadow-2xs">
+                <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-3">
                     <div class="flex items-center justify-between">
                         <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Telah Dicairkan</span>
                         <span class="material-symbols-outlined text-[16px] text-emerald-500">paid</span>
@@ -163,27 +163,27 @@
             <!-- Horizontal Swipeable Pill Tabs Mobile -->
             <div class="flex items-center gap-2 overflow-x-auto pb-1 -mx-3.5 px-3.5 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden" style="scrollbar-width: none; -ms-overflow-style: none;">
                 <a href="{{ route('tenant.payouts.index', ['tab' => 'semua']) }}" 
-                   class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 {{ $tab === 'semua' ? 'bg-[#00838f] text-white shadow-2xs' : 'bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] text-slate-600 dark:text-slate-300 active:scale-95' }}">
+                   class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 {{ $tab === 'semua' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900' : 'bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] text-slate-600 dark:text-slate-300 active:scale-95' }}">
                     <span>Penarikan</span>
-                    <span class="px-1.5 py-0.2 rounded-full text-[10px] {{ $tab === 'semua' ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400' }}">{{ $pagedPayouts->total() }}</span>
+                    <span class="px-1.5 py-0.2 rounded-full text-[10px] {{ $tab === 'semua' ? 'bg-white/20 text-white dark:bg-black/20 dark:text-slate-900' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400' }}">{{ $pagedPayouts->total() }}</span>
                 </a>
 
                 <a href="{{ route('tenant.payouts.index', ['tab' => 'produk_sendiri']) }}" 
-                   class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 {{ $tab === 'produk_sendiri' ? 'bg-[#00838f] text-white shadow-2xs' : 'bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] text-slate-600 dark:text-slate-300 active:scale-95' }}">
+                   class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 {{ $tab === 'produk_sendiri' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900' : 'bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] text-slate-600 dark:text-slate-300 active:scale-95' }}">
                     <span>Produk Sendiri</span>
-                    <span class="px-1.5 py-0.2 rounded-full text-[10px] {{ $tab === 'produk_sendiri' ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400' }}">{{ $pagedOwnOrders->total() }}</span>
+                    <span class="px-1.5 py-0.2 rounded-full text-[10px] {{ $tab === 'produk_sendiri' ? 'bg-white/20 text-white dark:bg-black/20 dark:text-slate-900' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400' }}">{{ $pagedOwnOrders->total() }}</span>
                 </a>
 
                 <a href="{{ route('tenant.payouts.index', ['tab' => 'afiliasi_showcase']) }}" 
-                   class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 {{ $tab === 'afiliasi_showcase' ? 'bg-[#00838f] text-white shadow-2xs' : 'bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] text-slate-600 dark:text-slate-300 active:scale-95' }}">
+                   class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 {{ $tab === 'afiliasi_showcase' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900' : 'bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] text-slate-600 dark:text-slate-300 active:scale-95' }}">
                     <span>Komisi Afiliasi</span>
-                    <span class="px-1.5 py-0.2 rounded-full text-[10px] {{ $tab === 'afiliasi_showcase' ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400' }}">{{ $pagedAffiliateSoldOrders->total() }}</span>
+                    <span class="px-1.5 py-0.2 rounded-full text-[10px] {{ $tab === 'afiliasi_showcase' ? 'bg-white/20 text-white dark:bg-black/20 dark:text-slate-900' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400' }}">{{ $pagedAffiliateSoldOrders->total() }}</span>
                 </a>
 
                 <a href="{{ route('tenant.payouts.index', ['tab' => 'mitra_referral']) }}" 
-                   class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 {{ $tab === 'mitra_referral' ? 'bg-[#00838f] text-white shadow-2xs' : 'bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] text-slate-600 dark:text-slate-300 active:scale-95' }}">
+                   class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 {{ $tab === 'mitra_referral' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900' : 'bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] text-slate-600 dark:text-slate-300 active:scale-95' }}">
                     <span>Mitra Afiliasi</span>
-                    <span class="px-1.5 py-0.2 rounded-full text-[10px] {{ $tab === 'mitra_referral' ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400' }}">{{ $myAffiliateMitra->count() }}</span>
+                    <span class="px-1.5 py-0.2 rounded-full text-[10px] {{ $tab === 'mitra_referral' ? 'bg-white/20 text-white dark:bg-black/20 dark:text-slate-900' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400' }}">{{ $myAffiliateMitra->count() }}</span>
                 </a>
             </div>
 
@@ -193,7 +193,7 @@
                 <!-- TAB 1: RIWAYAT PENARIKAN (MOBILE CARDS) -->
                 @if($tab === 'semua')
                     @forelse($pagedPayouts as $payout)
-                        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-4 shadow-2xs space-y-3">
+                        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-4 space-y-3">
                             <div class="flex items-center justify-between gap-2 pb-2.5 border-b border-slate-100 dark:border-[#222f49]">
                                 <div class="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
                                     <span class="material-symbols-outlined text-[16px] text-slate-400">calendar_today</span>
@@ -239,8 +239,8 @@
                             @endif
                         </div>
                     @empty
-                        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-8 text-center shadow-2xs">
-                            <div class="w-12 h-12 rounded-2xl bg-teal-50 dark:bg-teal-950/50 text-[#00838f] flex items-center justify-center mx-auto mb-3">
+                        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-8 text-center">
+                            <div class="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-500 flex items-center justify-center mx-auto mb-3">
                                 <span class="material-symbols-outlined text-[26px]">payments</span>
                             </div>
                             <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200">Belum Ada Penarikan Dana</h3>
@@ -263,7 +263,7 @@
                             $firstOwn = $ownItems->first() ?? $ord->orderItems->first();
                             $ownTotal = $ownItems->isNotEmpty() ? $ownItems->sum(fn($it) => $it->price * $it->quantity) : $ord->amount;
                         @endphp
-                        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-4 shadow-2xs space-y-3">
+                        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-4 space-y-3">
                             <div class="flex items-center justify-between gap-2 pb-2 border-b border-slate-100 dark:border-[#222f49]">
                                 <div class="font-mono font-black text-xs text-slate-900 dark:text-white">
                                     {{ $ord->invoice_number }}
@@ -277,7 +277,7 @@
                                 <div class="text-xs font-bold text-slate-800 dark:text-slate-200 line-clamp-1">
                                     {{ $firstOwn->product->name ?? 'Produk Digital' }}
                                     @if($ownItems->count() > 1)
-                                        <span class="text-[10px] text-[#00838f] font-normal">(+{{ $ownItems->count() - 1 }} lainnya)</span>
+                                        <span class="text-[10px] text-slate-500 font-normal">(+{{ $ownItems->count() - 1 }} lainnya)</span>
                                     @endif
                                 </div>
                                 <div class="text-[11px] text-slate-400">
@@ -293,8 +293,8 @@
                             </div>
                         </div>
                     @empty
-                        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-8 text-center shadow-2xs">
-                            <div class="w-12 h-12 rounded-2xl bg-teal-50 dark:bg-teal-950/50 text-[#00838f] flex items-center justify-center mx-auto mb-3">
+                        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-8 text-center">
+                            <div class="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-500 flex items-center justify-center mx-auto mb-3">
                                 <span class="material-symbols-outlined text-[26px]">inventory_2</span>
                             </div>
                             <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200">Belum Ada Penjualan</h3>
@@ -311,15 +311,15 @@
 
                 <!-- TAB 3: AFILIASI SHOWCASE (MOBILE CARDS) -->
                 @if($tab === 'afiliasi_showcase')
-                    <div class="p-3 rounded-xl bg-teal-50/60 dark:bg-teal-950/30 border border-teal-100 dark:border-teal-900/40 flex items-center justify-between gap-3">
+                    <div class="p-3 rounded-xl bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] flex items-center justify-between gap-3">
                         <div>
                             <div class="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-                                <span class="material-symbols-outlined text-[16px] text-[#00838f]">storefront</span>
+                                <span class="material-symbols-outlined text-[16px] text-slate-700 dark:text-slate-300">storefront</span>
                                 <span>{{ $myShowcaseCount }} Produk Dipajang</span>
                             </div>
                             <div class="text-[10px] text-slate-500 mt-0.5">Komisi masuk otomatis saat terjual via link Anda.</div>
                         </div>
-                        <a href="{{ route('tenant.showcase.index') }}" class="shrink-0 px-2.5 py-1.5 rounded-lg bg-[#00838f] text-white text-[10px] font-bold active:scale-95 transition-all">
+                        <a href="{{ route('tenant.showcase.index') }}" class="shrink-0 px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-[10px] font-bold active:scale-95 transition-all">
                             Kelola
                         </a>
                     </div>
@@ -330,7 +330,7 @@
                             $productOwner = $firstItem?->product?->store?->name ?? ($affOrder->product?->store?->name ?? 'Platform Official');
                             $productName = $firstItem?->product?->name ?? ($affOrder->product?->name ?? 'Produk Afiliasi');
                         @endphp
-                        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-4 shadow-2xs space-y-3">
+                        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-4 space-y-3">
                             <div class="flex items-center justify-between gap-2 pb-2 border-b border-slate-100 dark:border-[#222f49]">
                                 <div class="font-mono font-black text-xs text-slate-900 dark:text-white">
                                     {{ $affOrder->invoice_number }}
@@ -353,20 +353,20 @@
                             </div>
 
                             <div class="pt-2 border-t border-slate-100 dark:border-[#222f49] flex items-center justify-between">
-                                <span class="text-[10px] text-[#00838f] font-bold">Komisi Afiliasi Cair</span>
+                                <span class="text-[10px] text-slate-500 font-bold">Komisi Afiliasi Cair</span>
                                 <span class="text-sm font-black text-emerald-600 dark:text-emerald-400">
                                     + Rp {{ number_format($affOrder->affiliate_commission, 0, ',', '.') }}
                                 </span>
                             </div>
                         </div>
                     @empty
-                        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-8 text-center shadow-2xs">
-                            <div class="w-12 h-12 rounded-2xl bg-teal-50 dark:bg-teal-950/50 text-[#00838f] flex items-center justify-center mx-auto mb-3">
+                        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-8 text-center">
+                            <div class="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center mx-auto mb-3">
                                 <span class="material-symbols-outlined text-[26px]">monetization_on</span>
                             </div>
                             <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200">Belum Ada Komisi Afiliasi</h3>
                             <p class="text-xs text-slate-400 mt-1 max-w-xs mx-auto">Pajang produk toko lain di etalase Anda untuk mendapatkan komisi penjualan.</p>
-                            <a href="{{ route('tenant.showcase.index') }}" class="inline-flex items-center gap-1.5 mt-3 px-3.5 py-2 bg-[#00838f] text-white text-xs font-bold rounded-xl active:scale-95 transition-all">
+                            <a href="{{ route('tenant.showcase.index') }}" class="inline-flex items-center gap-1.5 mt-3 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-bold rounded-xl active:scale-95 transition-all">
                                 <span class="material-symbols-outlined text-[15px]">storefront</span>
                                 <span>Pilih Produk Etalase</span>
                             </a>
@@ -384,19 +384,19 @@
                 @if($tab === 'mitra_referral')
                     <div class="flex items-center justify-between pb-1">
                         <span class="text-xs font-bold text-slate-700 dark:text-slate-300">Mitra Promosi Toko</span>
-                        <a href="{{ route('tenant.affiliates.index') }}" class="text-[11px] font-bold text-[#00838f] hover:underline flex items-center gap-1">
+                        <a href="{{ route('tenant.affiliates.index') }}" class="text-[11px] font-bold text-slate-700 dark:text-slate-300 hover:underline flex items-center gap-1">
                             <span>Kelola Mitra</span>
                             <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
                         </a>
                     </div>
 
                     @forelse($myAffiliateMitra as $mitra)
-                        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-4 shadow-2xs space-y-2.5">
+                        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-4 space-y-2.5">
                             <div class="flex items-center justify-between">
                                 <div class="font-bold text-xs text-slate-900 dark:text-white">
                                     {{ $mitra->name }}
                                 </div>
-                                <span class="px-2 py-0.5 rounded-md bg-teal-50 dark:bg-teal-950/60 font-mono text-[10px] font-bold text-[#00838f] dark:text-teal-300">
+                                <span class="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 font-mono text-[10px] font-bold text-slate-800 dark:text-slate-200">
                                     {{ $mitra->referral_code }}
                                 </span>
                             </div>
@@ -412,18 +412,18 @@
                                 </div>
                                 <div>
                                     <div class="text-[9px] text-slate-400">Penjualan</div>
-                                    <div class="text-xs font-bold text-[#00838f]">{{ number_format((int)$mitra->orders_count) }}</div>
+                                    <div class="text-xs font-bold text-slate-900 dark:text-white">{{ number_format((int)$mitra->orders_count) }}</div>
                                 </div>
                             </div>
                         </div>
                     @empty
-                        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-8 text-center shadow-2xs">
-                            <div class="w-12 h-12 rounded-2xl bg-teal-50 dark:bg-teal-950/50 text-[#00838f] flex items-center justify-center mx-auto mb-3">
+                        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-8 text-center">
+                            <div class="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center mx-auto mb-3">
                                 <span class="material-symbols-outlined text-[26px]">handshake</span>
                             </div>
                             <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200">Belum Ada Mitra Terhubung</h3>
                             <p class="text-xs text-slate-400 mt-1 max-w-xs mx-auto">Ajak kreator atau marketer untuk menjadi mitra afiliasi dan promosikan toko Anda.</p>
-                            <a href="{{ route('tenant.affiliates.index') }}" class="inline-flex items-center gap-1.5 mt-3 px-3.5 py-2 bg-[#00838f] text-white text-xs font-bold rounded-xl active:scale-95 transition-all">
+                            <a href="{{ route('tenant.affiliates.index') }}" class="inline-flex items-center gap-1.5 mt-3 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-bold rounded-xl active:scale-95 transition-all">
                                 <span class="material-symbols-outlined text-[15px]">person_add</span>
                                 <span>Undang Mitra</span>
                             </a>
@@ -452,8 +452,8 @@
                 </div>
                 
                 <div class="flex items-center gap-2.5">
-                    <a href="{{ route('tenant.orders.index') }}" class="px-4 py-2.5 rounded-xl bg-white dark:bg-[#111726] border border-slate-200 dark:border-[#222f49] hover:bg-slate-50 dark:hover:bg-[#161f33] text-slate-700 dark:text-slate-200 text-xs md:text-sm font-semibold transition-all shadow-2xs flex items-center gap-2 active:scale-95">
-                        <span class="material-symbols-outlined text-[18px] text-[#00838f]">receipt_long</span>
+                    <a href="{{ route('tenant.orders.index') }}" class="px-4 py-2.5 rounded-xl bg-white dark:bg-[#111726] border border-slate-200 dark:border-[#222f49] hover:bg-slate-50 dark:hover:bg-[#161f33] text-slate-700 dark:text-slate-200 text-xs md:text-sm font-semibold transition-all flex items-center gap-2 active:scale-95">
+                        <span class="material-symbols-outlined text-[18px] text-slate-500">receipt_long</span>
                         Operasional Pesanan
                     </a>
                 </div>
@@ -463,13 +463,13 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                 
                 <!-- Saldo Tersedia Card -->
-                <div class="md:col-span-2 bg-white dark:bg-[#111726] rounded-3xl p-6 md:p-8 border border-slate-200/80 dark:border-[#222f49] shadow-2xs flex flex-col justify-between relative overflow-hidden">
+                <div class="md:col-span-2 bg-white dark:bg-[#111726] rounded-3xl p-6 md:p-8 border border-slate-200/80 dark:border-[#222f49] flex flex-col justify-between relative overflow-hidden">
                     <div class="relative z-10">
                         <div class="flex items-center justify-between mb-4">
                             <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/50 text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
                                 <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Saldo Siap Ditarik
                             </span>
-                            <div class="w-10 h-10 rounded-xl bg-teal-50 dark:bg-teal-950/40 text-[#00838f] flex items-center justify-center">
+                            <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center">
                                 <span class="material-symbols-outlined text-[20px]">account_balance_wallet</span>
                             </div>
                         </div>
@@ -488,9 +488,9 @@
                             @csrf
                             <div class="relative flex-1">
                                 <span class="absolute left-4 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">Rp</span>
-                                <input type="number" name="amount" min="10000" max="{{ $store->balance }}" placeholder="Nominal Penarikan (Min. 10.000)" class="w-full pl-12 pr-4 py-3 text-sm bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#00838f]/20 focus:border-[#00838f] text-slate-900 dark:text-white placeholder-slate-400 transition-all" required {{ $store->balance < 10000 ? 'disabled' : '' }}>
+                                <input type="number" name="amount" min="10000" max="{{ $store->balance }}" placeholder="Nominal Penarikan (Min. 10.000)" class="w-full pl-12 pr-4 py-3 text-sm bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 dark:focus:border-white text-slate-900 dark:text-white placeholder-slate-400 transition-all" required {{ $store->balance < 10000 ? 'disabled' : '' }}>
                             </div>
-                            <button type="submit" class="px-6 py-3 text-sm font-bold bg-[#00838f] hover:bg-[#00727d] text-white rounded-xl active:scale-95 transition-all flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed" {{ $store->balance < 10000 ? 'disabled' : '' }}>
+                            <button type="submit" class="px-6 py-3 text-sm font-bold bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 rounded-xl active:scale-95 transition-all flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed" {{ $store->balance < 10000 ? 'disabled' : '' }}>
                                 <span>Tarik Dana</span>
                                 <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
                             </button>
@@ -507,7 +507,7 @@
                                 <span class="hidden sm:block opacity-30">•</span>
                                 <span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-[14px] text-amber-500">schedule</span> Maks. 1x24 jam kerja</span>
                                 <span class="hidden sm:block opacity-30">•</span>
-                                <span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-[14px] text-[#00838f]">percent</span> Fee platform {{ $store->getPayoutFeePercentage() }}% 
+                                <span class="inline-flex items-center gap-1"><span class="material-symbols-outlined text-[14px] text-slate-500">percent</span> Fee platform {{ $store->getPayoutFeePercentage() }}% 
                                     @if($store->isPro())
                                         <span class="ml-1 px-1.5 py-0.5 rounded text-[9px] bg-amber-500 text-white font-bold flex items-center gap-0.5"><span class="material-symbols-outlined text-[10px]">star</span> VIP</span>
                                     @else
@@ -515,7 +515,7 @@
                                     @endif
                                 </span>
                             </div>
-                            <a href="{{ route('help.show', 'panduan-aturan-resmi-penarikan-dana-payout-hasil-penjualan-tenant') }}" target="_blank" class="text-[#00838f] dark:text-teal-400 hover:underline flex items-center gap-1 font-medium">
+                            <a href="{{ route('help.show', 'panduan-aturan-resmi-penarikan-dana-payout-hasil-penjualan-tenant') }}" target="_blank" class="text-slate-600 dark:text-slate-300 hover:underline flex items-center gap-1 font-medium">
                                 <span>Info Penarikan</span>
                                 <span class="material-symbols-outlined text-[14px]">open_in_new</span>
                             </a>
@@ -524,11 +524,11 @@
                 </div>
 
                 <!-- Rekening Bank Status Card -->
-                <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-3xl p-6 shadow-2xs flex flex-col justify-between">
+                <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-3xl p-6 flex flex-col justify-between">
                     <div>
                         <div class="flex items-center justify-between mb-4">
                             <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Rekening Pencairan</span>
-                            <div class="w-8 h-8 rounded-xl bg-teal-50 dark:bg-teal-950/40 text-[#00838f] flex items-center justify-center">
+                            <div class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center">
                                 <span class="material-symbols-outlined text-[18px]">account_balance</span>
                             </div>
                         </div>
@@ -548,7 +548,7 @@
                     </div>
 
                     <div class="mt-6 pt-4 border-t border-slate-100 dark:border-[#1d273d]">
-                        <a href="{{ route('tenant.store.index') }}" class="text-xs font-bold text-[#00838f] dark:text-teal-400 hover:underline flex items-center justify-between">
+                        <a href="{{ route('tenant.store.index') }}" class="text-xs font-bold text-slate-700 dark:text-slate-300 hover:underline flex items-center justify-between">
                             <span>Atur Nomor Rekening Bank</span>
                             <span class="material-symbols-outlined text-[16px]">chevron_right</span>
                         </a>
@@ -561,7 +561,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 
                 <!-- 1. Omset Produk Sendiri -->
-                <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 shadow-2xs">
+                <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5">
                     <div class="flex items-center justify-between">
                         <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Produk Sendiri</span>
                         <div class="w-8 h-8 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
@@ -577,24 +577,24 @@
                 </div>
 
                 <!-- 2. Komisi Afiliasi (Terjual via Etalase / Referral) -->
-                <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 shadow-2xs">
+                <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5">
                     <div class="flex items-center justify-between">
                         <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Komisi Afiliasi</span>
-                        <div class="w-8 h-8 rounded-xl bg-teal-50 dark:bg-teal-950/40 text-[#00838f] flex items-center justify-center">
+                        <div class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center">
                             <span class="material-symbols-outlined text-[18px]">monetization_on</span>
                         </div>
                     </div>
-                    <div class="mt-3 text-xl font-black text-[#00838f] dark:text-teal-400">
+                    <div class="mt-3 text-xl font-black text-slate-900 dark:text-white">
                         Rp {{ number_format($totalAffiliateCommission, 0, ',', '.') }}
                     </div>
                     <div class="mt-1 text-[11px] text-slate-400 flex items-center justify-between">
                         <span>{{ $totalAffiliateSoldOrdersCount }} pesanan terjual</span>
-                        <span class="text-[#00838f] font-medium">({{ $myShowcaseCount }} dipajang)</span>
+                        <span class="text-slate-600 dark:text-slate-400 font-medium">({{ $myShowcaseCount }} dipajang)</span>
                     </div>
                 </div>
 
                 <!-- 3. Mitra & Referral Toko -->
-                <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 shadow-2xs">
+                <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5">
                     <div class="flex items-center justify-between">
                         <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Performa Mitra</span>
                         <div class="w-8 h-8 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 flex items-center justify-center">
@@ -610,7 +610,7 @@
                 </div>
 
                 <!-- 4. Total Sudah Ditarik -->
-                <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 shadow-2xs">
+                <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5">
                     <div class="flex items-center justify-between">
                         <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Sudah Dicairkan</span>
                         <div class="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
@@ -632,20 +632,20 @@
             </div>
 
             <!-- Main Multi-Source Revenue Card & Tabs -->
-            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl shadow-2xs overflow-hidden">
+            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl overflow-hidden">
                 
                 <!-- Navigation Tabs -->
                 <div class="border-b border-slate-100 dark:border-[#222f49] px-6 flex items-center gap-6 overflow-x-auto hide-scrollbar bg-slate-50/50 dark:bg-[#0c1220]/50">
-                    <a href="{{ route('tenant.payouts.index', ['tab' => 'semua']) }}" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 {{ $tab === 'semua' ? 'text-[#00838f] dark:text-teal-400 border-[#00838f] dark:border-teal-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200' }}">
+                    <a href="{{ route('tenant.payouts.index', ['tab' => 'semua']) }}" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 {{ $tab === 'semua' ? 'text-slate-900 dark:text-white border-slate-900 dark:border-white' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200' }}">
                         Semua Riwayat Penarikan Dana ({{ $pagedPayouts->total() }})
                     </a>
-                    <a href="{{ route('tenant.payouts.index', ['tab' => 'produk_sendiri']) }}" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 {{ $tab === 'produk_sendiri' ? 'text-[#00838f] dark:text-teal-400 border-[#00838f] dark:border-teal-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200' }}">
+                    <a href="{{ route('tenant.payouts.index', ['tab' => 'produk_sendiri']) }}" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 {{ $tab === 'produk_sendiri' ? 'text-slate-900 dark:text-white border-slate-900 dark:border-white' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200' }}">
                         Penjualan Produk Sendiri ({{ $pagedOwnOrders->total() }})
                     </a>
-                    <a href="{{ route('tenant.payouts.index', ['tab' => 'afiliasi_showcase']) }}" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 {{ $tab === 'afiliasi_showcase' ? 'text-[#00838f] dark:text-teal-400 border-[#00838f] dark:border-teal-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200' }}">
+                    <a href="{{ route('tenant.payouts.index', ['tab' => 'afiliasi_showcase']) }}" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 {{ $tab === 'afiliasi_showcase' ? 'text-slate-900 dark:text-white border-slate-900 dark:border-white' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200' }}">
                         Komisi Penjualan Afiliasi ({{ $pagedAffiliateSoldOrders->total() }})
                     </a>
-                    <a href="{{ route('tenant.payouts.index', ['tab' => 'mitra_referral']) }}" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 {{ $tab === 'mitra_referral' ? 'text-[#00838f] dark:text-teal-400 border-[#00838f] dark:border-teal-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200' }}">
+                    <a href="{{ route('tenant.payouts.index', ['tab' => 'mitra_referral']) }}" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 {{ $tab === 'mitra_referral' ? 'text-slate-900 dark:text-white border-slate-900 dark:border-white' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200' }}">
                         Mitra Afiliasi Toko ({{ $myAffiliateMitra->count() }})
                     </a>
                 </div>
@@ -701,7 +701,7 @@
                             <tr>
                                 <td colspan="4" class="p-16 text-center text-slate-400">
                                     <div class="flex flex-col items-center justify-center max-w-sm mx-auto">
-                                        <div class="w-16 h-16 rounded-2xl bg-teal-500/10 text-[#00838f] flex items-center justify-center mb-4">
+                                        <div class="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center mb-4">
                                             <span class="material-symbols-outlined text-[32px]">payments</span>
                                         </div>
                                         <h3 class="font-bold text-base text-slate-800 dark:text-white mb-1">Belum ada penarikan dana</h3>
@@ -752,7 +752,7 @@
                                     <div class="font-bold text-slate-900 dark:text-white line-clamp-1">
                                         {{ $firstOwn->product->name ?? 'Produk Digital' }}
                                         @if($ownItems->count() > 1)
-                                            <span class="text-xs text-[#00838f] font-normal">(+{{ $ownItems->count() - 1 }} lainnya)</span>
+                                            <span class="text-xs text-slate-500 font-normal">(+{{ $ownItems->count() - 1 }} lainnya)</span>
                                         @endif
                                     </div>
                                     <div class="text-[11px] text-slate-400 font-mono mt-0.5">
@@ -777,7 +777,7 @@
                             @empty
                             <tr>
                                 <td colspan="4" class="p-16 text-center text-slate-400">
-                                    <span class="material-symbols-outlined text-4xl mb-2 block text-[#00838f]">inventory_2</span>
+                                    <span class="material-symbols-outlined text-4xl mb-2 block text-slate-400">inventory_2</span>
                                     Belum ada transaksi pesanan produk sendiri yang selesai.
                                 </td>
                             </tr>
@@ -796,17 +796,17 @@
                 @if($tab === 'afiliasi_showcase')
                 <div class="space-y-6">
                     <!-- Info Banner Etalase -->
-                    <div class="p-6 border-b border-slate-100 dark:border-[#222f49] flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-teal-500/5">
+                    <div class="p-6 border-b border-slate-100 dark:border-[#222f49] flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-50/50 dark:bg-[#0c1220]/50">
                         <div>
                             <div class="flex items-center gap-2">
-                                <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[#00838f] text-white text-xs font-black">
+                                <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-xs font-black">
                                     {{ $myShowcaseCount }}
                                 </span>
                                 <h3 class="font-bold text-sm md:text-base text-slate-900 dark:text-white">Produk Aktif Dipajang di Etalase Toko</h3>
                             </div>
                             <p class="text-xs text-slate-500 mt-1">Setiap kali pembeli checkout produk etalase atau lewat link referral toko Anda, komisi penjualan otomatis masuk ke saldo.</p>
                         </div>
-                        <a href="{{ route('tenant.showcase.index') }}" class="px-4 py-2.5 rounded-xl bg-[#00838f] hover:bg-[#00727d] text-white text-xs font-bold transition shadow-2xs flex items-center justify-center gap-1.5 shrink-0 active:scale-95">
+                        <a href="{{ route('tenant.showcase.index') }}" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-bold transition flex items-center justify-center gap-1.5 shrink-0 active:scale-95">
                             <span class="material-symbols-outlined text-[16px]">storefront</span>
                             Kelola Etalase Produk Afiliasi ({{ $myShowcaseCount }})
                         </a>
@@ -844,7 +844,7 @@
                                         <div class="font-bold text-slate-900 dark:text-white line-clamp-1">
                                             {{ $productName }}
                                             @if($affOrder->orderItems->count() > 1)
-                                                <span class="text-xs text-[#00838f] font-normal">(+{{ $affOrder->orderItems->count() - 1 }} item lainnya)</span>
+                                                <span class="text-xs text-slate-500 font-normal">(+{{ $affOrder->orderItems->count() - 1 }} item lainnya)</span>
                                             @endif
                                         </div>
                                         <div class="text-[11px] text-slate-400 font-mono mt-0.5">
@@ -869,19 +869,19 @@
                                         <div class="font-extrabold text-emerald-600 dark:text-emerald-400 text-sm md:text-base">
                                             + Rp {{ number_format($affOrder->affiliate_commission, 0, ',', '.') }}
                                         </div>
-                                        <div class="text-[10px] text-[#00838f] font-bold">Komisi Afiliasi Cair</div>
+                                        <div class="text-[10px] text-slate-500 font-bold">Komisi Afiliasi Cair</div>
                                     </td>
                                 </tr>
                                 @empty
                                 <tr>
                                     <td colspan="5" class="p-16 text-center text-slate-400">
                                         <div class="flex flex-col items-center justify-center max-w-sm mx-auto">
-                                            <div class="w-16 h-16 rounded-2xl bg-teal-500/10 text-[#00838f] flex items-center justify-center mb-4">
+                                            <div class="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center mb-4">
                                                 <span class="material-symbols-outlined text-[32px]">monetization_on</span>
                                             </div>
                                             <h3 class="font-bold text-base text-slate-800 dark:text-white mb-1">Belum Ada Produk Afiliasi yang Terjual</h3>
                                             <p class="text-xs text-slate-400 mb-4">Pajang produk menarik dari toko lain di etalase Anda atau bagikan link toko Anda untuk mulai menghasilkan komisi setiap penjualan!</p>
-                                            <a href="{{ route('tenant.showcase.index') }}" class="px-4 py-2 rounded-xl bg-[#00838f] hover:bg-[#00727d] text-white text-xs font-bold transition shadow-2xs flex items-center gap-1.5 active:scale-95">
+                                            <a href="{{ route('tenant.showcase.index') }}" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-bold transition flex items-center gap-1.5 active:scale-95">
                                                 <span class="material-symbols-outlined text-[16px]">shopping_cart_checkout</span>
                                                 Pilih Produk untuk Dipajang Sekarang
                                             </a>
@@ -909,7 +909,7 @@
                             <h3 class="font-bold text-base text-slate-900 dark:text-white">Mitra yang Membantu Menjualkan Produk Toko Anda</h3>
                             <p class="text-xs text-slate-500">Daftar pengguna dan toko lain yang memiliki link referral toko Anda dan mempromosikannya.</p>
                         </div>
-                        <a href="{{ route('tenant.affiliates.index') }}" class="px-4 py-2 rounded-xl bg-[#00838f] hover:bg-[#00727d] text-white text-xs font-bold transition shadow-2xs flex items-center gap-1.5 active:scale-95">
+                        <a href="{{ route('tenant.affiliates.index') }}" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-bold transition flex items-center gap-1.5 active:scale-95">
                             <span class="material-symbols-outlined text-[16px]">person_add</span>
                             Kelola Mitra Afiliasi
                         </a>
@@ -932,7 +932,7 @@
                                     <td class="p-4 md:px-6 font-bold text-slate-900 dark:text-white">
                                         {{ $mitra->name }}
                                     </td>
-                                    <td class="p-4 md:px-6 font-mono text-[#00838f] dark:text-teal-400 font-bold">
+                                    <td class="p-4 md:px-6 font-mono text-slate-800 dark:text-slate-200 font-bold">
                                         {{ $mitra->referral_code }}
                                     </td>
                                     <td class="p-4 md:px-6 text-emerald-600 font-bold">

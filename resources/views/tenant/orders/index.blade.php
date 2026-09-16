@@ -31,7 +31,7 @@
                 <div>
                     <h1 class="text-xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
                         Riwayat Pesanan
-                        <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-teal-100 dark:bg-teal-950/60 text-[#00838f] dark:text-teal-300">
+                        <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200">
                             {{ $counts['all'] ?? $orders->total() }}
                         </span>
                     </h1>
@@ -39,7 +39,7 @@
                         Pantau transaksi & verifikasi pesanan produk digital
                     </p>
                 </div>
-                <a href="{{ route('tenant.payouts.index') }}" class="shrink-0 px-3 py-2 rounded-xl bg-white dark:bg-[#111726] border border-slate-200/90 dark:border-[#222f49] text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center gap-1.5 active:scale-95 transition-all shadow-2xs">
+                <a href="{{ route('tenant.payouts.index') }}" class="shrink-0 px-3 py-2 rounded-xl bg-white dark:bg-[#111726] border border-slate-200/90 dark:border-[#222f49] text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center gap-1.5 active:scale-95 transition-all">
                     <span class="material-symbols-outlined text-[16px] text-emerald-500">account_balance_wallet</span>
                     <span>Pencairan</span>
                 </a>
@@ -48,9 +48,9 @@
             <!-- Horizontal Swipeable Pill Tabs -->
             <div class="flex items-center gap-2 overflow-x-auto pb-1 -mx-3.5 px-3.5 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden" style="scrollbar-width: none; -ms-overflow-style: none;">
                 <a href="{{ route('tenant.orders.index', array_merge(request()->query(), ['tab' => 'all', 'page' => null])) }}" 
-                   class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 {{ $tab === 'all' ? 'bg-[#00838f] text-white shadow-2xs' : 'bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] text-slate-600 dark:text-slate-300 active:scale-95' }}">
+                   class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 {{ $tab === 'all' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900' : 'bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] text-slate-600 dark:text-slate-300 active:scale-95' }}">
                     <span>Semua</span>
-                    <span class="px-1.5 py-0.2 rounded-full text-[10px] {{ $tab === 'all' ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400' }}">{{ $counts['all'] ?? 0 }}</span>
+                    <span class="px-1.5 py-0.2 rounded-full text-[10px] {{ $tab === 'all' ? 'bg-white/20 text-white dark:bg-black/20 dark:text-slate-900' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400' }}">{{ $counts['all'] ?? 0 }}</span>
                 </a>
 
                 <a href="{{ route('tenant.orders.index', array_merge(request()->query(), ['tab' => 'completed', 'page' => null])) }}" 
@@ -221,7 +221,7 @@
                             @elseif(in_array($order->status, ['paid', 'downloaded']))
                                 <form action="{{ route('tenant.orders.resend_email', $order) }}" method="POST" class="w-full sm:w-auto" onsubmit="const btn = this.querySelector('button'); btn.disabled = true; btn.classList.add('opacity-75', 'cursor-not-allowed'); btn.innerHTML = '<span class=\'material-symbols-outlined text-[16px] animate-spin\'>progress_activity</span><span>Mengirim...</span>';">
                                     @csrf
-                                    <button type="submit" class="w-full sm:w-auto py-2 px-3.5 rounded-xl bg-[#00838f] hover:bg-[#00727d] text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-2xs active:scale-95 transition-all">
+                                    <button type="submit" class="w-full sm:w-auto py-2 px-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-bold flex items-center justify-center gap-1.5 active:scale-95 transition-all">
                                         <span class="material-symbols-outlined text-[16px]">send</span>
                                         <span>Kirim Link Produk</span>
                                     </button>
@@ -284,7 +284,7 @@
                 
                 <!-- Filter Tabs -->
                 <div class="border-b border-slate-100 dark:border-[#222f49] px-6 flex items-center gap-8 overflow-x-auto hide-scrollbar bg-slate-50/50 dark:bg-[#0c1220]/50">
-                    <a href="{{ route('tenant.orders.index', array_merge(request()->query(), ['tab' => 'all', 'page' => null])) }}" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 {{ $tab === 'all' ? 'text-[#00838f] dark:text-teal-400 border-[#00838f] dark:border-teal-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200' }}">
+                    <a href="{{ route('tenant.orders.index', array_merge(request()->query(), ['tab' => 'all', 'page' => null])) }}" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 {{ $tab === 'all' ? 'text-slate-900 dark:text-white border-slate-900 dark:border-white' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200' }}">
                         Semua Transaksi ({{ $counts['all'] ?? 0 }})
                     </a>
                     <a href="{{ route('tenant.orders.index', array_merge(request()->query(), ['tab' => 'completed', 'page' => null])) }}" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 {{ $tab === 'completed' ? 'text-emerald-600 dark:text-emerald-400 border-emerald-600 dark:border-emerald-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200' }}">
@@ -319,7 +319,7 @@
                                 @endforeach
                             </select>
 
-                            <button type="submit" class="px-4 py-2.5 text-xs md:text-sm font-bold bg-[#00838f] hover:bg-[#00727d] text-white rounded-xl shadow-xs transition-colors">
+                            <button type="submit" class="px-4 py-2.5 text-xs md:text-sm font-bold bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 rounded-xl transition-colors active:scale-95">
                                 Terapkan
                             </button>
                             <a href="{{ route('tenant.orders.index', ['tab' => $tab]) }}" class="px-4 py-2.5 text-xs md:text-sm font-semibold border border-slate-200 dark:border-[#222f49] text-slate-600 dark:text-slate-300 rounded-xl hover:bg-slate-100 dark:hover:bg-[#161f33] transition-colors">
@@ -442,7 +442,7 @@
                                     @elseif(in_array($order->status, ['paid', 'downloaded']))
                                         <form action="{{ route('tenant.orders.resend_email', $order) }}" method="POST" class="inline-block" onsubmit="const btn = this.querySelector('button'); btn.disabled = true; btn.classList.add('opacity-75', 'cursor-not-allowed'); btn.innerHTML = '<span class=\'material-symbols-outlined text-[15px] animate-spin\'>progress_activity</span> Mengirim...';">
                                             @csrf
-                                            <button type="submit" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#00838f]/10 hover:bg-[#00838f]/20 text-[#00838f] dark:text-teal-400 border border-[#00838f]/20 transition-colors">
+                                            <button type="submit" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition-colors">
                                                 <span class="material-symbols-outlined text-[15px]">forward_to_inbox</span>
                                                 <span>Kirim Link</span>
                                             </button>
@@ -456,7 +456,7 @@
                             <tr>
                                 <td colspan="6" class="p-16 text-center text-slate-400">
                                     <div class="flex flex-col items-center justify-center max-w-sm mx-auto">
-                                        <div class="w-16 h-16 rounded-2xl bg-teal-500/10 text-[#00838f] flex items-center justify-center mb-4">
+                                        <div class="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center mb-4">
                                             <span class="material-symbols-outlined text-[32px]">receipt_long</span>
                                         </div>
                                         <h3 class="font-bold text-base text-slate-800 dark:text-white mb-1">Belum ada riwayat pesanan</h3>

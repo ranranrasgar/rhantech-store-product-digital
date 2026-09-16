@@ -51,7 +51,7 @@
             <div class="relative group cursor-zoom-in rounded-lg overflow-hidden border border-outline-variant/30 bg-surface-container-low"
                  @click="openLightbox('{{ media_url($project->thumbnail) }}')">
                 <img src="{{ media_url($project->thumbnail) }}" alt="{{ $project->title }}" class="w-full object-cover aspect-video transition-transform duration-300 group-hover:scale-[1.02]"/>
-                <div class="absolute bottom-3 right-3 bg-surface/85 dark:bg-black/70 backdrop-blur-md px-3 py-1.5 rounded-md text-xs font-semibold text-on-surface flex items-center gap-1.5 shadow-md opacity-0 group-hover:opacity-100 transition-opacity">
+                <div class="absolute bottom-3 right-3 bg-surface/85 dark:bg-black/70 backdrop-blur-md px-3 py-1.5 rounded-md text-xs font-semibold text-on-surface flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
                     <span class="material-symbols-outlined text-[16px] text-primary">zoom_in</span>
                     <span>Klik untuk memperbesar</span>
                 </div>
@@ -273,7 +273,7 @@
             <span class="material-symbols-outlined text-2xl md:text-4xl">chevron_right</span>
         </button>
 
-        <img :src="images[currentIndex]" class="max-w-full max-h-[88vh] object-contain rounded-xl shadow-2xl transition-all duration-300 select-none" alt="Fullscreen Preview" @click.self="showLightbox = false">
+        <img :src="images[currentIndex]" class="max-w-full max-h-[88vh] object-contain rounded-xl transition-all duration-300 select-none" alt="Fullscreen Preview" @click.self="showLightbox = false">
 
         <div x-show="images.length > 1" class="absolute bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 text-white bg-white/10 backdrop-blur px-5 py-2 rounded-full text-xs font-bold tracking-wider z-10">
             <span x-text="currentIndex + 1"></span> / <span x-text="images.length"></span>

@@ -28,7 +28,7 @@
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
                 <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-2.5">
-                    <span class="material-symbols-outlined text-primary text-3xl">storefront</span>
+                    <span class="material-symbols-outlined text-slate-900 dark:text-white text-3xl">storefront</span>
                     <span>Toko yang Saya Ikuti</span>
                 </h1>
                 <p class="text-xs md:text-sm text-slate-500 dark:text-slate-400 mt-1">
@@ -36,7 +36,7 @@
                 </p>
             </div>
             <div class="flex items-center gap-2">
-                <a href="{{ route('products.index') }}" class="px-4 py-2.5 bg-primary hover:bg-primary/90 text-white rounded-xl text-xs md:text-sm font-bold transition-all shadow-sm flex items-center gap-2">
+                <a href="{{ route('products.index') }}" class="px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 rounded-xl text-xs md:text-sm font-bold transition-all flex items-center gap-2 active:scale-95">
                     <span class="material-symbols-outlined text-[18px]">explore</span>
                     <span>Jelajahi Toko Lain</span>
                 </a>
@@ -47,7 +47,7 @@
             <!-- Store Cards Grid -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
                 @foreach($stores as $s)
-                <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 shadow-xs flex flex-col justify-between hover:shadow-md transition-shadow group">
+                <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 flex flex-col justify-between transition-all group">
                     <div>
                         <div class="flex items-start gap-3.5">
                             <!-- Logo Toko -->
@@ -55,14 +55,14 @@
                                 @if($s->logo)
                                     <img src="{{ asset('storage/' . $s->logo) }}" alt="{{ $s->name }}" class="w-full h-full object-cover rounded-[14px]">
                                 @else
-                                    <img src="https://ui-avatars.com/api/?name={{ urlencode($s->name) }}&background=0284c7&color=fff&size=100" alt="{{ $s->name }}" class="w-full h-full object-cover rounded-[14px]">
+                                    <img src="https://ui-avatars.com/api/?name={{ urlencode($s->name) }}&background=0f172a&color=fff&size=100" alt="{{ $s->name }}" class="w-full h-full object-cover rounded-[14px]">
                                 @endif
                             </div>
 
                             <!-- Info Toko -->
                             <div class="min-w-0 flex-1">
                                 <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-1.5 truncate">
-                                    <a href="{{ url('/' . $s->slug) }}" target="_blank" class="hover:text-primary transition-colors truncate">
+                                    <a href="{{ url('/' . $s->slug) }}" target="_blank" class="hover:text-slate-700 dark:hover:text-slate-300 transition-colors truncate">
                                         {{ $s->name }}
                                     </a>
                                     @if($s->isPro())
@@ -76,7 +76,7 @@
                                 <!-- Meta badges -->
                                 <div class="flex items-center gap-2 mt-2 text-[11px] text-slate-500 dark:text-slate-400">
                                     <span class="flex items-center gap-1">
-                                        <span class="material-symbols-outlined text-[14px] text-primary">inventory_2</span>
+                                        <span class="material-symbols-outlined text-[14px] text-slate-600 dark:text-slate-400">inventory_2</span>
                                         <span>{{ $s->products_count }} Produk</span>
                                     </span>
                                     <span>•</span>
@@ -120,7 +120,7 @@
         @else
             <!-- Empty State -->
             <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-12 text-center max-w-lg mx-auto">
-                <div class="w-16 h-16 rounded-2xl bg-sky-500/10 text-sky-600 dark:text-sky-400 flex items-center justify-center mx-auto mb-4">
+                <div class="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center mx-auto mb-4">
                     <span class="material-symbols-outlined text-3xl">storefront</span>
                 </div>
                 <h3 class="text-base font-bold text-slate-900 dark:text-white mb-1.5">
@@ -129,7 +129,7 @@
                 <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mb-6 leading-relaxed">
                     Anda belum mengikuti toko digital manapun. Klik tombol <strong>+ Ikuti</strong> pada profil toko favorit Anda untuk menerima update katalog dan promo menarik.
                 </p>
-                <a href="{{ route('products.index') }}" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary text-white text-xs sm:text-sm font-bold shadow-md hover:bg-primary/90 transition-all">
+                <a href="{{ route('products.index') }}" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs sm:text-sm font-bold transition-all active:scale-95">
                     <span class="material-symbols-outlined text-[18px]">travel_explore</span>
                     <span>Jelajahi Toko &amp; Produk</span>
                 </a>

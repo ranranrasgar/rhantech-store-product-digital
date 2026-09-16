@@ -19,11 +19,11 @@
 
             <!-- Header Quick Actions -->
             <div class="flex flex-wrap items-center gap-3">
-                <div class="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] shadow-sm text-xs font-semibold text-slate-600 dark:text-slate-300">
+                <div class="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] text-xs font-semibold text-slate-600 dark:text-slate-300">
                     <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                     Real-time (Hari Ini: {{ date('d M Y') }})
                 </div>
-                <a href="{{ route('tenant.orders.index') }}" class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs md:text-sm font-bold shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 transition-all flex items-center gap-2">
+                <a href="{{ route('tenant.orders.index') }}" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs md:text-sm font-bold active:scale-95 transition-all flex items-center gap-2">
                     <span class="material-symbols-outlined text-[18px]">receipt_long</span>
                     Lihat Penjualan
                 </a>
@@ -33,7 +33,7 @@
         <!-- 5 Key Performance Metrics Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 md:gap-5">
             <!-- Total Omset / Penjualan -->
-            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
+            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5">
                 <div class="flex items-center justify-between">
                     <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Penjualan</span>
                     <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
@@ -54,7 +54,7 @@
             </div>
 
             <!-- Total Pengunjung / Visitor -->
-            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
+            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5">
                 <div class="flex items-center justify-between">
                     <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Pengunjung</span>
                     <div class="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center">
@@ -73,10 +73,10 @@
             </div>
 
             <!-- Pesanan Berhasil -->
-            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
+            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5">
                 <div class="flex items-center justify-between">
                     <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Pesanan Berhasil</span>
-                    <div class="w-10 h-10 rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-400 flex items-center justify-center">
+                    <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center">
                         <span class="material-symbols-outlined text-[22px]">shopping_bag</span>
                     </div>
                 </div>
@@ -86,7 +86,7 @@
                     </div>
                     <div class="mt-2 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
                         <span>Dari {{ $allOrdersCount }} checkout</span>
-                        <span class="font-bold text-sky-600 dark:text-sky-400">
+                        <span class="font-bold text-slate-900 dark:text-white">
                             {{ $conversionRate }}% Sukses
                         </span>
                     </div>
@@ -94,7 +94,7 @@
             </div>
 
             <!-- Rata-rata Nilai Pesanan (AOV) -->
-            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
+            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5">
                 <div class="flex items-center justify-between">
                     <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Rata-rata Order</span>
                     <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
@@ -113,7 +113,7 @@
             </div>
 
             <!-- Produk Aktif & Terbit -->
-            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow">
+            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5">
                 <div class="flex items-center justify-between">
                     <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Produk Tayang</span>
                     <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center">
@@ -126,7 +126,7 @@
                     </div>
                     <div class="mt-2 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
                         <span>Katalog digital</span>
-                        <a href="{{ route('tenant.products.index') }}" class="font-bold text-sky-600 dark:text-sky-400 hover:underline">
+                        <a href="{{ route('tenant.products.index') }}" class="font-bold text-slate-700 dark:text-slate-300 hover:underline">
                             Kelola
                         </a>
                     </div>
@@ -135,23 +135,23 @@
         </div>
 
         <!-- Main Card Section with Tabs -->
-        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl shadow-sm overflow-hidden">
+        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl overflow-hidden">
             
             <!-- Tab Navigation Bar -->
             <div class="border-b border-slate-100 dark:border-[#222f49] px-6 flex items-center gap-8 overflow-x-auto hide-scrollbar bg-slate-50/50 dark:bg-[#0c1220]/50">
-                <button @click="tab = 'tinjauan'" :class="tab === 'tinjauan' ? 'text-sky-600 dark:text-sky-400 border-sky-600 dark:border-sky-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200'" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 flex items-center gap-2 cursor-pointer">
+                <button @click="tab = 'tinjauan'" :class="tab === 'tinjauan' ? 'text-slate-900 dark:text-white border-slate-900 dark:border-white' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200'" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 flex items-center gap-2 cursor-pointer">
                     <span class="material-symbols-outlined text-[18px]">query_stats</span>
                     Tinjauan Performa
                 </button>
-                <button @click="tab = 'produk'" :class="tab === 'produk' ? 'text-sky-600 dark:text-sky-400 border-sky-600 dark:border-sky-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200'" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 flex items-center gap-2 cursor-pointer">
+                <button @click="tab = 'produk'" :class="tab === 'produk' ? 'text-slate-900 dark:text-white border-slate-900 dark:border-white' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200'" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 flex items-center gap-2 cursor-pointer">
                     <span class="material-symbols-outlined text-[18px]">view_in_ar</span>
                     Performa Produk
                 </button>
-                <button @click="tab = 'funnel'" :class="tab === 'funnel' ? 'text-sky-600 dark:text-sky-400 border-sky-600 dark:border-sky-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200'" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 flex items-center gap-2 cursor-pointer">
+                <button @click="tab = 'funnel'" :class="tab === 'funnel' ? 'text-slate-900 dark:text-white border-slate-900 dark:border-white' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200'" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 flex items-center gap-2 cursor-pointer">
                     <span class="material-symbols-outlined text-[18px]">filter_alt</span>
                     Funnel Konversi
                 </button>
-                <button @click="tab = 'sumber'" :class="tab === 'sumber' ? 'text-sky-600 dark:text-sky-400 border-sky-600 dark:border-sky-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200'" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 flex items-center gap-2 cursor-pointer">
+                <button @click="tab = 'sumber'" :class="tab === 'sumber' ? 'text-slate-900 dark:text-white border-slate-900 dark:border-white' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200'" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 flex items-center gap-2 cursor-pointer">
                     <span class="material-symbols-outlined text-[18px]">traffic</span>
                     Sumber Traffic & Saluran
                 </button>
@@ -169,7 +169,7 @@
                                 <h3 class="text-base font-bold text-slate-900 dark:text-white">Tren Aktivitas Penjualan</h3>
                                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Ringkasan aktivitas checkout dan transaksi toko sepanjang hari ini.</p>
                             </div>
-                            <span class="px-3 py-1 rounded-full text-xs font-semibold bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400 border border-sky-200 dark:border-sky-900/50">
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-[#222f49]">
                                 24 Jam Terakhir
                             </span>
                         </div>
@@ -182,7 +182,7 @@
                                     <div class="text-xl font-extrabold text-slate-900 dark:text-white">Rp {{ number_format($totalSales, 0, ',', '.') }}</div>
                                 </div>
                                 <div class="flex items-center gap-3 text-xs font-medium">
-                                    <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-sky-500"></span> Transaksi Paid</div>
+                                    <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-slate-900 dark:bg-white"></span> Transaksi Paid</div>
                                     <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Pending</div>
                                 </div>
                             </div>
@@ -199,7 +199,7 @@
                                     @endphp
                                     <div class="flex-1 flex flex-col items-center gap-1 group">
                                         <div class="w-full max-w-[28px] bg-slate-200/60 dark:bg-slate-800/80 rounded-t-lg h-32 flex items-end justify-center p-0.5 gap-0.5 overflow-hidden">
-                                            <div class="w-1/2 bg-sky-500 rounded-t transition-all duration-500 group-hover:brightness-110" style="height: {{ $heightPaid }}%;"></div>
+                                            <div class="w-1/2 bg-slate-900 dark:bg-white rounded-t transition-all duration-500 group-hover:brightness-110" style="height: {{ $heightPaid }}%;"></div>
                                             <div class="w-1/2 bg-amber-500/70 rounded-t transition-all duration-500 group-hover:brightness-110" style="height: {{ $heightPending }}%;"></div>
                                         </div>
                                         <span class="text-[10px] text-slate-400 font-mono mt-1">{{ $slot }}</span>
@@ -227,10 +227,10 @@
                             <div class="space-y-2">
                                 <div class="flex items-center justify-between text-xs font-bold">
                                     <span class="text-slate-600 dark:text-slate-300">Tingkat Penyelesaian Pesanan</span>
-                                    <span class="text-sky-600 dark:text-sky-400">{{ $conversionRate }}%</span>
+                                    <span class="text-slate-900 dark:text-white">{{ $conversionRate }}%</span>
                                 </div>
                                 <div class="h-2 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
-                                    <div class="h-full bg-sky-500 rounded-full transition-all duration-700" style="width: {{ max(5, $conversionRate) }}%"></div>
+                                    <div class="h-full bg-slate-900 dark:bg-white rounded-full transition-all duration-700" style="width: {{ max(5, $conversionRate) }}%"></div>
                                 </div>
                                 <p class="text-[11px] text-slate-400">Persentase invoice yang berhasil terbayar dan file telah didistribusikan.</p>
                             </div>
@@ -277,7 +277,7 @@
                             </h3>
                             <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Produk digital dengan jumlah kunjungan dan minat tertinggi dari pengunjung toko.</p>
                         </div>
-                        <button @click="tab = 'produk'" class="text-xs font-bold text-sky-600 dark:text-sky-400 hover:underline flex items-center gap-1 cursor-pointer">
+                        <button @click="tab = 'produk'" class="text-xs font-bold text-slate-700 dark:text-slate-300 hover:underline flex items-center gap-1 cursor-pointer">
                             Semua Produk <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
                         </button>
                     </div>
@@ -334,9 +334,9 @@
                 </div>
 
                 <!-- Strategic Recommendations Banner -->
-                <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-5 shadow-xs">
+                <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-5">
                     <div class="flex items-start gap-4">
-                        <div class="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 text-[#00838f] dark:text-teal-400 flex items-center justify-center shrink-0">
+                        <div class="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white flex items-center justify-center shrink-0">
                             <span class="material-symbols-outlined text-[24px]">rocket_launch</span>
                         </div>
                         <div>
@@ -347,10 +347,10 @@
                         </div>
                     </div>
                     <div class="flex items-center gap-3 shrink-0">
-                        <a href="{{ route('tenant.appearance.index') }}" class="px-4 py-2 rounded-xl bg-white dark:bg-[#161f33] border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-800 dark:text-white hover:bg-slate-50 dark:hover:bg-[#1d273d] transition-all shadow-xs">
+                        <a href="{{ route('tenant.appearance.index') }}" class="px-4 py-2 rounded-xl bg-white dark:bg-[#161f33] border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-800 dark:text-white hover:bg-slate-50 dark:hover:bg-[#1d273d] transition-all">
                             Dekorasi Toko
                         </a>
-                        <a href="{{ route('tenant.campaigns.index') }}" class="px-4 py-2 rounded-xl bg-[#00838f] hover:bg-[#00727d] text-xs font-bold text-white transition-all shadow-xs">
+                        <a href="{{ route('tenant.campaigns.index') }}" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-bold transition-all active:scale-95">
                             Buat Promo
                         </a>
                     </div>
@@ -365,12 +365,12 @@
                         <h3 class="text-base font-bold text-slate-900 dark:text-white">Peringkat & Performa Produk Digital</h3>
                         <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Urutan produk digital dari yang paling sering dilihat hingga penjualan tertinggi.</p>
                     </div>
-                    <a href="{{ route('tenant.products.create') }}" class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs font-bold shadow-md shadow-sky-500/25 transition-all flex items-center gap-1.5">
+                    <a href="{{ route('tenant.products.create') }}" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-bold active:scale-95 transition-all flex items-center gap-1.5">
                         <span class="material-symbols-outlined text-[16px]">add_circle</span> Tambah Produk
                     </a>
                 </div>
 
-                <div class="border border-slate-200/80 dark:border-[#222f49] rounded-2xl overflow-hidden shadow-xs">
+                <div class="border border-slate-200/80 dark:border-[#222f49] rounded-2xl overflow-hidden">
                     <table class="w-full text-left text-xs md:text-sm whitespace-nowrap">
                         <thead class="bg-slate-50 dark:bg-[#0c1220] border-b border-slate-200/80 dark:border-[#222f49] text-slate-500 dark:text-slate-400 uppercase tracking-wider text-[11px] font-bold">
                             <tr>
@@ -461,20 +461,7 @@
                                 <td colspan="6" class="p-12 text-center text-slate-400">
                                     <span class="material-symbols-outlined text-4xl mb-2 opacity-50">inventory_2</span>
                                     <p class="text-sm">Belum ada produk yang didaftarkan pada toko Anda.</p>
-                                    <a href="{{ route('tenant.products.create') }}" class="mt-3 inline-flex items-center gap-1 text-xs font-bold text-sky-600 dark:text-sky-400 hover:underline">
-                                        <span class="material-symbols-outlined text-[14px]">add</span> Tambah Produk Sekarang
-                                    </a>
-                                </td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-                                <td colspan="5" class="p-12 text-center text-slate-400">
-                                    <span class="material-symbols-outlined text-4xl mb-2 opacity-50">inventory_2</span>
-                                    <p class="text-sm">Belum ada produk yang didaftarkan pada toko Anda.</p>
-                                    <a href="{{ route('tenant.products.create') }}" class="mt-3 inline-flex items-center gap-1 text-xs font-bold text-sky-600 dark:text-sky-400 hover:underline">
+                                    <a href="{{ route('tenant.products.create') }}" class="mt-3 inline-flex items-center gap-1 text-xs font-bold text-slate-700 dark:text-slate-300 hover:underline">
                                         <span class="material-symbols-outlined text-[14px]">add</span> Tambah Produk Sekarang
                                     </a>
                                 </td>
@@ -496,7 +483,7 @@
                     
                     <!-- Funnel Step 1 -->
                     <div class="bg-slate-50 dark:bg-[#0c1220] border border-slate-200/80 dark:border-[#1e293b] rounded-2xl p-6 relative overflow-hidden">
-                        <div class="w-10 h-10 rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-400 flex items-center justify-center font-bold mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center font-bold mb-4">
                             1
                         </div>
                         <h4 class="text-sm font-bold text-slate-900 dark:text-white">Eksplorasi & Kunjungan</h4>
@@ -544,7 +531,7 @@
                         <span class="text-xs text-slate-400">Total Overall Conversion Rate</span>
                         <div class="text-2xl font-black text-slate-900 dark:text-white mt-0.5">{{ $conversionRate }}%</div>
                     </div>
-                    <a href="{{ route('tenant.orders.index') }}" class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs font-bold transition-all shadow-sm">
+                    <a href="{{ route('tenant.orders.index') }}" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-bold active:scale-95 transition-all">
                         Kelola Status Transaksi
                     </a>
                 </div>
@@ -560,21 +547,21 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     
                     <!-- Saluran 1: Etalase Publik & Website -->
-                    <div class="border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 flex items-start gap-4 hover:border-sky-500/50 transition-all">
-                        <div class="w-10 h-10 rounded-xl bg-sky-500/10 text-sky-500 flex items-center justify-center shrink-0">
+                    <div class="border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 flex items-start gap-4 hover:border-slate-400 dark:hover:border-slate-600 transition-all">
+                        <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center shrink-0">
                             <span class="material-symbols-outlined text-[22px]">language</span>
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center justify-between">
                                 <h4 class="text-sm font-bold text-slate-900 dark:text-white">Katalog Website & Pencarian</h4>
-                                <span class="text-xs font-bold text-sky-600 dark:text-sky-400">75%</span>
+                                <span class="text-xs font-bold text-slate-900 dark:text-white">75%</span>
                             </div>
                             <p class="text-xs text-slate-400 mt-1">Pengunjung langsung dari pencarian marketplace dan etalase utama.</p>
                         </div>
                     </div>
 
                     <!-- Saluran 2: Program Mitra Affiliate -->
-                    <div class="border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 flex items-start gap-4 hover:border-sky-500/50 transition-all">
+                    <div class="border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 flex items-start gap-4 hover:border-slate-400 dark:hover:border-slate-600 transition-all">
                         <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center shrink-0">
                             <span class="material-symbols-outlined text-[22px]">handshake</span>
                         </div>
@@ -583,7 +570,7 @@
                                 <h4 class="text-sm font-bold text-slate-900 dark:text-white">Mitra Affiliate & Referral</h4>
                                 <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400">15%</span>
                             </div>
-                            <p class="text-xs text-slate-400 mt-1">Tautan rujukan promotor afiliasi yang aktif mempromosikan produk.</p>
+                            <p class="text-xs text-slate-400 mt-1">Tautan rujukan promotor afiliasi yang aktif mempromosikannya.</p>
                             <a href="{{ route('tenant.affiliates.index') }}" class="text-[11px] font-bold text-indigo-500 hover:underline mt-2 inline-block">
                                 Buka Program Affiliate →
                             </a>
@@ -591,7 +578,7 @@
                     </div>
 
                     <!-- Saluran 3: Media Sosial & Promosi Langsung -->
-                    <div class="border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 flex items-start gap-4 hover:border-sky-500/50 transition-all">
+                    <div class="border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 flex items-start gap-4 hover:border-slate-400 dark:hover:border-slate-600 transition-all">
                         <div class="w-10 h-10 rounded-xl bg-pink-500/10 text-pink-500 flex items-center justify-center shrink-0">
                             <span class="material-symbols-outlined text-[22px]">share</span>
                         </div>
@@ -605,7 +592,7 @@
                     </div>
 
                     <!-- Saluran 4: Campaign Diskon & Event -->
-                    <div class="border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 flex items-start gap-4 hover:border-sky-500/50 transition-all">
+                    <div class="border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 flex items-start gap-4 hover:border-slate-400 dark:hover:border-slate-600 transition-all">
                         <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center shrink-0">
                             <span class="material-symbols-outlined text-[22px]">campaign</span>
                         </div>

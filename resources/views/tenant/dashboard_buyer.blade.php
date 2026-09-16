@@ -45,7 +45,7 @@
                     <span class="material-symbols-outlined text-[18px]">card_giftcard</span>
                     <span>Klaim Bonus Rp500.000</span>
                 </button>
-                <button type="button" @click="showQuickCreateModal = true" class="px-5 py-2.5 rounded-xl bg-[#0284c7] hover:bg-[#0369a1] text-white text-xs font-bold shadow-md hover:shadow-sky-500/20 transition-all flex items-center gap-1.5 transform hover:-translate-y-0.5 cursor-pointer" style="background: #0284c7 !important; color: #ffffff !important;">
+                <button type="button" @click="showQuickCreateModal = true" class="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer active:scale-95">
                     <span class="material-symbols-outlined text-[18px]">hub</span>
                     <span>Buat Toko &amp; Bio Link</span>
                 </button>
@@ -93,7 +93,7 @@
 
                     <!-- Action Buttons -->
                     <div class="pt-2 flex flex-wrap items-center gap-3">
-                        <button type="button" @click="showQuickCreateModal = true" class="px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs sm:text-sm shadow-xs transition-colors flex items-center gap-2 cursor-pointer">
+                        <button type="button" @click="showQuickCreateModal = true" class="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-xs sm:text-sm transition-all flex items-center gap-2 cursor-pointer active:scale-95">
                             <span class="material-symbols-outlined text-[18px]">hub</span>
                             <span>Buat Toko &amp; Bio Link</span>
                         </button>
@@ -389,7 +389,7 @@
                 <div class="pt-2 border-t border-slate-100 dark:border-slate-800 space-y-2.5">
                     <button type="button" 
                             @click="closePromo(); showQuickCreateModal = true;" 
-                            class="w-full py-3 rounded-xl bg-sky-600 hover:bg-sky-700 active:bg-sky-800 text-white font-bold text-xs sm:text-sm shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer">
+                            class="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-xs sm:text-sm transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer">
                         <span class="material-symbols-outlined text-[18px]">hub</span>
                         <span>Aktifkan Halaman Sekarang (Gratis)</span>
                     </button>
@@ -498,7 +498,7 @@
                     @endif
 
                     <div class="pt-2">
-                        <button type="submit" class="w-full py-3 rounded-xl bg-sky-600 hover:bg-sky-700 active:bg-sky-800 text-white font-bold text-xs sm:text-sm shadow-xs transition-colors flex items-center justify-center gap-2 cursor-pointer">
+                        <button type="submit" class="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-xs sm:text-sm transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer">
                             <span class="material-symbols-outlined text-[18px]">hub</span>
                             <span>Aktifkan Halaman &amp; Klaim Saldo Rp500.000</span>
                         </button>

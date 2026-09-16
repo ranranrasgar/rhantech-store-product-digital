@@ -29,7 +29,7 @@
             <div class="pt-1">
                 <h1 class="text-xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-1.5">
                     Katalog Produk
-                    <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-teal-100 dark:bg-teal-950/60 text-[#00838f] dark:text-teal-300">
+                    <span class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200">
                         {{ $allCount }}
                     </span>
                 </h1>
@@ -41,9 +41,9 @@
             <!-- Horizontal Swipeable Pill Tabs -->
             <div class="flex items-center gap-2 overflow-x-auto pb-1 -mx-3 px-3 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden" style="scrollbar-width: none; -ms-overflow-style: none;">
                 <a href="{{ route('tenant.products.index', array_merge(request()->query(), ['tab' => 'all', 'page' => null])) }}" 
-                   class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 {{ $tab === 'all' ? 'bg-[#00838f] text-white shadow-sm shadow-[#00838f]/30' : 'bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] text-slate-600 dark:text-slate-300 active:scale-95' }}">
+                   class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 {{ $tab === 'all' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900' : 'bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] text-slate-600 dark:text-slate-300 active:scale-95' }}">
                     <span>Semua</span>
-                    <span class="px-1.5 py-0.2 rounded-full text-[10px] {{ $tab === 'all' ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400' }}">{{ $allCount }}</span>
+                    <span class="px-1.5 py-0.2 rounded-full text-[10px] {{ $tab === 'all' ? 'bg-white/20 text-white dark:bg-black/20 dark:text-slate-900' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400' }}">{{ $allCount }}</span>
                 </a>
 
                 <a href="{{ route('tenant.products.index', array_merge(request()->query(), ['tab' => 'active', 'page' => null])) }}" 
@@ -322,7 +322,7 @@
                                 <span class="material-symbols-outlined text-[15px]">refresh</span> Reset Filter
                             </a>
                         @else
-                            <a href="{{ route('tenant.products.create') }}" class="px-4 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs shadow-md shadow-sky-500/20 inline-flex items-center gap-1.5">
+                            <a href="{{ route('tenant.products.create') }}" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-xs inline-flex items-center gap-1.5 active:scale-95 transition-all">
                                 <span class="material-symbols-outlined text-[16px]">add</span> Tambah Produk Pertama
                             </a>
                         @endif
@@ -337,23 +337,8 @@
                 </div>
             @endif
 
-            <!-- Mobile Floating Action Button (+) Tambah Produk (Bawah Kanan - No Shadow, Lightweight Animation) -->
-            <style>
-                @keyframes fabFloatAnimProduct {
-                    0%, 100% { transform: translateY(0) scale(1); }
-                    50% { transform: translateY(-5px) scale(1.03); }
-                }
-                .fab-animated-product {
-                    animation: fabFloatAnimProduct 2.4s ease-in-out infinite;
-                    will-change: transform;
-                }
-                .fab-animated-product:active {
-                    animation: none;
-                    transform: scale(0.92);
-                }
-            </style>
             <a href="{{ route('tenant.products.create') }}" 
-               class="fab-animated-product fixed bottom-20 right-4 z-40 md:hidden w-14 h-14 rounded-full bg-[#00838f] hover:bg-[#00727d] text-white border-2 border-white dark:border-slate-800 flex items-center justify-center cursor-pointer select-none group"
+               class="fixed bottom-20 right-4 z-40 md:hidden w-14 h-14 rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 border-2 border-white dark:border-slate-800 flex items-center justify-center cursor-pointer select-none group active:scale-95 transition-all"
                title="Tambah Produk Baru"
                aria-label="Tambah Produk Baru">
                 <span class="material-symbols-outlined text-[30px] font-bold transition-transform duration-300 group-hover:rotate-90">add</span>
@@ -377,22 +362,22 @@
                 </div>
                 
                 <div class="flex flex-wrap items-center gap-3">
-                    <a href="{{ route('tenant.products.create') }}" class="px-5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs md:text-sm font-bold shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 transition-all duration-200 flex items-center gap-2">
-                        <span class="material-symbols-outlined text-[18px]">add_circle</span>
+                    <a href="{{ route('tenant.products.create') }}" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs md:text-sm font-bold transition-all flex items-center gap-2 active:scale-95">
+                        <span class="material-symbols-outlined text-[18px]">add</span>
                         Tambah Produk Baru
                     </a>
                 </div>
             </div>
 
             <!-- Main Card Container -->
-            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl shadow-sm overflow-hidden">
+            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl overflow-hidden">
                 
                 <!-- Filter Tabs -->
                 <div class="border-b border-slate-100 dark:border-[#222f49] px-6 flex items-center gap-6 overflow-x-auto hide-scrollbar bg-slate-50/50 dark:bg-[#0c1220]/50">
-                    <a href="{{ route('tenant.products.index', array_merge(request()->query(), ['tab' => 'all', 'page' => null])) }}" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 {{ $tab === 'all' ? 'text-sky-600 dark:text-sky-400 border-sky-600 dark:border-sky-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200' }}">
-                        Semua Produk <span class="ml-1.5 px-2 py-0.5 rounded-full text-[11px] {{ $tab === 'all' ? 'bg-sky-100 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300' : 'bg-slate-200/60 dark:bg-slate-800 text-slate-600 dark:text-slate-400' }}">{{ $allCount }}</span>
+                    <a href="{{ route('tenant.products.index', array_merge(request()->query(), ['tab' => 'all', 'page' => null])) }}" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 {{ $tab === 'all' ? 'text-slate-900 dark:text-white border-slate-900 dark:border-white' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200' }}">
+                        Semua Produk <span class="ml-1.5 px-2 py-0.5 rounded-full text-[11px] {{ $tab === 'all' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900' : 'bg-slate-200/60 dark:bg-slate-800 text-slate-600 dark:text-slate-400' }}">{{ $allCount }}</span>
                     </a>
-                    <a href="{{ route('tenant.products.index', array_merge(request()->query(), ['tab' => 'active', 'page' => null])) }}" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 {{ $tab === 'active' ? 'text-sky-600 dark:text-sky-400 border-sky-600 dark:border-sky-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200' }}">
+                    <a href="{{ route('tenant.products.index', array_merge(request()->query(), ['tab' => 'active', 'page' => null])) }}" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 {{ $tab === 'active' ? 'text-slate-900 dark:text-white border-slate-900 dark:border-white' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200' }}">
                         Aktif / Tayang <span class="ml-1.5 px-2 py-0.5 rounded-full text-[11px] {{ $tab === 'active' ? 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300' : 'bg-slate-200/60 dark:bg-slate-800 text-slate-600 dark:text-slate-400' }}">{{ $activeCount }}</span>
                     </a>
                     <a href="{{ route('tenant.products.index', array_merge(request()->query(), ['tab' => 'pending', 'page' => null])) }}" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 {{ $tab === 'pending' ? 'text-amber-600 dark:text-amber-400 border-amber-600 dark:border-amber-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200' }}">
@@ -601,7 +586,7 @@
                                         </div>
                                         <h3 class="font-bold text-base text-slate-800 dark:text-white mb-1">Belum ada produk digital</h3>
                                         <p class="text-xs text-slate-400 mb-5">Mulai tambahkan template, ebook, atau source code aplikasi Anda.</p>
-                                        <a href="{{ route('tenant.products.create') }}" class="px-5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs shadow-lg shadow-sky-500/25 transition-all">
+                                        <a href="{{ route('tenant.products.create') }}" class="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-xs transition-all active:scale-95">
                                             Tambah Produk Pertama
                                         </a>
                                     </div>

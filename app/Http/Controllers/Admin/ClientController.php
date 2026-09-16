@@ -34,6 +34,9 @@ class ClientController extends Controller
             'email' => 'nullable|email|max:255',
             'phone' => 'nullable|string|max:20',
             'is_active' => 'boolean'
+        ], [
+            'logo.max' => 'Ukuran logo klien tidak boleh melebihi 2 MB.',
+            'logo.image' => 'File logo harus berupa gambar.',
         ]);
 
         if (array_key_exists('url', $validated)) {
@@ -62,6 +65,9 @@ class ClientController extends Controller
             'email' => 'nullable|email|max:255',
             'phone' => 'nullable|string|max:20',
             'is_active' => 'boolean'
+        ], [
+            'logo.max' => 'Ukuran logo klien tidak boleh melebihi 2 MB.',
+            'logo.image' => 'File logo harus berupa gambar.',
         ]);
 
         if (array_key_exists('url', $validated)) {

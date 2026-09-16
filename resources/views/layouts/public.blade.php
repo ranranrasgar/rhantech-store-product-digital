@@ -26,10 +26,9 @@
     <meta name="twitter:image" content="@yield('meta_image', isset($company) && $company->logo ? asset('storage/'.$company->logo) : '')"/>
     @yield('schema_json_ld')
     <link rel="icon" type="image/png" href="{{ isset($company) && $company->favicon ? '/storage/'.$company->favicon : '/favicon.ico' }}" />
-    <link rel="shortcut icon" type="image/png" href="{{ isset($company) && $company->favicon ? '/storage/'.$company->favicon : '/favicon.ico' }}" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com" rel="preconnect"/>
-    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script id="tailwind-config">
         tailwind.config = {
@@ -129,7 +128,7 @@
     @include('components.theme-styles')
     <style>
         .material-symbols-outlined {
-            font-family: 'Material Symbols Outlined';
+            font-family: 'Material Symbols Outlined' !important;
             font-weight: normal;
             font-style: normal;
             font-size: 24px;
@@ -140,6 +139,7 @@
             white-space: nowrap;
             word-wrap: normal;
             direction: ltr;
+            font-feature-settings: 'liga' 1;
             -webkit-font-feature-settings: 'liga';
             -webkit-font-smoothing: antialiased;
         }
@@ -300,10 +300,8 @@
                 <a class="nav-link {{ request()->routeIs('contact') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-secondary transition-colors duration-200" href="{{ url('/contact') }}" wire:navigate>Contact</a>
             </div>
             <div class="flex items-center gap-sm">
-                <x-theme-toggle />
-                
                 @guest
-                    <a class="hidden md:inline-flex items-center justify-center px-5 py-2 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-lg font-label-md text-label-md font-bold shadow-md hover:shadow-lg transition-all hover:scale-105" href="{{ route('register') }}">
+                    <a class="hidden md:inline-flex items-center justify-center px-5 py-2 bg-sky-500 hover:bg-sky-600 text-white rounded-lg font-label-md text-label-md font-semibold transition-colors" href="{{ route('register') }}">
                         <span class="material-symbols-outlined text-[1rem] mr-1">storefront</span> Jualan Sekarang!
                     </a>
                 @else
@@ -323,7 +321,7 @@
                                     <p class="text-sm font-bold text-on-surface truncate">{{ auth()->user()->name }}</p>
                                     <p class="text-xs text-on-surface-variant truncate mb-1">{{ auth()->user()->email }}</p>
                                     <div class="flex items-center gap-1 text-[11px] text-primary font-semibold">
-                                        <span class="material-symbols-outlined text-[12px]">edit</span> Edit Profil
+                                        <span class="material-symbols-outlined text-[12px]">settings</span> Profil &amp; Pengaturan
                                     </div>
                                 </a>
                                 
@@ -760,6 +758,7 @@
     @include('components.new-member-bonus-bubble')
     @include('components.popup-ad-modal')
     @include('components.pwa-install-prompt')
+    @include('components.file-size-guard')
     @livewireScripts
 </body>
 </html>

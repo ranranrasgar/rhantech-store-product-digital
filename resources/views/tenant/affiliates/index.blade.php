@@ -18,11 +18,11 @@
             </div>
             
             <div class="flex flex-wrap items-center gap-3">
-                <a href="{{ route('help.show', 'panduan-lengkap-cara-kerja-program-afiliasi-toko-mitra-toko-vs-etalase-afiliasi') }}" target="_blank" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs md:text-sm font-semibold rounded-xl transition-all flex items-center gap-1.5 shadow-sm">
-                    <span class="material-symbols-outlined text-[18px] text-sky-500">menu_book</span>
+                <a href="{{ route('help.show', 'panduan-lengkap-cara-kerja-program-afiliasi-toko-mitra-toko-vs-etalase-afiliasi') }}" target="_blank" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs md:text-sm font-semibold rounded-xl transition-all flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[18px] text-slate-700 dark:text-slate-300">menu_book</span>
                     Buku Panduan Afiliasi
                 </a>
-                <a href="{{ route('tenant.affiliates.create') }}" class="px-5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs md:text-sm font-bold shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 transition-all duration-200 flex items-center gap-2">
+                <a href="{{ route('tenant.affiliates.create') }}" class="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs md:text-sm font-bold transition-all active:scale-95 flex items-center gap-2">
                     <span class="material-symbols-outlined text-[18px]">person_add</span>
                     Tambah Mitra Manual
                 </a>
@@ -30,14 +30,14 @@
         </div>
 
         <!-- Card Pengaturan Default Komisi Afiliasi Toko -->
-        <div class="bg-white dark:bg-[#111726] border border-slate-200/90 dark:border-[#222f49] rounded-2xl p-6 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div class="bg-white dark:bg-[#111726] border border-slate-200/90 dark:border-[#222f49] rounded-2xl p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div class="space-y-1 max-w-2xl">
                 <div class="flex items-center gap-2">
-                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-teal-50 dark:bg-teal-950/50 text-[#00838f] dark:text-teal-400 border border-teal-200 dark:border-teal-800">Program Referral Toko</span>
+                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">Program Referral Toko</span>
                     <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">&bull; Otomatis Untuk Semua Mitra</span>
                 </div>
                 <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                    <span class="material-symbols-outlined text-[#00838f] text-[22px]">loyalty</span>
+                    <span class="material-symbols-outlined text-slate-900 dark:text-white text-[22px]">loyalty</span>
                     Persentase Komisi Referral Toko Anda
                 </h3>
                 <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
@@ -50,10 +50,10 @@
                 <div class="relative w-full sm:w-40">
                     <input type="number" name="default_affiliate_commission" min="0" max="100" step="0.5" 
                            value="{{ old('default_affiliate_commission', $store->default_affiliate_commission ?? 10) }}" 
-                           class="w-full pl-4 pr-9 py-2.5 bg-white dark:bg-[#0c1220] border border-slate-300 dark:border-slate-700 rounded-xl text-sm font-black text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#00838f]/20 focus:border-[#00838f] shadow-2xs">
+                           class="w-full pl-4 pr-9 py-2.5 bg-white dark:bg-[#0c1220] border border-slate-300 dark:border-slate-700 rounded-xl text-sm font-black text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 dark:focus:border-white">
                     <span class="absolute right-3.5 top-3 text-xs font-black text-slate-400">%</span>
                 </div>
-                <button type="submit" class="px-5 py-2.5 bg-[#00838f] hover:bg-[#00727d] text-white rounded-xl text-xs font-bold transition shadow-xs whitespace-nowrap flex items-center justify-center gap-1.5 cursor-pointer">
+                <button type="submit" class="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 rounded-xl text-xs font-bold transition whitespace-nowrap flex items-center justify-center gap-1.5 cursor-pointer active:scale-95">
                     <span class="material-symbols-outlined text-[16px]">save</span>
                     Simpan Komisi
                 </button>
@@ -61,7 +61,7 @@
         </div>
 
         <!-- Filter & Search Card -->
-        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-6 shadow-sm space-y-5">
+        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-6 space-y-5">
             <form method="GET" action="{{ route('tenant.affiliates.index') }}" id="filterForm" class="space-y-4">
                 <!-- Search -->
                 <div class="flex flex-col md:flex-row items-stretch md:items-center gap-3">
@@ -69,10 +69,10 @@
                         <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                             <span class="material-symbols-outlined text-[18px] leading-none">search</span>
                         </div>
-                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama affiliate atau username..." class="w-full pl-10 pr-4 py-2.5 text-xs md:text-sm bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 text-slate-900 dark:text-white transition-all">
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama affiliate atau username..." class="w-full pl-10 pr-4 py-2.5 text-xs md:text-sm bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-500/20 focus:border-slate-500 text-slate-900 dark:text-white transition-all">
                     </div>
                     <div class="flex items-center gap-3">
-                        <button type="submit" class="px-5 py-2.5 text-xs md:text-sm font-bold bg-sky-500 hover:bg-sky-400 text-white rounded-xl shadow-sm transition-colors">
+                        <button type="submit" class="px-5 py-2.5 text-xs md:text-sm font-bold bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 rounded-xl transition cursor-pointer active:scale-95">
                             Cari
                         </button>
                         <a href="{{ route('tenant.affiliates.index') }}" class="px-4 py-2.5 text-xs md:text-sm font-semibold border border-slate-200 dark:border-[#222f49] text-slate-600 dark:text-slate-300 rounded-xl hover:bg-slate-100 dark:hover:bg-[#161f33] transition-colors">
@@ -88,7 +88,7 @@
                         @php $reqPlatform = request('platform', 'Semua'); @endphp
                         <input type="hidden" name="platform" id="platformInput" value="{{ $reqPlatform }}">
                         @foreach(['Semua', 'Instagram', 'Tiktok', 'Facebook', 'Youtube', 'Twitter'] as $plat)
-                            <button type="button" onclick="document.getElementById('platformInput').value='{{ $plat }}'; document.getElementById('filterForm').submit();" class="px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all {{ $reqPlatform === $plat ? 'bg-sky-500 text-white shadow-sm shadow-sky-500/30' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700' }}">
+                            <button type="button" onclick="document.getElementById('platformInput').value='{{ $plat }}'; document.getElementById('filterForm').submit();" class="px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all {{ $reqPlatform === $plat ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700' }}">
                                 {{ $plat }}
                             </button>
                         @endforeach
@@ -98,7 +98,7 @@
         </div>
 
         <!-- Table Container -->
-        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl shadow-sm overflow-hidden">
+        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl overflow-hidden">
             
             <div class="p-5 md:p-6 border-b border-slate-100 dark:border-[#222f49] flex items-center justify-between">
                 <div>
@@ -116,7 +116,7 @@
                             <th class="p-4 md:px-6 min-w-[220px]">
                                 <div class="flex items-center gap-1">
                                     <span>Link Referral Toko</span>
-                                    <a href="{{ route('help.show', 'panduan-cara-merekrut-mitra-afiliasi-pengaturan-bagi-hasil-komisi') }}" target="_blank" class="text-slate-400 hover:text-sky-500 transition-colors" title="Buka Panduan Link Referral">
+                                    <a href="{{ route('help.show', 'panduan-cara-merekrut-mitra-afiliasi-pengaturan-bagi-hasil-komisi') }}" target="_blank" class="text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors" title="Buka Panduan Link Referral">
                                         <span class="material-symbols-outlined text-[15px]">help</span>
                                     </a>
                                 </div>
@@ -124,7 +124,7 @@
                             <th class="p-4 md:px-6">
                                 <div class="flex items-center gap-1">
                                     <span>Bagi Hasil</span>
-                                    <a href="{{ route('help.show', 'panduan-cara-merekrut-mitra-afiliasi-pengaturan-bagi-hasil-komisi') }}" target="_blank" class="text-slate-400 hover:text-sky-500 transition-colors" title="Buka Panduan Aturan Bagi Hasil Komisi">
+                                    <a href="{{ route('help.show', 'panduan-cara-merekrut-mitra-afiliasi-pengaturan-bagi-hasil-komisi') }}" target="_blank" class="text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors" title="Buka Panduan Aturan Bagi Hasil Komisi">
                                         <span class="material-symbols-outlined text-[15px]">help</span>
                                     </a>
                                 </div>
@@ -132,7 +132,7 @@
                             <th class="p-4 md:px-6">
                                 <div class="flex items-center gap-1">
                                     <span>Jumlah Klik</span>
-                                    <a href="{{ route('help.show', 'panduan-teknis-pelacakan-klik-otomatisasi-saldo-komisi-penarikan-dana-mitra') }}" target="_blank" class="text-slate-400 hover:text-sky-500 transition-colors" title="Buka Panduan Pelacakan Kunjungan (Klik)">
+                                    <a href="{{ route('help.show', 'panduan-teknis-pelacakan-klik-otomatisasi-saldo-komisi-penarikan-dana-mitra') }}" target="_blank" class="text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors" title="Buka Panduan Pelacakan Kunjungan (Klik)">
                                         <span class="material-symbols-outlined text-[15px]">help</span>
                                     </a>
                                 </div>
@@ -140,7 +140,7 @@
                             <th class="p-4 md:px-6">
                                 <div class="flex items-center gap-1">
                                     <span>Pesanan Sukses</span>
-                                    <a href="{{ route('help.show', 'panduan-teknis-pelacakan-klik-otomatisasi-saldo-komisi-penarikan-dana-mitra') }}" target="_blank" class="text-slate-400 hover:text-sky-500 transition-colors" title="Buka Panduan Otomatisasi Saldo Komisi Penjualan">
+                                    <a href="{{ route('help.show', 'panduan-teknis-pelacakan-klik-otomatisasi-saldo-komisi-penarikan-dana-mitra') }}" target="_blank" class="text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors" title="Buka Panduan Otomatisasi Saldo Komisi Penjualan">
                                         <span class="material-symbols-outlined text-[15px]">help</span>
                                     </a>
                                 </div>
@@ -162,7 +162,7 @@
                                         @if($aff->avatar_url)
                                             <img src="{{ $aff->avatar_url }}" class="w-full h-full object-cover">
                                         @else
-                                            <div class="w-full h-full flex items-center justify-center font-black text-sky-500 bg-sky-50 dark:bg-sky-950/40 text-base">
+                                            <div class="w-full h-full flex items-center justify-center font-black text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 text-base">
                                                 {{ substr($aff->name, 0, 1) }}
                                             </div>
                                         @endif
@@ -171,7 +171,7 @@
                                         <div class="font-bold text-slate-900 dark:text-white flex items-center gap-1 leading-snug">
                                             {{ $aff->name }}
                                             @if($aff->is_golden_tick)
-                                                <span class="material-symbols-outlined text-[15px] text-sky-500" title="Mitra Terverifikasi">verified</span>
+                                                <span class="material-symbols-outlined text-[15px] text-slate-900 dark:text-white" title="Mitra Terverifikasi">verified</span>
                                             @endif
                                         </div>
                                         <div class="text-[11px] text-slate-400 mt-0.5 font-mono flex items-center gap-2">
@@ -199,12 +199,12 @@
                             <!-- Referral Link & Code -->
                             <td class="p-4 md:px-6 min-w-[220px]">
                                 <div class="space-y-1">
-                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-mono font-bold bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400 border border-sky-200/60 dark:border-sky-800/40">
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
                                         {{ $aff->referral_code ?? 'AFF' . $aff->id }}
                                     </span>
                                     <div class="flex items-center gap-1.5">
                                         <input type="text" readonly value="{{ $refLink }}" class="text-[11px] font-mono bg-slate-100 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] px-2 py-1 rounded-lg text-slate-600 dark:text-slate-400 w-36 truncate focus:outline-none" id="ref_{{ $aff->id }}">
-                                        <button type="button" onclick="navigator.clipboard.writeText('{{ $refLink }}'); alert('Link referral berhasil disalin!');" class="p-1 text-slate-500 hover:text-sky-500 bg-white dark:bg-[#161f33] border border-slate-200 dark:border-[#222f49] rounded-lg transition" title="Salin Link">
+                                        <button type="button" onclick="navigator.clipboard.writeText('{{ $refLink }}'); alert('Link referral berhasil disalin!');" class="p-1 text-slate-500 hover:text-slate-900 dark:hover:text-white bg-white dark:bg-[#161f33] border border-slate-200 dark:border-[#222f49] rounded-lg transition" title="Salin Link">
                                             <span class="material-symbols-outlined text-[14px]">content_copy</span>
                                         </button>
                                     </div>
@@ -255,12 +255,12 @@
                         <tr>
                             <td colspan="6" class="p-16 text-center text-slate-400">
                                 <div class="flex flex-col items-center justify-center max-w-sm mx-auto">
-                                    <div class="w-16 h-16 rounded-2xl bg-sky-500/10 text-sky-500 flex items-center justify-center mb-4">
+                                    <div class="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center mb-4">
                                         <span class="material-symbols-outlined text-[32px]">handshake</span>
                                     </div>
                                     <h3 class="font-bold text-base text-slate-800 dark:text-white mb-1">Belum ada mitra affiliate</h3>
                                     <p class="text-xs text-slate-400 mb-5">Daftarkan kreator atau teman promotor untuk membantu menjualkan produk toko Anda.</p>
-                                    <a href="{{ route('tenant.affiliates.create') }}" class="px-5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs shadow-lg shadow-sky-500/25 transition-all">
+                                    <a href="{{ route('tenant.affiliates.create') }}" class="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-xs transition-all active:scale-95">
                                         Tambah Mitra Pertama
                                     </a>
                                 </div>
@@ -281,10 +281,10 @@
         </div>
 
         <!-- Panduan & FAQ Singkat Cara Kerja Afiliasi -->
-        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-6 md:p-8 shadow-sm space-y-6">
+        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-6 md:p-8 space-y-6">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 dark:border-[#222f49] pb-5">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-sky-50 dark:bg-sky-950/40 text-sky-500 flex items-center justify-center shrink-0">
+                    <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center shrink-0">
                         <span class="material-symbols-outlined text-[22px]">help_outline</span>
                     </div>
                     <div>
@@ -292,7 +292,7 @@
                         <p class="text-xs text-slate-500 dark:text-slate-400">Pahami alur otomatisasi dari klik referral hingga uang komisi masuk ke saldo mitra.</p>
                     </div>
                 </div>
-                <a href="{{ route('help.show', 'panduan-lengkap-cara-kerja-program-afiliasi-toko-mitra-toko-vs-etalase-afiliasi') }}" target="_blank" class="text-xs font-bold text-sky-600 dark:text-sky-400 hover:underline inline-flex items-center gap-1">
+                <a href="{{ route('help.show', 'panduan-lengkap-cara-kerja-program-afiliasi-toko-mitra-toko-vs-etalase-afiliasi') }}" target="_blank" class="text-xs font-bold text-slate-900 dark:text-white hover:underline inline-flex items-center gap-1">
                     Baca Buku Panduan Lengkap
                     <span class="material-symbols-outlined text-[15px]">arrow_forward</span>
                 </a>
@@ -302,17 +302,17 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                 <div class="p-5 rounded-xl border border-slate-200/80 dark:border-[#222f49] bg-slate-50/50 dark:bg-[#0c1220]/50 space-y-2">
                     <div class="flex items-center gap-2">
-                        <span class="w-6 h-6 rounded-full bg-sky-500 text-white font-black text-xs flex items-center justify-center shrink-0">1</span>
+                        <span class="w-6 h-6 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black text-xs flex items-center justify-center shrink-0">1</span>
                         <h3 class="font-bold text-sm text-slate-900 dark:text-white">Hubungkan & Bagikan Link</h3>
                     </div>
                     <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                        Pilih akun teman/influencer, tetapkan persen bagi hasil (misal: 10%), lalu salin link referral (<code class="text-sky-600 dark:text-sky-400">?ref=KODE</code>) untuk dibagikan ke WhatsApp atau medsos.
+                        Pilih akun teman/influencer, tetapkan persen bagi hasil (misal: 10%), lalu salin link referral (<code class="text-slate-900 dark:text-slate-200">?ref=KODE</code>) untuk dibagikan ke WhatsApp atau medsos.
                     </p>
                 </div>
 
                 <div class="p-5 rounded-xl border border-slate-200/80 dark:border-[#222f49] bg-slate-50/50 dark:bg-[#0c1220]/50 space-y-2">
                     <div class="flex items-center gap-2">
-                        <span class="w-6 h-6 rounded-full bg-sky-500 text-white font-black text-xs flex items-center justify-center shrink-0">2</span>
+                        <span class="w-6 h-6 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black text-xs flex items-center justify-center shrink-0">2</span>
                         <h3 class="font-bold text-sm text-slate-900 dark:text-white">Pelacakan Kunjungan Otomatis</h3>
                     </div>
                     <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">

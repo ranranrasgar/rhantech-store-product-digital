@@ -17,9 +17,9 @@
         </div>
 
         <!-- Payment Card -->
-        <div class="bg-white dark:bg-[#161b22] rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-sm p-6 md:p-8 text-center space-y-6">
+        <div class="bg-white dark:bg-[#161b22] rounded-2xl border border-slate-200/90 dark:border-slate-800 p-6 md:p-8 text-center space-y-6">
             
-            <div class="w-16 h-16 mx-auto rounded-2xl bg-sky-50 dark:bg-sky-950/40 text-[#0284c7] flex items-center justify-center">
+            <div class="w-16 h-16 mx-auto rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 flex items-center justify-center">
                 <span class="material-symbols-outlined text-4xl">qr_code_scanner</span>
             </div>
 
@@ -48,11 +48,11 @@
                 </div>
                 <div class="flex justify-between items-center pt-2.5 border-t border-slate-200 dark:border-slate-700 text-sm font-extrabold">
                     <span class="text-slate-900 dark:text-white">Total Tagihan</span>
-                    <span class="text-[#0284c7] text-base">Rp{{ number_format($transaction->total_amount, 0, ',', '.') }}</span>
+                    <span class="text-slate-900 dark:text-white text-base font-black">Rp{{ number_format($transaction->total_amount, 0, ',', '.') }}</span>
                 </div>
             </div>
 
-            <button id="pay-button" class="w-full py-3.5 px-6 rounded-xl bg-[#0284c7] hover:bg-[#0369a1] text-white font-extrabold text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer">
+            <button id="pay-button" class="w-full py-3.5 px-6 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-sm transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer">
                 <span class="material-symbols-outlined text-[20px]">payments</span>
                 Bayar Sekarang (QRIS / Transfer)
             </button>

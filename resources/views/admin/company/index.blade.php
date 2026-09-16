@@ -2,7 +2,19 @@
 @section('title', 'Pengaturan Sistem & Profil')
 
 @section('content')
-<div class="p-4 md:p-8 flex-1 max-w-6xl mx-auto w-full" x-data="{ currentTab: '{{ $activeTab ?? 'profile' }}' }">
+<div class="p-4 md:p-8 flex-1 max-w-6xl mx-auto w-full" 
+     x-data="{ 
+         currentTab: '{{ $activeTab ?? 'profile' }}',
+         currentTheme: localStorage.getItem('rhantech-theme') || (document.documentElement.classList.contains('dark') ? 'dark' : 'light'),
+         setTheme(theme) {
+             this.currentTheme = theme;
+             localStorage.setItem('rhantech-theme', theme);
+             document.documentElement.classList.toggle('dark', theme === 'dark');
+             document.documentElement.dataset.theme = theme;
+             document.documentElement.style.colorScheme = theme;
+             window.dispatchEvent(new Event('theme-changed'));
+         }
+     }">
     
     <!-- Flash Messages -->
     @if(session('success'))
@@ -699,8 +711,9 @@
             <!-- Theme Mode Selector -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <!-- Light Mode Card -->
-                <div class="p-6 rounded-2xl border-2 border-outline-variant hover:border-primary/60 bg-white text-slate-800 transition-all cursor-pointer shadow-xs relative overflow-hidden"
-                     onclick="localStorage.setItem('rhantech-theme', 'light'); document.documentElement.classList.remove('dark');">
+                <div class="p-6 rounded-2xl border-2 transition-all cursor-pointer shadow-xs relative overflow-hidden bg-white text-slate-800 active:scale-95"
+                     @click="setTheme('light')"
+                     :class="currentTheme === 'light' ? 'border-primary ring-2 ring-primary/20' : 'border-outline-variant hover:border-primary/60'">
                     <div class="flex items-center justify-between mb-4">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center">
@@ -711,6 +724,9 @@
                                 <p class="text-xs text-slate-500">Latar bersih putih standar</p>
                             </div>
                         </div>
+                        <span x-show="currentTheme === 'light'" class="flex items-center gap-1 text-primary font-bold text-xs bg-primary/10 px-2.5 py-1 rounded-full border border-primary/20">
+                            <span class="material-symbols-outlined text-[14px]">check_circle</span> Aktif
+                        </span>
                     </div>
                     <div class="h-20 bg-slate-50 rounded-xl border border-slate-200 p-3 flex gap-2">
                         <div class="w-1/3 bg-white rounded-lg border border-slate-200 p-2">
@@ -725,8 +741,9 @@
                 </div>
 
                 <!-- Dark Mode Card -->
-                <div class="p-6 rounded-2xl border-2 border-outline-variant hover:border-primary/60 bg-[#0d1117] text-white transition-all cursor-pointer shadow-xs relative overflow-hidden"
-                     onclick="localStorage.setItem('rhantech-theme', 'dark'); document.documentElement.classList.add('dark');">
+                <div class="p-6 rounded-2xl border-2 transition-all cursor-pointer shadow-xs relative overflow-hidden bg-[#0d1117] text-white active:scale-95"
+                     @click="setTheme('dark')"
+                     :class="currentTheme === 'dark' ? 'border-primary ring-2 ring-primary/20' : 'border-outline-variant hover:border-primary/60'">
                     <div class="flex items-center justify-between mb-4">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center">
@@ -737,6 +754,9 @@
                                 <p class="text-xs text-slate-400">Tampilan GitHub-style OLED dark</p>
                             </div>
                         </div>
+                        <span x-show="currentTheme === 'dark'" class="flex items-center gap-1 text-sky-300 font-bold text-xs bg-sky-950/80 px-2.5 py-1 rounded-full border border-sky-800">
+                            <span class="material-symbols-outlined text-[14px]">check_circle</span> Aktif
+                        </span>
                     </div>
                     <div class="h-20 bg-[#161b22] rounded-xl border border-slate-700 p-3 flex gap-2">
                         <div class="w-1/3 bg-[#0d1117] rounded-lg border border-slate-700 p-2">
@@ -1111,6 +1131,59 @@
     <!-- ==================== TAB 5: SISTEM & PEMELIHARAAN ==================== -->
     <div x-show="currentTab === 'system'" x-transition style="display: none;" class="space-y-6">
         
+        <!-- Mode Tampilan Sistem -->
+        <div class="bg-surface rounded-2xl border border-outline-variant p-6 md:p-8 shadow-xs">
+            <div class="flex items-center gap-2 pb-3 mb-6 border-b border-outline-variant">
+                <span class="material-symbols-outlined text-primary text-[20px]">palette</span>
+                <div>
+                    <h3 class="text-base font-bold text-on-surface">Mode Tampilan Sistem (Tema Antarmuka)</h3>
+                    <p class="text-xs text-on-surface-variant">Pilih tema antarmuka (Light / Dark) untuk panel administrasi dan sistem.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Light Mode Card -->
+                <div class="p-5 rounded-2xl border-2 transition-all cursor-pointer shadow-xs relative overflow-hidden bg-white text-slate-800 active:scale-95"
+                     @click="setTheme('light')"
+                     :class="currentTheme === 'light' ? 'border-primary ring-2 ring-primary/20' : 'border-outline-variant hover:border-primary/60'">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-[22px]">light_mode</span>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-sm text-slate-900">Mode Terang (Light)</h4>
+                                <p class="text-xs text-slate-500">Latar bersih putih standar</p>
+                            </div>
+                        </div>
+                        <span x-show="currentTheme === 'light'" class="flex items-center gap-1 text-primary font-bold text-xs bg-primary/10 px-2.5 py-1 rounded-full border border-primary/20">
+                            <span class="material-symbols-outlined text-[14px]">check_circle</span> Aktif
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Dark Mode Card -->
+                <div class="p-5 rounded-2xl border-2 transition-all cursor-pointer shadow-xs relative overflow-hidden bg-[#0d1117] text-white active:scale-95"
+                     @click="setTheme('dark')"
+                     :class="currentTheme === 'dark' ? 'border-primary ring-2 ring-primary/20' : 'border-outline-variant hover:border-primary/60'">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-[22px]">dark_mode</span>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-sm text-white">Mode Gelap (Dark)</h4>
+                                <p class="text-xs text-slate-400">Tampilan GitHub-style OLED dark</p>
+                            </div>
+                        </div>
+                        <span x-show="currentTheme === 'dark'" class="flex items-center gap-1 text-sky-300 font-bold text-xs bg-sky-950/80 px-2.5 py-1 rounded-full border border-sky-800">
+                            <span class="material-symbols-outlined text-[14px]">check_circle</span> Aktif
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="bg-surface rounded-2xl border border-outline-variant p-6 md:p-8 shadow-xs">
             <div class="flex items-center gap-2 pb-3 mb-6 border-b border-outline-variant">
                 <span class="material-symbols-outlined text-primary text-[20px]">build</span>

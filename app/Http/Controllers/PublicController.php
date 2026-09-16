@@ -16,17 +16,23 @@ class PublicController extends Controller
 {
     public function home()
     {
-        $services = Service::query()->where('is_active', true)->get();
-        $projects = Project::query()->with('projectCategory')->where('status', 'published')->latest()->take(3)->get();
-        $clients = Client::query()->where('is_active', true)->get();
-        $testimonials = Testimonial::query()->with('client')->where('is_active', true)->latest()->get();
+        $services = Service::query()->where('is_active', true)->select(['id', 'name', 'slug', 'short_description', 'icon'])->get();
+        $projects = Project::query()->with('projectCategory:id,name,slug')->where('status', 'published')->select(['id', 'project_category_id', 'title', 'slug', 'short_description', 'thumbnail', 'created_at'])->latest()->take(3)->get();
+        $clients = Client::query()->where('is_active', true)->select(['id', 'name', 'logo', 'website'])->get();
+        $testimonials = Testimonial::query()->with('client:id,name')->where('is_active', true)->select(['id', 'client_id', 'name', 'position', 'company', 'photo', 'content', 'rating', 'created_at'])->latest()->get();
         $popupAd = \App\Models\PopupAd::getActiveForCurrentUser();
 
         // Aplikasi / produk digital rekomendasi: Adil antar toko, rating terbaik, dan acak/random setiap refresh
         $candidateProducts = Product::query()
-            ->with(['images', 'category:id,name', 'type:id,name', 'store:id,name,slug', 'reviews:id,product_id,rating,is_visible'])
+            ->with([
+                'images:id,product_id,image_path,is_main',
+                'category:id,name',
+                'type:id,name',
+                'store:id,name,slug',
+                'reviews:id,product_id,rating,is_visible'
+            ])
             ->published()
-            ->select(['id', 'store_id', 'product_category_id', 'product_type_id', 'name', 'slug', 'price', 'discount_price', 'views', 'sales_count', 'is_active', 'approval_status'])
+            ->select(['id', 'store_id', 'product_category_id', 'product_type_id', 'name', 'slug', 'price', 'discount_price', 'views', 'sales_count', 'is_active', 'approval_status', 'rating_override', 'reviews_count'])
             ->orderByDesc('views')
             ->take(30)
             ->get();
@@ -83,11 +89,19 @@ class PublicController extends Controller
             ->pluck('avg_rating', 'products.store_id');
 
         $topStores = \App\Models\Store::query()
+            ->select(['id', 'user_id', 'name', 'slug', 'logo', 'description', 'store_mode', 'created_at'])
             ->withCount(['products' => function ($q) {
                 $q->published();
             }])
             ->with(['products' => function ($q) {
-                $q->published()->with('images')->take(4);
+                $q->published()
+                    ->select(['id', 'store_id', 'product_category_id', 'name', 'slug', 'price', 'discount_price', 'rating_override', 'reviews_count', 'views', 'sales_count'])
+                    ->with([
+                        'images:id,product_id,image_path,is_main',
+                        'category:id,name',
+                        'reviews:id,product_id,rating,is_visible'
+                    ])
+                    ->take(4);
             }])
             ->get()
             ->map(function ($store) use ($storeSalesCounts, $storeAvgRatings) {
@@ -114,8 +128,15 @@ class PublicController extends Controller
 
         // 12 Produk terbaru untuk katalog jelajah mobile
         $latestProducts = Product::query()
-            ->with(['images', 'category', 'type', 'store', 'reviews'])
+            ->with([
+                'images:id,product_id,image_path,is_main',
+                'category:id,name',
+                'type:id,name',
+                'store:id,name,slug',
+                'reviews:id,product_id,rating,is_visible'
+            ])
             ->published()
+            ->select(['id', 'store_id', 'product_category_id', 'product_type_id', 'name', 'slug', 'price', 'discount_price', 'views', 'sales_count', 'rating_override', 'reviews_count', 'is_active', 'approval_status', 'created_at'])
             ->latest()
             ->take(12)
             ->get();

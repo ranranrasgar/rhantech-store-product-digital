@@ -74,12 +74,12 @@
          x-transition:leave-start="opacity-100 scale-100 translate-y-0"
          x-transition:leave-end="opacity-0 scale-95 translate-y-4"
          @click.stop
-         class="relative w-full max-w-md sm:max-w-lg bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden z-10 my-auto">
+         class="relative w-full max-w-md sm:max-w-lg bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 overflow-hidden z-10 my-auto">
 
         <!-- Top Close Button -->
         <button type="button"
                 @click="close()"
-                class="absolute top-3.5 right-3.5 z-20 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center backdrop-blur-md transition-all shadow-md cursor-pointer group"
+                class="absolute top-3.5 right-3.5 z-20 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center backdrop-blur-md transition-colors cursor-pointer group"
                 aria-label="Tutup Pop-up">
             <span class="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">close</span>
         </button>
@@ -120,12 +120,12 @@
                         <!-- Controls for Slider -->
                         <button type="button"
                                 @click="prevImage()"
-                                class="absolute left-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center backdrop-blur-md transition-all">
+                                class="absolute left-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center backdrop-blur-md transition-colors">
                             <span class="material-symbols-outlined text-sm">chevron_left</span>
                         </button>
                         <button type="button"
                                 @click="nextImage()"
-                                class="absolute right-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center backdrop-blur-md transition-all">
+                                class="absolute right-2.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center backdrop-blur-md transition-colors">
                             <span class="material-symbols-outlined text-sm">chevron_right</span>
                         </button>
 
@@ -142,18 +142,15 @@
                 @endif
             </div>
         @else
-            <!-- Eye-catching header gradient when no custom image is uploaded -->
-            <div class="relative px-6 pt-7 pb-5 bg-gradient-to-br from-primary/15 via-secondary/10 to-amber-500/10 dark:from-primary/25 dark:via-slate-800 dark:to-amber-500/15 border-b border-slate-100 dark:border-slate-800 overflow-hidden">
-                <div class="absolute -top-10 -right-10 w-36 h-36 bg-primary/20 rounded-full blur-2xl pointer-events-none"></div>
-                <div class="absolute -bottom-8 -left-8 w-32 h-32 bg-secondary/20 rounded-full blur-2xl pointer-events-none"></div>
-
+            <!-- Clean flat header when no custom image is uploaded -->
+            <div class="relative px-6 pt-7 pb-5 bg-slate-100 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-800 overflow-hidden">
                 <div class="relative z-10 flex items-center gap-3">
-                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-primary to-secondary text-white flex items-center justify-center shadow-lg shadow-primary/25 shrink-0">
+                    <div class="w-12 h-12 rounded-2xl bg-sky-500 text-white flex items-center justify-center shrink-0">
                         <span class="material-symbols-outlined text-[26px]">{{ $targetBadge['icon'] }}</span>
                     </div>
                     <div>
                         <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black tracking-wider uppercase {{ $targetBadge['bg'] }} mb-1">
-                            <span class="inline-block w-1.5 h-1.5 rounded-full bg-current animate-ping"></span>
+                            <span class="inline-block w-1.5 h-1.5 rounded-full bg-current"></span>
                             {{ $targetBadge['label'] }}
                         </span>
                         <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">{{ $targetBadge['sub'] }}</p>
@@ -180,7 +177,7 @@
                 @if($popupAd->link_url)
                     <a href="{{ $popupAd->link_url }}"
                        @click="close()"
-                       class="w-full sm:flex-1 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl sm:rounded-2xl bg-gradient-to-r from-primary to-secondary hover:opacity-95 text-white font-bold text-xs sm:text-sm shadow-md shadow-primary/25 transition-all text-center">
+                       class="w-full sm:flex-1 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl sm:rounded-2xl bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs sm:text-sm transition-colors text-center">
                         <span>{{ $popupAd->link_text ?: 'Lihat Selengkapnya' }}</span>
                         <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
                     </a>
@@ -192,7 +189,7 @@
                 @else
                     <button type="button"
                             @click="close()"
-                            class="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl sm:rounded-2xl bg-gradient-to-r from-primary to-secondary hover:opacity-95 text-white font-bold text-xs sm:text-sm shadow-md shadow-primary/25 transition-all text-center cursor-pointer">
+                            class="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl sm:rounded-2xl bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs sm:text-sm transition-colors text-center cursor-pointer">
                         <span>{{ $popupAd->link_text ?: 'Mengerti & Tutup' }}</span>
                     </button>
                 @endif

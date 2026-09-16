@@ -17,7 +17,7 @@ class PasswordResetController extends Controller
      */
     public function create()
     {
-        $company = CompanyProfile::first();
+        $company = CompanyProfile::query()->first();
         return view('auth.forgot-password', compact('company'));
     }
 
@@ -46,11 +46,12 @@ class PasswordResetController extends Controller
     /**
      * Display the password reset view.
      */
-    public function edit(Request $request)
+    public function edit(Request $request, ?string $token = null)
     {
-        $company = CompanyProfile::first();
+        $company = CompanyProfile::query()->first();
         return view('auth.reset-password', [
             'request' => $request,
+            'token' => $token ?? $request->route('token'),
             'company' => $company,
         ]);
     }

@@ -141,4 +141,37 @@
             scroll-behavior: auto;
         }
     }
+
+    /* Google Material Symbols Font & Robust Ligature Styling */
+    @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
+
+    .material-symbols-outlined {
+        font-family: 'Material Symbols Outlined' !important;
+        font-weight: normal;
+        font-style: normal;
+        font-size: 24px;
+        line-height: 1;
+        letter-spacing: normal;
+        text-transform: none;
+        display: inline-block;
+        white-space: nowrap;
+        word-wrap: normal;
+        direction: ltr;
+        -webkit-font-feature-settings: 'liga';
+        -webkit-font-smoothing: antialiased;
+        vertical-align: middle;
+    }
+
+    /* Hilangkan semua degradasi & shadow blur di object apapun */
+    [class*="shadow"]:not([class*="ring"]) {
+        --tw-shadow: 0 0 #0000 !important;
+        --tw-shadow-colored: 0 0 #0000 !important;
+        box-shadow: none !important;
+    }
+    .shadow, .shadow-xs, .shadow-sm, .shadow-md, .shadow-lg, .shadow-xl, .shadow-2xl, .shadow-2xs {
+        box-shadow: none !important;
+    }
+    [class*="drop-shadow"] {
+        filter: none !important;
+    }
 </style>

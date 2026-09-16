@@ -37,21 +37,21 @@
 
         <!-- Notification Alerts -->
         @if(session('success'))
-            <div class="p-3.5 md:p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300 text-xs md:text-sm flex items-center gap-2.5 shadow-xs">
+            <div class="p-3.5 md:p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300 text-xs md:text-sm flex items-center gap-2.5">
                 <span class="material-symbols-outlined text-emerald-600 dark:text-emerald-400 text-[20px]">check_circle</span>
                 <span>{{ session('success') }}</span>
             </div>
         @endif
 
         @if(session('warning'))
-            <div class="p-3.5 md:p-4 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 text-amber-800 dark:text-amber-300 text-xs md:text-sm flex items-center gap-2.5 shadow-xs">
+            <div class="p-3.5 md:p-4 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 text-amber-800 dark:text-amber-300 text-xs md:text-sm flex items-center gap-2.5">
                 <span class="material-symbols-outlined text-amber-600 dark:text-amber-400 text-[20px]">warning</span>
                 <span>{{ session('warning') }}</span>
             </div>
         @endif
 
         @if(session('error'))
-            <div class="p-3.5 md:p-4 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/60 text-rose-800 dark:text-rose-300 text-xs md:text-sm flex items-center gap-2.5 shadow-xs">
+            <div class="p-3.5 md:p-4 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/60 text-rose-800 dark:text-rose-300 text-xs md:text-sm flex items-center gap-2.5">
                 <span class="material-symbols-outlined text-rose-600 dark:text-rose-400 text-[20px]">error</span>
                 <span>{{ session('error') }}</span>
             </div>
@@ -69,20 +69,19 @@
             </div>
 
             <!-- Native Wallet & Balance Card -->
-            <div class="bg-white dark:bg-[#111726] border border-slate-200/90 dark:border-[#222f49] rounded-2xl p-4 shadow-xs space-y-3.5">
+            <div class="bg-white dark:bg-[#111726] border border-slate-200/90 dark:border-[#222f49] rounded-2xl p-4 space-y-3.5">
                 <div class="flex items-start justify-between gap-2">
                     <div>
                         <div class="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 font-semibold">
-                            <span class="material-symbols-outlined text-[16px] text-[#00838f]">account_balance_wallet</span>
+                            <span class="material-symbols-outlined text-[16px] text-slate-900 dark:text-white">account_balance_wallet</span>
                             <span>Saldo Iklan Toko</span>
                         </div>
                         <div class="text-2xl font-black mt-0.5 {{ $adBalance <= 0 ? 'text-rose-600 dark:text-rose-400' : 'text-slate-900 dark:text-white' }} tracking-tight">
                             Rp{{ number_format($adBalance, 0, ',', '.') }}
                         </div>
                     </div>
-                    <a href="{{ route('tenant.ads.top-up') }}" class="px-4 py-2 bg-[#00838f] hover:bg-[#00727d] text-white text-xs font-bold rounded-xl shadow-xs transition-all flex items-center gap-1 shrink-0 active:scale-95">
-                        <span class="material-symbols-outlined text-[16px]">payments</span>
-                        <span>Isi Saldo</span>
+                    <a href="{{ route('tenant.ads.top-up') }}" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-bold rounded-xl transition-all flex items-center gap-1 shrink-0 active:scale-95">
+                        <span class="material-symbols-outlined text-[15px]">add</span> Top-Up
                     </a>
                 </div>
 
@@ -117,11 +116,11 @@
                 <div class="flex gap-3 overflow-x-auto pb-1 snap-x scrollbar-none" style="scrollbar-width: none; -ms-overflow-style: none;">
                     
                     <!-- Card 1: Voucher Disubsidi Platform -->
-                    <div class="snap-start shrink-0 w-[280px] bg-white dark:bg-[#111726] border border-slate-200/90 dark:border-[#222f49] rounded-2xl p-3.5 shadow-xs flex flex-col justify-between">
+                    <div class="snap-start shrink-0 w-[280px] bg-white dark:bg-[#111726] border border-slate-200/90 dark:border-[#222f49] rounded-2xl p-3.5 flex flex-col justify-between">
                         <div>
                             <div class="flex items-center justify-between mb-1.5">
-                                <span class="px-2 py-0.5 rounded-full bg-teal-50 dark:bg-teal-950/50 text-[#00838f] dark:text-teal-400 text-[10px] font-bold">Voucher Toko</span>
-                                <span class="material-symbols-outlined text-[#00838f] text-[18px]">redeem</span>
+                                <span class="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-[10px] font-bold">Voucher Toko</span>
+                                <span class="material-symbols-outlined text-slate-900 dark:text-white text-[18px]">redeem</span>
                             </div>
                             <h4 class="text-xs font-bold text-slate-900 dark:text-white leading-snug">Voucher Disubsidi Platform Rp500.000</h4>
                             <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-1">Dukungan promosi dari platform untuk toko Anda.</p>
@@ -135,7 +134,7 @@
                             @else
                                 <form action="{{ route('tenant.ads.claim-voucher') }}" method="POST">
                                     @csrf
-                                    <button type="submit" class="w-full py-1.5 px-3 rounded-lg bg-[#00838f] text-white text-[11px] font-bold shadow-xs cursor-pointer text-center">
+                                    <button type="submit" class="w-full py-1.5 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-[11px] font-bold cursor-pointer text-center transition-all active:scale-95">
                                         Klaim Sekarang
                                     </button>
                                 </form>
@@ -144,34 +143,34 @@
                     </div>
 
                     <!-- Card 2: Buku Panduan Bidding -->
-                    <div class="snap-start shrink-0 w-[260px] bg-white dark:bg-[#111726] border border-slate-200/90 dark:border-[#222f49] rounded-2xl p-3.5 shadow-xs flex flex-col justify-between">
+                    <div class="snap-start shrink-0 w-[260px] bg-white dark:bg-[#111726] border border-slate-200/90 dark:border-[#222f49] rounded-2xl p-3.5 flex flex-col justify-between">
                         <div>
                             <div class="flex items-center justify-between mb-1.5">
-                                <span class="px-2 py-0.5 rounded-full bg-sky-50 dark:bg-sky-950/50 text-sky-600 dark:text-sky-400 text-[10px] font-bold">Panduan Rumus</span>
-                                <span class="material-symbols-outlined text-sky-600 text-[18px]">menu_book</span>
+                                <span class="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-[10px] font-bold">Panduan Rumus</span>
+                                <span class="material-symbols-outlined text-slate-700 dark:text-slate-300 text-[18px]">menu_book</span>
                             </div>
                             <h4 class="text-xs font-bold text-slate-900 dark:text-white leading-snug">Cara Kerja Saldo & Bidding Iklan</h4>
                             <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-1">Pelajari impresi gratis dan pemotongan biaya per klik.</p>
                         </div>
                         <div class="mt-3 pt-2.5 border-t border-slate-100 dark:border-[#222f49]">
-                            <a href="{{ route('help.show', 'panduan-rumus-modal-iklan-harga-bid-per-klik-cpc-sistem-pemotongan-saldo') }}" target="_blank" class="w-full py-1.5 px-3 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-[#00838f] hover:text-white text-[11px] font-bold text-center block transition-colors">
+                            <a href="{{ route('help.show', 'panduan-rumus-modal-iklan-harga-bid-per-klik-cpc-sistem-pemotongan-saldo') }}" target="_blank" class="w-full py-1.5 px-3 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-slate-900 text-[11px] font-bold text-center block transition-colors">
                                 Baca Panduan
                             </a>
                         </div>
                     </div>
 
                     <!-- Card 3: Optimasi Kata Kunci -->
-                    <div class="snap-start shrink-0 w-[260px] bg-white dark:bg-[#111726] border border-slate-200/90 dark:border-[#222f49] rounded-2xl p-3.5 shadow-xs flex flex-col justify-between">
+                    <div class="snap-start shrink-0 w-[260px] bg-white dark:bg-[#111726] border border-slate-200/90 dark:border-[#222f49] rounded-2xl p-3.5 flex flex-col justify-between">
                         <div>
                             <div class="flex items-center justify-between mb-1.5">
-                                <span class="px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold">Tips Konversi</span>
+                                <span class="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-[10px] font-bold">Tips Konversi</span>
                                 <span class="material-symbols-outlined text-emerald-600 text-[18px]">trending_up</span>
                             </div>
                             <h4 class="text-xs font-bold text-slate-900 dark:text-white leading-snug">Pasang Kata Kunci Terpopuler</h4>
                             <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-1">Mencocokkan kata pencarian pembeli untuk +25% closing.</p>
                         </div>
                         <div class="mt-3 pt-2.5 border-t border-slate-100 dark:border-[#222f49]">
-                            <a href="{{ route('tenant.ads.create') }}" class="w-full py-1.5 px-3 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-[#00838f] hover:text-white text-[11px] font-bold text-center block transition-colors">
+                            <a href="{{ route('tenant.ads.create') }}" class="w-full py-1.5 px-3 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-slate-900 text-[11px] font-bold text-center block transition-colors">
                                 Mulai Pasang
                             </a>
                         </div>
@@ -182,13 +181,13 @@
 
             <!-- Native Pill Tabs Filter -->
             <div class="flex items-center gap-2 p-1 bg-slate-200/60 dark:bg-slate-800/80 rounded-xl">
-                <button type="button" @click="activeMobileTab = 'all'" class="flex-1 py-1.5 px-3 rounded-lg text-xs font-bold transition-all text-center" :class="activeMobileTab === 'all' ? 'bg-white dark:bg-[#111726] text-slate-900 dark:text-white shadow-xs' : 'text-slate-600 dark:text-slate-400'">
+                <button type="button" @click="activeMobileTab = 'all'" class="flex-1 py-1.5 px-3 rounded-lg text-xs font-bold transition-all text-center" :class="activeMobileTab === 'all' ? 'bg-white dark:bg-[#111726] text-slate-900 dark:text-white' : 'text-slate-600 dark:text-slate-400'">
                     Semua ({{ $totalAdsCount }})
                 </button>
-                <button type="button" @click="activeMobileTab = 'active'" class="flex-1 py-1.5 px-3 rounded-lg text-xs font-bold transition-all text-center" :class="activeMobileTab === 'active' ? 'bg-white dark:bg-[#111726] text-slate-900 dark:text-white shadow-xs' : 'text-slate-600 dark:text-slate-400'">
+                <button type="button" @click="activeMobileTab = 'active'" class="flex-1 py-1.5 px-3 rounded-lg text-xs font-bold transition-all text-center" :class="activeMobileTab === 'active' ? 'bg-white dark:bg-[#111726] text-slate-900 dark:text-white' : 'text-slate-600 dark:text-slate-400'">
                     Berjalan ({{ $activeAdsCount }})
                 </button>
-                <button type="button" @click="activeMobileTab = 'paused'" class="flex-1 py-1.5 px-3 rounded-lg text-xs font-bold transition-all text-center" :class="activeMobileTab === 'paused' ? 'bg-white dark:bg-[#111726] text-slate-900 dark:text-white shadow-xs' : 'text-slate-600 dark:text-slate-400'">
+                <button type="button" @click="activeMobileTab = 'paused'" class="flex-1 py-1.5 px-3 rounded-lg text-xs font-bold transition-all text-center" :class="activeMobileTab === 'paused' ? 'bg-white dark:bg-[#111726] text-slate-900 dark:text-white' : 'text-slate-600 dark:text-slate-400'">
                     Dijeda ({{ $pausedAdsCount }})
                 </button>
             </div>
@@ -196,7 +195,7 @@
             <!-- Native Ads Card Feed -->
             <div class="space-y-3">
                 @forelse($ads as $ad)
-                <div class="bg-white dark:bg-[#111726] border border-slate-200/90 dark:border-[#222f49] rounded-2xl p-4 shadow-xs space-y-3"
+                <div class="bg-white dark:bg-[#111726] border border-slate-200/90 dark:border-[#222f49] rounded-2xl p-4 space-y-3"
                      x-show="activeMobileTab === 'all' || (activeMobileTab === 'active' && '{{ $ad->status }}' === 'active') || (activeMobileTab === 'paused' && '{{ $ad->status }}' !== 'active')">
                     
                     <!-- Card Top Header -->
@@ -210,7 +209,7 @@
                         </div>
                         <div class="min-w-0 flex-1">
                             <div class="flex items-center justify-between gap-1.5 mb-1">
-                                <span class="text-[9px] font-extrabold uppercase px-1.5 py-0.2 rounded bg-teal-50 dark:bg-teal-950/50 text-[#00838f] dark:text-teal-400 border border-teal-100 dark:border-teal-900/50">IKLAN</span>
+                                <span class="text-[9px] font-extrabold uppercase px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">IKLAN</span>
                                 @if($ad->status === 'active')
                                     @if($adBalance > 0)
                                         <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400">
@@ -233,7 +232,7 @@
                                     {{ $ad->product->name }} • <strong class="text-emerald-600 dark:text-emerald-400">Rp{{ number_format($ad->product->price, 0, ',', '.') }}</strong>
                                 </p>
                             @else
-                                <p class="text-[11px] text-[#00838f] font-semibold">Iklan Profil Toko</p>
+                                <p class="text-[11px] text-slate-600 dark:text-slate-400 font-semibold">Iklan Profil Toko</p>
                             @endif
                         </div>
                     </div>
@@ -246,7 +245,7 @@
                         </div>
                         <div class="border-x border-slate-200 dark:border-slate-800">
                             <span class="text-[10px] text-slate-400 block">Klik</span>
-                            <span class="text-xs font-black text-[#00838f] dark:text-teal-400">{{ number_format($ad->clicks_count) }}</span>
+                            <span class="text-xs font-black text-slate-900 dark:text-white">{{ number_format($ad->clicks_count) }}</span>
                         </div>
                         <div>
                             <span class="text-[10px] text-slate-400 block">Biaya</span>
@@ -279,7 +278,7 @@
                         <form action="{{ route('tenant.ads.toggle', $ad->id) }}" method="POST" class="flex-1 max-w-[140px]">
                             @csrf
                             @method('PATCH')
-                            <button type="submit" class="w-full py-1.5 px-3 rounded-xl text-xs font-bold transition-all shadow-2xs flex items-center justify-center gap-1.5 cursor-pointer {{ $ad->status === 'active' ? 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800' : 'bg-[#00838f] text-white hover:bg-[#00727d]' }}">
+                            <button type="submit" class="w-full py-1.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer {{ $ad->status === 'active' ? 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800' : 'bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 active:scale-95' }}">
                                 <span class="material-symbols-outlined text-[16px]">{{ $ad->status === 'active' ? 'pause' : 'play_arrow' }}</span>
                                 <span>{{ $ad->status === 'active' ? 'Jeda Iklan' : 'Aktifkan' }}</span>
                             </button>
@@ -287,13 +286,13 @@
                     </div>
                 </div>
                 @empty
-                <div class="bg-white dark:bg-[#111726] border border-slate-200/90 dark:border-[#222f49] rounded-2xl p-8 text-center shadow-xs">
-                    <div class="w-14 h-14 rounded-2xl bg-teal-50 dark:bg-teal-950/50 text-[#00838f] flex items-center justify-center mx-auto mb-3">
+                <div class="bg-white dark:bg-[#111726] border border-slate-200/90 dark:border-[#222f49] rounded-2xl p-8 text-center">
+                    <div class="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center mx-auto mb-3">
                         <span class="material-symbols-outlined text-[28px]">ads_click</span>
                     </div>
                     <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200">Belum Ada Iklan</h3>
                     <p class="text-xs text-slate-400 mt-1 max-w-xs mx-auto">Promosikan produk digital Anda agar muncul di hasil pencarian teratas pembeli.</p>
-                    <a href="{{ route('tenant.ads.create') }}" class="inline-flex items-center gap-1.5 mt-4 px-4 py-2 bg-[#00838f] text-white text-xs font-bold rounded-xl shadow-xs">
+                    <a href="{{ route('tenant.ads.create') }}" class="inline-flex items-center gap-1.5 mt-4 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-bold rounded-xl transition-all active:scale-95">
                         <span class="material-symbols-outlined text-[16px]">add</span> Buat Iklan Sekarang
                     </a>
                 </div>
@@ -322,7 +321,7 @@
                 }
             </style>
             <a href="{{ route('tenant.ads.create') }}" 
-               class="fab-animated fixed bottom-20 right-4 z-40 md:hidden w-14 h-14 rounded-full bg-[#00838f] hover:bg-[#00727d] text-white border-2 border-white dark:border-slate-800 flex items-center justify-center cursor-pointer select-none group"
+               class="fixed bottom-20 right-4 z-40 md:hidden w-14 h-14 rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 border-2 border-white dark:border-slate-800 flex items-center justify-center cursor-pointer select-none group active:scale-95 transition-all"
                title="Buat Iklan Baru"
                aria-label="Buat Iklan Baru">
                 <span class="material-symbols-outlined text-[30px] font-bold transition-transform duration-300 group-hover:rotate-90">add</span>
@@ -337,13 +336,13 @@
             <!-- Breadcrumb & Title Bar -->
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-200 dark:border-slate-800">
                 <div class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-                    <a href="{{ route('tenant.dashboard') }}" class="hover:text-[#00838f] transition-colors">Beranda</a>
+                    <a href="{{ route('tenant.dashboard') }}" class="hover:text-slate-900 dark:hover:text-white transition-colors">Beranda</a>
                     <span>&gt;</span>
                     <span class="text-slate-800 dark:text-slate-200 font-semibold">Iklan Toko & Promosi</span>
                 </div>
                 
                 <div class="flex items-center gap-3">
-                    <a href="{{ route('tenant.ads.create') }}" class="inline-flex items-center gap-1.5 px-4 py-2 bg-[#00838f] hover:bg-[#00727d] text-white rounded-xl text-xs md:text-sm font-bold shadow-xs transition-all transform hover:-translate-y-0.5">
+                    <a href="{{ route('tenant.ads.create') }}" class="inline-flex items-center gap-1.5 px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 rounded-xl text-xs md:text-sm font-bold transition-all active:scale-95">
                         <span class="material-symbols-outlined text-[18px]">add</span>
                         Buat Iklan Baru
                     </a>
@@ -353,13 +352,13 @@
             <!-- Card Saldo Saya & Program Spesial Toko (Clean Solid Cards) -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
                 <!-- Kolom Kiri: Saldo Saya (2 Span) -->
-                <div class="lg:col-span-2 bg-white dark:bg-[#111726] rounded-2xl p-5 md:p-6 border border-slate-200/90 dark:border-[#222f49] shadow-xs relative overflow-hidden">
+                <div class="lg:col-span-2 bg-white dark:bg-[#111726] rounded-2xl p-5 md:p-6 border border-slate-200/90 dark:border-[#222f49] relative overflow-hidden">
                     <div class="flex items-center justify-between mb-4">
                         <div class="flex items-center gap-2">
-                            <span class="material-symbols-outlined text-[#00838f] text-[20px]">account_balance_wallet</span>
+                            <span class="material-symbols-outlined text-slate-900 dark:text-white text-[20px]">account_balance_wallet</span>
                             <h2 class="text-base font-bold text-slate-800 dark:text-slate-100">Saldo Saya</h2>
                         </div>
-                        <a href="{{ route('tenant.ads.top-up') }}" class="text-xs font-semibold text-[#00838f] hover:underline flex items-center gap-0.5">
+                        <a href="{{ route('tenant.ads.top-up') }}" class="text-xs font-semibold text-slate-900 dark:text-white hover:underline flex items-center gap-0.5">
                             Lihat Rincian <span class="material-symbols-outlined text-[14px]">chevron_right</span>
                         </a>
                     </div>
@@ -368,7 +367,7 @@
                         <div>
                             <div class="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
                                 <span>Saldo Iklan</span>
-                                <a href="{{ route('help.show', 'cara-kerja-saldo-iklan-bonus-saldo-rp500000') }}" target="_blank" class="text-slate-400 hover:text-[#00838f] transition-colors" title="Pelajari cara kerja saldo iklan & bonus Rp500.000">
+                                <a href="{{ route('help.show', 'cara-kerja-saldo-iklan-bonus-saldo-rp500000') }}" target="_blank" class="text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors" title="Pelajari cara kerja saldo iklan & bonus Rp500.000">
                                     <span class="material-symbols-outlined text-[14px]">help</span>
                                 </a>
                             </div>
@@ -397,25 +396,25 @@
                     @endif
 
                     <div class="flex flex-wrap items-center gap-3">
-                        <a href="{{ route('tenant.ads.top-up') }}" class="px-6 py-2.5 bg-[#00838f] hover:bg-[#00727d] text-white text-xs sm:text-sm font-bold rounded-xl shadow-xs transition-all flex items-center gap-2">
-                            <span class="material-symbols-outlined text-[18px]">payments</span>
-                            Isi Saldo
+                        <a href="{{ route('tenant.ads.top-up') }}" class="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs sm:text-sm font-bold rounded-xl transition-all flex items-center gap-2 active:scale-95">
+                            <span class="material-symbols-outlined text-[18px]">add_circle</span>
+                            Top-Up Saldo Iklan
                         </a>
                         <button type="button" @click="showPromoModal = true" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs sm:text-sm font-semibold rounded-xl transition-all flex items-center gap-1.5 cursor-pointer">
                             <span class="material-symbols-outlined text-[18px] text-amber-500">card_giftcard</span>
                             Panduan & Promo Spesial
                         </button>
                         <a href="{{ route('help.show', 'panduan-rumus-modal-iklan-harga-bid-per-klik-cpc-sistem-pemotongan-saldo') }}" target="_blank" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs sm:text-sm font-semibold rounded-xl transition-all flex items-center gap-1.5">
-                            <span class="material-symbols-outlined text-[18px] text-[#00838f]">menu_book</span>
+                            <span class="material-symbols-outlined text-[18px] text-slate-700 dark:text-slate-300">menu_book</span>
                             Buku Panduan Iklan
                         </a>
                     </div>
                 </div>
 
                 <!-- Kolom Kanan: Voucher & Program Spesial Toko (Solid Clean Card) -->
-                <div class="bg-white dark:bg-[#111726] rounded-2xl p-5 md:p-6 border border-slate-200/90 dark:border-[#222f49] shadow-xs flex flex-col justify-between">
+                <div class="bg-white dark:bg-[#111726] rounded-2xl p-5 md:p-6 border border-slate-200/90 dark:border-[#222f49] flex flex-col justify-between">
                     <div>
-                        <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-teal-50 dark:bg-teal-950/50 text-[#00838f] dark:text-teal-400 text-[11px] font-bold mb-3 border border-teal-100 dark:border-teal-900/40">
+                        <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-[11px] font-bold mb-3 border border-slate-200 dark:border-slate-700">
                             <span class="material-symbols-outlined text-[14px]">local_offer</span>
                             Voucher Spesial Toko
                         </div>
@@ -445,14 +444,14 @@
                                 <span class="material-symbols-outlined text-[18px]">verified</span>
                                 <span>Bonus Rp500.000 Aktif di Saldo Iklan</span>
                             </div>
-                            <a href="{{ route('tenant.ads.create') }}" class="w-full py-2.5 px-4 rounded-xl bg-[#00838f] hover:bg-[#00727d] text-white text-xs sm:text-sm font-bold text-center block shadow-xs transition-all">
+                            <a href="{{ route('tenant.ads.create') }}" class="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs sm:text-sm font-bold text-center block transition-all active:scale-95">
                                 Pasang Iklan Sekarang
                             </a>
                         </div>
                         @else
                         <form action="{{ route('tenant.ads.claim-voucher') }}" method="POST">
                             @csrf
-                            <button type="submit" class="w-full py-2.5 px-4 rounded-xl bg-[#00838f] hover:bg-[#00727d] text-white text-xs sm:text-sm font-bold text-center flex items-center justify-center gap-2 shadow-xs transition-all cursor-pointer">
+                            <button type="submit" class="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs sm:text-sm font-bold text-center flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer">
                                 <span class="material-symbols-outlined text-[18px]">redeem</span>
                                 <span>Klaim Bonus Rp500.000 Sekarang</span>
                             </button>
@@ -466,7 +465,7 @@
             <div>
                 <div class="flex items-center justify-between mb-3">
                     <div class="flex items-center gap-2">
-                        <span class="w-2 h-5 bg-[#00838f] rounded-full"></span>
+                        <span class="w-2 h-5 bg-slate-900 dark:bg-white rounded-full"></span>
                         <h3 class="text-sm md:text-base font-bold text-slate-800 dark:text-slate-100">
                             Rekomendasi untuk Mengoptimalkan Iklan
                         </h3>
@@ -476,9 +475,9 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <!-- Card Rekomendasi 1 -->
-                    <div class="bg-white dark:bg-[#111726] p-4 rounded-2xl border border-slate-200/90 dark:border-[#222f49] shadow-xs flex flex-col justify-between hover:border-[#00838f]/50 transition-colors">
+                    <div class="bg-white dark:bg-[#111726] p-4 rounded-2xl border border-slate-200/90 dark:border-[#222f49] flex flex-col justify-between hover:border-slate-400 dark:hover:border-slate-600 transition-colors">
                         <div>
-                            <div class="w-9 h-9 rounded-xl bg-teal-50 dark:bg-teal-950/50 text-[#00838f] flex items-center justify-center mb-3">
+                            <div class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center mb-3">
                                 <span class="material-symbols-outlined text-[20px]">auto_graph</span>
                             </div>
                             <h4 class="text-xs font-bold text-slate-900 dark:text-white leading-snug line-clamp-2">
@@ -489,16 +488,16 @@
                             </p>
                         </div>
                         <div class="mt-4 pt-3 border-t border-slate-100 dark:border-[#222f49]">
-                            <a href="{{ route('tenant.ads.top-up') }}" class="w-full py-1.5 px-3 rounded-lg bg-teal-50 dark:bg-teal-950/40 text-[#00838f] hover:bg-[#00838f] hover:text-white text-xs font-bold text-center block transition-all">
+                            <a href="{{ route('tenant.ads.top-up') }}" class="w-full py-1.5 px-3 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-slate-900 text-xs font-bold text-center block transition-all">
                                 Atur Saldo
                             </a>
                         </div>
                     </div>
 
                     <!-- Card Rekomendasi 2 -->
-                    <div class="bg-white dark:bg-[#111726] p-4 rounded-2xl border border-slate-200/90 dark:border-[#222f49] shadow-xs flex flex-col justify-between hover:border-[#00838f]/50 transition-colors">
+                    <div class="bg-white dark:bg-[#111726] p-4 rounded-2xl border border-slate-200/90 dark:border-[#222f49] flex flex-col justify-between hover:border-slate-400 dark:hover:border-slate-600 transition-colors">
                         <div>
-                            <div class="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-950/50 text-emerald-600 flex items-center justify-center mb-3">
+                            <div class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center mb-3">
                                 <span class="material-symbols-outlined text-[20px]">trending_up</span>
                             </div>
                             <h4 class="text-xs font-bold text-slate-900 dark:text-white leading-snug line-clamp-2">
@@ -509,16 +508,16 @@
                             </p>
                         </div>
                         <div class="mt-4 pt-3 border-t border-slate-100 dark:border-[#222f49]">
-                            <a href="{{ route('tenant.ads.create') }}" class="w-full py-1.5 px-3 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-600 hover:text-white text-xs font-bold text-center block transition-all">
+                            <a href="{{ route('tenant.ads.create') }}" class="w-full py-1.5 px-3 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-slate-900 text-xs font-bold text-center block transition-all">
                                 Pasang Kata Kunci
                             </a>
                         </div>
                     </div>
 
                     <!-- Card Rekomendasi 3 -->
-                    <div class="bg-white dark:bg-[#111726] p-4 rounded-2xl border border-slate-200/90 dark:border-[#222f49] shadow-xs flex flex-col justify-between hover:border-[#00838f]/50 transition-colors">
+                    <div class="bg-white dark:bg-[#111726] p-4 rounded-2xl border border-slate-200/90 dark:border-[#222f49] flex flex-col justify-between hover:border-slate-400 dark:hover:border-slate-600 transition-colors">
                         <div>
-                            <div class="w-9 h-9 rounded-xl bg-sky-100 dark:bg-sky-950/50 text-sky-600 flex items-center justify-center mb-3">
+                            <div class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center mb-3">
                                 <span class="material-symbols-outlined text-[20px]">bolt</span>
                             </div>
                             <h4 class="text-xs font-bold text-slate-900 dark:text-white leading-snug line-clamp-2">
@@ -529,16 +528,16 @@
                             </p>
                         </div>
                         <div class="mt-4 pt-3 border-t border-slate-100 dark:border-[#222f49]">
-                            <a href="{{ route('tenant.ads.create') }}" class="w-full py-1.5 px-3 rounded-lg bg-sky-50 dark:bg-sky-950/40 text-sky-700 dark:text-sky-400 hover:bg-sky-600 hover:text-white text-xs font-bold text-center block transition-all">
+                            <a href="{{ route('tenant.ads.create') }}" class="w-full py-1.5 px-3 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-slate-900 text-xs font-bold text-center block transition-all">
                                 Terapkan Sekarang
                             </a>
                         </div>
                     </div>
 
                     <!-- Card Rekomendasi 4 -->
-                    <div class="bg-white dark:bg-[#111726] p-4 rounded-2xl border border-slate-200/90 dark:border-[#222f49] shadow-xs flex flex-col justify-between hover:border-[#00838f]/50 transition-colors">
+                    <div class="bg-white dark:bg-[#111726] p-4 rounded-2xl border border-slate-200/90 dark:border-[#222f49] flex flex-col justify-between hover:border-slate-400 dark:hover:border-slate-600 transition-colors">
                         <div>
-                            <div class="w-9 h-9 rounded-xl bg-purple-100 dark:bg-purple-950/50 text-purple-600 flex items-center justify-center mb-3">
+                            <div class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center mb-3">
                                 <span class="material-symbols-outlined text-[20px]">stars</span>
                             </div>
                             <h4 class="text-xs font-bold text-slate-900 dark:text-white leading-snug line-clamp-2">
@@ -549,7 +548,7 @@
                             </p>
                         </div>
                         <div class="mt-4 pt-3 border-t border-slate-100 dark:border-[#222f49]">
-                            <button type="button" @click="showPromoModal = true" class="w-full py-1.5 px-3 rounded-lg bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-400 hover:bg-purple-600 hover:text-white text-xs font-bold text-center block transition-all cursor-pointer">
+                            <button type="button" @click="showPromoModal = true" class="w-full py-1.5 px-3 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-slate-900 text-xs font-bold text-center block transition-all cursor-pointer">
                                 Pelajari Syarat
                             </button>
                         </div>
@@ -558,7 +557,7 @@
             </div>
 
             <!-- Tabel Daftar Iklan Toko & Produk (Desktop Table) -->
-            <div class="bg-white dark:bg-[#111726] rounded-2xl border border-slate-200/90 dark:border-[#222f49] shadow-xs overflow-hidden">
+            <div class="bg-white dark:bg-[#111726] rounded-2xl border border-slate-200/90 dark:border-[#222f49] overflow-hidden">
                 <div class="p-5 border-b border-slate-100 dark:border-[#222f49] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
                         <h3 class="text-base font-bold text-slate-800 dark:text-slate-100">Daftar Iklan Toko & Produk</h3>
@@ -587,7 +586,7 @@
                                 <th class="py-3.5 px-4">
                                     <div class="flex items-center gap-1">
                                         <span>Tipe & Target</span>
-                                        <a href="{{ route('help.show', 'panduan-memasang-iklan-produk-bidding-manual-vs-otomatis') }}" target="_blank" class="text-slate-400 hover:text-[#00838f] transition-colors" title="Buka Panduan Bidding & Kata Kunci">
+                                        <a href="{{ route('help.show', 'panduan-memasang-iklan-produk-bidding-manual-vs-otomatis') }}" target="_blank" class="text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors" title="Buka Panduan Bidding & Kata Kunci">
                                             <span class="material-symbols-outlined text-[14px] align-middle">help</span>
                                         </a>
                                     </div>
@@ -595,7 +594,7 @@
                                 <th class="py-3.5 px-4">
                                     <div class="flex items-center gap-1">
                                         <span>Modal / Biaya</span>
-                                        <a href="{{ route('help.show', 'panduan-rumus-modal-iklan-harga-bid-per-klik-cpc-sistem-pemotongan-saldo') }}" target="_blank" class="text-slate-400 hover:text-[#00838f] transition-colors" title="Buka Panduan Rumus Modal & Pemotongan Biaya">
+                                        <a href="{{ route('help.show', 'panduan-rumus-modal-iklan-harga-bid-per-klik-cpc-sistem-pemotongan-saldo') }}" target="_blank" class="text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors" title="Buka Panduan Rumus Modal & Pemotongan Biaya">
                                             <span class="material-symbols-outlined text-[14px] align-middle">help</span>
                                         </a>
                                     </div>
@@ -604,7 +603,7 @@
                                 <th class="py-3.5 px-4">
                                     <div class="flex items-center gap-1">
                                         <span>Impresi / Klik</span>
-                                        <a href="{{ route('help.show', 'panduan-rumus-modal-iklan-harga-bid-per-klik-cpc-sistem-pemotongan-saldo') }}" target="_blank" class="text-slate-400 hover:text-[#00838f] transition-colors" title="Buka Panduan Impresi Gratis & Biaya Klik (CPC)">
+                                        <a href="{{ route('help.show', 'panduan-rumus-modal-iklan-harga-bid-per-klik-cpc-sistem-pemotongan-saldo') }}" target="_blank" class="text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors" title="Buka Panduan Impresi Gratis & Biaya Klik (CPC)">
                                             <span class="material-symbols-outlined text-[14px] align-middle">help</span>
                                         </a>
                                     </div>
@@ -633,7 +632,7 @@
                                                     Produk: {{ $ad->product->name }} (Rp{{ number_format($ad->product->price, 0, ',', '.') }})
                                                 </div>
                                             @else
-                                                <div class="text-[11px] text-teal-600 dark:text-teal-400 font-semibold">
+                                                <div class="text-[11px] text-slate-600 dark:text-slate-400 font-semibold">
                                                     Iklan Profil Toko
                                                 </div>
                                             @endif
@@ -658,7 +657,7 @@
                                         Terpakai: Rp{{ number_format($ad->spent_amount, 0, ',', '.') }}
                                     </div>
                                     <div class="text-[10px] text-slate-400 mt-0.5 flex items-center gap-1">
-                                        <span class="material-symbols-outlined text-[13px] text-[#00838f]">date_range</span>
+                                        <span class="material-symbols-outlined text-[13px] text-slate-600 dark:text-slate-400">date_range</span>
                                         @if($ad->period_type === 'custom' && $ad->start_date && $ad->end_date)
                                             <span>{{ \Carbon\Carbon::parse($ad->start_date)->format('d/m/y') }} - {{ \Carbon\Carbon::parse($ad->end_date)->format('d/m/y') }}</span>
                                         @else
@@ -712,7 +711,7 @@
                                     <span class="material-symbols-outlined text-[44px] text-slate-300 dark:text-slate-600 mb-2 block">ads_click</span>
                                     <p class="text-sm font-semibold text-slate-600 dark:text-slate-400">Belum ada iklan promosi yang dibuat.</p>
                                     <p class="text-xs text-slate-400 mt-1">Tingkatkan visibilitas produk Anda di platform dengan membuat iklan pertama!</p>
-                                    <a href="{{ route('tenant.ads.create') }}" class="inline-flex items-center gap-1.5 mt-4 px-4 py-2 rounded-xl bg-[#00838f] text-white text-xs font-bold shadow-xs hover:bg-[#00727d] transition-all">
+                                    <a href="{{ route('tenant.ads.create') }}" class="inline-flex items-center gap-1.5 mt-4 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-bold transition-all active:scale-95">
                                         <span class="material-symbols-outlined text-[16px]">add</span> Buat Iklan Produk Sekarang
                                     </a>
                                 </td>
@@ -746,7 +745,7 @@
          x-transition:leave-start="opacity-100 scale-100"
          x-transition:leave-end="opacity-0 scale-95">
 
-        <div class="bg-white dark:bg-[#111726] w-full max-w-sm rounded-3xl p-6 text-center shadow-2xl border border-slate-200 dark:border-[#222f49] relative"
+        <div class="bg-white dark:bg-[#111726] w-full max-w-sm rounded-3xl p-6 text-center border border-slate-200 dark:border-[#222f49] relative"
              @click.away="closeZeroBalanceModal()">
             
             <button type="button" @click="closeZeroBalanceModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
@@ -754,10 +753,10 @@
             </button>
 
             <div class="w-20 h-20 mx-auto mb-3 overflow-hidden flex items-center justify-center">
-                <img src="{{ asset('images/empty_wallet_alert.jpg') }}" alt="Saldo Habis" class="w-full h-full object-contain drop-shadow-md rounded-2xl">
+                <img src="{{ asset('images/empty_wallet_alert.jpg') }}" alt="Saldo Habis" class="w-full h-full object-contain rounded-2xl">
             </div>
 
-            <h3 class="text-base font-black text-[#00838f]">
+            <h3 class="text-base font-black text-slate-900 dark:text-white">
                 Saldo habis, semua iklanmu dihentikan
             </h3>
 
@@ -766,7 +765,7 @@
             </p>
 
             <div class="mt-6 space-y-2">
-                <a href="{{ route('tenant.ads.top-up') }}" class="w-full py-2.5 px-4 bg-[#00838f] hover:bg-[#00727d] text-white text-xs font-bold rounded-xl shadow-xs transition-all block text-center">
+                <a href="{{ route('tenant.ads.top-up') }}" class="w-full py-2.5 px-4 bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-bold rounded-xl transition-all block text-center active:scale-95">
                     Isi Saldo Sekarang
                 </a>
                 <button type="button" @click="closeZeroBalanceModal()" class="w-full py-2 text-xs font-semibold text-slate-500 dark:text-slate-400 hover:underline">
@@ -789,7 +788,7 @@
          x-transition:leave-start="opacity-100 scale-100"
          x-transition:leave-end="opacity-0 scale-95">
 
-        <div class="bg-white dark:bg-[#111726] w-full max-w-2xl rounded-3xl overflow-hidden shadow-2xl border border-slate-200 dark:border-[#222f49] relative"
+        <div class="bg-white dark:bg-[#111726] w-full max-w-2xl rounded-3xl overflow-hidden border border-slate-200 dark:border-[#222f49] relative"
              @click.away="closePromoModal()">
             
             <button type="button" @click="closePromoModal()" class="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-white/80 dark:bg-black/40 backdrop-blur-sm text-slate-500 hover:text-slate-800 dark:hover:text-white flex items-center justify-center transition-colors">
@@ -805,7 +804,7 @@
 
             <!-- Header Title -->
             <div class="px-6 md:px-8 text-center pt-5 pb-2">
-                <h3 class="text-lg md:text-xl font-black text-[#00838f] tracking-tight">
+                <h3 class="text-lg md:text-xl font-black text-slate-900 dark:text-white tracking-tight">
                     Buat Iklan dan Dapatkan Voucher Spesial Toko!
                 </h3>
                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Dukungan promosi dari platform untuk meningkatkan omset toko digital Anda.</p>
@@ -825,7 +824,7 @@
 
                     <!-- Card 2 -->
                     <div class="bg-slate-50 dark:bg-[#0c1220] p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-800 text-left">
-                        <div class="text-[11px] font-bold text-[#00838f] dark:text-teal-400 mb-1.5">2. Voucher Spesial</div>
+                        <div class="text-[11px] font-bold text-slate-900 dark:text-white mb-1.5">2. Voucher Spesial</div>
                         <div class="text-[10px] text-slate-500 dark:text-slate-400 leading-relaxed">
                             Dapatkan subsidi voucher belanja dan tambahan eksposur kunjungan toko hingga +30%.
                         </div>
@@ -850,7 +849,7 @@
                         <button type="button" @click="closePromoModal()" class="flex-1 sm:flex-none px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-center">
                             Tutup
                         </button>
-                        <a href="{{ route('tenant.ads.create') }}" class="flex-1 sm:flex-none px-5 py-2 rounded-xl bg-[#00838f] hover:bg-[#00727d] text-white text-xs font-bold shadow-xs transition-all text-center">
+                        <a href="{{ route('tenant.ads.create') }}" class="flex-1 sm:flex-none px-5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-bold transition-all text-center active:scale-95">
                             Buat Iklan Sekarang
                         </a>
                     </div>

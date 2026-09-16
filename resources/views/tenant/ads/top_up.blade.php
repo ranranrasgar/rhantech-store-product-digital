@@ -54,7 +54,7 @@
         @endif
 
         <!-- Card Form Utama Saldo Iklan Rhantech -->
-        <div class="bg-white dark:bg-[#161b22] rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-sm p-6 md:p-8 space-y-8">
+        <div class="bg-white dark:bg-[#161b22] rounded-2xl border border-slate-200/90 dark:border-slate-800 p-6 md:p-8 space-y-8">
             
             <!-- Header Judul -->
             <div class="border-b border-slate-100 dark:border-slate-800 pb-5">
@@ -191,14 +191,14 @@
                         </div>
                         <div class="flex justify-between items-center pt-3 border-t border-slate-200 dark:border-slate-700 text-sm font-extrabold text-slate-900 dark:text-white">
                             <span>Total Harga (Termasuk PPN)</span>
-                            <span class="text-[#0284c7] text-base" x-text="formatRupiah(total)"></span>
+                            <span class="text-slate-900 dark:text-white font-black text-base" x-text="formatRupiah(total)"></span>
                         </div>
                     </div>
 
                     <div class="mt-6 flex justify-end">
                         <button type="submit"
                                 :disabled="selectedAmount < 10000"
-                                class="px-8 py-3 rounded-xl bg-[#0284c7] hover:bg-[#0369a1] disabled:opacity-50 text-white font-extrabold text-sm shadow-md transition-all flex items-center gap-2">
+                                class="px-8 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 disabled:opacity-50 font-bold text-sm transition-all active:scale-95 flex items-center gap-2 cursor-pointer">
                             <span class="material-symbols-outlined text-[18px]">shopping_cart_checkout</span>
                             Checkout & Bayar
                         </button>

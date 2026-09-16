@@ -147,14 +147,14 @@
         @endif
 
         <!-- Banner Informasi Promosi -->
-        <div class="rounded-2xl bg-white dark:bg-[#161b22] border border-slate-200/90 dark:border-slate-800 p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xs">
+        <div class="rounded-2xl bg-white dark:bg-[#161b22] border border-slate-200/90 dark:border-slate-800 p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
                 <h2 class="text-base md:text-lg font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
-                    <span class="material-symbols-outlined text-[#0284c7] text-[22px]">rocket_launch</span>
+                    <span class="material-symbols-outlined text-slate-700 dark:text-slate-300 text-[22px]">rocket_launch</span>
                     Promosikan tokomu di halaman pencarian untuk menjangkau lebih banyak Pembeli
                 </h2>
                 <div class="flex flex-wrap items-center gap-4 text-xs font-semibold text-slate-600 dark:text-slate-300 mt-2">
-                    <span class="inline-flex items-center gap-1 text-[#0284c7]">
+                    <span class="inline-flex items-center gap-1 text-slate-800 dark:text-slate-200">
                         <span class="material-symbols-outlined text-[16px]">visibility</span>
                         Jumlah Iklan Dilihat Naik 3X
                     </span>
@@ -164,7 +164,7 @@
                     </span>
                 </div>
             </div>
-            <span class="px-3 py-1 rounded-full bg-white dark:bg-slate-800 text-[11px] font-bold text-[#0284c7] border border-sky-200 dark:border-slate-700 shadow-sm shrink-0">
+            <span class="px-3 py-1 rounded-full bg-white dark:bg-slate-800 text-[11px] font-bold text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 shrink-0">
                 Rhantech Smart Ads
             </span>
         </div>
@@ -173,7 +173,7 @@
             @csrf
 
             <!-- 1. PENGATURAN DASAR (Persis Screenshot 4) -->
-            <div class="bg-white dark:bg-[#161b22] rounded-2xl border border-slate-200/90 dark:border-slate-800 p-6 md:p-7 space-y-6 shadow-sm">
+            <div class="bg-white dark:bg-[#161b22] rounded-2xl border border-slate-200/90 dark:border-slate-800 p-6 md:p-7 space-y-6">
                 <div class="border-b border-slate-100 dark:border-slate-800 pb-3 flex items-center justify-between">
                     <h3 class="text-sm md:text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
                         <span class="w-2 h-4 bg-[#0284c7] rounded-full"></span>
@@ -352,16 +352,16 @@
                     </div>
 
                     <!-- Date Range Selection Container -->
-                    <div x-show="periodType === 'custom'" x-transition class="p-4 rounded-xl bg-slate-50 dark:bg-[#0e1526] border border-slate-200 dark:border-[#222f49] space-y-3.5 max-w-lg shadow-xs">
+                    <div x-show="periodType === 'custom'" x-transition class="p-4 rounded-xl bg-slate-50 dark:bg-[#0e1526] border border-slate-200 dark:border-[#222f49] space-y-3.5 max-w-lg">
                         <div class="flex flex-wrap items-center gap-2">
                             <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Preset Durasi:</span>
-                            <button type="button" @click="setPeriodPreset(7)" class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-white dark:bg-[#161f33] border border-slate-200 dark:border-[#263554] hover:border-sky-500 hover:text-sky-500 text-slate-700 dark:text-slate-300 transition-all cursor-pointer shadow-2xs">
+                            <button type="button" @click="setPeriodPreset(7)" class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-white dark:bg-[#161f33] border border-slate-200 dark:border-[#263554] hover:border-slate-400 hover:text-slate-900 dark:hover:text-white text-slate-700 dark:text-slate-300 transition-all cursor-pointer">
                                 7 Hari
                             </button>
-                            <button type="button" @click="setPeriodPreset(14)" class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-white dark:bg-[#161f33] border border-slate-200 dark:border-[#263554] hover:border-sky-500 hover:text-sky-500 text-slate-700 dark:text-slate-300 transition-all cursor-pointer shadow-2xs">
+                            <button type="button" @click="setPeriodPreset(14)" class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-white dark:bg-[#161f33] border border-slate-200 dark:border-[#263554] hover:border-slate-400 hover:text-slate-900 dark:hover:text-white text-slate-700 dark:text-slate-300 transition-all cursor-pointer">
                                 14 Hari
                             </button>
-                            <button type="button" @click="setPeriodPreset(30)" class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-white dark:bg-[#161f33] border border-slate-200 dark:border-[#263554] hover:border-sky-500 hover:text-sky-500 text-slate-700 dark:text-slate-300 transition-all cursor-pointer shadow-2xs">
+                            <button type="button" @click="setPeriodPreset(30)" class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-white dark:bg-[#161f33] border border-slate-200 dark:border-[#263554] hover:border-slate-400 hover:text-slate-900 dark:hover:text-white text-slate-700 dark:text-slate-300 transition-all cursor-pointer">
                                 30 Hari
                             </button>
                         </div>
@@ -411,7 +411,7 @@
             </div>
 
             <!-- 2. PENGATURAN BIDDING & KATA KUNCI (Persis Screenshot 4 & 5) -->
-            <div class="bg-white dark:bg-[#161b22] rounded-2xl border border-slate-200/90 dark:border-slate-800 p-6 md:p-7 space-y-6 shadow-sm">
+            <div class="bg-white dark:bg-[#161b22] rounded-2xl border border-slate-200/90 dark:border-slate-800 p-6 md:p-7 space-y-6">
                 <div class="border-b border-slate-100 dark:border-slate-800 pb-3">
                     <h3 class="text-sm md:text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
                         <span class="w-2 h-4 bg-[#0284c7] rounded-full"></span>
@@ -531,7 +531,7 @@
                             <span class="text-xs text-slate-400 italic">Belum ada kata kunci spesifik. (Jika kosong, iklan akan otomatis dicocokkan dengan judul produk).</span>
                         </template>
                         <template x-for="(kw, idx) in keywords" :key="idx">
-                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-xs font-semibold shadow-xs">
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-xs font-semibold">
                                 <span x-text="kw"></span>
                                 <input type="hidden" name="target_keywords[]" :value="kw">
                                 <button type="button" @click="removeKeyword(idx)" class="text-slate-400 hover:text-rose-500">
@@ -544,7 +544,7 @@
             </div>
 
             <!-- 3. PENGATURAN TAMPILAN IKLAN -->
-            <div class="bg-white dark:bg-[#161b22] rounded-2xl border border-slate-200/90 dark:border-slate-800 p-6 md:p-7 space-y-4 shadow-sm">
+            <div class="bg-white dark:bg-[#161b22] rounded-2xl border border-slate-200/90 dark:border-slate-800 p-6 md:p-7 space-y-4">
                 <div class="border-b border-slate-100 dark:border-slate-800 pb-3">
                     <h3 class="text-sm md:text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
                         <span class="w-2 h-4 bg-[#0284c7] rounded-full"></span>
@@ -581,7 +581,7 @@
             </div>
 
             <!-- 4. RINGKASAN ESTIMASI BIAYA & KLIK (Kalkulator CPC) -->
-            <div class="bg-white dark:bg-[#161b22] rounded-2xl border border-slate-200/90 dark:border-slate-800 p-6 md:p-7 space-y-5 shadow-xs">
+            <div class="bg-white dark:bg-[#161b22] rounded-2xl border border-slate-200/90 dark:border-slate-800 p-6 md:p-7 space-y-5">
                 <div class="border-b border-slate-100 dark:border-slate-800 pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <div class="flex items-center gap-2">
                         <span class="w-2 h-4 bg-[#0284c7] rounded-full"></span>
@@ -724,8 +724,8 @@
                 </a>
                 <button type="submit" 
                         :disabled="selectedProducts.length === 0"
-                        :class="selectedProducts.length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#0369a1]'"
-                        class="px-8 py-2.5 rounded-xl bg-[#0284c7] text-white text-xs md:text-sm font-bold shadow-md transition-all flex items-center gap-2">
+                        :class="selectedProducts.length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-slate-800 dark:hover:bg-slate-100 active:scale-95 cursor-pointer'"
+                        class="px-8 py-2.5 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-xs md:text-sm font-bold transition-all flex items-center gap-2">
                     <span class="material-symbols-outlined text-[18px]">publish</span>
                     <span>Tampilkan & Buat Iklan (<span x-text="selectedProducts.length"></span>)</span>
                 </button>

@@ -67,7 +67,12 @@ class ProjectController extends Controller
             'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif,ico|max:2048',
             'brochure_file' => 'nullable|file|mimes:pdf|max:10240',
             'images' => 'nullable|array',
-            'images.*' => 'image|mimes:jpeg,png,jpg,webp,gif,ico|max:3072',
+            'images.*' => 'image|mimes:jpeg,png,jpg,webp,gif,ico|max:2048',
+        ], [
+            'thumbnail.max' => 'Ukuran gambar thumbnail tidak boleh melebihi 2 MB.',
+            'thumbnail.image' => 'File thumbnail harus berupa gambar.',
+            'images.*.max' => 'Ukuran setiap foto galeri tidak boleh melebihi 2 MB.',
+            'images.*.image' => 'File galeri harus berupa format gambar valid.',
         ]);
 
         if (empty($validated['slug'])) {
@@ -153,7 +158,12 @@ class ProjectController extends Controller
             'brochure_file' => 'nullable|file|mimes:pdf|max:10240',
             'remove_brochure' => 'nullable|boolean',
             'images' => 'nullable|array',
-            'images.*' => 'image|mimes:jpeg,png,jpg,webp,gif,ico|max:3072',
+            'images.*' => 'image|mimes:jpeg,png,jpg,webp,gif,ico|max:2048',
+        ], [
+            'thumbnail.max' => 'Ukuran gambar thumbnail tidak boleh melebihi 2 MB.',
+            'thumbnail.image' => 'File thumbnail harus berupa gambar.',
+            'images.*.max' => 'Ukuran setiap foto galeri tidak boleh melebihi 2 MB.',
+            'images.*.image' => 'File galeri harus berupa format gambar valid.',
         ]);
 
         if (empty($validated['slug'])) {

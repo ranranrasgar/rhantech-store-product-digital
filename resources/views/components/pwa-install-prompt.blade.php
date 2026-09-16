@@ -1,12 +1,9 @@
 <!-- PWA Installation Banner & Prompt (Only on Mobile Device / HP) -->
 <div id="pwa-install-banner" class="block md:hidden fixed bottom-4 left-4 right-4 z-50 transform translate-y-32 opacity-0 pointer-events-none transition-all duration-500 ease-out" style="display: none;">
-    <div class="relative overflow-hidden rounded-2xl bg-[#0a1628]/95 backdrop-blur-xl border border-cyan-500/40 p-4 shadow-[0_12px_36px_rgba(0,0,0,0.55)] text-white">
-        <!-- Ambient Glow -->
-        <div class="absolute -top-10 -right-10 w-28 h-28 bg-cyan-500/20 rounded-full blur-2xl pointer-events-none"></div>
-
+    <div class="relative overflow-hidden rounded-2xl bg-slate-900 border border-slate-700 p-4 text-white">
         <div class="flex items-start gap-3 relative z-10">
             <!-- App Icon -->
-            <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-[#0a1628] to-[#1e3a5f] p-0.5 border border-cyan-400/40 shrink-0 shadow-md">
+            <div class="w-12 h-12 rounded-xl bg-slate-800 p-0.5 border border-slate-700 shrink-0">
                 <img src="{{ asset('icons/icon-96x96.png') }}" alt="{{ $company->company_name ?? 'Rhantech' }}" class="w-full h-full object-cover rounded-[10px]">
             </div>
 
@@ -37,7 +34,7 @@
 
                 <!-- Action Buttons -->
                 <div class="flex items-center gap-2">
-                    <button id="pwa-install-btn" class="flex-1 py-2 px-3.5 bg-gradient-to-r from-[#00d4ff] to-[#0088cc] hover:from-[#00bcee] hover:to-[#0077b3] text-[#0a1628] font-black text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+                    <button id="pwa-install-btn" class="flex-1 py-2 px-3.5 bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs rounded-xl transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
                         <span class="material-symbols-outlined text-[16px]">install_mobile</span>
                         <span>Install Sekarang</span>
                     </button>

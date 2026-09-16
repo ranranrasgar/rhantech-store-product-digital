@@ -23,15 +23,15 @@
             </div>
             
             <div>
-                <a href="{{ route('help.show', 'panduan-cara-merekrut-mitra-afiliasi-pengaturan-bagi-hasil-komisi') }}" target="_blank" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold rounded-xl transition flex items-center gap-1.5 shadow-sm">
-                    <span class="material-symbols-outlined text-[16px] text-sky-500">menu_book</span>
+                <a href="{{ route('help.show', 'panduan-cara-merekrut-mitra-afiliasi-pengaturan-bagi-hasil-komisi') }}" target="_blank" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-semibold rounded-xl transition flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[16px] text-slate-500 dark:text-slate-400">menu_book</span>
                     Panduan Rekrut Mitra
                 </a>
             </div>
         </div>
 
         <!-- Form Card -->
-        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-6 md:p-8 shadow-sm">
+        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-6 md:p-8">
             <form action="{{ route('tenant.affiliates.store') }}" method="POST" class="space-y-6">
                 @csrf
 
@@ -79,7 +79,7 @@
                         <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
                             Kode Referral (Otomatis dari Nama Akun)
                         </label>
-                        <div class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-[#222f49] bg-slate-100/70 dark:bg-[#0c1220]/70 text-sm font-mono font-bold text-sky-600 dark:text-sky-400 flex items-center justify-between">
+                        <div class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-[#222f49] bg-slate-100/70 dark:bg-[#0c1220]/70 text-sm font-mono font-bold text-slate-900 dark:text-white flex items-center justify-between">
                             <span id="previewRefCode">Pilih akun di atas...</span>
                             <span class="material-symbols-outlined text-[16px] text-slate-400">auto_awesome</span>
                         </div>
@@ -88,12 +88,12 @@
                 </div>
 
                 <!-- Info Box -->
-                <div class="p-4 rounded-xl bg-sky-50 dark:bg-sky-950/30 border border-sky-200 dark:border-sky-800/40 text-xs text-sky-800 dark:text-sky-300 flex items-start gap-3">
-                    <span class="material-symbols-outlined text-[20px] text-sky-500 shrink-0 mt-0.5">info</span>
+                <div class="p-4 rounded-xl bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-xs text-slate-800 dark:text-slate-200 flex items-start gap-3">
+                    <span class="material-symbols-outlined text-[20px] text-slate-700 dark:text-slate-300 shrink-0 mt-0.5">info</span>
                     <div class="space-y-1">
                         <div class="font-bold">Sistem Referral & Komisi Otomatis Terintegrasi</div>
                         <p class="text-slate-600 dark:text-slate-300 leading-relaxed">
-                            Setelah dihubungkan, sistem otomatis membuatkan link referral unik toko Anda (<code class="font-mono font-bold text-sky-600 dark:text-sky-400">?ref=KODE</code>). Setiap pembeli yang checkout melalui link tersebut akan otomatis menghasilkan komisi yang langsung masuk ke <strong>Saldo Toko Mitra</strong> dan bisa dicairkan (withdraw) ke rekening bank pribadi mitra.
+                            Setelah dihubungkan, sistem otomatis membuatkan link referral unik toko Anda (<code class="font-mono font-bold text-slate-900 dark:text-slate-200">?ref=KODE</code>). Setiap pembeli yang checkout melalui link tersebut akan otomatis menghasilkan komisi yang langsung masuk ke <strong>Saldo Toko Mitra</strong> dan bisa dicairkan (withdraw) ke rekening bank pribadi mitra.
                         </p>
                     </div>
                 </div>
@@ -103,7 +103,7 @@
                     <a href="{{ route('tenant.affiliates.index') }}" class="px-5 py-2.5 rounded-xl border border-slate-200 dark:border-[#222f49] text-xs md:text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#161f33] transition">
                         Batal
                     </a>
-                    <button type="submit" class="px-6 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs md:text-sm font-bold shadow-lg shadow-sky-500/25 transition flex items-center gap-2">
+                    <button type="submit" class="px-6 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs md:text-sm font-bold transition flex items-center gap-2 active:scale-95 cursor-pointer">
                         <span class="material-symbols-outlined text-[18px]">handshake</span>
                         Hubungkan Akun Mitra
                     </button>

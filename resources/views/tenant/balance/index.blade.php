@@ -17,7 +17,7 @@
                 </p>
             </div>
             
-            <a href="{{ route('tenant.payouts.index') }}" class="px-5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs md:text-sm font-bold shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 transition-all flex items-center gap-2 self-start sm:self-auto">
+            <a href="{{ route('tenant.payouts.index') }}" class="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs md:text-sm font-bold active:scale-95 transition-all flex items-center gap-2 self-start sm:self-auto">
                 <span class="material-symbols-outlined text-[18px]">account_balance_wallet</span>
                 Kelola Pencairan Dana
             </a>
@@ -25,13 +25,13 @@
 
         <!-- Session Alerts -->
         @if (session('success'))
-            <div class="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs md:text-sm font-semibold flex items-center gap-2.5 shadow-sm">
+            <div class="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs md:text-sm font-semibold flex items-center gap-2.5">
                 <span class="material-symbols-outlined text-[20px]">check_circle</span>
                 <span>{{ session('success') }}</span>
             </div>
         @endif
         @if (session('error'))
-            <div class="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-400 text-xs md:text-sm font-semibold flex items-center gap-2.5 shadow-sm">
+            <div class="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-400 text-xs md:text-sm font-semibold flex items-center gap-2.5">
                 <span class="material-symbols-outlined text-[20px]">error</span>
                 <span>{{ session('error') }}</span>
             </div>
@@ -41,16 +41,13 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
             
             <!-- Executive Balance Card -->
-            <div class="md:col-span-2 bg-white dark:bg-[#111726] rounded-3xl p-6 md:p-8 border border-slate-200/80 dark:border-[#222f49] shadow-sm flex flex-col justify-between relative overflow-hidden">
-                <!-- Subtle background accent -->
-                <div class="absolute -right-8 -bottom-8 w-48 h-48 bg-sky-50 dark:bg-sky-900/10 rounded-full blur-3xl pointer-events-none"></div>
-                
+            <div class="md:col-span-2 bg-white dark:bg-[#111726] rounded-3xl p-6 md:p-8 border border-slate-200/80 dark:border-[#222f49] flex flex-col justify-between relative overflow-hidden">
                 <div class="relative z-10">
                     <div class="flex items-center justify-between mb-4">
                         <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800/30 text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
                             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Saldo Aktif
                         </span>
-                        <div class="w-10 h-10 rounded-xl bg-sky-50 dark:bg-sky-900/20 text-sky-500 flex items-center justify-center">
+                        <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center">
                             <span class="material-symbols-outlined text-[20px]">payments</span>
                         </div>
                     </div>
@@ -71,7 +68,7 @@
                     <form action="{{ route('tenant.payouts.store') }}" method="POST">
                         @csrf
                         <input type="hidden" name="amount" value="{{ $store->balance }}">
-                        <button type="submit" class="w-full sm:w-auto px-6 py-3 text-sm font-bold bg-sky-500 hover:bg-sky-600 text-white rounded-xl shadow-md shadow-sky-500/20 transition-all flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed" {{ $store->balance < 10000 ? 'disabled' : '' }}>
+                        <button type="submit" class="w-full sm:w-auto px-6 py-3 text-sm font-bold bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 rounded-xl active:scale-95 transition-all flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed" {{ $store->balance < 10000 ? 'disabled' : '' }}>
                             <span>Tarik Semua Saldo</span>
                             <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
                         </button>
@@ -80,11 +77,11 @@
             </div>
 
             <!-- Rekening Bank Tujuan Card -->
-            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-3xl p-6 shadow-sm flex flex-col justify-between">
+            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-3xl p-6 flex flex-col justify-between">
                 <div>
                     <div class="flex items-center justify-between mb-4">
                         <span class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Rekening Pencairan</span>
-                        <div class="w-8 h-8 rounded-xl bg-sky-500/10 text-sky-500 flex items-center justify-center">
+                        <div class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center">
                             <span class="material-symbols-outlined text-[18px]">account_balance</span>
                         </div>
                     </div>
@@ -104,7 +101,7 @@
                 </div>
 
                 <div class="mt-6 pt-4 border-t border-slate-100 dark:border-[#1d273d]">
-                    <a href="{{ route('tenant.store.index') }}" class="text-xs font-bold text-sky-600 dark:text-sky-400 hover:underline flex items-center justify-between">
+                    <a href="{{ route('tenant.store.index') }}" class="text-xs font-bold text-slate-700 dark:text-slate-300 hover:underline flex items-center justify-between">
                         <span>Pengaturan Rekening</span>
                         <span class="material-symbols-outlined text-[16px]">chevron_right</span>
                     </a>
@@ -114,7 +111,7 @@
         </div>
 
         <!-- History Table Section -->
-        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl shadow-sm overflow-hidden">
+        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl overflow-hidden">
             
             <div class="p-5 md:p-6 border-b border-slate-100 dark:border-[#222f49] flex items-center justify-between">
                 <div>
@@ -188,7 +185,7 @@
                         <tr>
                             <td colspan="4" class="p-16 text-center text-slate-400">
                                 <div class="flex flex-col items-center justify-center max-w-sm mx-auto">
-                                    <div class="w-16 h-16 rounded-2xl bg-sky-500/10 text-sky-500 flex items-center justify-center mb-4">
+                                    <div class="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center mb-4">
                                         <span class="material-symbols-outlined text-[32px]">receipt_long</span>
                                     </div>
                                     <h3 class="font-bold text-base text-slate-800 dark:text-white mb-1">Belum ada riwayat mutasi</h3>

@@ -25,4 +25,14 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->shouldRenderJsonWhen(
             fn(Request $request) => $request->is('api/*') || $request->is('chat/*') || $request->is('tenant/chat/*') || $request->expectsJson(),
         );
+
+        $exceptions->render(function (\Illuminate\Http\Exceptions\PostTooLargeException $e, Request $request) {
+            if ($request->is('api/*') || $request->expectsJson()) {
+                return response()->json([
+                    'message' => 'Ukuran file yang Anda unggah terlalu besar. Maksimal 2 MB.',
+                ], 413);
+            }
+
+            return back()->with('error', 'Ukuran file yang diunggah terlalu besar. Maksimal 2 MB per file.')->withInput();
+        });
     })->create();

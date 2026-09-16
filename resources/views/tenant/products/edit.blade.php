@@ -21,7 +21,7 @@
             </div>
         </div>
 
-        <button type="submit" form="product-form" :disabled="submitting || imageHasError" class="shrink-0 px-3.5 py-1.5 rounded-xl bg-[#00838f] hover:bg-[#00727d] text-white text-xs font-black shadow-sm active:scale-95 transition-all flex items-center gap-1 disabled:opacity-50">
+        <button type="submit" form="product-form" :disabled="submitting || imageHasError" class="shrink-0 px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-black active:scale-95 transition-all flex items-center gap-1 disabled:opacity-50">
             <span x-show="submitting" x-cloak class="material-symbols-outlined animate-spin text-[14px]">progress_activity</span>
             <span x-text="submitting ? '...' : 'Simpan'">Simpan</span>
         </button>
@@ -779,7 +779,7 @@
                 <a href="{{ route('tenant.products.index') }}" class="flex-1 sm:flex-none px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs sm:text-sm font-bold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-center active:scale-95">
                     Batal
                 </a>
-                <button type="submit" :disabled="submitting || imageHasError" class="flex-1 sm:flex-none px-6 py-2.5 bg-[#00838f] hover:bg-[#00727d] text-white rounded-xl text-xs sm:text-sm font-bold transition-all shadow-xs flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95" :class="imageHasError ? 'bg-slate-400 cursor-not-allowed' : ''">
+                <button type="submit" :disabled="submitting || imageHasError" class="flex-1 sm:flex-none px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95" :class="imageHasError ? 'bg-slate-400 cursor-not-allowed' : ''">
                     <span x-show="submitting" x-cloak class="material-symbols-outlined animate-spin text-sm">progress_activity</span>
                     <span x-text="submitting ? 'Memperbarui Produk...' : 'Update Produk'">Update Produk</span>
                 </button>

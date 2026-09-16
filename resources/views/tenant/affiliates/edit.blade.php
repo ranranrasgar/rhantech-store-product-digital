@@ -22,7 +22,7 @@
         </div>
 
         <!-- Form Card -->
-        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-6 md:p-8 shadow-sm">
+        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-6 md:p-8">
             <form action="{{ route('tenant.affiliates.update', $affiliate->id) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                 @csrf
                 @method('PUT')
@@ -82,7 +82,7 @@
                             @if($affiliate->avatar_url)
                                 <img src="{{ $affiliate->avatar_url }}" class="w-10 h-10 rounded-xl object-cover border border-slate-200 dark:border-slate-700 shrink-0">
                             @endif
-                            <input type="file" name="avatar" accept="image/png,image/jpeg,image/jpg,image/webp" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-sky-50 file:text-sky-700 hover:file:bg-sky-100 dark:file:bg-sky-950/50 dark:file:text-sky-300 cursor-pointer border border-slate-200 dark:border-[#222f49] rounded-xl p-1.5 bg-slate-50 dark:bg-[#0c1220]">
+                            <input type="file" name="avatar" accept="image/png,image/jpeg,image/jpg,image/webp" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-100 file:text-slate-800 hover:file:bg-slate-200 dark:file:bg-slate-800 dark:file:text-slate-200 cursor-pointer border border-slate-200 dark:border-[#222f49] rounded-xl p-1.5 bg-slate-50 dark:bg-[#0c1220]">
                         </div>
                         @error('avatar') <span class="text-rose-500 text-xs mt-1 block">{{ $message }}</span> @enderror
                     </div>
@@ -93,7 +93,7 @@
                             Fokus Platform (Opsional)
                         </label>
                         @php $currentPlatform = strtolower(old('platform', $affiliate->platform)); @endphp
-                        <select name="platform" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-[#222f49] bg-slate-50 dark:bg-[#0c1220] text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition">
+                        <select name="platform" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-[#222f49] bg-slate-50 dark:bg-[#0c1220] text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-slate-500/20 focus:border-slate-500 transition">
                             <option value="Multi-Platform" {{ $currentPlatform == 'multi-platform' || empty($currentPlatform) ? 'selected' : '' }}>Multi-Platform (Semua Medsos / Bebas)</option>
                             <option value="Instagram" {{ $currentPlatform == 'instagram' ? 'selected' : '' }}>Instagram</option>
                             <option value="Tiktok" {{ $currentPlatform == 'tiktok' ? 'selected' : '' }}>TikTok</option>
@@ -109,18 +109,18 @@
                         <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
                             Estimasi Pengikut / Followers (Opsional)
                         </label>
-                        <input type="text" name="followers_count" value="{{ old('followers_count', $affiliate->followers_count) }}" placeholder="Contoh: 15K" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-[#222f49] bg-slate-50 dark:bg-[#0c1220] text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition">
+                        <input type="text" name="followers_count" value="{{ old('followers_count', $affiliate->followers_count) }}" placeholder="Contoh: 15K" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-[#222f49] bg-slate-50 dark:bg-[#0c1220] text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-slate-500/20 focus:border-slate-500 transition">
                     </div>
                 </div>
 
                 <!-- Verified Badge -->
                 <div class="pt-4 border-t border-slate-100 dark:border-[#222f49]">
                     <label class="flex items-center gap-3 cursor-pointer">
-                        <input type="checkbox" name="is_golden_tick" value="1" class="w-4 h-4 rounded text-sky-500 focus:ring-sky-500/20" {{ old('is_golden_tick', $affiliate->is_golden_tick) ? 'checked' : '' }}>
+                        <input type="checkbox" name="is_golden_tick" value="1" class="w-4 h-4 rounded text-slate-900 focus:ring-slate-900/20 dark:text-white" {{ old('is_golden_tick', $affiliate->is_golden_tick) ? 'checked' : '' }}>
                         <div>
                             <div class="text-sm font-bold text-slate-800 dark:text-white flex items-center gap-1">
-                                Tandai Mitra Prioritas / Terverifikasi (Centang Biru)
-                                <span class="material-symbols-outlined text-[16px] text-sky-500">verified</span>
+                                Tandai Mitra Prioritas / Terverifikasi
+                                <span class="material-symbols-outlined text-[16px] text-slate-900 dark:text-white">verified</span>
                             </div>
                             <div class="text-xs text-slate-400">Mitra tepercaya yang mendapatkan prioritas kerja sama</div>
                         </div>
@@ -132,7 +132,7 @@
                     <a href="{{ route('tenant.affiliates.index') }}" class="px-5 py-2.5 rounded-xl border border-slate-200 dark:border-[#222f49] text-xs md:text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#161f33] transition">
                         Batal
                     </a>
-                    <button type="submit" class="px-6 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs md:text-sm font-bold shadow-lg shadow-sky-500/25 transition">
+                    <button type="submit" class="px-6 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs md:text-sm font-bold transition active:scale-95 cursor-pointer">
                         Simpan Perubahan
                     </button>
                 </div>

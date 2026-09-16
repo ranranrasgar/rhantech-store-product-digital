@@ -57,9 +57,9 @@
     @yield('schema_json_ld')
     <link rel="icon" type="image/png" href="{{ isset($company) && $company->favicon ? '/storage/'.$company->favicon : '/favicon.ico' }}" />
     <link rel="shortcut icon" type="image/png" href="{{ isset($company) && $company->favicon ? '/storage/'.$company->favicon : '/favicon.ico' }}" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com" rel="preconnect"/>
-    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script id="tailwind-config">
         tailwind.config = {
@@ -373,9 +373,77 @@
                 <a href="{{ route('register') }}" class="header-action-btn">Daftar</a>
                 <a href="{{ route('login') }}" class="header-action-btn primary">Masuk</a>
             @else
-                <div class="flex items-center gap-2 text-white/75">
-                    <x-user-avatar class="w-5 h-5 border border-white/30" />
-                    <span class="text-[12px]">{{ auth()->user()->name }}</span>
+                <div class="relative" x-data="{ open: false }" @click.outside="open = false" @keydown.escape.window="open = false">
+                    <button type="button" 
+                            @click="open = !open" 
+                            class="flex items-center gap-2 py-1 px-2.5 rounded-full hover:bg-white/10 text-white/80 hover:text-white transition-all cursor-pointer group select-none border border-transparent hover:border-white/15 focus:outline-none"
+                            :class="{ 'bg-white/15 border-white/25 text-white shadow-sm': open }"
+                            title="Menu Akun">
+                        <x-user-avatar class="w-5 h-5 rounded-full border border-white/30 group-hover:border-white/70 transition-colors shrink-0" />
+                        <span class="text-[12px] font-medium max-w-[130px] truncate text-white/90 group-hover:text-white">{{ auth()->user()->name }}</span>
+                        <span class="material-symbols-outlined text-[16px] text-white/50 group-hover:text-white transition-transform duration-200"
+                              :class="{ 'rotate-180': open }">expand_more</span>
+                    </button>
+
+                    <!-- Dropdown Menu -->
+                    <div x-show="open" 
+                         x-cloak 
+                         style="display: none;" 
+                         x-transition:enter="transition ease-out duration-150"
+                         x-transition:enter-start="transform opacity-0 scale-95 -translate-y-1"
+                         x-transition:enter-end="transform opacity-100 scale-100 translate-y-0"
+                         x-transition:leave="transition ease-in duration-100"
+                         x-transition:leave-start="transform opacity-100 scale-100 translate-y-0"
+                         x-transition:leave-end="transform opacity-0 scale-95 -translate-y-1"
+                         class="absolute right-0 mt-2 w-64 bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl py-2 z-50 text-xs">
+                        
+                        <!-- Header User Card -->
+                        <div class="px-4 py-3 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/70 dark:bg-slate-900/50">
+                            <div class="flex items-center gap-3">
+                                <x-user-avatar class="w-10 h-10 rounded-full border-2 border-sky-400/40 shrink-0" />
+                                <div class="min-w-0 flex-1">
+                                    <p class="font-bold text-slate-800 dark:text-white truncate text-xs">{{ auth()->user()->name }}</p>
+                                    <p class="text-[11px] text-slate-500 dark:text-slate-400 truncate">{{ auth()->user()->email }}</p>
+                                    <span class="inline-block mt-1 px-1.5 py-0.5 rounded text-[10px] font-semibold {{ strtolower(auth()->user()->role ?? '') === 'admin' ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400' : 'bg-sky-500/15 text-sky-600 dark:text-sky-400' }}">
+                                        {{ strtolower(auth()->user()->role ?? '') === 'admin' ? 'Administrator' : 'Pengguna' }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Menu Links -->
+                        <div class="py-1">
+                            @if(strtolower(auth()->user()->role ?? '') === 'admin')
+                            <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2.5 px-4 py-2 text-slate-700 dark:text-slate-200 hover:bg-sky-50 dark:hover:bg-slate-800/80 hover:text-sky-600 dark:hover:text-sky-400 transition-colors">
+                                <span class="material-symbols-outlined text-[18px] text-amber-500">admin_panel_settings</span> 
+                                <span class="font-medium">Dashboard Admin</span>
+                            </a>
+                            @endif
+
+                            <a href="{{ route('tenant.dashboard') }}" class="flex items-center gap-2.5 px-4 py-2 text-slate-700 dark:text-slate-200 hover:bg-sky-50 dark:hover:bg-slate-800/80 hover:text-sky-600 dark:hover:text-sky-400 transition-colors">
+                                <span class="material-symbols-outlined text-[18px] text-[#00d4ff]">storefront</span> 
+                                <span class="font-medium">Dashboard Toko</span>
+                            </a>
+
+                            <a href="{{ route('tenant.purchases.index') }}" class="flex items-center gap-2.5 px-4 py-2 text-slate-700 dark:text-slate-200 hover:bg-sky-50 dark:hover:bg-slate-800/80 hover:text-sky-600 dark:hover:text-sky-400 transition-colors">
+                                <span class="material-symbols-outlined text-[18px] text-emerald-500">receipt_long</span> 
+                                <span class="font-medium">Riwayat Pembelian</span>
+                            </a>
+
+                            <a href="{{ route('tenant.profile.index') }}" class="flex items-center gap-2.5 px-4 py-2 text-slate-700 dark:text-slate-200 hover:bg-sky-50 dark:hover:bg-slate-800/80 hover:text-sky-600 dark:hover:text-sky-400 transition-colors">
+                                <span class="material-symbols-outlined text-[18px] text-sky-500">person</span> 
+                                <span class="font-medium">Profil & Akun</span>
+                            </a>
+                        </div>
+
+                        <!-- Logout -->
+                        <form method="POST" action="{{ route('logout') }}" class="border-t border-slate-100 dark:border-slate-800/80 mt-1 pt-1">
+                            @csrf
+                            <button type="submit" class="w-full text-left flex items-center gap-2.5 px-4 py-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors font-semibold cursor-pointer">
+                                <span class="material-symbols-outlined text-[18px]">logout</span> Keluar
+                            </button>
+                        </form>
+                    </div>
                 </div>
             @endguest
         </div>

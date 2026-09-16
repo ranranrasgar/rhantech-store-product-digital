@@ -6,10 +6,7 @@
     <div class="max-w-container-max mx-auto px-4 md:px-8">
         
         <!-- Hero Section About -->
-        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary/10 via-surface-container to-surface border border-outline-variant/30 p-8 md:p-14 mb-16 shadow-xs">
-            <div class="absolute -right-20 -top-20 w-80 h-80 bg-primary/10 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="absolute -left-20 -bottom-20 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
-            
+        <div class="relative overflow-hidden rounded-3xl bg-surface-container border border-outline-variant/40 p-8 md:p-14 mb-16">
             <div class="relative z-10 max-w-3xl">
                 <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary font-semibold text-xs mb-6 uppercase tracking-wider">
                     <span class="material-symbols-outlined text-[16px]">verified</span>
@@ -36,7 +33,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 mb-20 items-start">
             <!-- Left: Description / Story (Managed by Admin) -->
             <div class="lg:col-span-7 space-y-6">
-                <div class="bg-surface rounded-2xl border border-outline-variant/40 p-8 md:p-10 shadow-xs">
+                <div class="bg-surface rounded-2xl border border-outline-variant/40 p-8 md:p-10">
                     <h2 class="text-2xl font-bold text-on-background dark:text-white mb-6 flex items-center gap-3">
                         <span class="p-2.5 bg-primary/10 rounded-xl text-primary flex items-center justify-center">
                             <span class="material-symbols-outlined text-[24px]">corporate_fare</span>
@@ -59,7 +56,7 @@
                 @if(!empty($company->vision) || !empty($company->mission))
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     @if(!empty($company->vision))
-                    <div class="bg-surface rounded-2xl border border-outline-variant/40 p-6 shadow-xs">
+                    <div class="bg-surface rounded-2xl border border-outline-variant/40 p-6">
                         <div class="flex items-center gap-2.5 mb-3 text-primary">
                             <span class="material-symbols-outlined text-[22px]">visibility</span>
                             <h3 class="font-bold text-base text-on-surface">Visi Kami</h3>
@@ -71,7 +68,7 @@
                     @endif
 
                     @if(!empty($company->mission))
-                    <div class="bg-surface rounded-2xl border border-outline-variant/40 p-6 shadow-xs">
+                    <div class="bg-surface rounded-2xl border border-outline-variant/40 p-6">
                         <div class="flex items-center gap-2.5 mb-3 text-secondary">
                             <span class="material-symbols-outlined text-[22px]">flag</span>
                             <h3 class="font-bold text-base text-on-surface">Misi Kami</h3>
@@ -88,7 +85,7 @@
             <!-- Right: Highlight Metrics & Key Facts -->
             <div class="lg:col-span-5 space-y-6">
                 <!-- Highlight Card -->
-                <div class="bg-surface-container rounded-2xl border border-outline-variant/40 p-8 shadow-xs">
+                <div class="bg-surface-container rounded-2xl border border-outline-variant/40 p-8">
                     <h3 class="text-lg font-bold text-on-background dark:text-white mb-6">Pencapaian &amp; Ekosistem</h3>
                     
                     <div class="grid grid-cols-2 gap-4">
@@ -131,7 +128,7 @@
                 </div>
 
                 <!-- Contact & Office Info Card -->
-                <div class="bg-surface rounded-2xl border border-outline-variant/40 p-8 shadow-xs space-y-4">
+                <div class="bg-surface rounded-2xl border border-outline-variant/40 p-8 space-y-4">
                     <h3 class="text-lg font-bold text-on-background dark:text-white mb-2">Informasi Kontak</h3>
                     
                     @if(!empty($company->email))
@@ -177,7 +174,7 @@
                     @endif
 
                     <div class="pt-4 mt-2 border-t border-outline-variant/30 flex gap-3">
-                        <a href="{{ url('/contact') }}" class="flex-1 py-2.5 bg-primary text-white text-center rounded-xl font-bold text-xs hover:brightness-110 transition-all shadow-xs" wire:navigate>
+                        <a href="{{ url('/contact') }}" class="flex-1 py-2.5 bg-sky-500 hover:bg-sky-600 text-white text-center rounded-xl font-bold text-xs transition-colors" wire:navigate>
                             Hubungi Kami
                         </a>
                         <a href="{{ route('products.index') }}" class="flex-1 py-2.5 bg-surface-container text-on-surface text-center rounded-xl font-bold text-xs hover:bg-surface-container-high transition-all border border-outline-variant/40" wire:navigate>

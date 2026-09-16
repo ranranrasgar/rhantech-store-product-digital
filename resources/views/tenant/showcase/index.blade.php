@@ -18,11 +18,11 @@
             </div>
 
             <div class="flex items-center gap-2">
-                <a href="{{ route('help.show', 'panduan-memasang-produk-toko-lain-di-etalase-toko-saya-showcase') }}" target="_blank" class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-[#222f49] bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 transition flex items-center gap-1.5 shadow-sm">
-                    <span class="material-symbols-outlined text-[16px] text-sky-500">menu_book</span>
+                <a href="{{ route('help.show', 'panduan-memasang-produk-toko-lain-di-etalase-toko-saya-showcase') }}" target="_blank" class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-[#222f49] bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 transition flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[16px] text-slate-700 dark:text-slate-300">menu_book</span>
                     Panduan Etalase Afiliasi
                 </a>
-                <a href="{{ route('store.show', $store->slug) }}" target="_blank" class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-[#222f49] bg-white dark:bg-[#111726] hover:bg-slate-50 dark:hover:bg-[#161f33] text-xs font-bold text-slate-700 dark:text-slate-200 transition flex items-center gap-1.5 shadow-sm">
+                <a href="{{ route('store.show', $store->slug) }}" target="_blank" class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-[#222f49] bg-white dark:bg-[#111726] hover:bg-slate-50 dark:hover:bg-[#161f33] text-xs font-bold text-slate-700 dark:text-slate-200 transition flex items-center gap-1.5">
                     <span class="material-symbols-outlined text-[16px]">visibility</span>
                     Lihat Etalase Toko Saya
                 </a>
@@ -30,21 +30,21 @@
         </div>
 
         <!-- Filter & Search Bar -->
-        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 shadow-sm space-y-4">
+        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 space-y-4">
             <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
                 
                 <!-- Tab Kategori Produk -->
                 <div class="flex flex-wrap items-center gap-1.5 p-1 bg-slate-100 dark:bg-[#0c1220] rounded-xl border border-slate-200/60 dark:border-[#222f49]">
-                    <a href="{{ route('tenant.showcase.index', ['tab' => 'semua', 'search' => request('search')]) }}" class="px-4 py-2 rounded-lg text-xs font-bold transition {{ $tab === 'semua' ? 'bg-white dark:bg-[#1f2a40] text-sky-600 dark:text-sky-400 shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900' }}">
+                    <a href="{{ route('tenant.showcase.index', ['tab' => 'semua', 'search' => request('search')]) }}" class="px-4 py-2 rounded-lg text-xs font-bold transition {{ $tab === 'semua' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">
                         Semua Produk
                     </a>
-                    <a href="{{ route('tenant.showcase.index', ['tab' => 'platform', 'search' => request('search')]) }}" class="px-4 py-2 rounded-lg text-xs font-bold transition {{ $tab === 'platform' ? 'bg-white dark:bg-[#1f2a40] text-sky-600 dark:text-sky-400 shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900' }}">
+                    <a href="{{ route('tenant.showcase.index', ['tab' => 'platform', 'search' => request('search')]) }}" class="px-4 py-2 rounded-lg text-xs font-bold transition {{ $tab === 'platform' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">
                         Produk Platform (Official)
                     </a>
-                    <a href="{{ route('tenant.showcase.index', ['tab' => 'tenant', 'search' => request('search')]) }}" class="px-4 py-2 rounded-lg text-xs font-bold transition {{ $tab === 'tenant' ? 'bg-white dark:bg-[#1f2a40] text-sky-600 dark:text-sky-400 shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900' }}">
+                    <a href="{{ route('tenant.showcase.index', ['tab' => 'tenant', 'search' => request('search')]) }}" class="px-4 py-2 rounded-lg text-xs font-bold transition {{ $tab === 'tenant' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">
                         Produk Toko Tenant Lain
                     </a>
-                    <a href="{{ route('tenant.showcase.index', ['tab' => 'terpasang', 'search' => request('search')]) }}" class="px-4 py-2 rounded-lg text-xs font-bold transition {{ $tab === 'terpasang' ? 'bg-white dark:bg-[#1f2a40] text-emerald-600 dark:text-emerald-400 shadow-xs' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900' }}">
+                    <a href="{{ route('tenant.showcase.index', ['tab' => 'terpasang', 'search' => request('search')]) }}" class="px-4 py-2 rounded-lg text-xs font-bold transition {{ $tab === 'terpasang' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">
                         Dipajang di Toko Saya (<span id="showcase-counter">{{ count($myShowcaseIds) }}</span>)
                     </a>
                 </div>
@@ -56,9 +56,9 @@
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
                             <span class="material-symbols-outlined text-[18px] leading-none">search</span>
                         </div>
-                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama produk / toko..." class="w-full pl-9 pr-4 py-2 rounded-xl text-xs bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition">
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama produk / toko..." class="w-full pl-9 pr-4 py-2 rounded-xl text-xs bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] text-slate-900 dark:text-white focus:outline-none focus:border-slate-500 transition">
                     </div>
-                    <button type="submit" class="px-4 py-2 text-xs font-bold bg-sky-500 hover:bg-sky-400 text-white rounded-xl shadow-xs transition cursor-pointer">
+                    <button type="submit" class="px-4 py-2 text-xs font-bold bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 rounded-xl transition cursor-pointer active:scale-95">
                         Cari
                     </button>
                 </form>
@@ -72,7 +72,7 @@
                     $isInstalled = in_array($product->id, $myShowcaseIds);
                     $mainImage = $product->images->where('is_main', true)->first() ?? $product->images->first();
                 @endphp
-                <div id="showcase-card-{{ $product->id }}" class="showcase-card bg-white dark:bg-[#111726] border {{ $isInstalled ? 'border-emerald-500/50 shadow-md shadow-emerald-500/5 ring-1 ring-emerald-500/20' : 'border-slate-200/80 dark:border-[#222f49]' }} rounded-2xl overflow-hidden flex flex-col transition-all duration-300 hover:shadow-lg">
+                <div id="showcase-card-{{ $product->id }}" class="showcase-card bg-white dark:bg-[#111726] border {{ $isInstalled ? 'border-emerald-500/70 ring-1 ring-emerald-500/20' : 'border-slate-200/80 dark:border-[#222f49]' }} rounded-2xl overflow-hidden flex flex-col transition-all duration-300">
                     
                     <!-- Image Box -->
                     <div class="aspect-video w-full bg-slate-100 dark:bg-slate-800 relative overflow-hidden group">
@@ -87,12 +87,12 @@
                         <!-- Badge Origin -->
                         <div class="absolute top-3 left-3 flex flex-col gap-1">
                             @if($product->store)
-                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-indigo-600/90 text-white backdrop-blur-md shadow-xs">
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-900/90 text-white backdrop-blur-md">
                                     <span class="material-symbols-outlined text-[12px]">storefront</span>
                                     {{ $product->store->name }}
                                 </span>
                             @else
-                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-sky-600/90 text-white backdrop-blur-md shadow-xs">
+                                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-900/90 text-white backdrop-blur-md">
                                     <span class="material-symbols-outlined text-[12px]">verified</span>
                                     Platform Official
                                 </span>
@@ -101,7 +101,7 @@
 
                         <!-- Status Terpasang Indicator -->
                         <div id="installed-badge-{{ $product->id }}" class="absolute top-3 right-3 {{ $isInstalled ? '' : 'hidden' }}">
-                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-500 text-white shadow-sm">
+                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-500 text-white">
                                 <span class="material-symbols-outlined text-[13px]">check_circle</span> Terpasang di Toko
                             </span>
                         </div>
@@ -127,7 +127,7 @@
                                 <div class="text-[10px] uppercase font-bold text-slate-400">Harga Jual</div>
                                 @if($product->discount_price && $product->discount_price > 0 && $product->discount_price < $product->price)
                                     <div class="text-xs line-through text-slate-400">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
-                                    <div class="font-extrabold text-sm text-sky-600 dark:text-sky-400">Rp {{ number_format($product->discount_price, 0, ',', '.') }}</div>
+                                    <div class="font-extrabold text-sm text-slate-900 dark:text-white">Rp {{ number_format($product->discount_price, 0, ',', '.') }}</div>
                                 @else
                                     <div class="font-extrabold text-sm text-slate-900 dark:text-white">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
                                 @endif
@@ -149,7 +149,7 @@
                         <form action="{{ route('tenant.showcase.toggle', $product->id) }}" method="POST" class="w-full" onsubmit="handleShowcaseToggle(event, {{ $product->id }}, '{{ route('tenant.showcase.toggle', $product->id) }}')">
                             @csrf
                             <button type="submit" id="btn-toggle-{{ $product->id }}"
-                                    class="w-full py-2 px-3 rounded-xl {{ $isInstalled ? 'border border-rose-200 dark:border-rose-900/40 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/30 dark:hover:bg-rose-900/50 text-rose-600 dark:text-rose-400' : 'bg-sky-500 hover:bg-sky-400 text-white shadow-sm shadow-sky-500/20' }} text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer">
+                                    class="w-full py-2 px-3 rounded-xl {{ $isInstalled ? 'border border-rose-200 dark:border-rose-900/40 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/30 dark:hover:bg-rose-900/50 text-rose-600 dark:text-rose-400' : 'bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 active:scale-95' }} text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer">
                                 @if($isInstalled)
                                     <span class="material-symbols-outlined text-[16px]">remove_shopping_cart</span>
                                     <span>Copot dari Toko Saya</span>
@@ -183,7 +183,7 @@
 </div>
 
 <!-- Floating Notification Toast -->
-<div id="showcase-toast" class="fixed bottom-6 right-6 z-50 transform transition-all duration-300 translate-y-20 opacity-0 pointer-events-none flex items-center gap-3 px-4 py-3 rounded-2xl bg-slate-900/95 dark:bg-white/95 text-white dark:text-slate-900 shadow-2xl backdrop-blur-md border border-slate-700/50 dark:border-slate-200/50 text-xs font-bold max-w-sm">
+<div id="showcase-toast" class="fixed bottom-6 right-6 z-50 transform transition-all duration-300 translate-y-20 opacity-0 pointer-events-none flex items-center gap-3 px-4 py-3 rounded-2xl bg-slate-900/95 dark:bg-white/95 text-white dark:text-slate-900 backdrop-blur-md border border-slate-700/50 dark:border-slate-200/50 text-xs font-bold max-w-sm">
     <div id="showcase-toast-icon" class="w-7 h-7 rounded-xl bg-emerald-500/20 text-emerald-400 dark:text-emerald-600 flex items-center justify-center shrink-0">
         <span class="material-symbols-outlined text-[18px]">check_circle</span>
     </div>
@@ -266,18 +266,18 @@ function handleShowcaseToggle(event, productId, url) {
                 
                 if (card) {
                     card.classList.remove('border-slate-200/80', 'dark:border-[#222f49]');
-                    card.classList.add('border-emerald-500/50', 'shadow-md', 'shadow-emerald-500/5', 'ring-1', 'ring-emerald-500/20');
+                    card.classList.add('border-emerald-500/70', 'ring-1', 'ring-emerald-500/20');
                 }
                 if (badge) {
                     badge.classList.remove('hidden');
                 }
             } else {
                 // Dicopot
-                btn.className = 'w-full py-2 px-3 rounded-xl bg-sky-500 hover:bg-sky-400 text-white shadow-sm shadow-sky-500/20 text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer';
+                btn.className = 'w-full py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 active:scale-95 text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer';
                 btn.innerHTML = '<span class="material-symbols-outlined text-[16px]">add_shopping_cart</span> <span>+ Pasang di Etalase Toko</span>';
                 
                 if (card) {
-                    card.classList.remove('border-emerald-500/50', 'shadow-md', 'shadow-emerald-500/5', 'ring-1', 'ring-emerald-500/20');
+                    card.classList.remove('border-emerald-500/70', 'ring-1', 'ring-emerald-500/20');
                     card.classList.add('border-slate-200/80', 'dark:border-[#222f49]');
                 }
                 if (badge) {

@@ -103,12 +103,70 @@
 
             <!-- Submit Footer -->
             <div class="bg-slate-50/50 dark:bg-[#0c1220]/50 px-6 py-4 border-t border-slate-100 dark:border-[#222f49] flex justify-end">
-                <button type="submit" class="px-6 py-2.5 bg-sky-600 hover:bg-sky-700 text-white text-sm font-bold rounded-xl transition-all shadow-sm shadow-sky-600/20 flex items-center gap-2">
+                <button type="submit" class="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-sm font-bold rounded-xl transition-all flex items-center gap-2 cursor-pointer active:scale-95">
                     <span class="material-symbols-outlined text-[18px]">save</span>
                     Simpan Perubahan
                 </button>
             </div>
         </form>
+
+        <!-- Pengaturan Sistem & Tampilan Tema Pengguna -->
+        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl overflow-hidden p-6 md:p-8"
+             x-data="{ 
+                 currentTheme: localStorage.getItem('rhantech-theme') || (document.documentElement.classList.contains('dark') ? 'dark' : 'light'),
+                 setTheme(theme) {
+                     this.currentTheme = theme;
+                     localStorage.setItem('rhantech-theme', theme);
+                     document.documentElement.classList.toggle('dark', theme === 'dark');
+                     document.documentElement.dataset.theme = theme;
+                     document.documentElement.style.colorScheme = theme;
+                     window.dispatchEvent(new Event('theme-changed'));
+                 }
+             }">
+            <div class="flex items-center gap-3 pb-4 mb-6 border-b border-slate-100 dark:border-[#222f49]">
+                <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[22px]">tune</span>
+                </div>
+                <div>
+                    <h3 class="text-base font-bold text-slate-900 dark:text-white">Pengaturan Sistem &amp; Mode Tampilan</h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Pilih tema antarmuka (Light / Dark) yang paling nyaman untuk Anda gunakan saat berselancar.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <!-- Mode Terang (Light) -->
+                <div @click="setTheme('light')"
+                     class="p-5 rounded-2xl border-2 transition-all cursor-pointer relative overflow-hidden bg-white text-slate-800 active:scale-95"
+                     :class="currentTheme === 'light' ? 'border-slate-900 dark:border-white' : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="p-2.5 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[22px]">light_mode</span>
+                        </span>
+                        <span x-show="currentTheme === 'light'" class="flex items-center gap-1 text-slate-900 font-bold text-xs bg-slate-100 px-2.5 py-1 rounded-full border border-slate-300">
+                            <span class="material-symbols-outlined text-[14px]">check_circle</span> Aktif
+                        </span>
+                    </div>
+                    <h4 class="font-extrabold text-sm text-slate-900">Mode Terang (Light)</h4>
+                    <p class="text-xs text-slate-500 mt-1 leading-relaxed">Latar belakang putih bersih dan kontras tajam, optimal untuk penggunaan siang hari.</p>
+                </div>
+
+                <!-- Mode Gelap (Dark) -->
+                <div @click="setTheme('dark')"
+                     class="p-5 rounded-2xl border-2 transition-all cursor-pointer relative overflow-hidden bg-[#0d1117] text-white active:scale-95"
+                     :class="currentTheme === 'dark' ? 'border-slate-900 dark:border-white' : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="p-2.5 rounded-xl bg-indigo-950 text-slate-200 flex items-center justify-center border border-indigo-900/60">
+                            <span class="material-symbols-outlined text-[22px]">dark_mode</span>
+                        </span>
+                        <span x-show="currentTheme === 'dark'" class="flex items-center gap-1 text-white font-bold text-xs bg-slate-800 px-2.5 py-1 rounded-full border border-slate-700">
+                            <span class="material-symbols-outlined text-[14px]">check_circle</span> Aktif
+                        </span>
+                    </div>
+                    <h4 class="font-extrabold text-sm text-white">Mode Gelap (Dark)</h4>
+                    <p class="text-xs text-slate-400 mt-1 leading-relaxed">Latar belakang gelap GitHub-style elegan, nyaman dan mengurangi ketegangan mata di malam hari.</p>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

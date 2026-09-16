@@ -40,11 +40,11 @@
                 <span class="sm:hidden">Reset</span>
             </button>
             @if($store && $store->slug)
-            <button type="button" @click="openPreviewModal()" class="flex-1 sm:flex-initial justify-center px-3 sm:px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm cursor-pointer" title="Buka live preview interaktif (Mobile & Desktop)">
-                <span class="material-symbols-outlined text-[16px] text-sky-500">visibility</span> <span>Preview Web</span>
+            <button type="button" @click="openPreviewModal()" class="flex-1 sm:flex-initial justify-center px-3 sm:px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer" title="Buka live preview interaktif (Mobile & Desktop)">
+                <span class="material-symbols-outlined text-[16px] text-slate-500 dark:text-slate-400">visibility</span> <span>Preview Web</span>
             </button>
             @endif
-            <button @click="save()" :disabled="isSaving" :class="hasUnsavedChanges ? 'ring-2 ring-amber-400 dark:ring-amber-500' : ''" class="flex-1 sm:flex-initial justify-center px-4 sm:px-5 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs font-bold shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 transition-all flex items-center gap-1.5 disabled:opacity-60 cursor-pointer whitespace-nowrap">
+            <button @click="save()" :disabled="isSaving" :class="hasUnsavedChanges ? 'ring-2 ring-amber-400 dark:ring-amber-500' : ''" class="flex-1 sm:flex-initial justify-center px-4 sm:px-5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-bold transition-all flex items-center gap-1.5 disabled:opacity-60 cursor-pointer whitespace-nowrap active:scale-95">
                 <span class="material-symbols-outlined text-[16px]" x-text="isSaving ? 'hourglass_empty' : 'save'">save</span>
                 <span x-text="isSaving ? 'Menyimpan...' : (hasUnsavedChanges ? 'Simpan Perubahan *' : 'Simpan Perubahan')">Simpan Perubahan</span>
             </button>
@@ -68,10 +68,10 @@
             </span>
         </div>
 
-        <div class="grid grid-cols-3 gap-1 p-1 bg-white dark:bg-[#111726] rounded-xl border border-slate-200 dark:border-[#222f49] shadow-2xs w-full sm:w-auto">
+        <div class="grid grid-cols-3 gap-1 p-1 bg-white dark:bg-[#111726] rounded-xl border border-slate-200 dark:border-[#222f49] w-full sm:w-auto">
             <!-- 1. Toko Digital -->
             <button type="button" @click="setStoreMode('store')" 
-                    :class="storeMode === 'store' ? 'bg-sky-500 text-white shadow-xs font-black' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" 
+                    :class="storeMode === 'store' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" 
                     class="px-2.5 py-1.5 rounded-lg text-xs transition-all flex items-center justify-center gap-1 cursor-pointer" 
                     title="Mode Toko Digital (E-Commerce Katalog Penuh)">
                 <span class="material-symbols-outlined text-[15px]">storefront</span>
@@ -80,7 +80,7 @@
 
             <!-- 2. Bio Link -->
             <button type="button" @click="setStoreMode('profile')" 
-                    :class="storeMode === 'profile' ? 'bg-purple-600 text-white shadow-xs font-black' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" 
+                    :class="storeMode === 'profile' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" 
                     class="px-2.5 py-1.5 rounded-lg text-xs transition-all flex items-center justify-center gap-1 cursor-pointer" 
                     title="Mode Bio Link (Profil Personal ala Linktree / Lynk.id)">
                 <span class="material-symbols-outlined text-[15px]">contact_page</span>
@@ -89,7 +89,7 @@
 
             <!-- 3. Hybrid -->
             <button type="button" @click="setStoreMode('hybrid')" 
-                    :class="storeMode === 'hybrid' ? 'bg-emerald-600 text-white shadow-xs font-black' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" 
+                    :class="storeMode === 'hybrid' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" 
                     class="px-2.5 py-1.5 rounded-lg text-xs transition-all flex items-center justify-center gap-1 cursor-pointer" 
                     title="Mode Hybrid (Kombinasi Bio Link + Toko Digital)">
                 <span class="material-symbols-outlined text-[15px]">layers</span>
@@ -100,19 +100,19 @@
 
     <!-- Mobile Tab Switcher (Visible only on screens < lg) -->
     <div class="lg:hidden bg-white dark:bg-[#111726] border-b border-slate-200/80 dark:border-[#222f49] px-4 py-2 flex items-center justify-center gap-1.5 shrink-0 z-20 overflow-x-auto">
-        <button type="button" @click="mobileTab = 'palette'; sidebarTab = 'widgets'" :class="mobileTab === 'palette' ? 'bg-sky-500 text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'" class="flex-1 py-2 px-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap">
+        <button type="button" @click="mobileTab = 'palette'; sidebarTab = 'widgets'" :class="mobileTab === 'palette' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold'" class="flex-1 py-2 px-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap">
             <span class="material-symbols-outlined text-[16px]">widgets</span>
             <span>Widget</span>
         </button>
-        <button type="button" @click="mobileTab = 'voucher'; sidebarTab = 'voucher'" :class="mobileTab === 'voucher' ? 'bg-rose-500 text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'" class="flex-1 py-2 px-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap">
+        <button type="button" @click="mobileTab = 'voucher'; sidebarTab = 'voucher'" :class="mobileTab === 'voucher' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold'" class="flex-1 py-2 px-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap">
             <span class="material-symbols-outlined text-[16px]">confirmation_number</span>
             <span>Voucher</span>
         </button>
-        <button type="button" @click="mobileTab = 'biolink'; sidebarTab = 'biolink'" :class="mobileTab === 'biolink' ? 'bg-teal-500 text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'" class="flex-1 py-2 px-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap">
+        <button type="button" @click="mobileTab = 'biolink'; sidebarTab = 'biolink'" :class="mobileTab === 'biolink' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold'" class="flex-1 py-2 px-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap">
             <span class="material-symbols-outlined text-[16px]">link</span>
             <span>Bio Link</span>
         </button>
-        <button type="button" @click="mobileTab = 'canvas'" :class="mobileTab === 'canvas' ? 'bg-sky-500 text-white shadow-sm' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'" class="flex-1 py-2 px-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap">
+        <button type="button" @click="mobileTab = 'canvas'" :class="mobileTab === 'canvas' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold'" class="flex-1 py-2 px-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap">
             <span class="material-symbols-outlined text-[16px]">devices</span>
             <span>Kanvas</span>
         </button>
@@ -126,13 +126,13 @@
 
             <!-- Sidebar Tab Toggle (Desktop) -->
             <div class="hidden lg:flex border-b border-slate-100 dark:border-[#222f49]">
-                <button type="button" @click="sidebarTab = 'widgets'; mobileTab = 'palette'" :class="sidebarTab === 'widgets' ? 'border-b-2 border-sky-500 text-sky-600 dark:text-sky-400 font-black' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'" class="flex-1 py-2.5 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer">
+                <button type="button" @click="sidebarTab = 'widgets'; mobileTab = 'palette'" :class="sidebarTab === 'widgets' ? 'border-b-2 border-slate-900 text-slate-900 dark:border-white dark:text-white font-black' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'" class="flex-1 py-2.5 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer">
                     <span class="material-symbols-outlined text-[15px]">widgets</span> Widget
                 </button>
-                <button type="button" @click="sidebarTab = 'voucher'; mobileTab = 'voucher'" :class="sidebarTab === 'voucher' ? 'border-b-2 border-rose-500 text-rose-600 dark:text-rose-400 font-black' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'" class="flex-1 py-2.5 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer">
+                <button type="button" @click="sidebarTab = 'voucher'; mobileTab = 'voucher'" :class="sidebarTab === 'voucher' ? 'border-b-2 border-slate-900 text-slate-900 dark:border-white dark:text-white font-black' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'" class="flex-1 py-2.5 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer">
                     <span class="material-symbols-outlined text-[15px]">confirmation_number</span> Kupon
                 </button>
-                <button type="button" @click="sidebarTab = 'biolink'; mobileTab = 'biolink'" :class="sidebarTab === 'biolink' ? 'border-b-2 border-teal-500 text-teal-600 dark:text-teal-400 font-black' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'" class="flex-1 py-2.5 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer" title="Kelola Tombol Bio Link (Linktree / Lynk.id)">
+                <button type="button" @click="sidebarTab = 'biolink'; mobileTab = 'biolink'" :class="sidebarTab === 'biolink' ? 'border-b-2 border-slate-900 text-slate-900 dark:border-white dark:text-white font-black' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'" class="flex-1 py-2.5 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer" title="Kelola Tombol Bio Link (Linktree / Lynk.id)">
                     <span class="material-symbols-outlined text-[15px]">link</span> Bio Link
                 </button>
             </div>
@@ -343,7 +343,7 @@
 
                         <!-- Save Button -->
                         <div class="pt-2">
-                            <button type="button" @click="saveVoucherPlacement()" :disabled="isSavingVoucher" class="w-full py-2.5 rounded-xl bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold shadow-md shadow-rose-500/25 transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-60">
+                            <button type="button" @click="saveVoucherPlacement()" :disabled="isSavingVoucher" class="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-bold transition-all active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-60">
                                 <span class="material-symbols-outlined text-[15px]" x-text="isSavingVoucher ? 'hourglass_empty' : 'save'">save</span>
                                 <span x-text="isSavingVoucher ? 'Menyimpan...' : 'Simpan Penempatan'">Simpan Penempatan</span>
                             </button>
@@ -365,12 +365,12 @@
             <div x-show="sidebarTab === 'biolink'" class="flex flex-col flex-1 overflow-hidden" style="display: none;">
                 <div class="p-3.5 sm:p-4 border-b border-slate-100 dark:border-[#222f49] flex items-center justify-between gap-2">
                     <div>
-                        <h2 class="text-xs font-bold uppercase tracking-wider text-teal-600 dark:text-teal-400 flex items-center gap-1.5">
+                        <h2 class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
                             <span class="material-symbols-outlined text-[16px]">link</span> Tombol Tautan Bio Link
                         </h2>
                         <p class="text-[11px] text-slate-400 mt-0.5">Tampil di mode <b>Bio Link</b> dan <b>Hybrid</b>.</p>
                     </div>
-                    <button type="button" @click="saveProfileLinks()" :disabled="isSavingLinks" class="px-3 py-1.5 rounded-lg bg-teal-500 hover:bg-teal-400 text-white text-[11px] font-bold transition-all shadow-sm flex items-center gap-1 cursor-pointer">
+                    <button type="button" @click="saveProfileLinks()" :disabled="isSavingLinks" class="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-[11px] font-bold transition-all active:scale-95 flex items-center gap-1 cursor-pointer">
                         <span class="material-symbols-outlined text-[14px]">save</span>
                         <span x-text="isSavingLinks ? '...' : 'Simpan'">Simpan</span>
                     </button>
@@ -591,24 +591,24 @@
             <!-- Control Bar: Mode Tampilan Switcher & Viewport (Desktop/Mobile) -->
             <div class="w-full max-w-[960px] flex flex-col sm:flex-row items-center justify-between gap-3 mb-4 sm:mb-6 shrink-0">
                 <!-- Mode Tampilan Switcher -->
-                <div class="flex items-center gap-1 bg-white dark:bg-[#111726] p-1.5 rounded-2xl border border-slate-200/80 dark:border-[#222f49] shadow-sm overflow-x-auto max-w-full">
+                <div class="flex items-center gap-1 bg-white dark:bg-[#111726] p-1.5 rounded-2xl border border-slate-200/80 dark:border-[#222f49] overflow-x-auto max-w-full">
                     <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 pl-2 pr-1 shrink-0 flex items-center gap-1">
                         <span class="material-symbols-outlined text-[14px]">tune</span> Mode:
                     </span>
                     <button type="button" @click="setStoreMode('store')" 
-                            :class="storeMode === 'store' ? 'bg-sky-500 text-white shadow-xs font-black' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" 
+                            :class="storeMode === 'store' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" 
                             class="px-3 py-1.5 rounded-xl text-xs transition-all flex items-center gap-1.5 cursor-pointer shrink-0" title="Mode Toko Digital (E-Commerce Katalog)">
                         <span class="material-symbols-outlined text-[16px]">storefront</span>
                         <span>Toko Digital</span>
                     </button>
                     <button type="button" @click="setStoreMode('profile')" 
-                            :class="storeMode === 'profile' ? 'bg-sky-500 text-white shadow-xs font-black' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" 
+                            :class="storeMode === 'profile' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" 
                             class="px-3 py-1.5 rounded-xl text-xs transition-all flex items-center gap-1.5 cursor-pointer shrink-0" title="Mode Bio Link (Linktree / Lynk.id)">
                         <span class="material-symbols-outlined text-[16px]">contact_page</span>
                         <span>Bio Link</span>
                     </button>
                     <button type="button" @click="setStoreMode('hybrid')" 
-                            :class="storeMode === 'hybrid' ? 'bg-sky-500 text-white shadow-xs font-black' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" 
+                            :class="storeMode === 'hybrid' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" 
                             class="px-3 py-1.5 rounded-xl text-xs transition-all flex items-center gap-1.5 cursor-pointer shrink-0" title="Mode Hybrid (Bio Link + Toko Digital)">
                         <span class="material-symbols-outlined text-[16px]">layers</span>
                         <span>Hybrid</span>
@@ -616,18 +616,18 @@
                 </div>
 
                 <!-- Viewport Switcher (Desktop / Mobile) -->
-                <div class="flex items-center gap-1 bg-white dark:bg-[#111726] p-1.5 rounded-2xl border border-slate-200/80 dark:border-[#222f49] shadow-sm shrink-0">
-                    <button @click="device = 'desktop'" :class="device === 'desktop' ? 'bg-sky-500 text-white shadow-xs font-black' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="px-3.5 sm:px-4 py-1.5 rounded-xl text-xs transition-all flex items-center gap-1.5 cursor-pointer">
+                <div class="flex items-center gap-1 bg-white dark:bg-[#111726] p-1.5 rounded-2xl border border-slate-200/80 dark:border-[#222f49] shrink-0">
+                    <button @click="device = 'desktop'" :class="device === 'desktop' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="px-3.5 sm:px-4 py-1.5 rounded-xl text-xs transition-all flex items-center gap-1.5 cursor-pointer">
                         <span class="material-symbols-outlined text-[16px]">desktop_windows</span> Desktop
                     </button>
-                    <button @click="device = 'mobile'" :class="device === 'mobile' ? 'bg-sky-500 text-white shadow-xs font-black' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="px-3.5 sm:px-4 py-1.5 rounded-xl text-xs transition-all flex items-center gap-1.5 cursor-pointer">
+                    <button @click="device = 'mobile'" :class="device === 'mobile' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="px-3.5 sm:px-4 py-1.5 rounded-xl text-xs transition-all flex items-center gap-1.5 cursor-pointer">
                         <span class="material-symbols-outlined text-[16px]">smartphone</span> Mobile
                     </button>
                 </div>
             </div>
 
             <!-- DESKTOP CANVAS VIEWPORT -->
-            <div x-show="device === 'desktop'" class="w-full max-w-[960px] bg-white dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] shadow-2xl rounded-2xl overflow-hidden flex flex-col relative min-h-[600px] shrink-0 mb-12">
+            <div x-show="device === 'desktop'" class="w-full max-w-[960px] bg-white dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] rounded-2xl overflow-hidden flex flex-col relative min-h-[600px] shrink-0 mb-12">
                 
                 <!-- Browser Bar -->
                 <div class="h-9 bg-slate-100 dark:bg-[#161f33] border-b border-slate-200 dark:border-[#222f49] flex items-center px-4 gap-3 shrink-0">
@@ -1248,7 +1248,7 @@
                 </div>
                 <div class="flex gap-3">
                     <button @click="closeCropper()" type="button" class="px-5 py-2.5 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-[#222f49] transition-colors">Batal</button>
-                    <button @click="applyCrop()" type="button" class="px-5 py-2.5 bg-sky-500 hover:bg-sky-600 text-white rounded-xl text-sm font-bold shadow-lg shadow-sky-500/30 transition-colors flex items-center gap-2" :class="{'opacity-50 cursor-not-allowed': isCropping}" :disabled="isCropping">
+                    <button @click="applyCrop()" type="button" class="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 rounded-xl text-sm font-bold transition-all active:scale-95 flex items-center gap-2 cursor-pointer" :class="{'opacity-50 cursor-not-allowed': isCropping}" :disabled="isCropping">
                         <span x-show="!isCropping" class="material-symbols-outlined text-[18px]">check</span>
                         <span x-show="isCropping" class="material-symbols-outlined text-[18px] animate-spin">refresh</span>
                         <span x-text="isCropping ? 'Memproses...' : 'Potong & Simpan'"></span>
@@ -1563,7 +1563,7 @@
             <!-- Modal Footer -->
             <div class="px-6 py-4 border-t border-slate-200 dark:border-[#222f49] bg-slate-50 dark:bg-[#161f33] flex items-center justify-end gap-3 shrink-0 rounded-b-2xl">
                 <button @click="closeSettings()" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">Batal</button>
-                <button @click="saveSettings()" class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs font-bold shadow-lg shadow-sky-500/25 transition-all">Simpan Pengaturan</button>
+                <button @click="saveSettings()" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-bold transition-all active:scale-95 cursor-pointer">Simpan Pengaturan</button>
             </div>
         </div>
     </div>
@@ -1578,7 +1578,7 @@
             <!-- Header -->
             <div class="px-6 py-4 border-b border-slate-200 dark:border-[#222f49] flex items-center justify-between shrink-0 bg-slate-50/50 dark:bg-[#161f33]">
                 <div class="flex items-center gap-2.5">
-                    <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-500 text-white flex items-center justify-center shadow-md">
+                    <div class="w-8 h-8 rounded-xl bg-slate-900 text-white flex items-center justify-center">
                         <span class="material-symbols-outlined text-[18px]">palette</span>
                     </div>
                     <div>
@@ -1593,13 +1593,13 @@
 
             <!-- Tab Switcher -->
             <div class="flex border-b border-slate-200 dark:border-[#222f49] px-6 bg-slate-50/30 dark:bg-[#131b2e] shrink-0">
-                <button type="button" @click="bannerTab = 'gradient'" :class="bannerTab === 'gradient' ? 'border-sky-500 text-sky-600 dark:text-sky-400 font-bold' : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-medium'" class="px-4 py-3 border-b-2 text-xs flex items-center gap-1.5 transition-all">
+                <button type="button" @click="bannerTab = 'gradient'" :class="bannerTab === 'gradient' ? 'border-slate-900 text-slate-900 dark:border-white dark:text-white font-bold' : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-medium'" class="px-4 py-3 border-b-2 text-xs flex items-center gap-1.5 transition-all">
                     <span class="material-symbols-outlined text-[16px]">gradient</span> Warna Gradien
                 </button>
-                <button type="button" @click="bannerTab = 'solid'" :class="bannerTab === 'solid' ? 'border-sky-500 text-sky-600 dark:text-sky-400 font-bold' : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-medium'" class="px-4 py-3 border-b-2 text-xs flex items-center gap-1.5 transition-all">
+                <button type="button" @click="bannerTab = 'solid'" :class="bannerTab === 'solid' ? 'border-slate-900 text-slate-900 dark:border-white dark:text-white font-bold' : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-medium'" class="px-4 py-3 border-b-2 text-xs flex items-center gap-1.5 transition-all">
                     <span class="material-symbols-outlined text-[16px]">format_color_fill</span> Warna Biasa
                 </button>
-                <button type="button" @click="bannerTab = 'image'" :class="bannerTab === 'image' ? 'border-sky-500 text-sky-600 dark:text-sky-400 font-bold' : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-medium'" class="px-4 py-3 border-b-2 text-xs flex items-center gap-1.5 transition-all">
+                <button type="button" @click="bannerTab = 'image'" :class="bannerTab === 'image' ? 'border-slate-900 text-slate-900 dark:border-white dark:text-white font-bold' : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-medium'" class="px-4 py-3 border-b-2 text-xs flex items-center gap-1.5 transition-all">
                     <span class="material-symbols-outlined text-[16px]">image</span> Gambar Foto
                 </button>
             </div>
@@ -1610,14 +1610,14 @@
                 <!-- Live Mini Preview -->
                 <div>
                     <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-300 mb-1.5">Live Preview Banner Toko</label>
-                    <div class="w-full h-28 rounded-2xl relative overflow-hidden flex items-end p-4 border border-slate-200 dark:border-[#222f49] shadow-inner transition-all duration-300" :style="getBannerStyle(previewBanner)">
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/30 to-transparent pointer-events-none"></div>
+                    <div class="w-full h-28 rounded-2xl relative overflow-hidden flex items-end p-4 border border-slate-200 dark:border-[#222f49] transition-all duration-300" :style="getBannerStyle(previewBanner)">
+                        <div class="absolute inset-0 bg-slate-950/40 pointer-events-none"></div>
                         <div class="relative z-10 flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center font-bold text-white text-sm shadow-md shrink-0">
+                            <div class="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center font-bold text-white text-sm shrink-0">
                                 {{ strtoupper(substr($store->name ?? 'T', 0, 2)) }}
                             </div>
                             <div class="min-w-0">
-                                <h4 class="font-extrabold text-sm text-white drop-shadow-sm truncate">{{ $store->name ?? 'Toko Anda' }}</h4>
+                                <h4 class="font-extrabold text-sm text-white truncate">{{ $store->name ?? 'Toko Anda' }}</h4>
                                 <span class="text-[10px] text-slate-200">Toko Resmi Terverifikasi</span>
                             </div>
                         </div>
@@ -1631,7 +1631,7 @@
                         <span class="material-symbols-outlined text-4xl text-amber-500 mb-2">stars</span>
                         <h4 class="font-bold text-slate-800 dark:text-white mb-1">Fitur Toko PRO</h4>
                         <p class="text-[11px] text-slate-600 dark:text-slate-400 mb-4 max-w-xs">Gunakan dekorasi banner gradien eksklusif untuk tampilan toko yang lebih premium.</p>
-                        <a href="{{ route('tenant.pro.index') }}" class="px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 text-white rounded-xl text-xs font-bold shadow-md hover:shadow-lg transition-all">Upgrade ke PRO</a>
+                        <a href="{{ route('tenant.pro.index') }}" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition-all active:scale-95">Upgrade ke PRO</a>
                     </div>
                     @endif
                     <div class="flex items-center justify-between">
@@ -1752,7 +1752,7 @@
 
                 <div class="flex items-center gap-2">
                     <button type="button" @click="closeBannerModal()" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">Batal</button>
-                    <button type="button" @click="applyBannerModal()" class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-white text-xs font-bold shadow-lg shadow-sky-500/25 transition-all cursor-pointer">Terapkan Banner</button>
+                    <button type="button" @click="applyBannerModal()" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-bold transition-all active:scale-95 cursor-pointer">Terapkan Banner</button>
                 </div>
             </div>
         </div>
@@ -1777,14 +1777,14 @@
             
             <!-- Left: Info & Mode Badge -->
             <div class="flex items-center gap-2.5 min-w-0">
-                <div class="w-8 h-8 rounded-xl bg-sky-500/20 text-sky-400 flex items-center justify-center shrink-0">
+                <div class="w-8 h-8 rounded-xl bg-slate-800 text-slate-300 flex items-center justify-center shrink-0">
                     <span class="material-symbols-outlined text-[18px]">visibility</span>
                 </div>
                 <div class="min-w-0">
                     <h3 class="text-xs sm:text-sm font-bold text-white flex items-center gap-2 truncate">
                         <span>Live Preview Halaman</span>
                         <span class="text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider shrink-0"
-                              :class="storeMode === 'profile' ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' : (storeMode === 'hybrid' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-sky-500/20 text-sky-300 border border-sky-500/30')"
+                              :class="storeMode === 'profile' ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30' : (storeMode === 'hybrid' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'bg-slate-700 text-slate-200 border border-slate-600')"
                               x-text="storeMode === 'profile' ? 'Bio Link' : (storeMode === 'hybrid' ? 'Hybrid' : 'Toko Digital')">
                         </span>
                     </h3>
@@ -1797,13 +1797,13 @@
             <!-- Center: Device Switcher & Refresh Button -->
             <div class="flex items-center gap-1 p-1 bg-slate-800/90 rounded-xl border border-slate-700">
                 <button type="button" @click="previewDevice = 'mobile'" 
-                        :class="previewDevice === 'mobile' ? 'bg-sky-500 text-white font-bold shadow-xs' : 'text-slate-400 hover:text-white'" 
+                        :class="previewDevice === 'mobile' ? 'bg-white text-slate-900 font-bold' : 'text-slate-400 hover:text-white font-medium'" 
                         class="px-2.5 sm:px-3 py-1 rounded-lg text-xs transition-all flex items-center gap-1 cursor-pointer">
                     <span class="material-symbols-outlined text-[15px]">smartphone</span>
                     <span class="hidden sm:inline">Mobile</span>
                 </button>
                 <button type="button" @click="previewDevice = 'desktop'" 
-                        :class="previewDevice === 'desktop' ? 'bg-sky-500 text-white font-bold shadow-xs' : 'text-slate-400 hover:text-white'" 
+                        :class="previewDevice === 'desktop' ? 'bg-white text-slate-900 font-bold' : 'text-slate-400 hover:text-white font-medium'" 
                         class="px-2.5 sm:px-3 py-1 rounded-lg text-xs transition-all flex items-center gap-1 cursor-pointer">
                     <span class="material-symbols-outlined text-[15px]">desktop_windows</span>
                     <span class="hidden sm:inline">Desktop</span>

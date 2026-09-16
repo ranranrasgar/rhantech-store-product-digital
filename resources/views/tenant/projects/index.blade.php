@@ -41,12 +41,12 @@
 
         <div>
             @if($store->isPro())
-                <a href="{{ route('tenant.projects.create') }}" class="px-4 py-2.5 rounded-xl bg-primary text-white font-bold text-xs shadow-xs hover:bg-primary/90 transition-all flex items-center gap-1.5 cursor-pointer">
+                <a href="{{ route('tenant.projects.create') }}" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer active:scale-95">
                     <span class="material-symbols-outlined text-[18px]">add</span>
                     <span>Tambah Proyek Baru</span>
                 </a>
             @else
-                <button type="button" @click="openProModal()" class="px-4 py-2.5 rounded-xl font-black text-xs text-slate-950 bg-amber-400 hover:bg-amber-300 shadow-xs transition-all flex items-center gap-1.5 cursor-pointer">
+                <button type="button" @click="openProModal()" class="px-4 py-2.5 rounded-xl font-black text-xs text-slate-950 bg-amber-400 hover:bg-amber-300 transition-all flex items-center gap-1.5 cursor-pointer">
                     <span class="material-symbols-outlined text-[18px]">bolt</span>
                     <span>Buka Modul Portofolio PRO</span>
                 </button>
@@ -55,7 +55,7 @@
     </div>
 
     @if(!$store->isPro())
-        <div class="p-6 rounded-3xl bg-white dark:bg-[#111726] border border-slate-200/90 dark:border-[#222f49] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs">
+        <div class="p-6 rounded-3xl bg-white dark:bg-[#111726] border border-slate-200/90 dark:border-[#222f49] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div class="flex items-center gap-4">
                 <div class="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center shrink-0 border border-amber-500/20">
                     <span class="material-symbols-outlined text-2xl">folder_special</span>
@@ -65,7 +65,7 @@
                     <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Tingkatkan closing rate toko hingga 4x lipat dengan membuktikan kualitas karya digital Anda langsung di etalase toko publik.</p>
                 </div>
             </div>
-            <a href="{{ route('tenant.pro.index') }}" class="px-4 py-2 rounded-xl text-xs font-black text-slate-950 bg-amber-400 hover:bg-amber-300 shadow-xs shrink-0 cursor-pointer transition-colors">
+            <a href="{{ route('tenant.pro.index') }}" class="px-4 py-2 rounded-xl text-xs font-black text-slate-950 bg-amber-400 hover:bg-amber-300 shrink-0 cursor-pointer transition-colors">
                 Upgrade ke PRO
             </a>
         </div>
@@ -73,7 +73,7 @@
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         @forelse($projects as $proj)
-            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-3xl overflow-hidden shadow-sm flex flex-col justify-between hover:shadow-md transition-all">
+            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-3xl overflow-hidden flex flex-col justify-between transition-all">
                 <div>
                     <div class="h-44 w-full bg-slate-100 dark:bg-slate-800 relative overflow-hidden">
                         @if($proj->thumbnail)
@@ -104,13 +104,13 @@
                         {{ $proj->created_at->format('d M Y') }}
                     </div>
                     <div class="flex items-center gap-1">
-                        <a href="{{ route('tenant.projects.edit', $proj->id) }}" class="p-1.5 rounded-lg text-slate-500 hover:text-sky-600 hover:bg-sky-50 dark:hover:bg-sky-950/30">
+                        <a href="{{ route('tenant.projects.edit', $proj->id) }}" class="p-1.5 rounded-lg text-slate-500 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
                             <span class="material-symbols-outlined text-[18px]">edit</span>
                         </a>
                         <form action="{{ route('tenant.projects.destroy', $proj->id) }}" method="POST" onsubmit="return confirm('Hapus proyek ini?')">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="p-1.5 rounded-lg text-slate-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 cursor-pointer">
+                            <button type="submit" class="p-1.5 rounded-lg text-slate-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 cursor-pointer transition-colors">
                                 <span class="material-symbols-outlined text-[18px]">delete</span>
                             </button>
                         </form>
@@ -119,7 +119,7 @@
             </div>
         @empty
             <div class="col-span-full py-12 text-center bg-white dark:bg-[#111726] border border-dashed border-slate-300 dark:border-[#222f49] rounded-3xl p-8 space-y-3">
-                <div class="w-12 h-12 rounded-2xl bg-sky-500/10 text-sky-500 flex items-center justify-center mx-auto">
+                <div class="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center mx-auto">
                     <span class="material-symbols-outlined text-3xl">folder_open</span>
                 </div>
                 <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200">Belum Ada Proyek Portofolio</h3>

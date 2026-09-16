@@ -349,12 +349,12 @@
                 </div>
 
                 <!-- Info Ketentuan Ukuran File -->
-                <div class="mb-2 p-2.5 rounded-lg bg-teal-500/10 border border-teal-500/30 text-xs text-teal-800 dark:text-teal-200 flex items-center justify-between gap-2 flex-wrap">
+                <div class="mb-2 p-2.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-800 dark:text-slate-200 flex items-center justify-between gap-2 flex-wrap">
                     <div class="flex items-center gap-2">
-                        <span class="material-symbols-outlined text-[18px] text-[#00838f] dark:text-teal-400 shrink-0">info</span>
+                        <span class="material-symbols-outlined text-[18px] text-slate-700 dark:text-slate-300 shrink-0">info</span>
                         <span><strong>Ketentuan Foto:</strong> Setiap foto maksimal <strong>2 MB</strong> (2.048 KB). Format: JPG, JPEG, PNG, WEBP, GIF.</span>
                     </div>
-                    <span class="text-[11px] font-semibold text-teal-700 dark:text-teal-300">
+                    <span class="text-[11px] font-semibold text-slate-600 dark:text-slate-400">
                         Slot tersisa: <strong x-text="remainingSlot"></strong> foto
                     </span>
                 </div>
