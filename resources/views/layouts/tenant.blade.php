@@ -13,15 +13,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 <style>
-/* Anti-FOUT: sembunyikan teks icon sampai font Material Symbols selesai dimuat */
+/* Pastikan ukuran/line-height icon konsisten */
 .material-symbols-outlined {
-    font-display: block;
-    visibility: hidden;
     font-size: inherit;
     line-height: inherit;
-}
-.fonts-loaded .material-symbols-outlined {
-    visibility: visible;
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
 }
 </style>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
@@ -761,19 +759,4 @@ function tenantGlobalSearch() {
 @include('components.file-size-guard')
 @livewireScripts
 @stack('scripts')
-<script>
-// Anti-FOUT: Deteksi font Material Symbols selesai dimuat, lalu tampilkan icon
-(function() {
-    if ('fonts' in document) {
-        document.fonts.ready.then(function() {
-            document.body.classList.add('fonts-loaded');
-        });
-    } else {
-        // Fallback untuk browser lama: tampilkan setelah 500ms
-        setTimeout(function() {
-            document.body.classList.add('fonts-loaded');
-        }, 500);
-    }
-})();
-</script>
 </body></html>
