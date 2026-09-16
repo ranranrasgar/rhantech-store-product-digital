@@ -40,15 +40,15 @@
                         "on-tertiary-container": "#7073ff",
                         "surface-container-low": "rgb(var(--theme-surface-low) / <alpha-value>)",
                         "tertiary-fixed-dim": "#c0c1ff",
-                        "secondary-fixed-dim": "#4cd7f6",
+                        "secondary-fixed-dim": "#38bdf8",
                         "surface-variant": "rgb(var(--theme-surface-variant) / <alpha-value>)",
                         "background": "rgb(var(--theme-background) / <alpha-value>)",
-                        "on-secondary-container": "#006172",
+                        "on-secondary-container": "#0369a1",
                         "error-container": "#ffdad6",
                         "surface-dim": "#cbdbf5",
-                        "on-secondary-fixed-variant": "#004e5c",
+                        "on-secondary-fixed-variant": "#075985",
                         "surface-container-lowest": "rgb(var(--theme-surface-lowest) / <alpha-value>)",
-                        "secondary": "#00687a",
+                        "secondary": "#0284c7",
                         "surface-container-highest": "rgb(var(--theme-surface-highest) / <alpha-value>)",
                         "tertiary-container": "#07006c",
                         "on-primary": "#ffffff",
@@ -193,14 +193,14 @@
 .header-logo:hover { opacity: 0.85; }
 .header-logo .logo-dot {
     width: 8px; height: 8px;
-    background: #00d4ff;
+    background: #0284c7;
     border-radius: 50%;
-    box-shadow: 0 0 10px #00d4ff;
+    box-shadow: 0 0 10px rgba(2, 132, 199, 0.4);
     animation: pulse-dot 2s infinite;
 }
 @keyframes pulse-dot {
-    0%, 100% { box-shadow: 0 0 8px #00d4ff; }
-    50%       { box-shadow: 0 0 18px #00d4ff, 0 0 30px rgba(0,212,255,0.4); }
+    0%, 100% { box-shadow: 0 0 6px rgba(2, 132, 199, 0.4); }
+    50%       { box-shadow: 0 0 12px rgba(2, 132, 199, 0.7); }
 }
 .search-bar-wrap {
     display: flex; align-items: center;
@@ -211,9 +211,9 @@
     transition: border-color 0.2s, background 0.2s;
 }
 .search-bar-wrap:focus-within {
-    border-color: #00d4ff;
+    border-color: #0284c7;
     background: rgba(255,255,255,0.12);
-    box-shadow: 0 0 0 3px rgba(0,212,255,0.15);
+    box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2);
 }
 .search-bar-wrap input {
     background: transparent;
@@ -261,7 +261,7 @@
     transition: color 0.15s;
     cursor: pointer; text-decoration: none;
 }
-.search-tag:hover { color: #00d4ff; }
+.search-tag:hover { color: #38bdf8; }
 .search-tag-sep { color: rgba(255,255,255,0.2); margin: 0 2px; }
 
 /* Responsive fallbacks to prevent header elements duplication before Tailwind CDN loads */
@@ -290,13 +290,13 @@
                 {{ $company->company_name ?? 'rhantech' }}
             </a>
             <div class="hidden md:flex items-center gap-lg nav-links">
-                <a class="nav-link {{ request()->is('/') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-secondary transition-colors duration-200" href="{{ url('/#home') }}">Home</a>
-                <a class="nav-link {{ request()->routeIs('about') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-secondary transition-colors duration-200" href="{{ route('about') }}" wire:navigate>About</a>
-                <a class="nav-link text-on-surface-variant dark:text-on-surface-variant/80 hover:text-secondary transition-colors duration-200" href="{{ url('/#services') }}">Services</a>
-                <a class="nav-link {{ request()->routeIs('projects.*') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-secondary transition-colors duration-200" href="{{ route('projects.index') }}" wire:navigate>Portfolio</a>
-                <a class="nav-link {{ request()->routeIs('products.*') || request()->routeIs('checkout.*') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-secondary transition-colors duration-200" href="{{ route('products.index') }}" wire:navigate>Store</a>
-                <a class="nav-link {{ request()->routeIs('clients.*') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-secondary transition-colors duration-200" href="{{ route('clients.index') }}" wire:navigate>Clients</a>
-                <a class="nav-link {{ request()->routeIs('contact') ? 'active text-secondary dark:text-secondary-fixed-dim font-semibold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-secondary transition-colors duration-200" href="{{ url('/contact') }}" wire:navigate>Contact</a>
+                <a class="nav-link {{ request()->is('/') ? 'active text-sky-600 dark:text-sky-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ url('/#home') }}">Home</a>
+                <a class="nav-link {{ request()->routeIs('about') ? 'active text-sky-600 dark:text-sky-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ route('about') }}" wire:navigate>About</a>
+                <a class="nav-link text-on-surface-variant dark:text-on-surface-variant/80 hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ url('/#services') }}">Services</a>
+                <a class="nav-link {{ request()->routeIs('projects.*') ? 'active text-sky-600 dark:text-sky-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ route('projects.index') }}" wire:navigate>Portfolio</a>
+                <a class="nav-link {{ request()->routeIs('products.*') || request()->routeIs('checkout.*') ? 'active text-sky-600 dark:text-sky-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ route('products.index') }}" wire:navigate>Store</a>
+                <a class="nav-link {{ request()->routeIs('clients.*') ? 'active text-sky-600 dark:text-sky-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ route('clients.index') }}" wire:navigate>Clients</a>
+                <a class="nav-link {{ request()->routeIs('contact') ? 'active text-sky-600 dark:text-sky-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ url('/contact') }}" wire:navigate>Contact</a>
             </div>
             <div class="flex items-center gap-2">
                 @guest
@@ -388,7 +388,7 @@
                  @click.outside="open = false"
                  @keydown.escape.window="open = false">
                 <form action="{{ route('products.index') }}" method="GET" class="m-0">
-                    <div class="search-bar-wrap !border-white/20 !bg-white/10 focus-within:!border-[#00d4ff]">
+                    <div class="search-bar-wrap !border-white/20 !bg-white/10 focus-within:!border-[#0284c7]">
                         <input type="text" name="search" x-model="query"
                             @input.debounce.250ms="fetchSuggest()"
                             @focus="if(query.trim().length >= 2) fetchSuggest()"
@@ -471,7 +471,7 @@
                 <a href="{{ route('cart.index') }}" class="header-action-btn relative !p-2 !rounded-xl !bg-white/10 hover:!bg-white/20 border border-white/10 transition-all flex items-center justify-center" title="Keranjang" wire:navigate>
                     <span class="material-symbols-outlined text-[20px] text-white">shopping_cart</span>
                     <span data-cart-count
-                        class="absolute -top-1 -right-1 bg-[#00d4ff] text-[#0a1628] text-[9px] font-black px-1.5 py-0.5 rounded-full min-w-[16px] text-center leading-none shadow"
+                        class="absolute -top-1 -right-1 bg-sky-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full min-w-[16px] text-center leading-none shadow"
                         style="{{ $cartCount > 0 ? '' : 'display:none' }}">{{ $cartCount }}</span>
                 </a>
 
@@ -481,7 +481,7 @@
                     <div class="relative" x-data="{ open: false }" @click.outside="open = false">
                         <button type="button"
                                 @click="open = !open" 
-                                class="flex items-center focus:outline-none p-0.5 rounded-full ring-2 ring-[#00d4ff]/40 cursor-pointer active:scale-95 transition-transform"
+                                class="flex items-center focus:outline-none p-0.5 rounded-full ring-2 ring-sky-500/40 cursor-pointer active:scale-95 transition-transform"
                                 aria-haspopup="true"
                                 :aria-expanded="open"
                                 title="Menu Akun">
@@ -507,7 +507,7 @@
                             </a>
                             @endif
                             <a href="{{ route('tenant.dashboard') }}" class="flex items-center gap-2.5 px-3.5 py-2 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
-                                <span class="material-symbols-outlined text-[17px] text-[#00d4ff]">storefront</span> Dashboard Toko
+                                <span class="material-symbols-outlined text-[17px] text-sky-500">storefront</span> Dashboard Toko
                             </a>
                             <a href="{{ route('tenant.purchases.index') }}" class="flex items-center gap-2.5 px-3.5 py-2 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
                                 <span class="material-symbols-outlined text-[17px] text-amber-500">receipt_long</span> Riwayat Belanja
@@ -732,7 +732,7 @@
                             navLinks.forEach(link => {
                                 const href = link.getAttribute('href');
                                 if (href && href.includes('/#')) {
-                                    link.classList.remove('active', 'text-secondary', 'dark:text-secondary-fixed-dim', 'font-semibold');
+                                    link.classList.remove('active', 'text-sky-600', 'dark:text-sky-400', 'font-bold', 'text-secondary', 'dark:text-secondary-fixed-dim', 'font-semibold');
                                     link.classList.add('text-on-surface-variant', 'dark:text-on-surface-variant/80');
                                 }
                             });
@@ -741,7 +741,7 @@
                             const activeLink = document.querySelector(`.nav-link[href$="/#${id}"]`);
                             if (activeLink) {
                                 activeLink.classList.remove('text-on-surface-variant', 'dark:text-on-surface-variant/80');
-                                activeLink.classList.add('active', 'text-secondary', 'dark:text-secondary-fixed-dim', 'font-semibold');
+                                activeLink.classList.add('active', 'text-sky-600', 'dark:text-sky-400', 'font-bold');
                             }
                         }
                     });
