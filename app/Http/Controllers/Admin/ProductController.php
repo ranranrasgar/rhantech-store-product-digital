@@ -295,6 +295,7 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
     {
+        $productName = $product->name;
         if ($product->file_path) {
             Storage::delete($product->file_path);
         }
@@ -302,6 +303,14 @@ class ProductController extends Controller
             Storage::disk('public')->delete($image->image_path);
         }
         $product->delete();
+
+        if (request()->wantsJson() || request()->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => "Produk \"{$productName}\" berhasil dihapus secara permanen."
+            ]);
+        }
+
         return redirect()->route('admin.products.index')->with('success', 'Product deleted successfully.');
     }
 
@@ -354,6 +363,16 @@ class ProductController extends Controller
     public function toggleActive(Product $product)
     {
         $product->update(['is_active' => !$product->is_active]);
+
+        if (request()->wantsJson() || request()->ajax()) {
+            return response()->json([
+                'success' => true,
+                'is_active' => (bool)$product->is_active,
+                'approval_status' => $product->approval_status,
+                'message' => $product->is_active ? "Status produk \"{$product->name}\" aktif dan tayang." : "Status produk \"{$product->name}\" dinonaktifkan / ditahan."
+            ]);
+        }
+
         return back()->with('success', 'Product status updated.');
     }
 
@@ -383,6 +402,16 @@ class ProductController extends Controller
             'is_active' => true, // Automatically activate upon approval
         ]);
 
+        if (request()->wantsJson() || request()->ajax()) {
+            return response()->json([
+                'success' => true,
+                'approval_status' => 'approved',
+                'is_active' => true,
+                'product_name' => $product->name,
+                'message' => "Produk \"{$product->name}\" berhasil disetujui (Approved) dan sudah tayang di website!"
+            ]);
+        }
+
         return back()->with('success', "Produk \"{$product->name}\" berhasil disetujui (Approved) dan sudah tayang di website!");
     }
 
@@ -405,6 +434,17 @@ class ProductController extends Controller
             'rejection_reason' => $reason,
             'is_active' => false,
         ]);
+
+        if (request()->wantsJson() || request()->ajax()) {
+            return response()->json([
+                'success' => true,
+                'approval_status' => 'rejected',
+                'rejection_reason' => $reason,
+                'is_active' => false,
+                'product_name' => $product->name,
+                'message' => "Produk \"{$product->name}\" telah ditolak dengan alasan yang disimpan."
+            ]);
+        }
 
         return back()->with('info', "Produk \"{$product->name}\" telah ditolak dengan alasan yang disimpan.");
     }

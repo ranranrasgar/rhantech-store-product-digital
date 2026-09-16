@@ -7,12 +7,284 @@
     rejectProductName: '',
     rejectReasonType: 'Link Download rusak/tidak bisa diakses',
     rejectCustomReason: '',
+    isRejecting: false,
+    toasts: [],
+    showToast(message, type = 'success') {
+        const id = Date.now() + Math.random();
+        this.toasts.push({ id, message, type });
+        setTimeout(() => this.removeToast(id), 4000);
+    },
+    removeToast(id) {
+        this.toasts = this.toasts.filter(t => t.id !== id);
+    },
     openRejectModal(id, name) {
         this.rejectProductId = id;
         this.rejectProductName = name;
         this.rejectReasonType = 'Link Download rusak/tidak bisa diakses';
         this.rejectCustomReason = '';
         this.rejectModalOpen = true;
+    },
+    decrementPendingCount() {
+        const badges = document.querySelectorAll('.pending-count-badge');
+        badges.forEach(b => {
+            let count = parseInt(b.textContent.replace(/\D/g, '')) || 0;
+            if (count > 1) {
+                b.textContent = (count - 1) + (b.dataset.suffix ? ' ' + b.dataset.suffix : '');
+            } else {
+                b.style.display = 'none';
+            }
+        });
+    },
+    async toggleActive(productId, event) {
+        event.preventDefault();
+        const btn = event.currentTarget;
+        btn.disabled = true;
+        btn.style.opacity = '0.5';
+
+        try {
+            const res = await fetch(`/admin/products/${productId}/toggle-active`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ _method: 'PATCH' })
+            });
+            const data = await res.json();
+            if (data.success) {
+                this.showToast(data.message, 'success');
+                const iconSpan = btn.querySelector('.material-symbols-outlined');
+                if (data.is_active) {
+                    btn.className = 'p-1.5 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 rounded-lg transition';
+                    btn.title = 'Saklar On/Off Tayang (Aktif)';
+                    if (iconSpan) iconSpan.textContent = 'toggle_on';
+                } else {
+                    btn.className = 'p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition';
+                    btn.title = 'Saklar On/Off Tayang (Non-Aktif)';
+                    if (iconSpan) iconSpan.textContent = 'toggle_off';
+                }
+
+                const pubBadge = document.getElementById(`pub-badge-${productId}`);
+                if (pubBadge) {
+                    if (data.is_active && data.approval_status === 'approved') {
+                        pubBadge.innerHTML = `<span class=\"inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400\"><span class=\"w-1.5 h-1.5 rounded-full bg-emerald-500\"></span> Tayang</span>`;
+                    } else if (!data.is_active) {
+                        pubBadge.innerHTML = `<span class=\"inline-flex items-center gap-1 text-slate-400\"><span class=\"w-1.5 h-1.5 rounded-full bg-slate-400\"></span> Non-Aktif</span>`;
+                    } else {
+                        pubBadge.innerHTML = `<span class=\"inline-flex items-center gap-1 text-amber-500\"><span class=\"w-1.5 h-1.5 rounded-full bg-amber-400\"></span> Ditahan</span>`;
+                    }
+                }
+            } else {
+                this.showToast(data.message || 'Gagal mengubah status produk.', 'error');
+            }
+        } catch (err) {
+            console.error(err);
+            this.showToast('Terjadi kesalahan jaringan.', 'error');
+        } finally {
+            btn.disabled = false;
+            btn.style.opacity = '1';
+        }
+    },
+    async approveProduct(productId, productName, event) {
+        event.preventDefault();
+        if (!confirm(`Setujui produk \"${productName}\" agar dapat tayang di platform?`)) return;
+
+        const btn = event.currentTarget;
+        btn.disabled = true;
+        btn.style.opacity = '0.5';
+
+        try {
+            const res = await fetch(`/admin/products/${productId}/approve`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ _method: 'PATCH' })
+            });
+            const data = await res.json();
+            if (data.success) {
+                this.showToast(data.message, 'success');
+
+                const row = document.getElementById(`product-row-${productId}`);
+                if (row) {
+                    row.classList.remove('bg-amber-500/5');
+                }
+
+                const statusBadge = document.getElementById(`approval-badge-${productId}`);
+                if (statusBadge) {
+                    statusBadge.innerHTML = `
+                        <span class=\"inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800\">
+                            <span class=\"material-symbols-outlined text-[14px]\">check_circle</span> Approved
+                        </span>
+                    `;
+                }
+
+                const reasonSpan = document.getElementById(`rejection-reason-${productId}`);
+                if (reasonSpan) {
+                    reasonSpan.remove();
+                }
+
+                const pubBadge = document.getElementById(`pub-badge-${productId}`);
+                if (pubBadge) {
+                    pubBadge.innerHTML = `<span class=\"inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400\"><span class=\"w-1.5 h-1.5 rounded-full bg-emerald-500\"></span> Tayang</span>`;
+                }
+
+                const toggleBtn = document.getElementById(`toggle-btn-${productId}`);
+                if (toggleBtn) {
+                    toggleBtn.className = 'p-1.5 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 rounded-lg transition';
+                    toggleBtn.title = 'Saklar On/Off Tayang (Aktif)';
+                    const icon = toggleBtn.querySelector('.material-symbols-outlined');
+                    if (icon) icon.textContent = 'toggle_on';
+                }
+
+                const actionContainer = document.getElementById(`review-actions-${productId}`);
+                if (actionContainer) {
+                    actionContainer.innerHTML = `
+                        <button type=\"button\" data-name=\"${productName.replace(/\"/g, '&quot;')}\" @click=\"openRejectModal(${productId}, $el.dataset.name)\" class=\"px-2 py-1 rounded-lg text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 text-xs font-semibold transition border border-rose-200 dark:border-rose-900/60\" title=\"Batalkan Persetujuan (Tolak)\">
+                            Tolak
+                        </button>
+                    `;
+                }
+
+                this.decrementPendingCount();
+            } else {
+                this.showToast(data.message || 'Gagal menyetujui produk.', 'error');
+            }
+        } catch (err) {
+            console.error(err);
+            this.showToast('Terjadi kesalahan jaringan.', 'error');
+        } finally {
+            btn.disabled = false;
+            btn.style.opacity = '1';
+        }
+    },
+    async submitReject(event) {
+        event.preventDefault();
+        if (this.isRejecting) return;
+        this.isRejecting = true;
+
+        try {
+            const res = await fetch(`/admin/products/${this.rejectProductId}/reject`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    _method: 'PATCH',
+                    reason_type: this.rejectReasonType,
+                    custom_reason: this.rejectCustomReason
+                })
+            });
+            const data = await res.json();
+            if (data.success) {
+                this.showToast(data.message, 'info');
+                const pId = this.rejectProductId;
+                const pName = this.rejectProductName;
+
+                const row = document.getElementById(`product-row-${pId}`);
+                if (row) {
+                    row.classList.remove('bg-amber-500/5');
+                }
+
+                const statusBadge = document.getElementById(`approval-badge-${pId}`);
+                if (statusBadge) {
+                    statusBadge.innerHTML = `
+                        <span class=\"inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-100 dark:bg-rose-950/50 text-rose-700 dark:text-rose-400 border border-rose-300 dark:border-rose-800\">
+                            <span class=\"material-symbols-outlined text-[14px]\">cancel</span> Ditolak
+                        </span>
+                    `;
+                }
+
+                let reasonContainer = document.getElementById(`rejection-reason-${pId}`);
+                if (!reasonContainer && statusBadge) {
+                    reasonContainer = document.createElement('span');
+                    reasonContainer.id = `rejection-reason-${pId}`;
+                    reasonContainer.className = 'text-[10px] text-rose-600 dark:text-rose-400 max-w-[170px] truncate cursor-help mt-0.5';
+                    statusBadge.parentElement.appendChild(reasonContainer);
+                }
+                if (reasonContainer) {
+                    reasonContainer.textContent = 'Alasan: ' + data.rejection_reason;
+                    reasonContainer.title = data.rejection_reason;
+                }
+
+                const pubBadge = document.getElementById(`pub-badge-${pId}`);
+                if (pubBadge) {
+                    pubBadge.innerHTML = `<span class=\"inline-flex items-center gap-1 text-slate-400\"><span class=\"w-1.5 h-1.5 rounded-full bg-slate-400\"></span> Non-Aktif</span>`;
+                }
+
+                const toggleBtn = document.getElementById(`toggle-btn-${pId}`);
+                if (toggleBtn) {
+                    toggleBtn.className = 'p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition';
+                    toggleBtn.title = 'Saklar On/Off Tayang (Non-Aktif)';
+                    const icon = toggleBtn.querySelector('.material-symbols-outlined');
+                    if (icon) icon.textContent = 'toggle_off';
+                }
+
+                const actionContainer = document.getElementById(`review-actions-${pId}`);
+                if (actionContainer) {
+                    actionContainer.innerHTML = `
+                        <button type=\"button\" data-name=\"${pName.replace(/\"/g, '&quot;')}\" @click=\"approveProduct(${pId}, $el.dataset.name, $event)\" class=\"px-2 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition shadow-xs\">
+                            Approve
+                        </button>
+                    `;
+                }
+
+                this.decrementPendingCount();
+                this.rejectModalOpen = false;
+            } else {
+                this.showToast(data.message || 'Gagal menolak produk.', 'error');
+            }
+        } catch (err) {
+            console.error(err);
+            this.showToast('Terjadi kesalahan jaringan.', 'error');
+        } finally {
+            this.isRejecting = false;
+        }
+    },
+    async deleteProduct(productId, productName, event) {
+        event.preventDefault();
+        if (!confirm(`Hapus produk \"${productName}\" secara permanen?`)) return;
+
+        const btn = event.currentTarget;
+        btn.disabled = true;
+        btn.style.opacity = '0.5';
+
+        try {
+            const res = await fetch(`/admin/products/${productId}`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ _method: 'DELETE' })
+            });
+            const data = await res.json();
+            if (data.success) {
+                this.showToast(data.message, 'success');
+                const row = document.getElementById(`product-row-${productId}`);
+                if (row) {
+                    row.style.transition = 'all 0.35s ease';
+                    row.style.opacity = '0';
+                    row.style.transform = 'scale(0.95)';
+                    setTimeout(() => row.remove(), 350);
+                }
+            } else {
+                this.showToast(data.message || 'Gagal menghapus produk.', 'error');
+                btn.disabled = false;
+                btn.style.opacity = '1';
+            }
+        } catch (err) {
+            console.error(err);
+            this.showToast('Terjadi kesalahan jaringan.', 'error');
+            btn.disabled = false;
+            btn.style.opacity = '1';
+        }
     }
 }">
     <!-- Header -->
@@ -21,7 +293,7 @@
             <h2 class="font-headline-md font-bold text-on-surface flex items-center gap-2">
                 <span>Digital Products</span>
                 @if($pendingCount > 0)
-                    <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500 text-white animate-pulse">
+                    <span class="pending-count-badge px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-500 text-white animate-pulse" data-suffix="Menunggu Review">
                         {{ $pendingCount }} Menunggu Review
                     </span>
                 @endif
@@ -64,7 +336,7 @@
                     <span class="w-2 h-2 rounded-full bg-amber-500 animate-ping"></span>
                 @endif
             </div>
-            <span class="text-2xl font-black mt-1 text-amber-600 dark:text-amber-400">{{ $pendingCount }}</span>
+            <span class="pending-count-badge text-2xl font-black mt-1 text-amber-600 dark:text-amber-400">{{ $pendingCount }}</span>
         </a>
 
         <a href="{{ route('admin.products.index', array_merge(request()->query(), ['origin' => 'internal'])) }}" 
@@ -142,7 +414,7 @@
                 </thead>
                 <tbody class="divide-y divide-outline-variant">
                     @forelse($products as $product)
-                    <tr class="hover:bg-surface-container-lowest/50 transition-colors {{ $product->approval_status === 'pending' ? 'bg-amber-500/5' : '' }}">
+                    <tr id="product-row-{{ $product->id }}" class="hover:bg-surface-container-lowest/50 transition-all duration-300 {{ $product->approval_status === 'pending' ? 'bg-amber-500/5' : '' }}">
                         <!-- Product info & Store Origin -->
                         <td class="p-4">
                             <div class="flex items-start gap-3">
@@ -210,22 +482,24 @@
                         <td class="p-4 text-center">
                             <div class="inline-flex flex-col items-center gap-1">
                                 <!-- Status Verifikasi -->
-                                @if($product->approval_status === 'approved')
-                                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800">
-                                        <span class="material-symbols-outlined text-[14px]">check_circle</span> Approved
-                                    </span>
-                                @elseif($product->approval_status === 'pending')
-                                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 dark:bg-amber-950/50 text-amber-700 dark:text-amber-400 border border-amber-300 dark:border-amber-800 animate-pulse">
-                                        <span class="material-symbols-outlined text-[14px]">hourglass_empty</span> In Review
-                                    </span>
-                                @elseif($product->approval_status === 'rejected')
-                                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-100 dark:bg-rose-950/50 text-rose-700 dark:text-rose-400 border border-rose-300 dark:border-rose-800">
-                                        <span class="material-symbols-outlined text-[14px]">cancel</span> Ditolak
-                                    </span>
-                                @endif
+                                <div id="approval-badge-{{ $product->id }}">
+                                    @if($product->approval_status === 'approved')
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800">
+                                            <span class="material-symbols-outlined text-[14px]">check_circle</span> Approved
+                                        </span>
+                                    @elseif($product->approval_status === 'pending')
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 dark:bg-amber-950/50 text-amber-700 dark:text-amber-400 border border-amber-300 dark:border-amber-800 animate-pulse">
+                                            <span class="material-symbols-outlined text-[14px]">hourglass_empty</span> In Review
+                                        </span>
+                                    @elseif($product->approval_status === 'rejected')
+                                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-100 dark:bg-rose-950/50 text-rose-700 dark:text-rose-400 border border-rose-300 dark:border-rose-800">
+                                            <span class="material-symbols-outlined text-[14px]">cancel</span> Ditolak
+                                        </span>
+                                    @endif
+                                </div>
 
                                 <!-- Status Publikasi / Tayang -->
-                                <div class="flex items-center gap-1 text-[11px] font-medium">
+                                <div id="pub-badge-{{ $product->id }}" class="flex items-center gap-1 text-[11px] font-medium">
                                     @if($product->is_active && $product->approval_status === 'approved')
                                         <span class="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
                                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Tayang
@@ -242,7 +516,7 @@
                                 </div>
 
                                 @if($product->approval_status === 'rejected' && $product->rejection_reason)
-                                    <span class="text-[10px] text-rose-600 dark:text-rose-400 max-w-[170px] truncate cursor-help mt-0.5" title="{{ $product->rejection_reason }}">
+                                    <span id="rejection-reason-{{ $product->id }}" class="text-[10px] text-rose-600 dark:text-rose-400 max-w-[170px] truncate cursor-help mt-0.5" title="{{ $product->rejection_reason }}">
                                         Alasan: {{ $product->rejection_reason }}
                                     </span>
                                 @endif
@@ -253,38 +527,31 @@
                         <td class="p-4 text-right pr-6">
                             <div class="inline-flex items-center gap-1.5">
                                 <!-- Action Buttons: Approve / Tolak -->
-                                @if($product->approval_status === 'pending')
-                                    <form action="{{ route('admin.products.approve', $product) }}" method="POST" class="inline" onsubmit="return confirm('Setujui produk ini agar dapat tayang di platform?');">
-                                        @csrf @method('PATCH')
-                                        <button type="submit" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition flex items-center gap-1 shadow-xs" title="Setujui Produk">
+                                <div id="review-actions-{{ $product->id }}" class="inline-flex items-center gap-1.5">
+                                    @if($product->approval_status === 'pending')
+                                        <button type="button" data-name="{{ $product->name }}" @click="approveProduct({{ $product->id }}, $el.dataset.name, $event)" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition flex items-center gap-1 shadow-xs" title="Setujui Produk">
                                             <span class="material-symbols-outlined text-[15px]">check</span> Approve
                                         </button>
-                                    </form>
-                                    <button type="button" @click="openRejectModal({{ $product->id }}, '{{ addslashes($product->name) }}')" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 text-rose-600 dark:text-rose-300 text-xs font-bold transition flex items-center gap-1 border border-rose-200 dark:border-rose-900" title="Tolak Produk">
-                                        <span class="material-symbols-outlined text-[15px]">close</span> Tolak
-                                    </button>
-                                @elseif($product->approval_status === 'approved')
-                                    <button type="button" @click="openRejectModal({{ $product->id }}, '{{ addslashes($product->name) }}')" class="px-2 py-1 rounded-lg text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 text-xs font-semibold transition border border-rose-200 dark:border-rose-900/60" title="Batalkan Persetujuan (Tolak)">
-                                        Tolak
-                                    </button>
-                                @elseif($product->approval_status === 'rejected')
-                                    <form action="{{ route('admin.products.approve', $product) }}" method="POST" class="inline" onsubmit="return confirm('Ubah status jadi Approve dan tayangkan?');">
-                                        @csrf @method('PATCH')
-                                        <button type="submit" class="px-2 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition shadow-xs">
+                                        <button type="button" data-name="{{ $product->name }}" @click="openRejectModal({{ $product->id }}, $el.dataset.name)" class="px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 text-rose-600 dark:text-rose-300 text-xs font-bold transition flex items-center gap-1 border border-rose-200 dark:border-rose-900" title="Tolak Produk">
+                                            <span class="material-symbols-outlined text-[15px]">close</span> Tolak
+                                        </button>
+                                    @elseif($product->approval_status === 'approved')
+                                        <button type="button" data-name="{{ $product->name }}" @click="openRejectModal({{ $product->id }}, $el.dataset.name)" class="px-2 py-1 rounded-lg text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 text-xs font-semibold transition border border-rose-200 dark:border-rose-900/60" title="Batalkan Persetujuan (Tolak)">
+                                            Tolak
+                                        </button>
+                                    @elseif($product->approval_status === 'rejected')
+                                        <button type="button" data-name="{{ $product->name }}" @click="approveProduct({{ $product->id }}, $el.dataset.name, $event)" class="px-2 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition shadow-xs">
                                             Approve
                                         </button>
-                                    </form>
-                                @endif
+                                    @endif
+                                </div>
 
                                 <div class="h-4 w-px bg-outline-variant mx-1"></div>
 
                                 <!-- Toggle Active Switch -->
-                                <form action="{{ route('admin.products.toggle_active', $product) }}" method="POST" class="inline">
-                                    @csrf @method('PATCH')
-                                    <button type="submit" class="p-1.5 {{ $product->is_active ? 'text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/30' : 'text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800' }} rounded-lg transition" title="Saklar On/Off Tayang">
-                                        <span class="material-symbols-outlined text-[20px]">{{ $product->is_active ? 'toggle_on' : 'toggle_off' }}</span>
-                                    </button>
-                                </form>
+                                <button type="button" id="toggle-btn-{{ $product->id }}" @click="toggleActive({{ $product->id }}, $event)" class="p-1.5 {{ $product->is_active ? 'text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/30' : 'text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800' }} rounded-lg transition" title="Saklar On/Off Tayang ({{ $product->is_active ? 'Aktif' : 'Non-Aktif' }})">
+                                    <span class="material-symbols-outlined text-[20px]">{{ $product->is_active ? 'toggle_on' : 'toggle_off' }}</span>
+                                </button>
 
                                 <!-- Edit -->
                                 <a href="{{ route('admin.products.edit', $product) }}" class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-surface-container-high rounded-lg transition" title="Edit Rincian">
@@ -292,12 +559,9 @@
                                 </a>
 
                                 <!-- Delete -->
-                                <form action="{{ route('admin.products.destroy', $product) }}" method="POST" onsubmit="return confirm('Hapus produk ini secara permanen?');" class="inline">
-                                    @csrf @method('DELETE')
-                                    <button type="submit" class="p-1.5 text-on-surface-variant hover:text-error hover:bg-error-container rounded-lg transition" title="Hapus Produk">
-                                        <span class="material-symbols-outlined text-[18px]">delete</span>
-                                    </button>
-                                </form>
+                                <button type="button" data-name="{{ $product->name }}" @click="deleteProduct({{ $product->id }}, $el.dataset.name, $event)" class="p-1.5 text-on-surface-variant hover:text-error hover:bg-error-container rounded-lg transition" title="Hapus Produk">
+                                    <span class="material-symbols-outlined text-[18px]">delete</span>
+                                </button>
                             </div>
                         </td>
                     </tr>
@@ -333,8 +597,8 @@
                 Produk <span class="font-bold text-on-surface" x-text="rejectProductName"></span> akan ditolak dan statusnya menjadi <span class="font-semibold text-rose-600">Ditolak</span>. Tenant akan menerima info alasan berikut agar dapat memperbaikinya.
             </p>
 
-            <form :action="`/admin/products/${rejectProductId}/reject`" method="POST">
-                @csrf @method('PATCH')
+            <form @submit.prevent="submitReject($event)">
+                @csrf
 
                 <div class="space-y-3 mb-4">
                     <label class="block text-xs font-bold text-on-surface">Pilih Alasan Utama Penolakan:</label>
@@ -364,14 +628,57 @@
                 </div>
 
                 <div class="flex justify-end gap-2 pt-2 border-t border-outline-variant">
-                    <button type="button" @click="rejectModalOpen = false" class="px-4 py-2 text-xs font-semibold text-on-surface-variant hover:bg-surface-container rounded-lg">Batal</button>
-                    <button type="submit" class="px-4 py-2 text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white rounded-lg shadow-sm transition flex items-center gap-1">
-                        <span class="material-symbols-outlined text-[16px]">cancel</span> Konfirmasi Tolak
+                    <button type="button" @click="rejectModalOpen = false" :disabled="isRejecting" class="px-4 py-2 text-xs font-semibold text-on-surface-variant hover:bg-surface-container rounded-lg">Batal</button>
+                    <button type="submit" :disabled="isRejecting" class="px-4 py-2 text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white rounded-lg shadow-sm transition flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-[16px]" x-show="!isRejecting">cancel</span>
+                        <span class="material-symbols-outlined text-[16px] animate-spin" x-show="isRejecting" style="display: none;">progress_activity</span>
+                        <span x-text="isRejecting ? 'Menyimpan...' : 'Konfirmasi Tolak'"></span>
                     </button>
                 </div>
             </form>
         </div>
     </div>
+
+    <!-- FLOATING TOAST NOTIFICATION CONTAINER -->
+    <div class="fixed bottom-5 right-5 z-50 flex flex-col gap-2.5 pointer-events-none">
+        <template x-for="toast in toasts" :key="toast.id">
+            <div class="pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl shadow-xl text-white text-xs md:text-sm font-semibold transition-all transform duration-300 border"
+                 :class="{
+                     'bg-emerald-600 border-emerald-500': toast.type === 'success',
+                     'bg-amber-600 border-amber-500': toast.type === 'info' || toast.type === 'warning',
+                     'bg-rose-600 border-rose-500': toast.type === 'error'
+                 }"
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0 translate-y-3 scale-95"
+                 x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                 x-transition:leave="transition ease-in duration-200"
+                 x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                 x-transition:leave-end="opacity-0 translate-y-3 scale-95">
+                <span class="material-symbols-outlined text-[20px]" 
+                      x-text="toast.type === 'success' ? 'check_circle' : (toast.type === 'error' ? 'error' : 'info')"></span>
+                <span x-text="toast.message" class="max-w-xs md:max-w-md"></span>
+                <button type="button" @click="removeToast(toast.id)" class="ml-auto opacity-75 hover:opacity-100 p-0.5 rounded transition">
+                    <span class="material-symbols-outlined text-[16px]">close</span>
+                </button>
+            </div>
+        </template>
+    </div>
 </div>
+
+@push('scripts')
+<script>
+    // Smooth scroll restoration on page reload/navigation safety net
+    window.addEventListener('scroll', () => {
+        sessionStorage.setItem('admin_products_scroll_pos', window.scrollY);
+    }, { passive: true });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const pos = sessionStorage.getItem('admin_products_scroll_pos');
+        if (pos !== null) {
+            window.scrollTo({ top: parseInt(pos, 10), behavior: 'instant' });
+        }
+    });
+</script>
+@endpush
 @endsection
 
