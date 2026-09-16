@@ -388,9 +388,6 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
         <a href="{{ route('tenant.following') }}" class="nav-link {{ request()->routeIs('tenant.following') ? 'active' : '' }}">
             <span class="material-symbols-outlined">storefront</span> Toko yang Diikuti
         </a>
-        <a href="{{ route('tenant.profile.index') }}" class="nav-link {{ request()->routeIs('tenant.profile.*') ? 'active' : '' }}">
-            <span class="material-symbols-outlined">settings</span> Profil &amp; Pengaturan
-        </a>
 
         @if(auth()->user()->store)
         <div class="nav-section-label">Manajemen Toko</div>
