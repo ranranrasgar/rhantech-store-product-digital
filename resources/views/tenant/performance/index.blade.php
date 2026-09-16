@@ -23,7 +23,7 @@
                     <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                     Real-time (Hari Ini: {{ date('d M Y') }})
                 </div>
-                <a href="{{ route('tenant.orders.index') }}" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs md:text-sm font-bold active:scale-95 transition-all flex items-center gap-2">
+                <a href="{{ route('tenant.orders.index') }}" class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white text-xs md:text-sm font-bold active:scale-95 transition-all flex items-center gap-2">
                     <span class="material-symbols-outlined text-[18px]">receipt_long</span>
                     Lihat Penjualan
                 </a>
@@ -139,19 +139,19 @@
             
             <!-- Tab Navigation Bar -->
             <div class="border-b border-slate-100 dark:border-[#222f49] px-6 flex items-center gap-8 overflow-x-auto hide-scrollbar bg-slate-50/50 dark:bg-[#0c1220]/50">
-                <button @click="tab = 'tinjauan'" :class="tab === 'tinjauan' ? 'text-slate-900 dark:text-white border-slate-900 dark:border-white' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200'" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 flex items-center gap-2 cursor-pointer">
+                <button @click="tab = 'tinjauan'" :class="tab === 'tinjauan' ? 'text-sky-600 dark:text-sky-400 border-sky-500 dark:border-sky-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200'" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 flex items-center gap-2 cursor-pointer">
                     <span class="material-symbols-outlined text-[18px]">query_stats</span>
                     Tinjauan Performa
                 </button>
-                <button @click="tab = 'produk'" :class="tab === 'produk' ? 'text-slate-900 dark:text-white border-slate-900 dark:border-white' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200'" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 flex items-center gap-2 cursor-pointer">
+                <button @click="tab = 'produk'" :class="tab === 'produk' ? 'text-sky-600 dark:text-sky-400 border-sky-500 dark:border-sky-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200'" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 flex items-center gap-2 cursor-pointer">
                     <span class="material-symbols-outlined text-[18px]">view_in_ar</span>
                     Performa Produk
                 </button>
-                <button @click="tab = 'funnel'" :class="tab === 'funnel' ? 'text-slate-900 dark:text-white border-slate-900 dark:border-white' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200'" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 flex items-center gap-2 cursor-pointer">
+                <button @click="tab = 'funnel'" :class="tab === 'funnel' ? 'text-sky-600 dark:text-sky-400 border-sky-500 dark:border-sky-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200'" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 flex items-center gap-2 cursor-pointer">
                     <span class="material-symbols-outlined text-[18px]">filter_alt</span>
                     Funnel Konversi
                 </button>
-                <button @click="tab = 'sumber'" :class="tab === 'sumber' ? 'text-slate-900 dark:text-white border-slate-900 dark:border-white' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200'" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 flex items-center gap-2 cursor-pointer">
+                <button @click="tab = 'sumber'" :class="tab === 'sumber' ? 'text-sky-600 dark:text-sky-400 border-sky-500 dark:border-sky-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200'" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 flex items-center gap-2 cursor-pointer">
                     <span class="material-symbols-outlined text-[18px]">traffic</span>
                     Sumber Traffic & Saluran
                 </button>
@@ -182,7 +182,7 @@
                                     <div class="text-xl font-extrabold text-slate-900 dark:text-white">Rp {{ number_format($totalSales, 0, ',', '.') }}</div>
                                 </div>
                                 <div class="flex items-center gap-3 text-xs font-medium">
-                                    <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-slate-900 dark:bg-white"></span> Transaksi Paid</div>
+                                    <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-sky-500"></span> Transaksi Paid</div>
                                     <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Pending</div>
                                 </div>
                             </div>
@@ -199,7 +199,7 @@
                                     @endphp
                                     <div class="flex-1 flex flex-col items-center gap-1 group">
                                         <div class="w-full max-w-[28px] bg-slate-200/60 dark:bg-slate-800/80 rounded-t-lg h-32 flex items-end justify-center p-0.5 gap-0.5 overflow-hidden">
-                                            <div class="w-1/2 bg-slate-900 dark:bg-white rounded-t transition-all duration-500 group-hover:brightness-110" style="height: {{ $heightPaid }}%;"></div>
+                                            <div class="w-1/2 bg-sky-500 rounded-t transition-all duration-500 group-hover:brightness-110" style="height: {{ $heightPaid }}%;"></div>
                                             <div class="w-1/2 bg-amber-500/70 rounded-t transition-all duration-500 group-hover:brightness-110" style="height: {{ $heightPending }}%;"></div>
                                         </div>
                                         <span class="text-[10px] text-slate-400 font-mono mt-1">{{ $slot }}</span>
@@ -230,7 +230,7 @@
                                     <span class="text-slate-900 dark:text-white">{{ $conversionRate }}%</span>
                                 </div>
                                 <div class="h-2 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
-                                    <div class="h-full bg-slate-900 dark:bg-white rounded-full transition-all duration-700" style="width: {{ max(5, $conversionRate) }}%"></div>
+                                    <div class="h-full bg-sky-500 rounded-full transition-all duration-700" style="width: {{ max(5, $conversionRate) }}%"></div>
                                 </div>
                                 <p class="text-[11px] text-slate-400">Persentase invoice yang berhasil terbayar dan file telah didistribusikan.</p>
                             </div>
@@ -350,7 +350,7 @@
                         <a href="{{ route('tenant.appearance.index') }}" class="px-4 py-2 rounded-xl bg-white dark:bg-[#161f33] border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-800 dark:text-white hover:bg-slate-50 dark:hover:bg-[#1d273d] transition-all">
                             Dekorasi Toko
                         </a>
-                        <a href="{{ route('tenant.campaigns.index') }}" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-bold transition-all active:scale-95">
+                        <a href="{{ route('tenant.campaigns.index') }}" class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white text-xs font-bold transition-all active:scale-95">
                             Buat Promo
                         </a>
                     </div>
@@ -365,7 +365,7 @@
                         <h3 class="text-base font-bold text-slate-900 dark:text-white">Peringkat & Performa Produk Digital</h3>
                         <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Urutan produk digital dari yang paling sering dilihat hingga penjualan tertinggi.</p>
                     </div>
-                    <a href="{{ route('tenant.products.create') }}" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-bold active:scale-95 transition-all flex items-center gap-1.5">
+                    <a href="{{ route('tenant.products.create') }}" class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white text-xs font-bold active:scale-95 transition-all flex items-center gap-1.5">
                         <span class="material-symbols-outlined text-[16px]">add_circle</span> Tambah Produk
                     </a>
                 </div>
@@ -531,7 +531,7 @@
                         <span class="text-xs text-slate-400">Total Overall Conversion Rate</span>
                         <div class="text-2xl font-black text-slate-900 dark:text-white mt-0.5">{{ $conversionRate }}%</div>
                     </div>
-                    <a href="{{ route('tenant.orders.index') }}" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-bold active:scale-95 transition-all">
+                    <a href="{{ route('tenant.orders.index') }}" class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white text-xs font-bold active:scale-95 transition-all">
                         Kelola Status Transaksi
                     </a>
                 </div>

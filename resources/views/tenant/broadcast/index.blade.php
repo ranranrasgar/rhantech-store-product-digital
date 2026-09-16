@@ -1,4 +1,4 @@
-@extends('layouts.tenant')
+﻿@extends('layouts.tenant')
 
 @section('title', 'WhatsApp Broadcast')
 
@@ -68,7 +68,7 @@
                     <div class="mt-4 flex items-center justify-between">
                         <span class="text-xs text-slate-500 dark:text-slate-400 font-medium"><span x-text="message.length"></span> karakter</span>
                         
-                        <button @click="sendBroadcast()" :disabled="isSending || message.trim() === '' || selectedCustomers.length === 0" class="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-sm font-bold rounded-xl transition-all active:scale-95 flex items-center gap-2 cursor-pointer">
+                        <button @click="sendBroadcast()" :disabled="isSending || message.trim() === '' || selectedCustomers.length === 0" class="px-6 py-2.5 bg-sky-500 hover:bg-sky-600 disabled:opacity-50 disabled:cursor-not-allowed text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white text-sm font-bold rounded-xl transition-all active:scale-95 flex items-center gap-2 cursor-pointer">
                             <span class="material-symbols-outlined text-[18px]" x-show="!isSending">send</span>
                             <span class="material-symbols-outlined text-[18px] animate-spin" x-show="isSending">progress_activity</span>
                             <span x-text="isSending ? 'Mengirim...' : 'Kirim Broadcast'"></span>

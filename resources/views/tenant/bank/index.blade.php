@@ -18,7 +18,7 @@
             </div>
             
             <div class="flex items-center gap-3">
-                <button type="button" @click="showModal = true; bankName = 'BCA'; accountNumber = ''; accountHolder = '';" class="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs md:text-sm font-bold active:scale-95 transition-all flex items-center gap-2 cursor-pointer">
+                <button type="button" @click="showModal = true; bankName = 'BCA'; accountNumber = ''; accountHolder = '';" class="px-5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white text-xs md:text-sm font-bold active:scale-95 transition-all flex items-center gap-2 cursor-pointer">
                     <span class="material-symbols-outlined text-[18px]">add_circle</span>
                     {{ empty($store->bank_account_info) ? 'Tambah Rekening' : 'Ubah Rekening' }}
                 </button>
@@ -52,7 +52,7 @@
                 
                 <!-- Saved Bank Debit Card Showcase -->
                 @if(!empty($store->bank_account_info))
-                    <div class="relative overflow-hidden rounded-2xl bg-slate-900 text-white p-6 border border-slate-800 flex flex-col justify-between min-h-[200px] group">
+                    <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-sky-700 via-sky-800 to-slate-900 text-white p-6 border border-sky-600/40 shadow-sm flex flex-col justify-between min-h-[200px] group">
                         <!-- Card Top Bar -->
                         <div class="flex items-center justify-between relative z-10">
                             <div class="flex items-center gap-2">
@@ -176,7 +176,7 @@
                     <button type="button" @click="showModal = false" class="px-4 py-2 text-xs md:text-sm font-semibold border border-slate-200 dark:border-[#222f49] text-slate-600 dark:text-slate-300 rounded-xl hover:bg-slate-100 dark:hover:bg-[#161f33] transition-colors cursor-pointer">
                         Batal
                     </button>
-                    <button type="submit" class="px-5 py-2 text-xs md:text-sm font-bold text-white bg-slate-900 hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 rounded-xl active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer">
+                    <button type="submit" class="px-5 py-2 text-xs md:text-sm font-bold text-white bg-sky-500 hover:bg-sky-600 dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white rounded-xl active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer">
                         <span class="material-symbols-outlined text-[16px]">save</span>
                         Simpan Rekening
                     </button>

@@ -1,4 +1,4 @@
-@extends('layouts.tenant')
+﻿@extends('layouts.tenant')
 
 @section('title', 'Edit Promo')
 
@@ -237,7 +237,7 @@
 
             <div class="flex justify-end gap-3 pt-6 border-t border-gray-200 dark:border-[#30363d]">
                 <a href="{{ route('tenant.campaigns.index') }}" class="px-4 py-2 border border-gray-300 dark:border-[#30363d] rounded text-sm font-medium hover:bg-gray-50 dark:hover:bg-[#30363d]">Batal</a>
-                <button type="submit" class="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 rounded-xl text-sm font-bold active:scale-95 transition-all">Simpan Perubahan</button>
+                <button type="submit" class="px-5 py-2.5 bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white rounded-xl text-sm font-bold active:scale-95 transition-all">Simpan Perubahan</button>
             </div>
         </form>
     </div>

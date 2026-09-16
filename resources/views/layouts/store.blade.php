@@ -24,8 +24,8 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: "rgb(var(--theme-primary, 0 179 204) / <alpha-value>)",
-                        secondary: "rgb(var(--theme-secondary, 0 104 122) / <alpha-value>)",
+                        primary: "rgb(var(--theme-primary, 14 165 233) / <alpha-value>)",
+                        secondary: "rgb(var(--theme-secondary, 2 132 199) / <alpha-value>)",
                         surface: "rgb(var(--theme-surface, 255 255 255) / <alpha-value>)",
                         "on-surface": "rgb(var(--theme-on-surface, 27 28 30) / <alpha-value>)",
                         "on-surface-variant": "rgb(var(--theme-on-surface-variant, 90 95 102) / <alpha-value>)",

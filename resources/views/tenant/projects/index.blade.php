@@ -1,4 +1,4 @@
-@extends('layouts.tenant')
+﻿@extends('layouts.tenant')
 
 @section('title', 'Portofolio & Proyek Toko')
 
@@ -41,7 +41,7 @@
 
         <div>
             @if($store->isPro())
-                <a href="{{ route('tenant.projects.create') }}" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer active:scale-95">
+                <a href="{{ route('tenant.projects.create') }}" class="px-4 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer active:scale-95">
                     <span class="material-symbols-outlined text-[18px]">add</span>
                     <span>Tambah Proyek Baru</span>
                 </a>

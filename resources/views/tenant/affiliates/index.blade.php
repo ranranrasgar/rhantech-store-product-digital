@@ -1,4 +1,4 @@
-@extends('layouts.tenant')
+﻿@extends('layouts.tenant')
 
 @section('title', 'Program Affiliate')
 
@@ -22,7 +22,7 @@
                     <span class="material-symbols-outlined text-[18px] text-slate-700 dark:text-slate-300">menu_book</span>
                     Buku Panduan Afiliasi
                 </a>
-                <a href="{{ route('tenant.affiliates.create') }}" class="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs md:text-sm font-bold transition-all active:scale-95 flex items-center gap-2">
+                <a href="{{ route('tenant.affiliates.create') }}" class="px-5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white text-xs md:text-sm font-bold transition-all active:scale-95 flex items-center gap-2">
                     <span class="material-symbols-outlined text-[18px]">person_add</span>
                     Tambah Mitra Manual
                 </a>
@@ -53,7 +53,7 @@
                            class="w-full pl-4 pr-9 py-2.5 bg-white dark:bg-[#0c1220] border border-slate-300 dark:border-slate-700 rounded-xl text-sm font-black text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 dark:focus:border-white">
                     <span class="absolute right-3.5 top-3 text-xs font-black text-slate-400">%</span>
                 </div>
-                <button type="submit" class="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 rounded-xl text-xs font-bold transition whitespace-nowrap flex items-center justify-center gap-1.5 cursor-pointer active:scale-95">
+                <button type="submit" class="px-5 py-2.5 bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white rounded-xl text-xs font-bold transition whitespace-nowrap flex items-center justify-center gap-1.5 cursor-pointer active:scale-95">
                     <span class="material-symbols-outlined text-[16px]">save</span>
                     Simpan Komisi
                 </button>
@@ -72,7 +72,7 @@
                         <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama affiliate atau username..." class="w-full pl-10 pr-4 py-2.5 text-xs md:text-sm bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-500/20 focus:border-slate-500 text-slate-900 dark:text-white transition-all">
                     </div>
                     <div class="flex items-center gap-3">
-                        <button type="submit" class="px-5 py-2.5 text-xs md:text-sm font-bold bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 rounded-xl transition cursor-pointer active:scale-95">
+                        <button type="submit" class="px-5 py-2.5 text-xs md:text-sm font-bold bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white rounded-xl transition cursor-pointer active:scale-95">
                             Cari
                         </button>
                         <a href="{{ route('tenant.affiliates.index') }}" class="px-4 py-2.5 text-xs md:text-sm font-semibold border border-slate-200 dark:border-[#222f49] text-slate-600 dark:text-slate-300 rounded-xl hover:bg-slate-100 dark:hover:bg-[#161f33] transition-colors">
@@ -88,7 +88,7 @@
                         @php $reqPlatform = request('platform', 'Semua'); @endphp
                         <input type="hidden" name="platform" id="platformInput" value="{{ $reqPlatform }}">
                         @foreach(['Semua', 'Instagram', 'Tiktok', 'Facebook', 'Youtube', 'Twitter'] as $plat)
-                            <button type="button" onclick="document.getElementById('platformInput').value='{{ $plat }}'; document.getElementById('filterForm').submit();" class="px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all {{ $reqPlatform === $plat ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700' }}">
+                            <button type="button" onclick="document.getElementById('platformInput').value='{{ $plat }}'; document.getElementById('filterForm').submit();" class="px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all {{ $reqPlatform === $plat ? 'bg-sky-500 text-white dark:bg-sky-600 dark:text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700' }}">
                                 {{ $plat }}
                             </button>
                         @endforeach
@@ -260,7 +260,7 @@
                                     </div>
                                     <h3 class="font-bold text-base text-slate-800 dark:text-white mb-1">Belum ada mitra affiliate</h3>
                                     <p class="text-xs text-slate-400 mb-5">Daftarkan kreator atau teman promotor untuk membantu menjualkan produk toko Anda.</p>
-                                    <a href="{{ route('tenant.affiliates.create') }}" class="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-xs transition-all active:scale-95">
+                                    <a href="{{ route('tenant.affiliates.create') }}" class="px-5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white font-bold text-xs transition-all active:scale-95">
                                         Tambah Mitra Pertama
                                     </a>
                                 </div>
@@ -302,7 +302,7 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                 <div class="p-5 rounded-xl border border-slate-200/80 dark:border-[#222f49] bg-slate-50/50 dark:bg-[#0c1220]/50 space-y-2">
                     <div class="flex items-center gap-2">
-                        <span class="w-6 h-6 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black text-xs flex items-center justify-center shrink-0">1</span>
+                        <span class="w-6 h-6 rounded-full bg-sky-500 text-white font-black text-xs flex items-center justify-center shrink-0">1</span>
                         <h3 class="font-bold text-sm text-slate-900 dark:text-white">Hubungkan & Bagikan Link</h3>
                     </div>
                     <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
@@ -312,7 +312,7 @@
 
                 <div class="p-5 rounded-xl border border-slate-200/80 dark:border-[#222f49] bg-slate-50/50 dark:bg-[#0c1220]/50 space-y-2">
                     <div class="flex items-center gap-2">
-                        <span class="w-6 h-6 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black text-xs flex items-center justify-center shrink-0">2</span>
+                        <span class="w-6 h-6 rounded-full bg-sky-500 text-white font-black text-xs flex items-center justify-center shrink-0">2</span>
                         <h3 class="font-bold text-sm text-slate-900 dark:text-white">Pelacakan Kunjungan Otomatis</h3>
                     </div>
                     <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">

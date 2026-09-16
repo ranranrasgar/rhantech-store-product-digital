@@ -1,4 +1,4 @@
-@extends('layouts.tenant')
+﻿@extends('layouts.tenant')
 
 @section('title', 'Pembayaran Saldo Iklan - ' . $transaction->reference_no)
 
@@ -52,7 +52,7 @@
                 </div>
             </div>
 
-            <button id="pay-button" class="w-full py-3.5 px-6 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-sm transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer">
+            <button id="pay-button" class="w-full py-3.5 px-6 rounded-xl bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white font-bold text-sm transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer">
                 <span class="material-symbols-outlined text-[20px]">payments</span>
                 Bayar Sekarang (QRIS / Transfer)
             </button>

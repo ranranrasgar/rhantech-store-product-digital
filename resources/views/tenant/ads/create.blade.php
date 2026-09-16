@@ -1,4 +1,4 @@
-@extends('layouts.tenant')
+﻿@extends('layouts.tenant')
 
 @section('title', 'Buat Iklan Baru - Rhantech Seller Center')
 
@@ -725,7 +725,7 @@
                 <button type="submit" 
                         :disabled="selectedProducts.length === 0"
                         :class="selectedProducts.length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-slate-800 dark:hover:bg-slate-100 active:scale-95 cursor-pointer'"
-                        class="px-8 py-2.5 rounded-xl bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-xs md:text-sm font-bold transition-all flex items-center gap-2">
+                        class="px-8 py-2.5 rounded-xl bg-sky-500 text-white dark:bg-sky-600 dark:text-white text-xs md:text-sm font-bold transition-all flex items-center gap-2">
                     <span class="material-symbols-outlined text-[18px]">publish</span>
                     <span>Tampilkan & Buat Iklan (<span x-text="selectedProducts.length"></span>)</span>
                 </button>

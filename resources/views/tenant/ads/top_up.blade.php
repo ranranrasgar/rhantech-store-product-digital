@@ -1,4 +1,4 @@
-@extends('layouts.tenant')
+﻿@extends('layouts.tenant')
 
 @section('title', 'Isi Saldo Iklan - Rhantech Seller Center')
 
@@ -198,7 +198,7 @@
                     <div class="mt-6 flex justify-end">
                         <button type="submit"
                                 :disabled="selectedAmount < 10000"
-                                class="px-8 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 disabled:opacity-50 font-bold text-sm transition-all active:scale-95 flex items-center gap-2 cursor-pointer">
+                                class="px-8 py-3 rounded-xl bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white disabled:opacity-50 font-bold text-sm transition-all active:scale-95 flex items-center gap-2 cursor-pointer">
                             <span class="material-symbols-outlined text-[18px]">shopping_cart_checkout</span>
                             Checkout & Bayar
                         </button>

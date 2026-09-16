@@ -1,4 +1,4 @@
-@extends('layouts.tenant')
+﻿@extends('layouts.tenant')
 
 @section('title', 'Pembelian Saya')
 
@@ -77,7 +77,7 @@
                             </a>
                         @endif
                     </div>
-                    <button type="submit" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-xs rounded-xl transition-all active:scale-95 flex items-center gap-1.5 shrink-0">
+                    <button type="submit" class="px-3.5 py-2 bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white font-bold text-xs rounded-xl transition-all active:scale-95 flex items-center gap-1.5 shrink-0">
                         <span>Cari</span>
                     </button>
                 </form>
@@ -169,7 +169,7 @@
                             @if($order->status === 'paid' || $order->status === 'downloaded')
                                 <a href="{{ route('products.download', $order->download_token) }}" 
                                    target="_blank" 
-                                   class="inline-flex items-center justify-center gap-1.5 py-2 px-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-bold active:scale-95 transition-all shadow-2xs">
+                                   class="inline-flex items-center justify-center gap-1.5 py-2 px-3.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white text-xs font-bold active:scale-95 transition-all shadow-2xs">
                                     <span class="material-symbols-outlined text-[16px]">cloud_download</span>
                                     <span>Download File</span>
                                 </a>
@@ -193,7 +193,7 @@
                     </div>
                     <h3 class="font-bold text-sm text-slate-800 dark:text-white mb-1">Belum ada riwayat pembelian</h3>
                     <p class="text-xs text-slate-400 mb-4">Anda belum pernah membeli produk digital apapun pada tab ini.</p>
-                    <a href="{{ route('products.index') }}" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-xs active:scale-95 transition-all shadow-2xs">
+                    <a href="{{ route('products.index') }}" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white font-bold text-xs active:scale-95 transition-all shadow-2xs">
                         <span class="material-symbols-outlined text-[16px]">explore</span>
                         Lihat Katalog Produk
                     </a>
@@ -302,7 +302,7 @@
                                     <div class="flex items-center justify-center gap-1.5">
                                         <a href="{{ route('products.download', $order->download_token) }}" 
                                            target="_blank" 
-                                           class="inline-flex justify-center items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold transition-all text-xs active:scale-95 shadow-2xs" 
+                                           class="inline-flex justify-center items-center gap-1.5 px-3 py-1.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white font-bold transition-all text-xs active:scale-95 shadow-2xs" 
                                            title="Unduh File Produk">
                                             <span class="material-symbols-outlined text-[15px]">cloud_download</span>
                                             Download File
@@ -328,7 +328,7 @@
                                     </div>
                                     <h3 class="font-bold text-sm text-slate-800 dark:text-white mb-1">Belum ada riwayat pembelian</h3>
                                     <p class="text-xs text-slate-400 mb-4">Anda belum pernah membeli produk digital apapun.</p>
-                                    <a href="{{ route('products.index') }}" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-xs active:scale-95 transition-all shadow-2xs">
+                                    <a href="{{ route('products.index') }}" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white font-bold text-xs active:scale-95 transition-all shadow-2xs">
                                         <span class="material-symbols-outlined text-[16px]">explore</span>
                                         Lihat Katalog Produk
                                     </a>

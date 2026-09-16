@@ -119,7 +119,7 @@
 
                     <!-- Wallet Action Bar -->
                     <div class="mt-4 pt-3 border-t border-slate-100 dark:border-[#222f49] flex items-center justify-between gap-2.5">
-                        <a href="{{ route('tenant.payouts.index') }}" class="flex-1 py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-2xs active:scale-95 text-center">
+                        <a href="{{ route('tenant.payouts.index') }}" class="flex-1 py-2.5 px-3 rounded-xl bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-2xs active:scale-95 text-center">
                             <span class="material-symbols-outlined text-[17px]">payments</span>
                             <span>Tarik Dana</span>
                         </a>
@@ -137,7 +137,7 @@
                 <div class="grid grid-cols-4 gap-2 text-center">
                     <!-- Action 1: Tambah Produk -->
                     <a href="{{ route('tenant.products.create') }}" class="flex flex-col items-center p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 active:scale-95 transition-all group">
-                        <div class="w-11 h-11 rounded-2xl bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 flex items-center justify-center mb-1.5 border border-slate-200/60 dark:border-slate-700/60 shadow-2xs group-hover:bg-slate-900 group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-slate-900 transition-all">
+                        <div class="w-11 h-11 rounded-2xl bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 flex items-center justify-center mb-1.5 border border-slate-200/60 dark:border-slate-700/60 shadow-2xs group-hover:bg-sky-500 group-hover:text-white dark:group-hover:bg-sky-500 dark:group-hover:text-white transition-all">
                             <span class="material-symbols-outlined text-[20px]">add</span>
                         </div>
                         <span class="text-[11px] font-semibold text-slate-700 dark:text-slate-300 leading-tight">Tambah Produk</span>
@@ -145,7 +145,7 @@
 
                     <!-- Action 2: Pesanan Penjualan -->
                     <a href="{{ route('tenant.orders.index') }}" class="flex flex-col items-center p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 active:scale-95 transition-all group relative">
-                        <div class="w-11 h-11 rounded-2xl bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 flex items-center justify-center mb-1.5 border border-slate-200/60 dark:border-slate-700/60 shadow-2xs group-hover:bg-slate-900 group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-slate-900 transition-all relative">
+                        <div class="w-11 h-11 rounded-2xl bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 flex items-center justify-center mb-1.5 border border-slate-200/60 dark:border-slate-700/60 shadow-2xs group-hover:bg-sky-500 group-hover:text-white dark:group-hover:bg-sky-500 dark:group-hover:text-white transition-all relative">
                             <span class="material-symbols-outlined text-[20px]">receipt_long</span>
                             @if(($pendingOrdersCount ?? 0) > 0)
                                 <span class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-500 text-white text-[9px] font-black flex items-center justify-center ring-2 ring-white dark:ring-slate-900">
@@ -158,7 +158,7 @@
 
                     <!-- Action 3: Pusat Iklan -->
                     <a href="{{ route('tenant.ads.index') }}" class="flex flex-col items-center p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 active:scale-95 transition-all group relative">
-                        <div class="w-11 h-11 rounded-2xl bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 flex items-center justify-center mb-1.5 border border-slate-200/60 dark:border-slate-700/60 shadow-2xs group-hover:bg-slate-900 group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-slate-900 transition-all relative">
+                        <div class="w-11 h-11 rounded-2xl bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 flex items-center justify-center mb-1.5 border border-slate-200/60 dark:border-slate-700/60 shadow-2xs group-hover:bg-sky-500 group-hover:text-white dark:group-hover:bg-sky-500 dark:group-hover:text-white transition-all relative">
                             <span class="material-symbols-outlined text-[20px]">campaign</span>
                             @if(isset($hasClaimedWelcomeVoucher) && !$hasClaimedWelcomeVoucher)
                                 <span class="absolute -top-1 -right-1 px-1 rounded-full bg-rose-500 text-white text-[8px] font-black uppercase tracking-wider">
@@ -171,7 +171,7 @@
 
                     <!-- Action 4: Tampilan & Tema -->
                     <a href="{{ route('tenant.appearance.index') }}" class="flex flex-col items-center p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 active:scale-95 transition-all group">
-                        <div class="w-11 h-11 rounded-2xl bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 flex items-center justify-center mb-1.5 border border-slate-200/60 dark:border-slate-700/60 shadow-2xs group-hover:bg-slate-900 group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-slate-900 transition-all">
+                        <div class="w-11 h-11 rounded-2xl bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 flex items-center justify-center mb-1.5 border border-slate-200/60 dark:border-slate-700/60 shadow-2xs group-hover:bg-sky-500 group-hover:text-white dark:group-hover:bg-sky-500 dark:group-hover:text-white transition-all">
                             <span class="material-symbols-outlined text-[20px]">palette</span>
                         </div>
                         <span class="text-[11px] font-semibold text-slate-700 dark:text-slate-300 leading-tight">Dekorasi</span>
@@ -179,7 +179,7 @@
 
                     <!-- Action 5: Rekening Bank -->
                     <a href="{{ route('tenant.bank.index') }}" class="flex flex-col items-center p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 active:scale-95 transition-all group">
-                        <div class="w-11 h-11 rounded-2xl bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 flex items-center justify-center mb-1.5 border border-slate-200/60 dark:border-slate-700/60 shadow-2xs group-hover:bg-slate-900 group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-slate-900 transition-all">
+                        <div class="w-11 h-11 rounded-2xl bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 flex items-center justify-center mb-1.5 border border-slate-200/60 dark:border-slate-700/60 shadow-2xs group-hover:bg-sky-500 group-hover:text-white dark:group-hover:bg-sky-500 dark:group-hover:text-white transition-all">
                             <span class="material-symbols-outlined text-[20px]">credit_card</span>
                         </div>
                         <span class="text-[11px] font-semibold text-slate-700 dark:text-slate-300 leading-tight">Rekening</span>
@@ -187,7 +187,7 @@
 
                     <!-- Action 6: Bagikan Toko (Share) -->
                     <button type="button" @click="shareNative()" class="flex flex-col items-center p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 active:scale-95 transition-all group cursor-pointer">
-                        <div class="w-11 h-11 rounded-2xl bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 flex items-center justify-center mb-1.5 border border-slate-200/60 dark:border-slate-700/60 shadow-2xs group-hover:bg-slate-900 group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-slate-900 transition-all">
+                        <div class="w-11 h-11 rounded-2xl bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 flex items-center justify-center mb-1.5 border border-slate-200/60 dark:border-slate-700/60 shadow-2xs group-hover:bg-sky-500 group-hover:text-white dark:group-hover:bg-sky-500 dark:group-hover:text-white transition-all">
                             <span class="material-symbols-outlined text-[20px]">share</span>
                         </div>
                         <span class="text-[11px] font-semibold text-slate-700 dark:text-slate-300 leading-tight">Bagikan</span>
@@ -195,7 +195,7 @@
 
                     <!-- Action 7: Analitik Performa -->
                     <a href="{{ route('tenant.performance.index') }}" class="flex flex-col items-center p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 active:scale-95 transition-all group">
-                        <div class="w-11 h-11 rounded-2xl bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 flex items-center justify-center mb-1.5 border border-slate-200/60 dark:border-slate-700/60 shadow-2xs group-hover:bg-slate-900 group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-slate-900 transition-all">
+                        <div class="w-11 h-11 rounded-2xl bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 flex items-center justify-center mb-1.5 border border-slate-200/60 dark:border-slate-700/60 shadow-2xs group-hover:bg-sky-500 group-hover:text-white dark:group-hover:bg-sky-500 dark:group-hover:text-white transition-all">
                             <span class="material-symbols-outlined text-[20px]">monitoring</span>
                         </div>
                         <span class="text-[11px] font-semibold text-slate-700 dark:text-slate-300 leading-tight">Analitik</span>
@@ -203,7 +203,7 @@
 
                     <!-- Action 8: Pusat Bantuan -->
                     <a href="{{ route('help.index') }}" target="_blank" class="flex flex-col items-center p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 active:scale-95 transition-all group">
-                        <div class="w-11 h-11 rounded-2xl bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 flex items-center justify-center mb-1.5 border border-slate-200/60 dark:border-slate-700/60 shadow-2xs group-hover:bg-slate-900 group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-slate-900 transition-all">
+                        <div class="w-11 h-11 rounded-2xl bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 flex items-center justify-center mb-1.5 border border-slate-200/60 dark:border-slate-700/60 shadow-2xs group-hover:bg-sky-500 group-hover:text-white dark:group-hover:bg-sky-500 dark:group-hover:text-white transition-all">
                             <span class="material-symbols-outlined text-[20px]">help</span>
                         </div>
                         <span class="text-[11px] font-semibold text-slate-700 dark:text-slate-300 leading-tight">Bantuan</span>
@@ -315,7 +315,7 @@
 
                     <!-- Segmented Control Switcher -->
                     <div class="flex items-center gap-1 bg-slate-100 dark:bg-slate-800/80 p-0.5 rounded-xl border border-slate-200/60 dark:border-slate-700/60">
-                        <button type="button" id="btnTenantPeriodMonthlyMobile" onclick="switchTenantTrendPeriod('monthly')" class="px-2.5 py-1 text-[11px] font-bold rounded-lg transition-all bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs cursor-pointer">
+                        <button type="button" id="btnTenantPeriodMonthlyMobile" onclick="switchTenantTrendPeriod('monthly')" class="px-2.5 py-1 text-[11px] font-bold rounded-lg transition-all bg-sky-500 text-white dark:bg-sky-600 dark:text-white shadow-2xs cursor-pointer">
                             6 Bulan
                         </button>
                         <button type="button" id="btnTenantPeriodDailyMobile" onclick="switchTenantTrendPeriod('daily')" class="px-2.5 py-1 text-[11px] font-bold rounded-lg transition-all text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700 cursor-pointer">
@@ -423,7 +423,7 @@
                         </div>
                     </div>
                     <div class="flex items-center gap-1.5 shrink-0">
-                        <button type="button" @click="copyToClipboard()" class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all active:scale-95 cursor-pointer shadow-2xs" :class="copied ? 'bg-emerald-600 text-white' : 'bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100'">
+                        <button type="button" @click="copyToClipboard()" class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all active:scale-95 cursor-pointer shadow-2xs" :class="copied ? 'bg-emerald-600 text-white' : 'bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white'">
                             <span x-text="copied ? 'Tersalin!' : 'Salin'"></span>
                         </button>
                         <button type="button" @click="showQrModal = true" class="p-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all active:scale-95 cursor-pointer" title="QR Code">
@@ -549,7 +549,7 @@
                         Lihat Toko Publik
                     </a>
                     @endif
-                    <a href="{{ route('tenant.products.create') }}" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs md:text-sm font-bold transition-all flex items-center gap-2 shadow-2xs active:scale-95">
+                    <a href="{{ route('tenant.products.create') }}" class="px-4 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white text-xs md:text-sm font-bold transition-all flex items-center gap-2 shadow-2xs active:scale-95">
                         <span class="material-symbols-outlined text-[18px]">add</span>
                         Tambah Produk
                     </a>
@@ -727,7 +727,7 @@
                         <!-- Copy Button -->
                         <button type="button" @click="copyToClipboard()"
                                 class="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl font-bold text-xs transition-all active:scale-95 cursor-pointer shadow-2xs"
-                                :class="copied ? 'bg-emerald-600 text-white' : 'bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100'">
+                                :class="copied ? 'bg-emerald-600 text-white' : 'bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white'">
                             <span class="material-symbols-outlined text-[17px]" x-text="copied ? 'check_circle' : 'content_copy'"></span>
                             <span x-text="copied ? 'Tersalin! 🎉' : 'Salin Tautan'"></span>
                         </button>
@@ -995,7 +995,7 @@
                     <button type="button" 
                             id="btnTenantPeriodMonthly" 
                             onclick="switchTenantTrendPeriod('monthly')"
-                            class="px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs cursor-pointer">
+                            class="px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all bg-sky-500 text-white dark:bg-sky-600 dark:text-white shadow-2xs cursor-pointer">
                         Bulanan (6 Bln)
                     </button>
                     <button type="button" 
@@ -1464,7 +1464,7 @@
                 </div>
 
                 <!-- Tips & Growth Guide -->
-                <div class="bg-slate-900 text-white rounded-2xl p-6 border border-slate-800">
+                <div class="bg-gradient-to-br from-sky-900 to-slate-900 text-white rounded-2xl p-6 border border-sky-700/50 shadow-sm">
                     <div class="flex items-center gap-3 mb-3">
                         <div class="w-8 h-8 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center">
                             <span class="material-symbols-outlined text-[18px]">lightbulb</span>
@@ -1754,10 +1754,10 @@
             const btnMonthlyM = document.getElementById('btnTenantPeriodMonthlyMobile');
             const btnDailyM = document.getElementById('btnTenantPeriodDailyMobile');
 
-            const activeClass = "px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs cursor-pointer";
+            const activeClass = "px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all bg-sky-500 text-white dark:bg-sky-600 dark:text-white shadow-2xs cursor-pointer";
             const inactiveClass = "px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700 cursor-pointer";
 
-            const activeClassM = "px-2.5 py-1 text-[11px] font-bold rounded-lg transition-all bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-2xs cursor-pointer";
+            const activeClassM = "px-2.5 py-1 text-[11px] font-bold rounded-lg transition-all bg-sky-500 text-white dark:bg-sky-600 dark:text-white shadow-2xs cursor-pointer";
             const inactiveClassM = "px-2.5 py-1 text-[11px] font-bold rounded-lg transition-all text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-700 cursor-pointer";
 
             if (period === 'daily') {

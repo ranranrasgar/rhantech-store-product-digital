@@ -1,4 +1,4 @@
-@extends('layouts.tenant')
+﻿@extends('layouts.tenant')
 
 @section('title', 'Iklan & Promosi Toko - Rhantech Seller Center')
 
@@ -80,7 +80,7 @@
                             Rp{{ number_format($adBalance, 0, ',', '.') }}
                         </div>
                     </div>
-                    <a href="{{ route('tenant.ads.top-up') }}" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-bold rounded-xl transition-all flex items-center gap-1 shrink-0 active:scale-95">
+                    <a href="{{ route('tenant.ads.top-up') }}" class="px-4 py-2 bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white text-xs font-bold rounded-xl transition-all flex items-center gap-1 shrink-0 active:scale-95">
                         <span class="material-symbols-outlined text-[15px]">add</span> Top-Up
                     </a>
                 </div>
@@ -134,7 +134,7 @@
                             @else
                                 <form action="{{ route('tenant.ads.claim-voucher') }}" method="POST">
                                     @csrf
-                                    <button type="submit" class="w-full py-1.5 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-[11px] font-bold cursor-pointer text-center transition-all active:scale-95">
+                                    <button type="submit" class="w-full py-1.5 px-3 rounded-lg bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white text-[11px] font-bold cursor-pointer text-center transition-all active:scale-95">
                                         Klaim Sekarang
                                     </button>
                                 </form>
@@ -153,7 +153,7 @@
                             <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-1">Pelajari impresi gratis dan pemotongan biaya per klik.</p>
                         </div>
                         <div class="mt-3 pt-2.5 border-t border-slate-100 dark:border-[#222f49]">
-                            <a href="{{ route('help.show', 'panduan-rumus-modal-iklan-harga-bid-per-klik-cpc-sistem-pemotongan-saldo') }}" target="_blank" class="w-full py-1.5 px-3 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-slate-900 text-[11px] font-bold text-center block transition-colors">
+                            <a href="{{ route('help.show', 'panduan-rumus-modal-iklan-harga-bid-per-klik-cpc-sistem-pemotongan-saldo') }}" target="_blank" class="w-full py-1.5 px-3 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-sky-500 hover:text-white dark:hover:bg-sky-500 dark:hover:text-white text-[11px] font-bold text-center block transition-colors">
                                 Baca Panduan
                             </a>
                         </div>
@@ -170,7 +170,7 @@
                             <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-1">Mencocokkan kata pencarian pembeli untuk +25% closing.</p>
                         </div>
                         <div class="mt-3 pt-2.5 border-t border-slate-100 dark:border-[#222f49]">
-                            <a href="{{ route('tenant.ads.create') }}" class="w-full py-1.5 px-3 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-slate-900 text-[11px] font-bold text-center block transition-colors">
+                            <a href="{{ route('tenant.ads.create') }}" class="w-full py-1.5 px-3 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-sky-500 hover:text-white dark:hover:bg-sky-500 dark:hover:text-white text-[11px] font-bold text-center block transition-colors">
                                 Mulai Pasang
                             </a>
                         </div>
@@ -278,7 +278,7 @@
                         <form action="{{ route('tenant.ads.toggle', $ad->id) }}" method="POST" class="flex-1 max-w-[140px]">
                             @csrf
                             @method('PATCH')
-                            <button type="submit" class="w-full py-1.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer {{ $ad->status === 'active' ? 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800' : 'bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 active:scale-95' }}">
+                            <button type="submit" class="w-full py-1.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer {{ $ad->status === 'active' ? 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800' : 'bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white active:scale-95' }}">
                                 <span class="material-symbols-outlined text-[16px]">{{ $ad->status === 'active' ? 'pause' : 'play_arrow' }}</span>
                                 <span>{{ $ad->status === 'active' ? 'Jeda Iklan' : 'Aktifkan' }}</span>
                             </button>
@@ -292,7 +292,7 @@
                     </div>
                     <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200">Belum Ada Iklan</h3>
                     <p class="text-xs text-slate-400 mt-1 max-w-xs mx-auto">Promosikan produk digital Anda agar muncul di hasil pencarian teratas pembeli.</p>
-                    <a href="{{ route('tenant.ads.create') }}" class="inline-flex items-center gap-1.5 mt-4 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-bold rounded-xl transition-all active:scale-95">
+                    <a href="{{ route('tenant.ads.create') }}" class="inline-flex items-center gap-1.5 mt-4 px-4 py-2 bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white text-xs font-bold rounded-xl transition-all active:scale-95">
                         <span class="material-symbols-outlined text-[16px]">add</span> Buat Iklan Sekarang
                     </a>
                 </div>
@@ -321,7 +321,7 @@
                 }
             </style>
             <a href="{{ route('tenant.ads.create') }}" 
-               class="fixed bottom-20 right-4 z-40 md:hidden w-14 h-14 rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 border-2 border-white dark:border-slate-800 flex items-center justify-center cursor-pointer select-none group active:scale-95 transition-all"
+               class="fixed bottom-20 right-4 z-40 md:hidden w-14 h-14 rounded-full bg-sky-500 hover:bg-sky-600 text-white dark:bg-white dark:text-slate-900 border-2 border-white dark:border-slate-800 flex items-center justify-center cursor-pointer select-none group active:scale-95 transition-all"
                title="Buat Iklan Baru"
                aria-label="Buat Iklan Baru">
                 <span class="material-symbols-outlined text-[30px] font-bold transition-transform duration-300 group-hover:rotate-90">add</span>
@@ -342,7 +342,7 @@
                 </div>
                 
                 <div class="flex items-center gap-3">
-                    <a href="{{ route('tenant.ads.create') }}" class="inline-flex items-center gap-1.5 px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 rounded-xl text-xs md:text-sm font-bold transition-all active:scale-95">
+                    <a href="{{ route('tenant.ads.create') }}" class="inline-flex items-center gap-1.5 px-4 py-2.5 bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white rounded-xl text-xs md:text-sm font-bold transition-all active:scale-95">
                         <span class="material-symbols-outlined text-[18px]">add</span>
                         Buat Iklan Baru
                     </a>
@@ -396,7 +396,7 @@
                     @endif
 
                     <div class="flex flex-wrap items-center gap-3">
-                        <a href="{{ route('tenant.ads.top-up') }}" class="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs sm:text-sm font-bold rounded-xl transition-all flex items-center gap-2 active:scale-95">
+                        <a href="{{ route('tenant.ads.top-up') }}" class="px-6 py-2.5 bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white text-xs sm:text-sm font-bold rounded-xl transition-all flex items-center gap-2 active:scale-95">
                             <span class="material-symbols-outlined text-[18px]">add_circle</span>
                             Top-Up Saldo Iklan
                         </a>
@@ -444,14 +444,14 @@
                                 <span class="material-symbols-outlined text-[18px]">verified</span>
                                 <span>Bonus Rp500.000 Aktif di Saldo Iklan</span>
                             </div>
-                            <a href="{{ route('tenant.ads.create') }}" class="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs sm:text-sm font-bold text-center block transition-all active:scale-95">
+                            <a href="{{ route('tenant.ads.create') }}" class="w-full py-2.5 px-4 rounded-xl bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white text-xs sm:text-sm font-bold text-center block transition-all active:scale-95">
                                 Pasang Iklan Sekarang
                             </a>
                         </div>
                         @else
                         <form action="{{ route('tenant.ads.claim-voucher') }}" method="POST">
                             @csrf
-                            <button type="submit" class="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs sm:text-sm font-bold text-center flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer">
+                            <button type="submit" class="w-full py-2.5 px-4 rounded-xl bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white text-xs sm:text-sm font-bold text-center flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer">
                                 <span class="material-symbols-outlined text-[18px]">redeem</span>
                                 <span>Klaim Bonus Rp500.000 Sekarang</span>
                             </button>
@@ -465,7 +465,7 @@
             <div>
                 <div class="flex items-center justify-between mb-3">
                     <div class="flex items-center gap-2">
-                        <span class="w-2 h-5 bg-slate-900 dark:bg-white rounded-full"></span>
+                        <span class="w-2 h-5 bg-sky-500 rounded-full"></span>
                         <h3 class="text-sm md:text-base font-bold text-slate-800 dark:text-slate-100">
                             Rekomendasi untuk Mengoptimalkan Iklan
                         </h3>
@@ -488,7 +488,7 @@
                             </p>
                         </div>
                         <div class="mt-4 pt-3 border-t border-slate-100 dark:border-[#222f49]">
-                            <a href="{{ route('tenant.ads.top-up') }}" class="w-full py-1.5 px-3 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-slate-900 text-xs font-bold text-center block transition-all">
+                            <a href="{{ route('tenant.ads.top-up') }}" class="w-full py-1.5 px-3 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-sky-500 hover:text-white dark:hover:bg-sky-500 dark:hover:text-white text-xs font-bold text-center block transition-all">
                                 Atur Saldo
                             </a>
                         </div>
@@ -508,7 +508,7 @@
                             </p>
                         </div>
                         <div class="mt-4 pt-3 border-t border-slate-100 dark:border-[#222f49]">
-                            <a href="{{ route('tenant.ads.create') }}" class="w-full py-1.5 px-3 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-slate-900 text-xs font-bold text-center block transition-all">
+                            <a href="{{ route('tenant.ads.create') }}" class="w-full py-1.5 px-3 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-sky-500 hover:text-white dark:hover:bg-sky-500 dark:hover:text-white text-xs font-bold text-center block transition-all">
                                 Pasang Kata Kunci
                             </a>
                         </div>
@@ -528,7 +528,7 @@
                             </p>
                         </div>
                         <div class="mt-4 pt-3 border-t border-slate-100 dark:border-[#222f49]">
-                            <a href="{{ route('tenant.ads.create') }}" class="w-full py-1.5 px-3 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-slate-900 text-xs font-bold text-center block transition-all">
+                            <a href="{{ route('tenant.ads.create') }}" class="w-full py-1.5 px-3 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-sky-500 hover:text-white dark:hover:bg-sky-500 dark:hover:text-white text-xs font-bold text-center block transition-all">
                                 Terapkan Sekarang
                             </a>
                         </div>
@@ -548,7 +548,7 @@
                             </p>
                         </div>
                         <div class="mt-4 pt-3 border-t border-slate-100 dark:border-[#222f49]">
-                            <button type="button" @click="showPromoModal = true" class="w-full py-1.5 px-3 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-slate-900 text-xs font-bold text-center block transition-all cursor-pointer">
+                            <button type="button" @click="showPromoModal = true" class="w-full py-1.5 px-3 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-sky-500 hover:text-white dark:hover:bg-sky-500 dark:hover:text-white text-xs font-bold text-center block transition-all cursor-pointer">
                                 Pelajari Syarat
                             </button>
                         </div>
@@ -711,7 +711,7 @@
                                     <span class="material-symbols-outlined text-[44px] text-slate-300 dark:text-slate-600 mb-2 block">ads_click</span>
                                     <p class="text-sm font-semibold text-slate-600 dark:text-slate-400">Belum ada iklan promosi yang dibuat.</p>
                                     <p class="text-xs text-slate-400 mt-1">Tingkatkan visibilitas produk Anda di platform dengan membuat iklan pertama!</p>
-                                    <a href="{{ route('tenant.ads.create') }}" class="inline-flex items-center gap-1.5 mt-4 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-bold transition-all active:scale-95">
+                                    <a href="{{ route('tenant.ads.create') }}" class="inline-flex items-center gap-1.5 mt-4 px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white text-xs font-bold transition-all active:scale-95">
                                         <span class="material-symbols-outlined text-[16px]">add</span> Buat Iklan Produk Sekarang
                                     </a>
                                 </td>
@@ -765,7 +765,7 @@
             </p>
 
             <div class="mt-6 space-y-2">
-                <a href="{{ route('tenant.ads.top-up') }}" class="w-full py-2.5 px-4 bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-bold rounded-xl transition-all block text-center active:scale-95">
+                <a href="{{ route('tenant.ads.top-up') }}" class="w-full py-2.5 px-4 bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white text-xs font-bold rounded-xl transition-all block text-center active:scale-95">
                     Isi Saldo Sekarang
                 </a>
                 <button type="button" @click="closeZeroBalanceModal()" class="w-full py-2 text-xs font-semibold text-slate-500 dark:text-slate-400 hover:underline">
@@ -849,7 +849,7 @@
                         <button type="button" @click="closePromoModal()" class="flex-1 sm:flex-none px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-center">
                             Tutup
                         </button>
-                        <a href="{{ route('tenant.ads.create') }}" class="flex-1 sm:flex-none px-5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-bold transition-all text-center active:scale-95">
+                        <a href="{{ route('tenant.ads.create') }}" class="flex-1 sm:flex-none px-5 py-2 rounded-xl bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white text-xs font-bold transition-all text-center active:scale-95">
                             Buat Iklan Sekarang
                         </a>
                     </div>

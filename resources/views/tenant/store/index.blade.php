@@ -112,14 +112,14 @@
         <div class="flex items-center gap-2 overflow-x-auto pb-1 -mx-3.5 px-3.5 sm:mx-0 sm:px-0 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden" style="scrollbar-width: none; -ms-overflow-style: none;">
             <button type="button" @click="tab = 'profil'" 
                     class="shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
-                    :class="tab === 'profil' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900' : 'bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] text-slate-600 dark:text-slate-300 active:scale-95'">
+                    :class="tab === 'profil' ? 'bg-sky-500 text-white dark:bg-sky-600 dark:text-white' : 'bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] text-slate-600 dark:text-slate-300 active:scale-95'">
                 <span class="material-symbols-outlined text-[17px]">badge</span>
                 <span>Profil Utama</span>
             </button>
 
             <button type="button" @click="tab = 'sosmed'" 
                     class="shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
-                    :class="tab === 'sosmed' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900' : 'bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] text-slate-600 dark:text-slate-300 active:scale-95'">
+                    :class="tab === 'sosmed' ? 'bg-sky-500 text-white dark:bg-sky-600 dark:text-white' : 'bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] text-slate-600 dark:text-slate-300 active:scale-95'">
                 <span class="material-symbols-outlined text-[17px]">share</span>
                 <span>Media Sosial</span>
                 <span class="px-1.5 py-0.2 rounded-full text-[10px]" :class="tab === 'sosmed' ? 'bg-white/20 text-white dark:bg-black/20 dark:text-slate-900' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'" x-text="socialItems.length"></span>
@@ -127,14 +127,14 @@
 
             <button type="button" @click="tab = 'rekening'" 
                     class="shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
-                    :class="tab === 'rekening' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900' : 'bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] text-slate-600 dark:text-slate-300 active:scale-95'">
+                    :class="tab === 'rekening' ? 'bg-sky-500 text-white dark:bg-sky-600 dark:text-white' : 'bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] text-slate-600 dark:text-slate-300 active:scale-95'">
                 <span class="material-symbols-outlined text-[17px]">credit_card</span>
                 <span>Rekening Bank</span>
             </button>
 
             <button type="button" @click="tab = 'sistem'" 
                     class="shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer"
-                    :class="tab === 'sistem' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900' : 'bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] text-slate-600 dark:text-slate-300 active:scale-95'">
+                    :class="tab === 'sistem' ? 'bg-sky-500 text-white dark:bg-sky-600 dark:text-white' : 'bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] text-slate-600 dark:text-slate-300 active:scale-95'">
                 <span class="material-symbols-outlined text-[17px]">tune</span>
                 <span>Pengaturan Sistem</span>
             </button>
@@ -159,7 +159,7 @@
                             <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Mode Halaman, warna tema, banner, dan tombol link diatur di <strong>Desain Tampilan</strong>.</p>
                         </div>
                     </div>
-                    <a href="{{ route('tenant.appearance.index') }}" class="px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-[11px] whitespace-nowrap transition-all flex items-center justify-center gap-1 shrink-0 w-full sm:w-auto active:scale-95">
+                    <a href="{{ route('tenant.appearance.index') }}" class="px-3.5 py-1.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white font-bold text-[11px] whitespace-nowrap transition-all flex items-center justify-center gap-1 shrink-0 w-full sm:w-auto active:scale-95">
                         <span>Buka Desain Tampilan</span>
                         <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
                     </a>
@@ -436,7 +436,7 @@
                         <!-- Dark Mode -->
                         <div @click="currentTheme = 'dark'; localStorage.setItem('rhantech-theme', 'dark'); document.documentElement.classList.add('dark'); document.documentElement.dataset.theme = 'dark'; document.documentElement.style.colorScheme = 'dark';"
                              class="p-4 rounded-2xl border-2 transition-all cursor-pointer shadow-2xs relative overflow-hidden bg-slate-900 text-white active:scale-95"
-                             :class="currentTheme === 'dark' ? 'border-[#00838f] ring-2 ring-[#00838f]/20' : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'">
+                             :class="currentTheme === 'dark' ? 'border-sky-500 ring-2 ring-sky-500/20' : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600'">
                             <div class="flex items-center justify-between mb-2.5">
                                 <span class="p-2 rounded-xl bg-indigo-950 text-teal-400 flex items-center justify-center">
                                     <span class="material-symbols-outlined text-[20px]">dark_mode</span>
@@ -553,7 +553,7 @@
                     <a href="{{ route('tenant.dashboard') }}" class="w-full sm:w-auto text-center px-4 py-2.5 text-xs font-semibold border border-slate-200 dark:border-[#222f49] text-slate-600 dark:text-slate-300 rounded-xl hover:bg-slate-100 dark:hover:bg-[#161f33] transition-colors active:scale-95">
                         Batal
                     </a>
-                    <button type="submit" class="w-full sm:w-auto px-5 py-2.5 text-xs md:text-sm font-bold text-white bg-slate-900 hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 rounded-xl active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+                    <button type="submit" class="w-full sm:w-auto px-5 py-2.5 text-xs md:text-sm font-bold text-white bg-sky-500 hover:bg-sky-600 dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white rounded-xl active:scale-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
                         <span class="material-symbols-outlined text-[17px]">check_circle</span>
                         <span>{{ isset($store) && $store->id ? 'Simpan Profil & Pengaturan' : 'Buka Toko Sekarang' }}</span>
                     </button>

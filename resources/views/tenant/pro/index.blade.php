@@ -1,4 +1,4 @@
-@extends('layouts.tenant')
+﻿@extends('layouts.tenant')
 
 @section('title', 'Layanan Toko PRO')
 
@@ -123,7 +123,7 @@
                 <div class="space-y-4">
                     <div class="flex items-center justify-between">
                         <label class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-2">
-                            <span class="w-5 h-5 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-[11px] font-black flex items-center justify-center">1</span>
+                            <span class="w-5 h-5 rounded-full bg-sky-500 text-white text-[11px] font-black flex items-center justify-center">1</span>
                             Pilih Paket Berlangganan
                         </label>
                         <span class="text-xs text-emerald-600 dark:text-emerald-400 font-semibold">Tersedia {{ count($plans) }} Pilihan Fleksibel</span>
@@ -195,7 +195,7 @@
                 <div class="space-y-4 pt-4 border-t border-slate-100 dark:border-[#1d273d]">
                     <div class="flex items-center justify-between">
                         <label class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-2">
-                            <span class="w-5 h-5 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-[11px] font-black flex items-center justify-center">2</span>
+                            <span class="w-5 h-5 rounded-full bg-sky-500 text-white text-[11px] font-black flex items-center justify-center">2</span>
                             Pilih Metode Pembayaran
                         </label>
                         <a href="{{ route('help.show', 'panduan-cara-upgrade-toko-pro-pembayaran-qris-dan-potong-saldo') }}" target="_blank" class="text-xs text-amber-600 dark:text-amber-400 hover:underline flex items-center gap-1 font-bold">

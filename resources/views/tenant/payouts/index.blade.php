@@ -1,4 +1,4 @@
-@extends('layouts.tenant')
+﻿@extends('layouts.tenant')
 
 @section('title', 'Pusat Keuangan & Penghasilan')
 
@@ -65,7 +65,7 @@
                         <input type="number" name="amount" min="10000" max="{{ $store->balance }}" placeholder="Nominal Tarik (Min 10.000)" class="w-full pl-10 pr-3.5 py-2.5 text-xs bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 dark:focus:border-white text-slate-900 dark:text-white placeholder-slate-400 transition-all" required {{ $store->balance < 10000 ? 'disabled' : '' }}>
                     </div>
 
-                    <button type="submit" class="w-full py-2.5 px-4 text-xs font-bold bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 rounded-xl active:scale-95 transition-all flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer" {{ $store->balance < 10000 ? 'disabled' : '' }}>
+                    <button type="submit" class="w-full py-2.5 px-4 text-xs font-bold bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white rounded-xl active:scale-95 transition-all flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer" {{ $store->balance < 10000 ? 'disabled' : '' }}>
                         <span class="material-symbols-outlined text-[16px]">account_balance_wallet</span>
                         <span>Ajukan Penarikan Dana</span>
                     </button>
@@ -96,7 +96,7 @@
                         </div>
                     @endif
                 </div>
-                <a href="{{ route('tenant.store.index') }}" class="shrink-0 px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-slate-900 text-slate-700 dark:text-slate-300 text-[11px] font-bold transition-all active:scale-95">
+                <a href="{{ route('tenant.store.index') }}" class="shrink-0 px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-sky-500 hover:text-white dark:hover:bg-sky-500 dark:hover:text-white text-slate-700 dark:text-slate-300 text-[11px] font-bold transition-all active:scale-95">
                     {{ empty($store->bank_account_info) ? 'Atur Bank' : 'Ubah' }}
                 </a>
             </div>
@@ -163,25 +163,25 @@
             <!-- Horizontal Swipeable Pill Tabs Mobile -->
             <div class="flex items-center gap-2 overflow-x-auto pb-1 -mx-3.5 px-3.5 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden" style="scrollbar-width: none; -ms-overflow-style: none;">
                 <a href="{{ route('tenant.payouts.index', ['tab' => 'semua']) }}" 
-                   class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 {{ $tab === 'semua' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900' : 'bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] text-slate-600 dark:text-slate-300 active:scale-95' }}">
+                   class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 {{ $tab === 'semua' ? 'bg-sky-500 text-white dark:bg-sky-600 dark:text-white' : 'bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] text-slate-600 dark:text-slate-300 active:scale-95' }}">
                     <span>Penarikan</span>
                     <span class="px-1.5 py-0.2 rounded-full text-[10px] {{ $tab === 'semua' ? 'bg-white/20 text-white dark:bg-black/20 dark:text-slate-900' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400' }}">{{ $pagedPayouts->total() }}</span>
                 </a>
 
                 <a href="{{ route('tenant.payouts.index', ['tab' => 'produk_sendiri']) }}" 
-                   class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 {{ $tab === 'produk_sendiri' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900' : 'bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] text-slate-600 dark:text-slate-300 active:scale-95' }}">
+                   class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 {{ $tab === 'produk_sendiri' ? 'bg-sky-500 text-white dark:bg-sky-600 dark:text-white' : 'bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] text-slate-600 dark:text-slate-300 active:scale-95' }}">
                     <span>Produk Sendiri</span>
                     <span class="px-1.5 py-0.2 rounded-full text-[10px] {{ $tab === 'produk_sendiri' ? 'bg-white/20 text-white dark:bg-black/20 dark:text-slate-900' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400' }}">{{ $pagedOwnOrders->total() }}</span>
                 </a>
 
                 <a href="{{ route('tenant.payouts.index', ['tab' => 'afiliasi_showcase']) }}" 
-                   class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 {{ $tab === 'afiliasi_showcase' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900' : 'bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] text-slate-600 dark:text-slate-300 active:scale-95' }}">
+                   class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 {{ $tab === 'afiliasi_showcase' ? 'bg-sky-500 text-white dark:bg-sky-600 dark:text-white' : 'bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] text-slate-600 dark:text-slate-300 active:scale-95' }}">
                     <span>Komisi Afiliasi</span>
                     <span class="px-1.5 py-0.2 rounded-full text-[10px] {{ $tab === 'afiliasi_showcase' ? 'bg-white/20 text-white dark:bg-black/20 dark:text-slate-900' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400' }}">{{ $pagedAffiliateSoldOrders->total() }}</span>
                 </a>
 
                 <a href="{{ route('tenant.payouts.index', ['tab' => 'mitra_referral']) }}" 
-                   class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 {{ $tab === 'mitra_referral' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900' : 'bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] text-slate-600 dark:text-slate-300 active:scale-95' }}">
+                   class="shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 {{ $tab === 'mitra_referral' ? 'bg-sky-500 text-white dark:bg-sky-600 dark:text-white' : 'bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] text-slate-600 dark:text-slate-300 active:scale-95' }}">
                     <span>Mitra Afiliasi</span>
                     <span class="px-1.5 py-0.2 rounded-full text-[10px] {{ $tab === 'mitra_referral' ? 'bg-white/20 text-white dark:bg-black/20 dark:text-slate-900' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400' }}">{{ $myAffiliateMitra->count() }}</span>
                 </a>
@@ -319,7 +319,7 @@
                             </div>
                             <div class="text-[10px] text-slate-500 mt-0.5">Komisi masuk otomatis saat terjual via link Anda.</div>
                         </div>
-                        <a href="{{ route('tenant.showcase.index') }}" class="shrink-0 px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-[10px] font-bold active:scale-95 transition-all">
+                        <a href="{{ route('tenant.showcase.index') }}" class="shrink-0 px-3 py-1.5 rounded-lg bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white text-[10px] font-bold active:scale-95 transition-all">
                             Kelola
                         </a>
                     </div>
@@ -366,7 +366,7 @@
                             </div>
                             <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200">Belum Ada Komisi Afiliasi</h3>
                             <p class="text-xs text-slate-400 mt-1 max-w-xs mx-auto">Pajang produk toko lain di etalase Anda untuk mendapatkan komisi penjualan.</p>
-                            <a href="{{ route('tenant.showcase.index') }}" class="inline-flex items-center gap-1.5 mt-3 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-bold rounded-xl active:scale-95 transition-all">
+                            <a href="{{ route('tenant.showcase.index') }}" class="inline-flex items-center gap-1.5 mt-3 px-4 py-2 bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white text-xs font-bold rounded-xl active:scale-95 transition-all">
                                 <span class="material-symbols-outlined text-[15px]">storefront</span>
                                 <span>Pilih Produk Etalase</span>
                             </a>
@@ -423,7 +423,7 @@
                             </div>
                             <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200">Belum Ada Mitra Terhubung</h3>
                             <p class="text-xs text-slate-400 mt-1 max-w-xs mx-auto">Ajak kreator atau marketer untuk menjadi mitra afiliasi dan promosikan toko Anda.</p>
-                            <a href="{{ route('tenant.affiliates.index') }}" class="inline-flex items-center gap-1.5 mt-3 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-bold rounded-xl active:scale-95 transition-all">
+                            <a href="{{ route('tenant.affiliates.index') }}" class="inline-flex items-center gap-1.5 mt-3 px-4 py-2 bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white text-xs font-bold rounded-xl active:scale-95 transition-all">
                                 <span class="material-symbols-outlined text-[15px]">person_add</span>
                                 <span>Undang Mitra</span>
                             </a>
@@ -490,7 +490,7 @@
                                 <span class="absolute left-4 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">Rp</span>
                                 <input type="number" name="amount" min="10000" max="{{ $store->balance }}" placeholder="Nominal Penarikan (Min. 10.000)" class="w-full pl-12 pr-4 py-3 text-sm bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-900 dark:focus:border-white text-slate-900 dark:text-white placeholder-slate-400 transition-all" required {{ $store->balance < 10000 ? 'disabled' : '' }}>
                             </div>
-                            <button type="submit" class="px-6 py-3 text-sm font-bold bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 rounded-xl active:scale-95 transition-all flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed" {{ $store->balance < 10000 ? 'disabled' : '' }}>
+                            <button type="submit" class="px-6 py-3 text-sm font-bold bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white rounded-xl active:scale-95 transition-all flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed" {{ $store->balance < 10000 ? 'disabled' : '' }}>
                                 <span>Tarik Dana</span>
                                 <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
                             </button>
@@ -799,14 +799,14 @@
                     <div class="p-6 border-b border-slate-100 dark:border-[#222f49] flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-50/50 dark:bg-[#0c1220]/50">
                         <div>
                             <div class="flex items-center gap-2">
-                                <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-xs font-black">
+                                <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-sky-500 text-white dark:bg-sky-600 dark:text-white text-xs font-black">
                                     {{ $myShowcaseCount }}
                                 </span>
                                 <h3 class="font-bold text-sm md:text-base text-slate-900 dark:text-white">Produk Aktif Dipajang di Etalase Toko</h3>
                             </div>
                             <p class="text-xs text-slate-500 mt-1">Setiap kali pembeli checkout produk etalase atau lewat link referral toko Anda, komisi penjualan otomatis masuk ke saldo.</p>
                         </div>
-                        <a href="{{ route('tenant.showcase.index') }}" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-bold transition flex items-center justify-center gap-1.5 shrink-0 active:scale-95">
+                        <a href="{{ route('tenant.showcase.index') }}" class="px-4 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white text-xs font-bold transition flex items-center justify-center gap-1.5 shrink-0 active:scale-95">
                             <span class="material-symbols-outlined text-[16px]">storefront</span>
                             Kelola Etalase Produk Afiliasi ({{ $myShowcaseCount }})
                         </a>
@@ -881,7 +881,7 @@
                                             </div>
                                             <h3 class="font-bold text-base text-slate-800 dark:text-white mb-1">Belum Ada Produk Afiliasi yang Terjual</h3>
                                             <p class="text-xs text-slate-400 mb-4">Pajang produk menarik dari toko lain di etalase Anda atau bagikan link toko Anda untuk mulai menghasilkan komisi setiap penjualan!</p>
-                                            <a href="{{ route('tenant.showcase.index') }}" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-bold transition flex items-center gap-1.5 active:scale-95">
+                                            <a href="{{ route('tenant.showcase.index') }}" class="px-4 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white text-xs font-bold transition flex items-center gap-1.5 active:scale-95">
                                                 <span class="material-symbols-outlined text-[16px]">shopping_cart_checkout</span>
                                                 Pilih Produk untuk Dipajang Sekarang
                                             </a>
@@ -909,7 +909,7 @@
                             <h3 class="font-bold text-base text-slate-900 dark:text-white">Mitra yang Membantu Menjualkan Produk Toko Anda</h3>
                             <p class="text-xs text-slate-500">Daftar pengguna dan toko lain yang memiliki link referral toko Anda dan mempromosikannya.</p>
                         </div>
-                        <a href="{{ route('tenant.affiliates.index') }}" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs font-bold transition flex items-center gap-1.5 active:scale-95">
+                        <a href="{{ route('tenant.affiliates.index') }}" class="px-4 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white text-xs font-bold transition flex items-center gap-1.5 active:scale-95">
                             <span class="material-symbols-outlined text-[16px]">person_add</span>
                             Kelola Mitra Afiliasi
                         </a>

@@ -103,6 +103,17 @@
 @vite(['resources/css/app.css'])
 @livewireStyles
 <style>
+:root {
+    --theme-primary: 14 165 233;
+    --theme-primary-hover: 2 132 199;
+}
+.btn-primary, .btn-sky {
+    background-color: #0ea5e9 !important;
+    color: #ffffff !important;
+}
+.btn-primary:hover, .btn-sky:hover {
+    background-color: #0284c7 !important;
+}
 /* Hilangkan semua shadow blur & degradasi pada object di dashboard tenant */
 *, ::before, ::after {
     --tw-shadow: 0 0 #0000 !important;
@@ -158,10 +169,10 @@ html.dark .sidebar-brand { border-bottom-color: #30363d; }
 
 .brand-dot-s {
     width: 8px; height: 8px; border-radius: 50%;
-    background: #0f172a;
+    background: #0284c7;
     flex-shrink: 0; display:inline-block;
 }
-html.dark .brand-dot-s { background: #ffffff; }
+html.dark .brand-dot-s { background: #38bdf8; }
 
 .brand-name-s {
     font-size: 16px; font-weight: 900; letter-spacing: -0.3px;
@@ -193,19 +204,19 @@ html.dark .nav-section-label { color: #8b949e; }
     color: #4b5563; text-decoration: none;
     transition: all 0.15s ease; position: relative;
 }
-.nav-link:hover { background: #f3f4f6; color: #111827; }
-.nav-link.active { background: #0f172a; color: #ffffff; font-weight: 600; }
+.nav-link:hover { background: #f0f9ff; color: #0284c7; }
+.nav-link.active { background: #0284c7; color: #ffffff; font-weight: 600; }
 .nav-link.active::before {
     content: ''; position: absolute;
     left: -4px; top: 6px; bottom: 6px;
     width: 3px; border-radius: 0 3px 3px 0;
-    background: #0f172a;
+    background: #0284c7;
 }
 
 html.dark .nav-link { color: #8b949e; }
-html.dark .nav-link:hover { background: #161b22; color: #c9d1d9; }
-html.dark .nav-link.active { background: #ffffff; color: #0f172a; font-weight: 600; }
-html.dark .nav-link.active::before { background: #ffffff; }
+html.dark .nav-link:hover { background: #0c4a6e/30; color: #38bdf8; }
+html.dark .nav-link.active { background: #0284c7; color: #ffffff; font-weight: 600; }
+html.dark .nav-link.active::before { background: #38bdf8; }
 
 .nav-link .material-symbols-outlined { font-size: 18px; width: 20px; text-align: center; flex-shrink: 0; opacity: 0.7; }
 .nav-link.active .material-symbols-outlined { opacity: 1; color: inherit; }
@@ -493,7 +504,7 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
                         @keydown.enter.prevent="submitSearch()"
                         placeholder="Cari produk atau toko..." 
                         autocomplete="off"
-                        class="w-full pl-9 pr-8 py-1.5 md:py-2 text-xs md:text-sm bg-slate-100 dark:bg-[#161b22] border border-slate-200 dark:border-[#30363d] rounded-xl text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-[#00838f] focus:ring-2 focus:ring-[#00838f]/20 transition-all"
+                        class="w-full pl-9 pr-8 py-1.5 md:py-2 text-xs md:text-sm bg-slate-100 dark:bg-[#161b22] border border-slate-200 dark:border-[#30363d] rounded-xl text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all"
                     >
                     <button 
                         type="button" 
@@ -505,7 +516,7 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
                         <span class="material-symbols-outlined text-[16px]">close</span>
                     </button>
                     <div x-show="loading" class="absolute right-2.5" style="display: none;">
-                        <span class="inline-block w-4 h-4 border-2 border-[#00838f] border-t-transparent rounded-full animate-spin"></span>
+                        <span class="inline-block w-4 h-4 border-2 border-sky-500 border-t-transparent rounded-full animate-spin"></span>
                     </div>
                 </div>
 
@@ -626,7 +637,7 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
                     <a href="{{ route('tenant.profile.index') }}" style="display:block; padding:10px 12px 8px; border-bottom:1px solid #e5e7eb; margin-bottom:4px; text-decoration:none; transition:background 0.2s;" class="html-dark-border hover-bg-gray">
                         <div class="dropdown-user-name" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ auth()->user()->name ?? 'Admin' }}</div>
                         <div class="dropdown-user-email" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-bottom:4px;">{{ auth()->user()->email ?? '' }}</div>
-                        <div style="font-size:11px; color:#00b3cc; font-weight:600; display:flex; align-items:center; gap:2px;">
+                        <div style="font-size:11px; color:#0284c7; font-weight:600; display:flex; align-items:center; gap:2px;">
                             <span class="material-symbols-outlined" style="font-size:12px;">edit</span> Edit Profil
                         </div>
                     </a>
@@ -658,44 +669,44 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
 <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#0d1117]/95 backdrop-blur-md border-t border-slate-200/80 dark:border-slate-800/80 px-2 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-lg transition-transform duration-200" style="-webkit-tap-highlight-color: transparent;">
     <div class="grid grid-cols-5 items-center justify-around max-w-md mx-auto text-center">
         <!-- Beranda -->
-        <a href="{{ route('tenant.dashboard') }}" class="flex flex-col items-center justify-center py-1 select-none active:scale-90 transition-transform {{ request()->routeIs('tenant.dashboard') ? 'text-[#00838f] dark:text-teal-400 font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200' }}">
+        <a href="{{ route('tenant.dashboard') }}" class="flex flex-col items-center justify-center py-1 select-none active:scale-90 transition-transform {{ request()->routeIs('tenant.dashboard') ? 'text-sky-600 dark:text-sky-400 font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200' }}">
             <div class="relative">
                 <span class="material-symbols-outlined text-[24px] {{ request()->routeIs('tenant.dashboard') ? 'fill-1' : '' }}">space_dashboard</span>
                 @if(request()->routeIs('tenant.dashboard'))
-                    <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-[#00838f] dark:bg-teal-400"></span>
+                    <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-sky-500 dark:bg-sky-400"></span>
                 @endif
             </div>
             <span class="text-[10px] mt-0.5 tracking-tight">Beranda</span>
         </a>
 
         <!-- Katalog -->
-        <a href="{{ route('tenant.products.index') }}" class="flex flex-col items-center justify-center py-1 select-none active:scale-90 transition-transform {{ request()->routeIs('tenant.products.*') ? 'text-[#00838f] dark:text-teal-400 font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200' }}">
+        <a href="{{ route('tenant.products.index') }}" class="flex flex-col items-center justify-center py-1 select-none active:scale-90 transition-transform {{ request()->routeIs('tenant.products.*') ? 'text-sky-600 dark:text-sky-400 font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200' }}">
             <div class="relative">
                 <span class="material-symbols-outlined text-[24px]">inventory_2</span>
                 @if(request()->routeIs('tenant.products.*'))
-                    <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-[#00838f] dark:bg-teal-400"></span>
+                    <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-sky-500 dark:bg-sky-400"></span>
                 @endif
             </div>
             <span class="text-[10px] mt-0.5 tracking-tight">Produk</span>
         </a>
 
         <!-- Pesanan -->
-        <a href="{{ route('tenant.orders.index') }}" class="flex flex-col items-center justify-center py-1 select-none active:scale-90 transition-transform relative {{ request()->routeIs('tenant.orders.*') ? 'text-[#00838f] dark:text-teal-400 font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200' }}">
+        <a href="{{ route('tenant.orders.index') }}" class="flex flex-col items-center justify-center py-1 select-none active:scale-90 transition-transform relative {{ request()->routeIs('tenant.orders.*') ? 'text-sky-600 dark:text-sky-400 font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200' }}">
             <div class="relative">
                 <span class="material-symbols-outlined text-[24px]">receipt_long</span>
                 @if(request()->routeIs('tenant.orders.*'))
-                    <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-[#00838f] dark:bg-teal-400"></span>
+                    <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-sky-500 dark:bg-sky-400"></span>
                 @endif
             </div>
             <span class="text-[10px] mt-0.5 tracking-tight">Pesanan</span>
         </a>
 
         <!-- Keuangan -->
-        <a href="{{ route('tenant.payouts.index') }}" class="flex flex-col items-center justify-center py-1 select-none active:scale-90 transition-transform {{ request()->routeIs('tenant.payouts.*') || request()->routeIs('tenant.balance.*') ? 'text-[#00838f] dark:text-teal-400 font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200' }}">
+        <a href="{{ route('tenant.payouts.index') }}" class="flex flex-col items-center justify-center py-1 select-none active:scale-90 transition-transform {{ request()->routeIs('tenant.payouts.*') || request()->routeIs('tenant.balance.*') ? 'text-sky-600 dark:text-sky-400 font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200' }}">
             <div class="relative">
                 <span class="material-symbols-outlined text-[24px]">account_balance_wallet</span>
                 @if(request()->routeIs('tenant.payouts.*') || request()->routeIs('tenant.balance.*'))
-                    <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-[#00838f] dark:bg-teal-400"></span>
+                    <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-sky-500 dark:bg-sky-400"></span>
                 @endif
             </div>
             <span class="text-[10px] mt-0.5 tracking-tight">Keuangan</span>

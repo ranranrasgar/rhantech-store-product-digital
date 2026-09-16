@@ -1,4 +1,4 @@
-@extends('layouts.tenant')
+﻿@extends('layouts.tenant')
 
 @section('title', 'Profil Akun')
 
@@ -103,7 +103,7 @@
 
             <!-- Submit Footer -->
             <div class="bg-slate-50/50 dark:bg-[#0c1220]/50 px-6 py-4 border-t border-slate-100 dark:border-[#222f49] flex justify-end">
-                <button type="submit" class="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-sm font-bold rounded-xl transition-all flex items-center gap-2 cursor-pointer active:scale-95">
+                <button type="submit" class="px-6 py-2.5 bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white text-sm font-bold rounded-xl transition-all flex items-center gap-2 cursor-pointer active:scale-95">
                     <span class="material-symbols-outlined text-[18px]">save</span>
                     Simpan Perubahan
                 </button>

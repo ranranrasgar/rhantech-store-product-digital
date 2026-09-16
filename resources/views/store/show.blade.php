@@ -16,7 +16,7 @@
     } elseif (!empty($banner) && $banner !== 'none') {
         $headerBgStyle = "background-image: url('{$banner}'); background-size: cover; background-position: center;";
     } else {
-        $headerBgStyle = "background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);";
+        $headerBgStyle = "background: linear-gradient(135deg, #0284c7 0%, #0369a1 50%, #075985 100%);";
     }
 @endphp
 

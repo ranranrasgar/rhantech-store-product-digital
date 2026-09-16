@@ -1,4 +1,4 @@
-@extends('layouts.tenant')
+﻿@extends('layouts.tenant')
 
 @section('title', 'Campaign & Promo')
 
@@ -18,7 +18,7 @@
             </div>
             
             <div class="flex flex-wrap items-center gap-3">
-                <a href="{{ route('tenant.campaigns.create') }}" class="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs md:text-sm font-bold transition-all active:scale-95 flex items-center gap-2">
+                <a href="{{ route('tenant.campaigns.create') }}" class="px-5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white text-xs md:text-sm font-bold transition-all active:scale-95 flex items-center gap-2">
                     <span class="material-symbols-outlined text-[18px]">add_circle</span>
                     Buat Promo Baru
                 </a>
@@ -31,7 +31,7 @@
                 <button type="button" 
                         @click="viewMode = 'cards'" 
                         :class="viewMode === 'cards' 
-                            ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900' 
+                            ? 'bg-sky-500 text-white dark:bg-sky-600 dark:text-white' 
                             : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'"
                         class="px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer">
                     <span class="material-symbols-outlined text-[17px]">confirmation_number</span>
@@ -43,7 +43,7 @@
                 <button type="button" 
                         @click="viewMode = 'table'" 
                         :class="viewMode === 'table' 
-                            ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900' 
+                            ? 'bg-sky-500 text-white dark:bg-sky-600 dark:text-white' 
                             : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'"
                         class="px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer">
                     <span class="material-symbols-outlined text-[17px]">table_rows</span>
@@ -107,7 +107,7 @@
                     </div>
                     <h3 class="font-bold text-base text-slate-800 dark:text-white mb-1">Belum Ada Kupon Toko</h3>
                     <p class="text-xs text-slate-400 mb-5 max-w-sm mx-auto">Buat kupon potongan harga atau kupon 100% gratis untuk memikat pembeli berbelanja di tokomu.</p>
-                    <a href="{{ route('tenant.campaigns.create') }}" class="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-xs transition-all active:scale-95 inline-flex items-center gap-1.5">
+                    <a href="{{ route('tenant.campaigns.create') }}" class="px-5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white font-bold text-xs transition-all active:scale-95 inline-flex items-center gap-1.5">
                         <span class="material-symbols-outlined text-[16px]">add</span>
                         <span>Buat Kupon Pertama</span>
                     </a>
@@ -243,7 +243,7 @@
                                     </div>
                                     <h3 class="font-bold text-base text-slate-800 dark:text-white mb-1">Belum ada promo atau voucher</h3>
                                     <p class="text-xs text-slate-400 mb-5">Buat voucher diskon spesial untuk menarik lebih banyak pembeli melakukan checkout.</p>
-                                    <a href="{{ route('tenant.campaigns.create') }}" class="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-xs transition-all active:scale-95">
+                                    <a href="{{ route('tenant.campaigns.create') }}" class="px-5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white font-bold text-xs transition-all active:scale-95">
                                         Buat Promo Pertama
                                     </a>
                                 </div>

@@ -1,4 +1,4 @@
-@extends('layouts.tenant')
+﻿@extends('layouts.tenant')
 
 @section('title', 'Saldo & Mutasi Penjual')
 
@@ -17,7 +17,7 @@
                 </p>
             </div>
             
-            <a href="{{ route('tenant.payouts.index') }}" class="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-xs md:text-sm font-bold active:scale-95 transition-all flex items-center gap-2 self-start sm:self-auto">
+            <a href="{{ route('tenant.payouts.index') }}" class="px-5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white text-xs md:text-sm font-bold active:scale-95 transition-all flex items-center gap-2 self-start sm:self-auto">
                 <span class="material-symbols-outlined text-[18px]">account_balance_wallet</span>
                 Kelola Pencairan Dana
             </a>
@@ -68,7 +68,7 @@
                     <form action="{{ route('tenant.payouts.store') }}" method="POST">
                         @csrf
                         <input type="hidden" name="amount" value="{{ $store->balance }}">
-                        <button type="submit" class="w-full sm:w-auto px-6 py-3 text-sm font-bold bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 rounded-xl active:scale-95 transition-all flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed" {{ $store->balance < 10000 ? 'disabled' : '' }}>
+                        <button type="submit" class="w-full sm:w-auto px-6 py-3 text-sm font-bold bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white rounded-xl active:scale-95 transition-all flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed" {{ $store->balance < 10000 ? 'disabled' : '' }}>
                             <span>Tarik Semua Saldo</span>
                             <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
                         </button>

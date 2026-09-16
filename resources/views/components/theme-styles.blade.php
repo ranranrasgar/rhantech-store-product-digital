@@ -12,8 +12,8 @@
         --theme-on-background: 31 35 40;
         --theme-on-surface: 31 35 40;
         --theme-on-surface-variant: 101 109 118;
-        --theme-primary: 6 182 212;
-        --theme-on-primary-container: 6 182 212;
+        --theme-primary: 14 165 233;
+        --theme-on-primary-container: 14 165 233;
         --theme-outline: 208 215 222;
         --theme-outline-variant: 208 215 222;
     }
@@ -31,8 +31,8 @@
         --theme-on-background: 230 237 243;
         --theme-on-surface: 230 237 243;
         --theme-on-surface-variant: 139 148 158;
-        --theme-primary: 6 182 212;
-        --theme-on-primary-container: 6 182 212;
+        --theme-primary: 14 165 233;
+        --theme-on-primary-container: 14 165 233;
         --theme-outline: 48 54 61;
         --theme-outline-variant: 48 54 61;
     }
