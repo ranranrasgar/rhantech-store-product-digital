@@ -112,7 +112,12 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('verification.notice');
+        // Kirim email verifikasi
+        $user->sendEmailVerificationNotification();
+
+        // Redirect ke onboarding wizard langsung (verifikasi bisa dilakukan sambil jalan)
+        return redirect()->route('onboarding.index')
+            ->with('info', 'Email verifikasi sudah dikirim. Silakan lanjut setup profilmu!');
     }
 
     public function destroy(Request $request)

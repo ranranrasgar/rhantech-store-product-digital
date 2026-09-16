@@ -83,8 +83,13 @@ Route::get('/email/verify', function () {
     return view('auth.verify-email');
 })->middleware('auth')->name('verification.notice');
 
-Route::get('/email/verify/{id}/{hash}', function (\Illuminate\Foundation\Auth\EmailVerificationRequest $request) {
+Route::get("/email/verify/{id}/{hash}", function (\Illuminate\Foundation\Auth\EmailVerificationRequest $request) {
     $request->fulfill();
+    // Redirect ke onboarding jika belum selesai, atau dashboard
+    $user = $request->user();
+    if (!$user->hasCompletedOnboarding()) {
+        return redirect()->route('onboarding.index');
+    }
     return redirect()->route('tenant.dashboard');
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
@@ -97,6 +102,17 @@ Route::post('/email/verification-notification', function (\Illuminate\Http\Reque
 Route::any('/tenant/{any?}', function ($any = null) {
     return redirect('/dashboard' . ($any ? '/' . $any : ''), 301);
 })->where('any', '.*');
+
+// Onboarding Wizard Routes (post-registration)
+Route::middleware(['auth'])->group(function () {
+    Route::get('/onboarding', [\App\Http\Controllers\Onboarding\OnboardingController::class, 'index'])->name('onboarding.index');
+    Route::post('/onboarding/mode', [\App\Http\Controllers\Onboarding\OnboardingController::class, 'saveMode'])->name('onboarding.mode');
+    Route::get('/onboarding/setup', [\App\Http\Controllers\Onboarding\OnboardingController::class, 'setup'])->name('onboarding.setup');
+    Route::post('/onboarding/store', [\App\Http\Controllers\Onboarding\OnboardingController::class, 'saveStore'])->name('onboarding.store');
+    Route::get('/onboarding/product', [\App\Http\Controllers\Onboarding\OnboardingController::class, 'product'])->name('onboarding.product');
+    Route::post('/onboarding/product', [\App\Http\Controllers\Onboarding\OnboardingController::class, 'saveProduct'])->name('onboarding.product.save');
+    Route::get('/onboarding/complete', [\App\Http\Controllers\Onboarding\OnboardingController::class, 'complete'])->name('onboarding.complete');
+});
 
 Route::middleware(['auth', 'verified', 'is_tenant'])->prefix('dashboard')->name('tenant.')->group(function () {
     Route::get('/', [\App\Http\Controllers\Tenant\DashboardController::class, 'index'])->name('dashboard');

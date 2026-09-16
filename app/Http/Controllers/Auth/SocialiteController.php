@@ -83,6 +83,13 @@ class SocialiteController extends Controller
                 return redirect()->intended('/admin/dashboard')->with('success', 'Selamat datang kembali, Admin!');
             }
 
+            // User baru via Google → arahkan ke onboarding
+            $isNewUser = !$user->hasCompletedOnboarding();
+            if ($isNewUser) {
+                return redirect()->route('onboarding.index')
+                    ->with('success', 'Berhasil masuk dengan Google. Yuk setup profilmu!');
+            }
+
             return redirect()->intended('/')->with('success', 'Berhasil masuk dengan akun Google.');
         } catch (\Exception $e) {
             return redirect()->route('login')->withErrors(['email' => 'Gagal login dengan Google: ' . $e->getMessage()]);

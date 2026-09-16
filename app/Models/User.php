@@ -43,6 +43,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'credit_balance',
         'credit_expires_at',
         'is_new_member_credit_claimed',
+        'onboarding_completed_at',
     ];
 
     /**
@@ -68,7 +69,16 @@ class User extends Authenticatable implements MustVerifyEmail
             'credit_expires_at' => 'datetime',
             'is_new_member_credit_claimed' => 'boolean',
             'credit_balance' => 'decimal:2',
+            'onboarding_completed_at' => 'datetime',
         ];
+    }
+
+    /**
+     * Check if the user has completed the onboarding wizard.
+     */
+    public function hasCompletedOnboarding(): bool
+    {
+        return $this->onboarding_completed_at !== null;
     }
 
     public function store()
