@@ -18,16 +18,24 @@ class TrackWebsiteVisits
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $response = $next($request);
+        return $next($request);
+    }
 
+    /**
+     * Terminate the request/response lifecycle.
+     * Executes AFTER response has been sent to client (FastCGI finish request),
+     * ensuring visitor tracking does not add any latency to TTFB.
+     */
+    public function terminate(Request $request, Response $response): void
+    {
         // Only track successful GET requests for human public pages
         if (!$request->isMethod('GET') || $response->getStatusCode() >= 400) {
-            return $response;
+            return;
         }
 
         // Exclude AJAX, Livewire, JSON, background, or file requests
         if ($request->ajax() || $request->header('X-Livewire') || $request->expectsJson()) {
-            return $response;
+            return;
         }
 
         // Exclude admin, tenant dashboard, api, webhook, assets, debug, and health check routes
@@ -43,17 +51,15 @@ class TrackWebsiteVisits
             'storage*',
             'build*'
         )) {
-            return $response;
+            return;
         }
 
         try {
             $this->recordVisit($request);
         } catch (\Throwable $e) {
-            // Silently suppress errors so tracking never breaks the user experience
+            // Silently suppress errors so tracking never breaks anything
             Log::debug('Visitor tracking error: ' . $e->getMessage());
         }
-
-        return $response;
     }
 
     /**
@@ -61,9 +67,6 @@ class TrackWebsiteVisits
      */
     protected function recordVisit(Request $request): void
     {
-        if (!\Illuminate\Support\Facades\Schema::hasTable('website_visits')) {
-            return;
-        }
 
         $path = '/' . ltrim($request->path(), '/');
         $ip = $request->ip();

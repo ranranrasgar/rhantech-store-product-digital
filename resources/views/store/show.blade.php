@@ -25,7 +25,7 @@
     x-data="{ 
         activeTab: '{{ (request('q') || request('search') || request('category')) ? 'produk' : 'beranda' }}',
         isFollowing: {{ $isFollowing ? 'true' : 'false' }},
-        followersCount: {{ $store->followers()->count() }},
+        followersCount: {{ $store->followers_count ?? $store->followers()->count() }},
         mobileSearchOpen: false,
         shareModalOpen: false,
         shareCopied: false,
@@ -867,33 +867,32 @@
                         $endDate = $data['end_date'] ?? '';
                         $selectedIds = $data['product_ids'] ?? [];
 
-                        // Gunakan product_ids yang dipilih di settings appearance
-                        if (!empty($selectedIds)) {
-                            $flashProducts = \App\Models\Product::whereIn('id', $selectedIds)
-                                ->where('store_id', $store->id)
-                                ->where('is_active', true)
-                                ->with(['images' => fn($q) => $q->where('is_main', true)->limit(1)])
-                                ->get()
-                                ->sortBy(fn($p) => array_search($p->id, $selectedIds)) // jaga urutan pilihan
-                                ->take(8)
-                                ->values();
-                        } else {
-                            // Fallback: produk diskon dari toko ini
-                            $flashProducts = \App\Models\Product::where('store_id', $store->id)
-                                ->where('is_active', true)
-                                ->whereNotNull('discount_price')
-                                ->where('discount_price', '>', 0)
-                                ->with(['images' => fn($q) => $q->where('is_main', true)->limit(1)])
-                                ->take(4)
-                                ->get();
-                            // Fallback terakhir: produk terbaru jika tidak ada diskon
-                            if ($flashProducts->isEmpty()) {
-                                $flashProducts = \App\Models\Product::where('store_id', $store->id)
+                        if (!isset($flashProducts) || $flashProducts->isEmpty()) {
+                            if (!empty($selectedIds)) {
+                                $flashProducts = \App\Models\Product::whereIn('id', $selectedIds)
+                                    ->where('store_id', $store->id)
                                     ->where('is_active', true)
                                     ->with(['images' => fn($q) => $q->where('is_main', true)->limit(1)])
-                                    ->latest()
+                                    ->get()
+                                    ->sortBy(fn($p) => array_search($p->id, $selectedIds))
+                                    ->take(8)
+                                    ->values();
+                            } else {
+                                $flashProducts = \App\Models\Product::where('store_id', $store->id)
+                                    ->where('is_active', true)
+                                    ->whereNotNull('discount_price')
+                                    ->where('discount_price', '>', 0)
+                                    ->with(['images' => fn($q) => $q->where('is_main', true)->limit(1)])
                                     ->take(4)
                                     ->get();
+                                if ($flashProducts->isEmpty()) {
+                                    $flashProducts = \App\Models\Product::where('store_id', $store->id)
+                                        ->where('is_active', true)
+                                        ->with(['images' => fn($q) => $q->where('is_main', true)->limit(1)])
+                                        ->latest()
+                                        ->take(4)
+                                        ->get();
+                                }
                             }
                         }
                     @endphp

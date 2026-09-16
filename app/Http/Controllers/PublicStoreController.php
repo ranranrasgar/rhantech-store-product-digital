@@ -13,7 +13,9 @@ class PublicStoreController extends Controller
      */
     public function show(Request $request, string $slug)
     {
-        $store = Store::where('slug', $slug)->firstOrFail();
+        $store = Store::where('slug', $slug)
+            ->withCount(['followers', 'products' => fn($q) => $q->published()])
+            ->firstOrFail();
 
         // Increment visitor / view count untuk toko
         $storeSessionKey = 'viewed_store_' . $store->id;
@@ -86,10 +88,18 @@ class PublicStoreController extends Controller
         // Query semua produk (produk sendiri + produk showcase yang dipajang)
         $productsQuery = \App\Models\Product::whereIn('id', $allProductIds)
             ->published()
-            ->with(['store:id,name,slug,logo', 'category:id,name', 'images', 'type:id,name', 'reviews:id,product_id,rating,is_visible'])
-            ->withCount(['orders' => function($q) {
-                $q->whereIn('orders.status', ['paid', 'downloaded']);
-            }]);
+            ->with([
+                'store:id,name,slug,logo',
+                'category:id,name',
+                'images',
+                'type:id,name',
+                'reviews:id,product_id,rating,is_visible'
+            ])
+            ->withAvg(['reviews' => fn($q) => $q->where('is_visible', true)], 'rating')
+            ->withCount([
+                'reviews' => fn($q) => $q->where('is_visible', true),
+                'orders' => fn($q) => $q->whereIn('orders.status', ['paid', 'downloaded'])
+            ]);
 
         // Filter search jika ada query param
         if ($request->filled('q') || $request->filled('search')) {
@@ -133,10 +143,15 @@ class PublicStoreController extends Controller
             }
         }
         
-        // Fetch categories from all displayed products
-        $categories = \App\Models\ProductCategory::whereHas('products', function($q) use ($allProductIds) {
-            $q->whereIn('products.id', $allProductIds)->published();
-        })->select(['id', 'name'])->get();
+        // Fetch categories efficiently using direct pluck of category IDs
+        if ($allProductIds->isNotEmpty()) {
+            $categoryIds = \App\Models\Product::whereIn('id', $allProductIds)->pluck('product_category_id')->filter()->unique();
+            $categories = $categoryIds->isNotEmpty()
+                ? \App\Models\ProductCategory::whereIn('id', $categoryIds)->select(['id', 'name'])->get()
+                : collect();
+        } else {
+            $categories = collect();
+        }
         
         // Fetch active vouchers/campaigns of the store
         $campaigns = \App\Models\Campaign::where('store_id', $store->id)
@@ -145,13 +160,47 @@ class PublicStoreController extends Controller
             ->get(['id', 'store_id', 'code', 'name', 'type', 'discount_type', 'discount_value',
                    'minimum_spend', 'start_date', 'end_date', 'usage_limit', 'used_count', 'color']);
 
+        // Prefetch flash sale products if present in appearance
+        $flashProducts = collect();
+        $flashSaleBlock = collect($appearance)->firstWhere('type', 'flash_sale');
+        if ($flashSaleBlock) {
+            $fsData = $flashSaleBlock['data'] ?? [];
+            $selectedIds = $fsData['product_ids'] ?? [];
+            if (!empty($selectedIds)) {
+                $flashProducts = \App\Models\Product::whereIn('id', $selectedIds)
+                    ->where('store_id', $store->id)
+                    ->published()
+                    ->with(['images' => fn($q) => $q->where('is_main', true)->limit(1)])
+                    ->get()
+                    ->sortBy(fn($p) => array_search($p->id, $selectedIds))
+                    ->take(8)
+                    ->values();
+            } else {
+                $flashProducts = \App\Models\Product::where('store_id', $store->id)
+                    ->published()
+                    ->whereNotNull('discount_price')
+                    ->where('discount_price', '>', 0)
+                    ->with(['images' => fn($q) => $q->where('is_main', true)->limit(1)])
+                    ->take(4)
+                    ->get();
+                if ($flashProducts->isEmpty()) {
+                    $flashProducts = \App\Models\Product::where('store_id', $store->id)
+                        ->published()
+                        ->with(['images' => fn($q) => $q->where('is_main', true)->limit(1)])
+                        ->latest()
+                        ->take(4)
+                        ->get();
+                }
+            }
+        }
+
         // Route ke view sesuai store_mode (bisa di-override lewat ?view=store/profile/hybrid)
         $mode = request('view') ?? ($store->store_mode ?? 'store');
         $profileLinks = is_array($store->profile_links)
             ? collect($store->profile_links)->filter(fn($l) => !isset($l['is_active']) || !empty($l['is_active']))->values()
             : collect();
 
-        $sharedData = compact('store', 'products', 'appearance', 'isFollowing', 'categories', 'campaigns', 'profileLinks', 'myAffiliateLink', 'myAffiliateCode');
+        $sharedData = compact('store', 'products', 'appearance', 'isFollowing', 'categories', 'campaigns', 'profileLinks', 'myAffiliateLink', 'myAffiliateCode', 'flashProducts');
 
         if ($mode === 'profile') {
             return view('store.profile', $sharedData);
