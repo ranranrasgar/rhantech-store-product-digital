@@ -24,10 +24,11 @@ class CompanyProfile extends Model
         'hero_mode', 'hero_badge', 'hero_title', 'hero_subtitle',
         'hero_image', 'hero_btn_primary_text', 'hero_btn_primary_url',
         'hero_btn_secondary_text', 'hero_btn_secondary_url',
-        'hero_stats_val', 'hero_stats_label'
+        'hero_stats_val', 'hero_stats_label', 'hero_stats_show'
     ];
 
     protected $casts = [
         'social_links' => 'array',
+        'hero_stats_show' => 'boolean',
     ];
 }

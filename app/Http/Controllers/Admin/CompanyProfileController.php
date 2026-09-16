@@ -134,6 +134,7 @@ class CompanyProfileController extends Controller
             'hero_btn_secondary_url'  => 'nullable|string|max:255',
             'hero_stats_val'    => 'nullable|string|max:50',
             'hero_stats_label'  => 'nullable|string|max:100',
+            'hero_stats_show'   => 'nullable|boolean',
         ], [
             'logo.max' => 'Ukuran logo tidak boleh melebihi 2 MB.',
             'favicon.max' => 'Ukuran favicon tidak boleh melebihi 1 MB.',
@@ -208,6 +209,8 @@ class CompanyProfileController extends Controller
             if ($profile->hero_image) Storage::disk('public')->delete($profile->hero_image);
             $validated['hero_image'] = $this->optimizeAndStoreImage($request->file('hero_image'), 'company/hero', 'public', 1600, 2000);
         }
+
+        $validated['hero_stats_show'] = $request->boolean('hero_stats_show');
 
         if ($profile->exists) {
             $profile->update($validated);

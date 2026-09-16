@@ -602,6 +602,24 @@
                         </div>
                     </div>
 
+                    <!-- Toggle Tampilkan Floating Stats -->
+                    <div class="p-4 rounded-xl bg-surface border border-outline-variant flex items-center justify-between">
+                        <div>
+                            <label for="hero_stats_show" class="font-bold text-xs text-on-surface cursor-pointer">
+                                Tampilkan Kartu / Badge Statistik Mengambang di Hero
+                            </label>
+                            <p class="text-[11px] text-on-surface-variant mt-0.5">
+                                Aktifkan untuk menampilkan badge statistik melayang di sudut hero section. Nonaktifkan jika ingin disembunyikan.
+                            </p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" name="hero_stats_show" id="hero_stats_show" value="1" 
+                                   {{ old('hero_stats_show', $profile->hero_stats_show ?? true) ? 'checked' : '' }} 
+                                   class="sr-only peer">
+                            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                        </label>
+                    </div>
+
                     <div>
                         <label class="block text-xs font-bold text-on-surface uppercase tracking-wider mb-2">Nilai Statistik Mengambang (Floating Stats)</label>
                         <input type="text" name="hero_stats_val" value="{{ old('hero_stats_val', $profile->hero_stats_val ?? '99%') }}" 

@@ -78,6 +78,7 @@
             $heroBtnSecondaryUrl = $company->hero_btn_secondary_url ?? url('/contact');
             $heroStatsVal = $company->hero_stats_val ?? '99%';
             $heroStatsLabel = $company->hero_stats_label ?? 'Kepuasan Pengguna';
+            $heroStatsShow = (bool) ($company->hero_stats_show ?? true);
             $heroImageUrl = !empty($company->hero_image) 
                 ? asset('storage/' . $company->hero_image) 
                 : 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80';
@@ -602,9 +603,9 @@
                         </div>
                     @endif
                     
-                    <!-- Dynamic Animated Floating Stats / Trust Widget -->
-                    @if($heroStatsVal || $heroStatsLabel)
-                    <div class="hidden sm:block absolute -bottom-6 -left-6 md:-bottom-7 md:-left-8 z-30 animate-hero-float"
+                    <!-- Compact Floating Trust Pill (Configurable in Admin) -->
+                    @if($heroStatsShow && ($heroStatsVal || $heroStatsLabel))
+                    <div class="hidden sm:inline-flex absolute -bottom-3 left-3 sm:-bottom-3.5 sm:left-4 z-30 animate-hero-float"
                          x-data="{
                             currentStat: 0,
                             totalStats: 3,
@@ -617,116 +618,68 @@
                          }"
                          @mouseenter="clearInterval(timer)"
                          @mouseleave="timer = setInterval(() => { currentStat = (currentStat + 1) % totalStats; }, 3500)">
-                        <div class="relative bg-white dark:bg-[#151c2c] p-3.5 sm:p-4 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-[0_12px_30px_-8px_rgba(0,0,0,0.12)] dark:shadow-[0_16px_35px_-8px_rgba(0,0,0,0.6)] ring-1 ring-black/[0.04] dark:ring-white/[0.06] select-none min-w-[250px] md:min-w-[280px]">
+                        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/95 dark:bg-[#151c2c]/95 backdrop-blur-md border border-slate-200/90 dark:border-slate-700/80 shadow-md shadow-slate-900/5 dark:shadow-black/30 ring-1 ring-black/[0.04] dark:ring-white/[0.06] select-none">
                             
-                            {{-- Header: Clean verified badge (replaces AI-style top gradient border) --}}
-                            <div class="flex items-center justify-between gap-3 pb-2 mb-2.5 border-b border-slate-100 dark:border-slate-800/80">
-                                <div class="flex items-center gap-1.5">
-                                    <span class="relative flex h-2 w-2">
-                                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                                    </span>
-                                    <span class="text-[11px] font-bold text-slate-700 dark:text-slate-300 tracking-tight">Katalog Resmi</span>
-                                </div>
-                                <span class="text-[10px] font-semibold text-slate-400 dark:text-slate-500">Live Update</span>
-                            </div>
-
-                            {{-- Stat Slide 0: Main Hero Stat (e.g. 1356 Jenis Produk Siap Pakai) --}}
+                            {{-- Slide 0: Main Stat (e.g. 1356 Jenis • Produk Siap Pakai) --}}
                             <div x-show="currentStat === 0" 
                                  x-transition:enter="transition ease-out duration-300 transform"
-                                 x-transition:enter-start="opacity-0 translate-y-1 scale-98"
-                                 x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                                 x-transition:enter-start="opacity-0 scale-95"
+                                 x-transition:enter-end="opacity-100 scale-100"
                                  x-transition:leave="transition ease-in duration-200 transform absolute"
                                  x-transition:leave-start="opacity-100 scale-100"
-                                 x-transition:leave-end="opacity-0 -translate-y-1 scale-98"
-                                 class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-xl bg-teal-50 dark:bg-teal-950/50 text-[#00838f] dark:text-teal-400 flex items-center justify-center border border-teal-200/60 dark:border-teal-800/50 shrink-0">
-                                    <span class="material-symbols-outlined text-[22px]">rocket_launch</span>
-                                </div>
-                                <div class="min-w-0 flex-1">
-                                    <div class="flex items-center gap-1.5">
-                                        <div class="text-base font-black tracking-tight text-slate-900 dark:text-white leading-none">
-                                            {{ $heroStatsVal }}
-                                        </div>
-                                        <span class="inline-flex items-center text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                                            Ready
-                                        </span>
-                                    </div>
-                                    <div class="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-1 truncate">
-                                        {{ $heroStatsLabel }}
-                                    </div>
-                                </div>
+                                 x-transition:leave-end="opacity-0 scale-95"
+                                 class="flex items-center gap-2">
+                                <span class="w-5 h-5 rounded-full bg-teal-500/10 text-[#00838f] dark:text-teal-400 flex items-center justify-center shrink-0">
+                                    <span class="material-symbols-outlined text-[13px]">rocket_launch</span>
+                                </span>
+                                <span class="font-black text-xs text-slate-800 dark:text-white leading-none whitespace-nowrap">{{ $heroStatsVal }}</span>
+                                <span class="text-slate-300 dark:text-slate-600 text-[10px]">•</span>
+                                <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400 whitespace-nowrap truncate max-w-[140px] leading-none">{{ $heroStatsLabel }}</span>
                             </div>
 
-                            {{-- Stat Slide 1: Fast Automated Transaction & Instant Download --}}
+                            {{-- Slide 1: Fast Automated Transaction --}}
                             <div x-show="currentStat === 1" 
                                  x-cloak
                                  style="display: none;"
                                  x-transition:enter="transition ease-out duration-300 transform"
-                                 x-transition:enter-start="opacity-0 translate-y-1 scale-98"
-                                 x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                                 x-transition:enter-start="opacity-0 scale-95"
+                                 x-transition:enter-end="opacity-100 scale-100"
                                  x-transition:leave="transition ease-in duration-200 transform absolute"
                                  x-transition:leave-start="opacity-100 scale-100"
-                                 x-transition:leave-end="opacity-0 -translate-y-1 scale-98"
-                                 class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 flex items-center justify-center border border-amber-200/60 dark:border-amber-800/50 shrink-0">
-                                    <span class="material-symbols-outlined text-[22px]">bolt</span>
-                                </div>
-                                <div class="min-w-0 flex-1">
-                                    <div class="flex items-center gap-1.5">
-                                        <div class="text-base font-black tracking-tight text-slate-900 dark:text-white leading-none">
-                                            Unduh Instan
-                                        </div>
-                                        <span class="text-[10px] text-amber-600 dark:text-amber-400 font-bold">24 Jam</span>
-                                    </div>
-                                    <div class="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-1 truncate">
-                                        QRIS &amp; Transfer Otomatis
-                                    </div>
-                                </div>
+                                 x-transition:leave-end="opacity-0 scale-95"
+                                 class="flex items-center gap-2">
+                                <span class="w-5 h-5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+                                    <span class="material-symbols-outlined text-[13px]">bolt</span>
+                                </span>
+                                <span class="font-black text-xs text-slate-800 dark:text-white leading-none whitespace-nowrap">Unduh Instan</span>
+                                <span class="text-slate-300 dark:text-slate-600 text-[10px]">•</span>
+                                <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400 whitespace-nowrap truncate max-w-[140px] leading-none">QRIS &amp; Otomatis</span>
                             </div>
 
-                            {{-- Stat Slide 2: Verified Developer & Security Guarantee --}}
+                            {{-- Slide 2: Verified Developer & Guarantee --}}
                             <div x-show="currentStat === 2" 
                                  x-cloak
                                  style="display: none;"
                                  x-transition:enter="transition ease-out duration-300 transform"
-                                 x-transition:enter-start="opacity-0 translate-y-1 scale-98"
-                                 x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                                 x-transition:enter-start="opacity-0 scale-95"
+                                 x-transition:enter-end="opacity-100 scale-100"
                                  x-transition:leave="transition ease-in duration-200 transform absolute"
                                  x-transition:leave-start="opacity-100 scale-100"
-                                 x-transition:leave-end="opacity-0 -translate-y-1 scale-98"
-                                 class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center border border-emerald-200/60 dark:border-emerald-800/50 shrink-0">
-                                    <span class="material-symbols-outlined text-[22px]">verified_user</span>
-                                </div>
-                                <div class="min-w-0 flex-1">
-                                    <div class="flex items-center gap-1.5">
-                                        <div class="text-base font-black tracking-tight text-slate-900 dark:text-white leading-none">
-                                            100% Bergaransi
-                                        </div>
-                                        <span class="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">Aman</span>
-                                    </div>
-                                    <div class="text-[11px] text-slate-500 dark:text-slate-400 font-medium mt-1 truncate">
-                                        Developer Terverifikasi
-                                    </div>
-                                </div>
+                                 x-transition:leave-end="opacity-0 scale-95"
+                                 class="flex items-center gap-2">
+                                <span class="w-5 h-5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                                    <span class="material-symbols-outlined text-[13px]">verified_user</span>
+                                </span>
+                                <span class="font-black text-xs text-slate-800 dark:text-white leading-none whitespace-nowrap">100% Bergaransi</span>
+                                <span class="text-slate-300 dark:text-slate-600 text-[10px]">•</span>
+                                <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400 whitespace-nowrap truncate max-w-[140px] leading-none">Terverifikasi</span>
                             </div>
 
-                            {{-- Bottom micro-bar with indicators & rating --}}
-                            <div class="flex items-center justify-between mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-800/80 text-[10px]">
-                                <div class="flex items-center gap-1 text-amber-500 font-bold tracking-tight">
-                                    <span>★ 4.9/5.0</span>
-                                    <span class="text-slate-400 dark:text-slate-500 font-normal">• Teruji</span>
-                                </div>
-                                <div class="flex items-center gap-1">
-                                    <template x-for="i in 3" :key="i">
-                                        <button type="button" 
-                                                @click="currentStat = i - 1"
-                                                class="h-1.5 rounded-full transition-all duration-300"
-                                                :class="currentStat === (i - 1) ? 'w-3.5 bg-slate-800 dark:bg-slate-200' : 'w-1.5 bg-slate-300 dark:bg-slate-700 hover:bg-slate-400'"></button>
-                                    </template>
-                                </div>
-                            </div>
+                            {{-- Small live pulse green dot --}}
+                            <span class="relative flex h-1.5 w-1.5 shrink-0 ml-0.5">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
+                            </span>
                         </div>
                     </div>
                     @endif
