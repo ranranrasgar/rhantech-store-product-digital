@@ -433,17 +433,20 @@
                 </div>
             </div>
 
-            <!-- 8. Native Top Products Section -->
+            <!-- 8. Native Top Clicked Products Section -->
             <div class="bg-white dark:bg-[#111726] border border-slate-200/90 dark:border-slate-800/80 rounded-2xl p-4 shadow-xs">
                 <div class="flex items-center justify-between mb-3">
-                    <h3 class="text-sm font-bold text-slate-900 dark:text-white">Koleksi Produk</h3>
+                    <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-[18px] text-amber-500">local_fire_department</span>
+                        Produk Terbanyak Diklik
+                    </h3>
                     <a href="{{ route('tenant.products.index') }}" class="text-xs font-bold text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors">
                         Lihat Semua
                     </a>
                 </div>
 
                 <div class="space-y-2.5">
-                    @forelse($topProducts as $prod)
+                    @forelse($topClickedProducts as $prod)
                     <div class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-100 dark:border-slate-800/60">
                         <div class="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 overflow-hidden shrink-0 flex items-center justify-center">
                             @if($prod->images->count() > 0)
@@ -455,8 +458,9 @@
                         </div>
                         <div class="flex-1 min-w-0">
                             <h4 class="text-xs font-bold text-slate-900 dark:text-white truncate">{{ $prod->name }}</h4>
-                            <div class="text-xs font-bold text-slate-900 dark:text-white">
-                                Rp {{ number_format($prod->discount_price ?? $prod->price, 0, ',', '.') }}
+                            <div class="flex items-center gap-2 text-[11px] mt-0.5">
+                                <span class="font-bold text-slate-900 dark:text-white">Rp {{ number_format($prod->discount_price ?? $prod->price, 0, ',', '.') }}</span>
+                                <span class="text-amber-600 font-bold">• {{ number_format($prod->views) }} views</span>
                             </div>
                         </div>
                         <a href="{{ route('tenant.products.edit', $prod) }}" class="p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-white transition-colors" title="Edit">
@@ -467,6 +471,39 @@
                     <div class="py-4 text-center text-slate-400 text-xs">
                         Belum ada produk yang diunggah.
                     </div>
+                    @endforelse
+                </div>
+            </div>
+
+            <!-- 9. Native Top Market Search Trends -->
+            <div class="bg-white dark:bg-[#111726] border border-slate-200/90 dark:border-slate-800/80 rounded-2xl p-4 shadow-xs">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-[18px] text-sky-500">search</span>
+                        Paling Banyak Dicari Pembeli
+                    </h3>
+                    <span class="text-[10px] font-bold text-slate-400">Tren Pasar</span>
+                </div>
+
+                <div class="space-y-2">
+                    @forelse($topMarketSearches as $search)
+                    <div class="p-2.5 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 flex items-center justify-between gap-2">
+                        <div class="min-w-0">
+                            <div class="text-xs font-bold text-slate-900 dark:text-white truncate capitalize"># {{ $search->keyword }}</div>
+                            <div class="text-[10px] text-slate-400 mt-0.5">
+                                @if($search->results_count > 0)
+                                    <span class="text-emerald-600 dark:text-emerald-400">{{ $search->results_count }} Produk</span>
+                                @else
+                                    <span class="text-amber-600 font-bold">0 Produk (Peluang Emas!)</span>
+                                @endif
+                            </div>
+                        </div>
+                        <span class="px-2 py-0.5 rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-black text-slate-700 dark:text-slate-300 shrink-0">
+                            {{ $search->hits }}x
+                        </span>
+                    </div>
+                    @empty
+                    <div class="py-3 text-center text-xs text-slate-400">Belum ada riwayat pencarian.</div>
                     @endforelse
                 </div>
             </div>
@@ -843,8 +880,8 @@
                         {{ number_format($totalVisitors ?? 0) }}
                     </div>
                     <div class="mt-2 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-                        <span>{{ number_format($productViews ?? 0) }} view produk</span>
-                        <a href="{{ route('tenant.performance.index') }}" class="font-bold text-purple-600 dark:text-purple-400 hover:underline">
+                        <span class="text-purple-600 dark:text-purple-400 font-bold">+{{ $todayStoreVisits ?? 0 }} hari ini</span>
+                        <a href="{{ route('tenant.performance.index') }}" class="font-bold text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 hover:underline">
                             Statistik
                         </a>
                     </div>
@@ -988,6 +1025,191 @@
                 </div>
                 <div class="text-slate-400 text-[11px]">
                     *Dihitung otomatis berdasarkan transaksi lunas (Paid &amp; Downloaded)
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Analitik Pengunjung & Minat Pembeli (Visitor Traffic, Top Clicked, Top Searches) -->
+        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 md:p-6 mb-8 shadow-xs space-y-6">
+            <!-- Header Section -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100 dark:border-[#222f49]">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined text-[22px]">visibility</span>
+                    </div>
+                    <div>
+                        <h2 class="text-base md:text-lg font-bold text-slate-900 dark:text-white">Analisis Pengunjung & Minat Pembeli</h2>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Pantau produk tokomu yang paling banyak dilihat calon pembeli dan kata kunci yang sedang dicari di marketplace.</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <a href="{{ route('tenant.performance.index') }}" class="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-[16px]">analytics</span>
+                        <span>Statistik Lengkap</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 4 Quick Traffic Highlight Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="p-4 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/60 dark:border-slate-800">
+                    <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
+                        <span>Total Kunjungan Toko</span>
+                        <span class="material-symbols-outlined text-[18px] text-purple-500">storefront</span>
+                    </div>
+                    <div class="text-xl font-black text-slate-900 dark:text-white">
+                        {{ number_format($totalVisitors ?? 0) }}
+                    </div>
+                    <div class="text-[11px] text-purple-600 dark:text-purple-400 font-bold mt-1">
+                        +{{ $todayStoreVisits ?? 0 }} kunjungan hari ini
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/60 dark:border-slate-800">
+                    <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
+                        <span>Tayangan / Klik Produk</span>
+                        <span class="material-symbols-outlined text-[18px] text-indigo-500">ads_click</span>
+                    </div>
+                    <div class="text-xl font-black text-indigo-600 dark:text-indigo-400">
+                        {{ number_format($productViews ?? 0) }}
+                    </div>
+                    <div class="text-[11px] text-slate-400 mt-1">
+                        Detail produk dilihat pembeli
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/60 dark:border-slate-800">
+                    <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
+                        <span>Kunjungan Profil Toko</span>
+                        <span class="material-symbols-outlined text-[18px] text-sky-500">visibility</span>
+                    </div>
+                    <div class="text-xl font-black text-sky-600 dark:text-sky-400">
+                        {{ number_format($storeViews ?? 0) }}
+                    </div>
+                    <div class="text-[11px] text-slate-400 mt-1">
+                        Halaman etalase toko dibuka
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/60 dark:border-slate-800">
+                    <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
+                        <span>Peluang Pasar Baru</span>
+                        <span class="material-symbols-outlined text-[18px] text-amber-500">auto_awesome</span>
+                    </div>
+                    <div class="text-xl font-black text-amber-600 dark:text-amber-400">
+                        {{ $unmetMarketDemandsCount ?? 0 }}
+                    </div>
+                    <div class="text-[11px] text-slate-400 mt-1">
+                        Kata kunci dicari belum ada produk
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grid 2 Columns: Produk Terbanyak Diklik (Left) & Kata Kunci Dicari (Right) -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Produk Terbanyak Diklik / Dilihat (7 cols) -->
+                <div class="lg:col-span-7">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-[18px] text-amber-500">local_fire_department</span>
+                            Produk Toko Terbanyak Diklik / Dilihat
+                        </h3>
+                        <a href="{{ route('tenant.products.index') }}" class="text-xs font-bold text-sky-600 dark:text-sky-400 hover:underline">
+                            Semua Produk
+                        </a>
+                    </div>
+
+                    <div class="border border-slate-100 dark:border-slate-800 rounded-xl overflow-hidden divide-y divide-slate-100 dark:divide-slate-800/80">
+                        @forelse($topClickedProducts as $idx => $prod)
+                        @php
+                            $pct = $maxProductViews > 0 ? min(100, round(($prod->views / $maxProductViews) * 100)) : 0;
+                            $pImg = $prod->images->where('is_main', true)->first() ?? $prod->images->first();
+                        @endphp
+                        <div class="p-3 flex items-center justify-between gap-3 hover:bg-slate-50/70 dark:hover:bg-slate-900/40 transition-colors">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <span class="w-5 h-5 rounded-full {{ $idx === 0 ? 'bg-amber-500 text-white' : ($idx === 1 ? 'bg-slate-400 text-white' : ($idx === 2 ? 'bg-amber-700 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300')) }} text-[10px] font-black flex items-center justify-center shrink-0">
+                                    {{ $idx + 1 }}
+                                </span>
+                                <div class="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 overflow-hidden shrink-0 flex items-center justify-center">
+                                    @if($pImg)
+                                        <img src="{{ asset('storage/' . $pImg->image_path) }}" class="w-full h-full object-cover">
+                                    @else
+                                        <span class="material-symbols-outlined text-[18px] text-slate-400">code</span>
+                                    @endif
+                                </div>
+                                <div class="min-w-0 max-w-[200px] sm:max-w-xs">
+                                    <a href="{{ route('products.show', $prod->slug) }}" target="_blank" class="text-xs font-bold text-slate-900 dark:text-white hover:text-sky-600 truncate block" title="{{ $prod->name }}">
+                                        {{ $prod->name }}
+                                    </a>
+                                    <div class="flex items-center gap-2 text-[11px] text-slate-500 mt-0.5">
+                                        <span class="font-bold text-emerald-600 dark:text-emerald-400">Rp {{ number_format($prod->discount_price ?? $prod->price, 0, ',', '.') }}</span>
+                                        <span>•</span>
+                                        <span>{{ $prod->sales_count ?? 0 }} Terjual</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="text-right shrink-0">
+                                <div class="text-xs font-black text-slate-900 dark:text-white">
+                                    {{ number_format($prod->views) }} <span class="text-[10px] font-normal text-slate-400">views</span>
+                                </div>
+                                <div class="w-20 h-1.5 rounded-full bg-slate-200 dark:bg-slate-700 ml-auto mt-1 overflow-hidden">
+                                    <div class="h-full rounded-full bg-amber-500" style="width: {{ $pct }}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        @empty
+                        <div class="p-6 text-center text-xs text-slate-400">
+                            Belum ada riwayat klik produk.
+                        </div>
+                        @endforelse
+                    </div>
+                </div>
+
+                <!-- Kata Kunci Terbanyak Dicari Pembeli (5 cols) -->
+                <div class="lg:col-span-5">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                            <span class="material-symbols-outlined text-[18px] text-sky-500">search</span>
+                            Kata Kunci Terbanyak Dicari
+                        </h3>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Pasar Pembeli</span>
+                    </div>
+
+                    <div class="space-y-2">
+                        @forelse($topMarketSearches as $search)
+                        <div class="p-2.5 rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 flex items-center justify-between gap-2 hover:border-slate-200 dark:hover:border-slate-700 transition-colors">
+                            <div class="min-w-0">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="text-amber-500 font-bold text-xs">#</span>
+                                    <span class="text-xs font-bold text-slate-900 dark:text-white truncate capitalize">{{ $search->keyword }}</span>
+                                </div>
+                                <div class="mt-0.5 text-[10px]">
+                                    @if($search->results_count > 0)
+                                        <span class="text-emerald-600 dark:text-emerald-400 font-semibold">{{ $search->results_count }} Produk Tersedia</span>
+                                    @else
+                                        <span class="text-amber-600 dark:text-amber-400 font-bold flex items-center gap-0.5">
+                                            <span>Belum Ada Produk</span>
+                                            <span class="px-1 py-0.2 rounded bg-amber-500/10 text-[9px]">Peluang Emas!</span>
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 shrink-0">
+                                <span class="px-2 py-0.5 rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-extrabold text-slate-700 dark:text-slate-300">
+                                    {{ number_format($search->hits) }}x
+                                </span>
+                                <a href="{{ route('tenant.products.create') }}" class="p-1 rounded-lg text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 hover:bg-white dark:hover:bg-slate-800 transition-colors" title="Buat Produk Kategori Ini">
+                                    <span class="material-symbols-outlined text-[16px]">add_circle</span>
+                                </a>
+                            </div>
+                        </div>
+                        @empty
+                        <div class="p-6 text-center text-xs text-slate-400">
+                            Belum ada riwayat pencarian.
+                        </div>
+                        @endforelse
+                    </div>
                 </div>
             </div>
         </div>

@@ -7,6 +7,9 @@ use App\Models\ContactMessage;
 use App\Models\Order;
 use App\Models\Store;
 use App\Models\Product;
+use App\Models\WebsiteVisit;
+use App\Models\ProductSearch;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -92,6 +95,62 @@ class DashboardController extends Controller
         $activeAdsCount = \App\Models\SellerAd::where('status', 'active')->count();
         $totalAdBalance = Store::sum('ad_balance');
 
+        // 5c. Analitik Pengunjung & Interaksi Platform
+        $totalProductViews = (int) Product::sum('views');
+        $totalStoreViews = (int) Store::sum('views');
+        $totalVisitsCount = (int) WebsiteVisit::count();
+        $totalPlatformViews = $totalProductViews + $totalStoreViews + $totalVisitsCount;
+
+        $todayVisitsCount = (int) WebsiteVisit::today()->count();
+        $todayUniqueVisitors = (int) WebsiteVisit::today()->where('is_unique_daily', true)->count();
+
+        // Tren Pengunjung 7 Hari Terakhir
+        $visitorChartLabels = [];
+        $visitorChartData = [];
+        $visitorUniqueData = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $targetDate = Carbon::today()->subDays($i);
+            $dateStr = $targetDate->format('Y-m-d');
+            $visitorChartLabels[] = $targetDate->locale('id')->isoFormat('D MMM');
+            $visitorChartData[] = (int) WebsiteVisit::whereDate('visited_at', $dateStr)->count();
+            $visitorUniqueData[] = (int) WebsiteVisit::whereDate('visited_at', $dateStr)->where('is_unique_daily', true)->count();
+        }
+
+        // Rasio Perangkat Pengunjung (Mobile, Desktop, Tablet)
+        $totalDeviceVisits = max(1, $totalVisitsCount);
+        $deviceCounts = WebsiteVisit::selectRaw('device_type, count(*) as count')
+            ->groupBy('device_type')
+            ->pluck('count', 'device_type');
+        $deviceStats = [
+            'desktop' => round((($deviceCounts['desktop'] ?? 0) / $totalDeviceVisits) * 100),
+            'mobile' => round((($deviceCounts['mobile'] ?? 0) / $totalDeviceVisits) * 100),
+            'tablet' => round((($deviceCounts['tablet'] ?? 0) / $totalDeviceVisits) * 100),
+        ];
+
+        // 5d. Produk Terbanyak Diklik / Dilihat (Top Clicked Products)
+        $topViewedProducts = Product::query()
+            ->with(['store:id,name,slug,logo', 'category:id,name', 'images'])
+            ->published()
+            ->orderByDesc('views')
+            ->take(6)
+            ->get();
+        $maxProductViews = max(1, (int) ($topViewedProducts->first()->views ?? 1));
+
+        // 5e. Kata Kunci Terbanyak Dicari & Permintaan Pasar
+        $topSearches = ProductSearch::query()
+            ->orderByDesc('hits')
+            ->take(8)
+            ->get();
+        $totalSearchHits = (int) ProductSearch::sum('hits');
+        $unmetDemandsCount = (int) ProductSearch::where('results_count', 0)->count();
+
+        // 5f. Toko Terpopuler (Top Visited Stores)
+        $topVisitedStores = Store::query()
+            ->withCount(['products' => fn($q) => $q->published()])
+            ->orderByDesc('views')
+            ->take(5)
+            ->get(['id', 'name', 'slug', 'logo', 'views', 'user_id', 'address']);
+
         // 6. Geographic Map Data (Stores & Customers)
         $mapData = $this->getMapMarkers();
 
@@ -118,7 +177,22 @@ class DashboardController extends Controller
             'currentMonthName',
             'recentTransactions',
             'recentMessages',
-            'mapData'
+            'mapData',
+            'totalPlatformViews',
+            'totalProductViews',
+            'totalStoreViews',
+            'todayVisitsCount',
+            'todayUniqueVisitors',
+            'visitorChartLabels',
+            'visitorChartData',
+            'visitorUniqueData',
+            'deviceStats',
+            'topViewedProducts',
+            'maxProductViews',
+            'topSearches',
+            'totalSearchHits',
+            'unmetDemandsCount',
+            'topVisitedStores'
         ));
     }
 
