@@ -84,13 +84,16 @@ class DashboardController extends Controller
         $unmetMarketDemandsCount = \App\Models\ProductSearch::where('results_count', 0)->count();
 
         // Kunjungan Toko Hari Ini
-        $storeProductSlugs = $store->products()->pluck('slug')->toArray();
-        $storeProductPaths = array_map(fn($s) => '/products/' . $s, $storeProductSlugs);
-        $storePaths = array_merge(['/' . $store->slug, '/toko/' . $store->slug], $storeProductPaths);
+        $todayStoreVisits = 0;
+        if (\Illuminate\Support\Facades\Schema::hasTable('website_visits')) {
+            $storeProductSlugs = $store->products()->pluck('slug')->toArray();
+            $storeProductPaths = array_map(fn($s) => '/products/' . $s, $storeProductSlugs);
+            $storePaths = array_merge(['/' . $store->slug, '/toko/' . $store->slug], $storeProductPaths);
 
-        $todayStoreVisits = \App\Models\WebsiteVisit::today()
-            ->whereIn('path', $storePaths)
-            ->count();
+            $todayStoreVisits = \App\Models\WebsiteVisit::today()
+                ->whereIn('path', $storePaths)
+                ->count();
+        }
         if ($todayStoreVisits === 0 && $totalVisitors > 0) {
             $todayStoreVisits = max(1, (int) round($totalVisitors * 0.05));
         }

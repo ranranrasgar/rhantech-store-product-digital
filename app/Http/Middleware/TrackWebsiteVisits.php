@@ -61,6 +61,10 @@ class TrackWebsiteVisits
      */
     protected function recordVisit(Request $request): void
     {
+        if (!\Illuminate\Support\Facades\Schema::hasTable('website_visits')) {
+            return;
+        }
+
         $path = '/' . ltrim($request->path(), '/');
         $ip = $request->ip();
         $sessionId = $request->hasSession() ? $request->session()->getId() : md5($ip);

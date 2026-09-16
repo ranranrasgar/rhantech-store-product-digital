@@ -12,6 +12,7 @@ use App\Models\ProductSearch;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class DashboardController extends Controller
 {
@@ -98,11 +99,12 @@ class DashboardController extends Controller
         // 5c. Analitik Pengunjung & Interaksi Platform
         $totalProductViews = (int) Product::sum('views');
         $totalStoreViews = (int) Store::sum('views');
-        $totalVisitsCount = (int) WebsiteVisit::count();
+        $hasVisitsTable = Schema::hasTable('website_visits');
+        $totalVisitsCount = $hasVisitsTable ? (int) WebsiteVisit::count() : 0;
         $totalPlatformViews = $totalProductViews + $totalStoreViews + $totalVisitsCount;
 
-        $todayVisitsCount = (int) WebsiteVisit::today()->count();
-        $todayUniqueVisitors = (int) WebsiteVisit::today()->where('is_unique_daily', true)->count();
+        $todayVisitsCount = $hasVisitsTable ? (int) WebsiteVisit::today()->count() : 0;
+        $todayUniqueVisitors = $hasVisitsTable ? (int) WebsiteVisit::today()->where('is_unique_daily', true)->count() : 0;
 
         // Tren Pengunjung 7 Hari Terakhir
         $visitorChartLabels = [];
@@ -112,15 +114,17 @@ class DashboardController extends Controller
             $targetDate = Carbon::today()->subDays($i);
             $dateStr = $targetDate->format('Y-m-d');
             $visitorChartLabels[] = $targetDate->locale('id')->isoFormat('D MMM');
-            $visitorChartData[] = (int) WebsiteVisit::whereDate('visited_at', $dateStr)->count();
-            $visitorUniqueData[] = (int) WebsiteVisit::whereDate('visited_at', $dateStr)->where('is_unique_daily', true)->count();
+            $visitorChartData[] = $hasVisitsTable ? (int) WebsiteVisit::whereDate('visited_at', $dateStr)->count() : 0;
+            $visitorUniqueData[] = $hasVisitsTable ? (int) WebsiteVisit::whereDate('visited_at', $dateStr)->where('is_unique_daily', true)->count() : 0;
         }
 
         // Rasio Perangkat Pengunjung (Mobile, Desktop, Tablet)
         $totalDeviceVisits = max(1, $totalVisitsCount);
-        $deviceCounts = WebsiteVisit::selectRaw('device_type, count(*) as count')
-            ->groupBy('device_type')
-            ->pluck('count', 'device_type');
+        $deviceCounts = $hasVisitsTable 
+            ? WebsiteVisit::selectRaw('device_type, count(*) as count')
+                ->groupBy('device_type')
+                ->pluck('count', 'device_type') 
+            : collect(['desktop' => 1]);
         $deviceStats = [
             'desktop' => round((($deviceCounts['desktop'] ?? 0) / $totalDeviceVisits) * 100),
             'mobile' => round((($deviceCounts['mobile'] ?? 0) / $totalDeviceVisits) * 100),
