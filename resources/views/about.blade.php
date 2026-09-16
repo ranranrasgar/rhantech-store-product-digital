@@ -177,7 +177,7 @@
                         <a href="{{ url('/contact') }}" class="flex-1 py-2.5 bg-sky-500 hover:bg-sky-600 text-white text-center rounded-xl font-bold text-xs transition-colors" wire:navigate>
                             Hubungi Kami
                         </a>
-                        <a href="{{ route('products.index') }}" class="flex-1 py-2.5 bg-surface-container text-on-surface text-center rounded-xl font-bold text-xs hover:bg-surface-container-high transition-all border border-outline-variant/40" wire:navigate>
+                        <a href="{{ route('products.index') }}" class="flex-1 py-2.5 bg-surface-container text-on-surface text-center rounded-xl font-bold text-xs hover:bg-surface-container-high transition-all border border-outline-variant/40">
                             Jelajahi Store
                         </a>
                     </div>

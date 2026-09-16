@@ -294,17 +294,17 @@
                 <a class="nav-link {{ request()->routeIs('about') ? 'active text-sky-600 dark:text-sky-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ route('about') }}" wire:navigate>About</a>
                 <a class="nav-link text-on-surface-variant dark:text-on-surface-variant/80 hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ url('/#services') }}">Services</a>
                 <a class="nav-link {{ request()->routeIs('projects.*') ? 'active text-sky-600 dark:text-sky-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ route('projects.index') }}" wire:navigate>Portfolio</a>
-                <a class="nav-link {{ request()->routeIs('products.*') || request()->routeIs('checkout.*') ? 'active text-sky-600 dark:text-sky-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ route('products.index') }}" wire:navigate>Store</a>
+                <a class="nav-link {{ request()->routeIs('products.*') || request()->routeIs('checkout.*') ? 'active text-sky-600 dark:text-sky-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ route('products.index') }}">Store</a>
                 <a class="nav-link {{ request()->routeIs('clients.*') ? 'active text-sky-600 dark:text-sky-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ route('clients.index') }}" wire:navigate>Clients</a>
                 <a class="nav-link {{ request()->routeIs('contact') ? 'active text-sky-600 dark:text-sky-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ url('/contact') }}" wire:navigate>Contact</a>
             </div>
             <div class="flex items-center gap-2">
                 @guest
-                    <a class="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-200 hover:text-sky-600 dark:hover:text-sky-400 px-3 py-2 transition-colors flex items-center gap-1" href="{{ route('login') }}" wire:navigate>
+                    <a class="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-200 hover:text-sky-600 dark:hover:text-sky-400 px-3 py-2 transition-colors flex items-center gap-1" href="{{ route('login') }}">
                         <span class="material-symbols-outlined text-[17px]">login</span>
                         <span>Login</span>
                     </a>
-                    <a class="hidden md:inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-sky-500 hover:bg-sky-600 text-white rounded-xl font-bold text-xs sm:text-sm active:scale-95 transition-all duration-150 shadow-sm" href="{{ route('register') }}" wire:navigate>
+                    <a class="hidden md:inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-sky-500 hover:bg-sky-600 text-white rounded-xl font-bold text-xs sm:text-sm active:scale-95 transition-all duration-150 shadow-sm" href="{{ route('register') }}">
                         <span class="material-symbols-outlined text-[17px]">rocket_launch</span>
                         <span>Buat Website / Project</span>
                     </a>
@@ -468,7 +468,7 @@
             <!-- Keranjang & Tombol Masuk / Akun (Side by side with Search) -->
             <div class="flex items-center gap-1.5 shrink-0">
                 @php $cartCount = count(session('cart', [])); @endphp
-                <a href="{{ route('cart.index') }}" class="header-action-btn relative !p-2 !rounded-xl !bg-white/10 hover:!bg-white/20 border border-white/10 transition-all flex items-center justify-center" title="Keranjang" wire:navigate>
+                <a href="{{ route('cart.index') }}" class="header-action-btn relative !p-2 !rounded-xl !bg-white/10 hover:!bg-white/20 border border-white/10 transition-all flex items-center justify-center" title="Keranjang">
                     <span class="material-symbols-outlined text-[20px] text-white">shopping_cart</span>
                     <span data-cart-count
                         class="absolute -top-1 -right-1 bg-sky-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full min-w-[16px] text-center leading-none shadow"
@@ -603,7 +603,7 @@
                     <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ route('about') }}" wire:navigate>Tentang Kami</a></li>
                     <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/#services') }}">Layanan</a></li>
                     <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/projects') }}" wire:navigate>Portofolio</a></li>
-                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/products') }}" wire:navigate>Katalog Produk</a></li>
+                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/products') }}">Katalog Produk</a></li>
                 </ul>
             </div>
             <div>

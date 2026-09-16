@@ -702,7 +702,7 @@
                         <p class="text-[11px] md:text-xs text-on-surface-variant mt-0.5 hidden sm:block">Produk &amp; sistem digital rekomendasi yang paling diminati calon pembeli</p>
                     </div>
                 </div>
-                <a href="{{ route('products.index') }}" class="inline-flex items-center gap-1 text-[11px] md:text-xs font-bold text-primary hover:underline group shrink-0" wire:navigate>
+                <a href="{{ route('products.index') }}" class="inline-flex items-center gap-1 text-[11px] md:text-xs font-bold text-primary hover:underline group shrink-0">
                     <span>Lihat Semua Katalog</span>
                     <span class="material-symbols-outlined text-[13px] md:text-[14px] transition-transform group-hover:translate-x-0.5">arrow_forward</span>
                 </a>
@@ -729,7 +729,7 @@
                         $descText = Str::limit($cleanDesc, 110, '...');
                     }
                 @endphp
-                <a href="{{ route('products.show', $prod->slug) }}" class="group bg-surface rounded-xl sm:rounded-2xl border border-outline-variant hover:border-primary/50 overflow-hidden transition-colors duration-200 flex flex-col" wire:navigate>
+                <a href="{{ route('products.show', $prod->slug) }}" class="group bg-surface rounded-xl sm:rounded-2xl border border-outline-variant hover:border-primary/50 overflow-hidden transition-colors duration-200 flex flex-col">
                     <div class="relative aspect-square w-full bg-surface-container overflow-hidden">
                         @if($mainImg)
                             <img src="{{ asset('storage/' . $mainImg->image_path) }}" alt="{{ $prod->name }}" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-300" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&auto=format&fit=crop&q=80'">
@@ -894,7 +894,7 @@
                 </span>
                 <h2 class="text-xs font-black text-on-background dark:text-white uppercase tracking-wider">Toko Pilihan</h2>
             </div>
-            <a href="{{ route('products.index') }}" class="text-[11px] font-bold text-primary hover:underline flex items-center gap-0.5" wire:navigate>
+            <a href="{{ route('products.index') }}" class="text-[11px] font-bold text-primary hover:underline flex items-center gap-0.5">
                 Lihat Semua <span class="material-symbols-outlined text-[12px]">arrow_forward</span>
             </a>
         </div>
@@ -954,7 +954,7 @@
                 @php
                     $storeDesc = $store->description ?: ($store->bio ?: 'Kreator produk digital & template terpercaya.');
                 @endphp
-                <a href="{{ route('store.show', $store->slug) }}" class="store-slide-card shrink-0 select-none cursor-pointer" wire:navigate>
+                <a href="{{ route('store.show', $store->slug) }}" class="store-slide-card shrink-0 select-none cursor-pointer">
                     @if($store->logo)
                         <img src="{{ asset('storage/' . $store->logo) }}" alt="{{ $store->name }}" class="store-slide-logo"
                              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
@@ -1006,7 +1006,7 @@
                 </span>
                 <h2 class="text-xs font-black text-on-background dark:text-white uppercase tracking-wider">Kategori Pilihan</h2>
             </div>
-            <a href="{{ route('products.index') }}" class="text-[11px] font-bold text-primary hover:underline" wire:navigate>
+            <a href="{{ route('products.index') }}" class="text-[11px] font-bold text-primary hover:underline">
                 Katalog
             </a>
         </div>
@@ -1020,8 +1020,7 @@
             {{-- 3 Kategori yang terlihat langsung --}}
             @foreach($visibleCategories as $cat)
                 <a href="{{ route('products.index', ['category' => $cat->id]) }}" 
-                   class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold bg-surface dark:bg-slate-800 border border-outline-variant hover:border-primary text-on-surface dark:text-gray-200 shrink-0 transition-colors whitespace-nowrap"
-                   wire:navigate>
+                   class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold bg-surface dark:bg-slate-800 border border-outline-variant hover:border-primary text-on-surface dark:text-gray-200 shrink-0 transition-colors whitespace-nowrap">
                     <span>{{ $cat->name }}</span>
                     @if($cat->products_count > 0)
                         <span class="text-[9px] px-1.5 py-0.2 rounded-full bg-surface-container dark:bg-slate-700 text-on-surface-variant font-bold">{{ $cat->products_count }}</span>
@@ -1062,7 +1061,7 @@
                 </span>
                 <h2 class="text-xs font-black text-on-background dark:text-white uppercase tracking-wider">Produk Populer</h2>
             </div>
-            <a href="{{ route('products.index') }}" class="inline-flex items-center gap-0.5 text-[11px] font-bold text-primary hover:underline shrink-0" wire:navigate>
+            <a href="{{ route('products.index') }}" class="inline-flex items-center gap-0.5 text-[11px] font-bold text-primary hover:underline shrink-0">
                 Lihat Semua <span class="material-symbols-outlined text-[12px]">arrow_forward</span>
             </a>
         </div>
@@ -1075,8 +1074,7 @@
                 $ratingDisplay = $prod->effective_rating;
             @endphp
             <a href="{{ route('products.show', $prod->slug) }}"
-               class="group bg-surface rounded-xl border border-outline-variant hover:border-primary/40 overflow-hidden transition-colors flex flex-col"
-               wire:navigate>
+               class="group bg-surface rounded-xl border border-outline-variant hover:border-primary/40 overflow-hidden transition-colors flex flex-col">
                 <div class="relative aspect-square w-full bg-surface-container overflow-hidden">
                     @if($mainImg)
                         <img src="{{ asset('storage/' . $mainImg->image_path) }}" alt="{{ $prod->name }}"
@@ -1127,7 +1125,7 @@
                 </span>
                 <h2 class="text-xs font-black text-on-background dark:text-white uppercase tracking-wider">Koleksi Terbaru</h2>
             </div>
-            <a href="{{ route('products.index') }}" class="inline-flex items-center gap-0.5 text-[11px] font-bold text-primary hover:underline shrink-0" wire:navigate>
+            <a href="{{ route('products.index') }}" class="inline-flex items-center gap-0.5 text-[11px] font-bold text-primary hover:underline shrink-0">
                 Katalog Lengkap <span class="material-symbols-outlined text-[12px]">arrow_forward</span>
             </a>
         </div>
@@ -1140,8 +1138,7 @@
                 $ratingDisplay = $prod->effective_rating;
             @endphp
             <a href="{{ route('products.show', $prod->slug) }}"
-               class="group bg-surface rounded-xl border border-outline-variant hover:border-primary/40 overflow-hidden transition-colors flex flex-col"
-               wire:navigate>
+               class="group bg-surface rounded-xl border border-outline-variant hover:border-primary/40 overflow-hidden transition-colors flex flex-col">
                 <div class="relative aspect-square w-full bg-surface-container overflow-hidden">
                     @if($mainImg)
                         <img src="{{ asset('storage/' . $mainImg->image_path) }}" alt="{{ $prod->name }}"
@@ -1182,8 +1179,7 @@
 
         <div class="mt-4 text-center">
             <a href="{{ route('products.index') }}" 
-               class="inline-flex items-center justify-center gap-1.5 w-full py-2.5 rounded-xl bg-surface dark:bg-slate-800 border border-outline-variant text-xs font-bold text-on-surface dark:text-white hover:border-primary transition-colors"
-               wire:navigate>
+               class="inline-flex items-center justify-center gap-1.5 w-full py-2.5 rounded-xl bg-surface dark:bg-slate-800 border border-outline-variant text-xs font-bold text-on-surface dark:text-white hover:border-primary transition-colors">
                 <span>Buka Semua Produk & Filter Toko</span>
                 <span class="material-symbols-outlined text-[16px] text-primary">storefront</span>
             </a>
@@ -1201,7 +1197,7 @@
             Platform belanja produk digital, source code, sistem dan layanan IT terpercaya.
         </p>
         <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[11px] font-semibold text-primary mb-4">
-            <a href="{{ route('products.index') }}" wire:navigate>Produk & Toko</a>
+            <a href="{{ route('products.index') }}">Produk & Toko</a>
             <a href="{{ route('projects.index') }}" wire:navigate>Portfolio</a>
             <a href="{{ route('about') }}" wire:navigate>Tentang Kami</a>
             <a href="{{ url('/contact') }}" wire:navigate>Kontak</a>
