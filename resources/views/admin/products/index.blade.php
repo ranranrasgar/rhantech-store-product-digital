@@ -276,6 +276,12 @@ function productsManager() {
         }
     };
 }
+window.productsManager = productsManager;
+document.addEventListener('alpine:init', () => {
+    if (window.Alpine) {
+        window.Alpine.data('productsManager', productsManager);
+    }
+});
 </script>
 
 <div class="p-lg md:p-xl flex-1 max-w-7xl mx-auto w-full" x-data="productsManager()">
