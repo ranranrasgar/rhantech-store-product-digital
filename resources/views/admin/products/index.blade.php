@@ -1,292 +1,284 @@
 @extends('layouts.admin')
 @section('title', 'Digital Products')
 @section('content')
-<div class="p-lg md:p-xl flex-1 max-w-7xl mx-auto w-full" x-data="{
-    rejectModalOpen: false,
-    rejectProductId: null,
-    rejectProductName: '',
-    rejectReasonType: 'Link Download rusak/tidak bisa diakses',
-    rejectCustomReason: '',
-    isRejecting: false,
-    toasts: [],
-    showToast(message, type = 'success') {
-        const id = Date.now() + Math.random();
-        this.toasts.push({ id, message, type });
-        setTimeout(() => this.removeToast(id), 4000);
-    },
-    removeToast(id) {
-        this.toasts = this.toasts.filter(t => t.id !== id);
-    },
-    openRejectModal(id, name) {
-        this.rejectProductId = id;
-        this.rejectProductName = name;
-        this.rejectReasonType = 'Link Download rusak/tidak bisa diakses';
-        this.rejectCustomReason = '';
-        this.rejectModalOpen = true;
-    },
-    decrementPendingCount() {
-        const badges = document.querySelectorAll('.pending-count-badge');
-        badges.forEach(b => {
-            let count = parseInt(b.textContent.replace(/\D/g, '')) || 0;
-            if (count > 1) {
-                b.textContent = (count - 1) + (b.dataset.suffix ? ' ' + b.dataset.suffix : '');
-            } else {
-                b.style.display = 'none';
-            }
-        });
-    },
-    async toggleActive(productId, event) {
-        event.preventDefault();
-        const btn = event.currentTarget;
-        btn.disabled = true;
-        btn.style.opacity = '0.5';
-
-        try {
-            const res = await fetch(`/admin/products/${productId}/toggle-active`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ _method: 'PATCH' })
-            });
-            const data = await res.json();
-            if (data.success) {
-                this.showToast(data.message, 'success');
-                const iconSpan = btn.querySelector('.material-symbols-outlined');
-                if (data.is_active) {
-                    btn.className = 'p-1.5 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 rounded-lg transition';
-                    btn.title = 'Saklar On/Off Tayang (Aktif)';
-                    if (iconSpan) iconSpan.textContent = 'toggle_on';
+<script>
+function productsManager() {
+    return {
+        rejectModalOpen: false,
+        rejectProductId: null,
+        rejectProductName: '',
+        rejectReasonType: 'Link Download rusak/tidak bisa diakses',
+        rejectCustomReason: '',
+        isRejecting: false,
+        toasts: [],
+        showToast(message, type = 'success') {
+            const id = Date.now() + Math.random();
+            this.toasts.push({ id, message, type });
+            setTimeout(() => this.removeToast(id), 4000);
+        },
+        removeToast(id) {
+            this.toasts = this.toasts.filter(t => t.id !== id);
+        },
+        openRejectModal(id, name) {
+            this.rejectProductId = id;
+            this.rejectProductName = name;
+            this.rejectReasonType = 'Link Download rusak/tidak bisa diakses';
+            this.rejectCustomReason = '';
+            this.rejectModalOpen = true;
+        },
+        decrementPendingCount() {
+            const badges = document.querySelectorAll('.pending-count-badge');
+            badges.forEach(b => {
+                let count = parseInt(b.textContent.replace(/\D/g, '')) || 0;
+                if (count > 1) {
+                    b.textContent = (count - 1) + (b.dataset.suffix ? ' ' + b.dataset.suffix : '');
                 } else {
-                    btn.className = 'p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition';
-                    btn.title = 'Saklar On/Off Tayang (Non-Aktif)';
-                    if (iconSpan) iconSpan.textContent = 'toggle_off';
+                    b.style.display = 'none';
                 }
+            });
+        },
+        async toggleActive(productId, event) {
+            event.preventDefault();
+            const btn = event.currentTarget;
+            btn.disabled = true;
+            btn.style.opacity = '0.5';
 
-                const pubBadge = document.getElementById(`pub-badge-${productId}`);
-                if (pubBadge) {
-                    if (data.is_active && data.approval_status === 'approved') {
-                        pubBadge.innerHTML = `<span class=\"inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400\"><span class=\"w-1.5 h-1.5 rounded-full bg-emerald-500\"></span> Tayang</span>`;
-                    } else if (!data.is_active) {
-                        pubBadge.innerHTML = `<span class=\"inline-flex items-center gap-1 text-slate-400\"><span class=\"w-1.5 h-1.5 rounded-full bg-slate-400\"></span> Non-Aktif</span>`;
+            try {
+                const res = await fetch(`/admin/products/${productId}/toggle-active`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ _method: 'PATCH' })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    this.showToast(data.message, 'success');
+                    const iconSpan = btn.querySelector('.material-symbols-outlined');
+                    if (data.is_active) {
+                        btn.className = 'p-1.5 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 rounded-lg transition';
+                        btn.title = 'Saklar On/Off Tayang (Aktif)';
+                        if (iconSpan) iconSpan.textContent = 'toggle_on';
                     } else {
-                        pubBadge.innerHTML = `<span class=\"inline-flex items-center gap-1 text-amber-500\"><span class=\"w-1.5 h-1.5 rounded-full bg-amber-400\"></span> Ditahan</span>`;
+                        btn.className = 'p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition';
+                        btn.title = 'Saklar On/Off Tayang (Non-Aktif)';
+                        if (iconSpan) iconSpan.textContent = 'toggle_off';
                     }
+
+                    const pubBadge = document.getElementById(`pub-badge-${productId}`);
+                    if (pubBadge) {
+                        if (data.is_active && data.approval_status === 'approved') {
+                            pubBadge.innerHTML = '<span class="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Tayang</span>';
+                        } else if (!data.is_active) {
+                            pubBadge.innerHTML = '<span class="inline-flex items-center gap-1 text-slate-400"><span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span> Non-Aktif</span>';
+                        } else {
+                            pubBadge.innerHTML = '<span class="inline-flex items-center gap-1 text-amber-500"><span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span> Ditahan</span>';
+                        }
+                    }
+                } else {
+                    this.showToast(data.message || 'Gagal mengubah status produk.', 'error');
                 }
-            } else {
-                this.showToast(data.message || 'Gagal mengubah status produk.', 'error');
-            }
-        } catch (err) {
-            console.error(err);
-            this.showToast('Terjadi kesalahan jaringan.', 'error');
-        } finally {
-            btn.disabled = false;
-            btn.style.opacity = '1';
-        }
-    },
-    async approveProduct(productId, productName, event) {
-        event.preventDefault();
-        if (!confirm(`Setujui produk \"${productName}\" agar dapat tayang di platform?`)) return;
-
-        const btn = event.currentTarget;
-        btn.disabled = true;
-        btn.style.opacity = '0.5';
-
-        try {
-            const res = await fetch(`/admin/products/${productId}/approve`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ _method: 'PATCH' })
-            });
-            const data = await res.json();
-            if (data.success) {
-                this.showToast(data.message, 'success');
-
-                const row = document.getElementById(`product-row-${productId}`);
-                if (row) {
-                    row.classList.remove('bg-amber-500/5');
-                }
-
-                const statusBadge = document.getElementById(`approval-badge-${productId}`);
-                if (statusBadge) {
-                    statusBadge.innerHTML = `
-                        <span class=\"inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800\">
-                            <span class=\"material-symbols-outlined text-[14px]\">check_circle</span> Approved
-                        </span>
-                    `;
-                }
-
-                const reasonSpan = document.getElementById(`rejection-reason-${productId}`);
-                if (reasonSpan) {
-                    reasonSpan.remove();
-                }
-
-                const pubBadge = document.getElementById(`pub-badge-${productId}`);
-                if (pubBadge) {
-                    pubBadge.innerHTML = `<span class=\"inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400\"><span class=\"w-1.5 h-1.5 rounded-full bg-emerald-500\"></span> Tayang</span>`;
-                }
-
-                const toggleBtn = document.getElementById(`toggle-btn-${productId}`);
-                if (toggleBtn) {
-                    toggleBtn.className = 'p-1.5 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 rounded-lg transition';
-                    toggleBtn.title = 'Saklar On/Off Tayang (Aktif)';
-                    const icon = toggleBtn.querySelector('.material-symbols-outlined');
-                    if (icon) icon.textContent = 'toggle_on';
-                }
-
-                const actionContainer = document.getElementById(`review-actions-${productId}`);
-                if (actionContainer) {
-                    actionContainer.innerHTML = `
-                        <button type=\"button\" data-name=\"${productName.replace(/\"/g, '&quot;')}\" @click=\"openRejectModal(${productId}, $el.dataset.name)\" class=\"px-2 py-1 rounded-lg text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 text-xs font-semibold transition border border-rose-200 dark:border-rose-900/60\" title=\"Batalkan Persetujuan (Tolak)\">
-                            Tolak
-                        </button>
-                    `;
-                }
-
-                this.decrementPendingCount();
-            } else {
-                this.showToast(data.message || 'Gagal menyetujui produk.', 'error');
-            }
-        } catch (err) {
-            console.error(err);
-            this.showToast('Terjadi kesalahan jaringan.', 'error');
-        } finally {
-            btn.disabled = false;
-            btn.style.opacity = '1';
-        }
-    },
-    async submitReject(event) {
-        event.preventDefault();
-        if (this.isRejecting) return;
-        this.isRejecting = true;
-
-        try {
-            const res = await fetch(`/admin/products/${this.rejectProductId}/reject`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    _method: 'PATCH',
-                    reason_type: this.rejectReasonType,
-                    custom_reason: this.rejectCustomReason
-                })
-            });
-            const data = await res.json();
-            if (data.success) {
-                this.showToast(data.message, 'info');
-                const pId = this.rejectProductId;
-                const pName = this.rejectProductName;
-
-                const row = document.getElementById(`product-row-${pId}`);
-                if (row) {
-                    row.classList.remove('bg-amber-500/5');
-                }
-
-                const statusBadge = document.getElementById(`approval-badge-${pId}`);
-                if (statusBadge) {
-                    statusBadge.innerHTML = `
-                        <span class=\"inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-100 dark:bg-rose-950/50 text-rose-700 dark:text-rose-400 border border-rose-300 dark:border-rose-800\">
-                            <span class=\"material-symbols-outlined text-[14px]\">cancel</span> Ditolak
-                        </span>
-                    `;
-                }
-
-                let reasonContainer = document.getElementById(`rejection-reason-${pId}`);
-                if (!reasonContainer && statusBadge) {
-                    reasonContainer = document.createElement('span');
-                    reasonContainer.id = `rejection-reason-${pId}`;
-                    reasonContainer.className = 'text-[10px] text-rose-600 dark:text-rose-400 max-w-[170px] truncate cursor-help mt-0.5';
-                    statusBadge.parentElement.appendChild(reasonContainer);
-                }
-                if (reasonContainer) {
-                    reasonContainer.textContent = 'Alasan: ' + data.rejection_reason;
-                    reasonContainer.title = data.rejection_reason;
-                }
-
-                const pubBadge = document.getElementById(`pub-badge-${pId}`);
-                if (pubBadge) {
-                    pubBadge.innerHTML = `<span class=\"inline-flex items-center gap-1 text-slate-400\"><span class=\"w-1.5 h-1.5 rounded-full bg-slate-400\"></span> Non-Aktif</span>`;
-                }
-
-                const toggleBtn = document.getElementById(`toggle-btn-${pId}`);
-                if (toggleBtn) {
-                    toggleBtn.className = 'p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition';
-                    toggleBtn.title = 'Saklar On/Off Tayang (Non-Aktif)';
-                    const icon = toggleBtn.querySelector('.material-symbols-outlined');
-                    if (icon) icon.textContent = 'toggle_off';
-                }
-
-                const actionContainer = document.getElementById(`review-actions-${pId}`);
-                if (actionContainer) {
-                    actionContainer.innerHTML = `
-                        <button type=\"button\" data-name=\"${pName.replace(/\"/g, '&quot;')}\" @click=\"approveProduct(${pId}, $el.dataset.name, $event)\" class=\"px-2 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition shadow-xs\">
-                            Approve
-                        </button>
-                    `;
-                }
-
-                this.decrementPendingCount();
-                this.rejectModalOpen = false;
-            } else {
-                this.showToast(data.message || 'Gagal menolak produk.', 'error');
-            }
-        } catch (err) {
-            console.error(err);
-            this.showToast('Terjadi kesalahan jaringan.', 'error');
-        } finally {
-            this.isRejecting = false;
-        }
-    },
-    async deleteProduct(productId, productName, event) {
-        event.preventDefault();
-        if (!confirm(`Hapus produk \"${productName}\" secara permanen?`)) return;
-
-        const btn = event.currentTarget;
-        btn.disabled = true;
-        btn.style.opacity = '0.5';
-
-        try {
-            const res = await fetch(`/admin/products/${productId}`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ _method: 'DELETE' })
-            });
-            const data = await res.json();
-            if (data.success) {
-                this.showToast(data.message, 'success');
-                const row = document.getElementById(`product-row-${productId}`);
-                if (row) {
-                    row.style.transition = 'all 0.35s ease';
-                    row.style.opacity = '0';
-                    row.style.transform = 'scale(0.95)';
-                    setTimeout(() => row.remove(), 350);
-                }
-            } else {
-                this.showToast(data.message || 'Gagal menghapus produk.', 'error');
+            } catch (err) {
+                console.error(err);
+                this.showToast('Terjadi kesalahan jaringan.', 'error');
+            } finally {
                 btn.disabled = false;
                 btn.style.opacity = '1';
             }
-        } catch (err) {
-            console.error(err);
-            this.showToast('Terjadi kesalahan jaringan.', 'error');
-            btn.disabled = false;
-            btn.style.opacity = '1';
+        },
+        async approveProduct(productId, productName, event) {
+            event.preventDefault();
+            if (!confirm(`Setujui produk "${productName}" agar dapat tayang di platform?`)) return;
+
+            const btn = event.currentTarget;
+            btn.disabled = true;
+            btn.style.opacity = '0.5';
+
+            try {
+                const res = await fetch(`/admin/products/${productId}/approve`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ _method: 'PATCH' })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    this.showToast(data.message, 'success');
+
+                    const row = document.getElementById(`product-row-${productId}`);
+                    if (row) {
+                        row.classList.remove('bg-amber-500/5');
+                    }
+
+                    const statusBadge = document.getElementById(`approval-badge-${productId}`);
+                    if (statusBadge) {
+                        statusBadge.innerHTML = '<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800"><span class="material-symbols-outlined text-[14px]">check_circle</span> Approved</span>';
+                    }
+
+                    const reasonSpan = document.getElementById(`rejection-reason-${productId}`);
+                    if (reasonSpan) {
+                        reasonSpan.remove();
+                    }
+
+                    const pubBadge = document.getElementById(`pub-badge-${productId}`);
+                    if (pubBadge) {
+                        pubBadge.innerHTML = '<span class="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Tayang</span>';
+                    }
+
+                    const toggleBtn = document.getElementById(`toggle-btn-${productId}`);
+                    if (toggleBtn) {
+                        toggleBtn.className = 'p-1.5 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 rounded-lg transition';
+                        toggleBtn.title = 'Saklar On/Off Tayang (Aktif)';
+                        const icon = toggleBtn.querySelector('.material-symbols-outlined');
+                        if (icon) icon.textContent = 'toggle_on';
+                    }
+
+                    const actionContainer = document.getElementById(`review-actions-${productId}`);
+                    if (actionContainer) {
+                        const safeName = (productName || '').replace(/"/g, '&quot;');
+                        actionContainer.innerHTML = `<button type="button" data-name="${safeName}" @click="openRejectModal(${productId}, $el.dataset.name)" class="px-2 py-1 rounded-lg text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 text-xs font-semibold transition border border-rose-200 dark:border-rose-900/60" title="Batalkan Persetujuan (Tolak)">Tolak</button>`;
+                    }
+
+                    this.decrementPendingCount();
+                } else {
+                    this.showToast(data.message || 'Gagal menyetujui produk.', 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                this.showToast('Terjadi kesalahan jaringan.', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.style.opacity = '1';
+            }
+        },
+        async submitReject(event) {
+            event.preventDefault();
+            if (this.isRejecting) return;
+            this.isRejecting = true;
+
+            try {
+                const res = await fetch(`/admin/products/${this.rejectProductId}/reject`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        _method: 'PATCH',
+                        reason_type: this.rejectReasonType,
+                        custom_reason: this.rejectCustomReason
+                    })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    this.showToast(data.message, 'info');
+                    const pId = this.rejectProductId;
+                    const pName = this.rejectProductName;
+
+                    const row = document.getElementById(`product-row-${pId}`);
+                    if (row) {
+                        row.classList.remove('bg-amber-500/5');
+                    }
+
+                    const statusBadge = document.getElementById(`approval-badge-${pId}`);
+                    if (statusBadge) {
+                        statusBadge.innerHTML = '<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-100 dark:bg-rose-950/50 text-rose-700 dark:text-rose-400 border border-rose-300 dark:border-rose-800"><span class="material-symbols-outlined text-[14px]">cancel</span> Ditolak</span>';
+                    }
+
+                    let reasonContainer = document.getElementById(`rejection-reason-${pId}`);
+                    if (!reasonContainer && statusBadge) {
+                        reasonContainer = document.createElement('span');
+                        reasonContainer.id = `rejection-reason-${pId}`;
+                        reasonContainer.className = 'text-[10px] text-rose-600 dark:text-rose-400 max-w-[170px] truncate cursor-help mt-0.5';
+                        statusBadge.parentElement.appendChild(reasonContainer);
+                    }
+                    if (reasonContainer) {
+                        reasonContainer.textContent = 'Alasan: ' + data.rejection_reason;
+                        reasonContainer.title = data.rejection_reason;
+                    }
+
+                    const pubBadge = document.getElementById(`pub-badge-${pId}`);
+                    if (pubBadge) {
+                        pubBadge.innerHTML = '<span class="inline-flex items-center gap-1 text-slate-400"><span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span> Non-Aktif</span>';
+                    }
+
+                    const toggleBtn = document.getElementById(`toggle-btn-${pId}`);
+                    if (toggleBtn) {
+                        toggleBtn.className = 'p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition';
+                        toggleBtn.title = 'Saklar On/Off Tayang (Non-Aktif)';
+                        const icon = toggleBtn.querySelector('.material-symbols-outlined');
+                        if (icon) icon.textContent = 'toggle_off';
+                    }
+
+                    const actionContainer = document.getElementById(`review-actions-${pId}`);
+                    if (actionContainer) {
+                        const safeName = (pName || '').replace(/"/g, '&quot;');
+                        actionContainer.innerHTML = `<button type="button" data-name="${safeName}" @click="approveProduct(${pId}, $el.dataset.name, $event)" class="px-2 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition shadow-xs">Approve</button>`;
+                    }
+
+                    this.decrementPendingCount();
+                    this.rejectModalOpen = false;
+                } else {
+                    this.showToast(data.message || 'Gagal menolak produk.', 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                this.showToast('Terjadi kesalahan jaringan.', 'error');
+            } finally {
+                this.isRejecting = false;
+            }
+        },
+        async deleteProduct(productId, productName, event) {
+            event.preventDefault();
+            if (!confirm(`Hapus produk "${productName}" secara permanen?`)) return;
+
+            const btn = event.currentTarget;
+            btn.disabled = true;
+            btn.style.opacity = '0.5';
+
+            try {
+                const res = await fetch(`/admin/products/${productId}`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ _method: 'DELETE' })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    this.showToast(data.message, 'success');
+                    const row = document.getElementById(`product-row-${productId}`);
+                    if (row) {
+                        row.style.transition = 'all 0.35s ease';
+                        row.style.opacity = '0';
+                        row.style.transform = 'scale(0.95)';
+                        setTimeout(() => row.remove(), 350);
+                    }
+                } else {
+                    this.showToast(data.message || 'Gagal menghapus produk.', 'error');
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
+                }
+            } catch (err) {
+                console.error(err);
+                this.showToast('Terjadi kesalahan jaringan.', 'error');
+                btn.disabled = false;
+                btn.style.opacity = '1';
+            }
         }
-    }
-}">
+    };
+}
+</script>
+
+<div class="p-lg md:p-xl flex-1 max-w-7xl mx-auto w-full" x-data="productsManager()">
     <!-- Header -->
     <div class="flex flex-col md:flex-row md:items-center justify-between mb-lg gap-md">
         <div>
