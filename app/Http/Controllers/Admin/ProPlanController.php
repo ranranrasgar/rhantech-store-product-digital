@@ -9,10 +9,44 @@ use Illuminate\Support\Str;
 
 class ProPlanController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $plans = ProPlan::orderBy('sort_order')->get();
-        return view('admin.pro_plans.index', compact('plans'));
+
+        $subQuery = \App\Models\ProSubscription::with(['store.user', 'user']);
+
+        if ($request->filled('search_sub')) {
+            $s = trim($request->input('search_sub'));
+            $subQuery->where(function ($q) use ($s) {
+                $q->where('reference_no', 'like', "%{$s}%")
+                  ->orWhere('plan', 'like', "%{$s}%")
+                  ->orWhere('payment_method', 'like', "%{$s}%")
+                  ->orWhereHas('store', function ($sq) use ($s) {
+                      $sq->where('name', 'like', "%{$s}%");
+                  })
+                  ->orWhereHas('user', function ($uq) use ($s) {
+                      $uq->where('name', 'like', "%{$s}%")->orWhere('email', 'like', "%{$s}%");
+                  });
+            });
+        }
+
+        if ($request->filled('status_sub') && $request->input('status_sub') !== 'all') {
+            $subQuery->where('payment_status', $request->input('status_sub'));
+        }
+
+        $subscriptions = $subQuery->latest()->paginate(15, ['*'], 'sub_page')->withQueryString();
+
+        $totalProRevenue = \App\Models\ProSubscription::where('payment_status', 'paid')->sum('amount');
+        $totalPaidSubCount = \App\Models\ProSubscription::where('payment_status', 'paid')->count();
+        $activeProStoresCount = \App\Models\Store::where('is_pro', true)->count();
+
+        return view('admin.pro_plans.index', compact(
+            'plans', 
+            'subscriptions', 
+            'totalProRevenue', 
+            'totalPaidSubCount', 
+            'activeProStoresCount'
+        ));
     }
 
     public function create()

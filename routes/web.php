@@ -241,6 +241,10 @@ Route::middleware(['auth', 'is_admin'])->prefix('admin')->name('admin.')->group(
     Route::delete('projects/image/{image}', [ProjectController::class, 'destroyImage'])->name('projects.image.destroy');
     Route::resource('projects', ProjectController::class);
     Route::resource('testimonials', TestimonialController::class);
+    Route::post('messages/bulk-action', [ContactMessageController::class, 'bulkAction'])->name('messages.bulk-action');
+    Route::delete('messages/bulk-destroy', [ContactMessageController::class, 'bulkDestroy'])->name('messages.bulk-destroy');
+    Route::patch('messages/{message}/toggle-read', [ContactMessageController::class, 'toggleRead'])->name('messages.toggle-read');
+    Route::post('messages/{message}/reply', [ContactMessageController::class, 'reply'])->name('messages.reply');
     Route::resource('messages', ContactMessageController::class);
     Route::resource('gateway_apps', \App\Http\Controllers\Admin\GatewayAppController::class);
     Route::resource('popup_ads', \App\Http\Controllers\Admin\PopupAdController::class);
