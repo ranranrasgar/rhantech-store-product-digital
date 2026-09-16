@@ -197,7 +197,14 @@
 }
 .site-header > * {
     position: relative;
-    z-index: 1;
+}
+.site-header-topbar {
+    position: relative;
+    z-index: 40 !important;
+}
+.site-header-main {
+    position: relative;
+    z-index: 20 !important;
 }
 .site-header::after {
     content: '';
@@ -312,7 +319,7 @@
 
 <header class="site-header">
     {{-- Top micro bar --}}
-    <div class="hidden md:flex max-w-[1280px] mx-auto px-6 items-center justify-between py-1.5 text-[12px]">
+    <div class="site-header-topbar hidden md:flex max-w-[1280px] mx-auto px-6 items-center justify-between py-1.5 text-[12px] relative z-40">
         <div class="flex items-center gap-5 text-white/60">
             <a href="{{ route('tenant.dashboard') }}" class="hover:text-white/90 transition-colors">
                 <span class="material-symbols-outlined text-[13px] align-middle">storefront</span> Client Area
@@ -450,7 +457,7 @@
     </div>
 
     {{-- Main header row --}}
-    <div class="max-w-[1280px] mx-auto px-3 md:px-6 py-2 md:py-3 flex items-center justify-between gap-2 md:gap-6">
+    <div class="site-header-main max-w-[1280px] mx-auto px-3 md:px-6 py-2 md:py-3 flex items-center justify-between gap-2 md:gap-6 relative z-20">
         {{-- Logo (Hidden on mobile) --}}
         <a href="{{ url('/') }}" class="header-logo shrink-0 hidden md:flex">
             <span class="logo-dot"></span>
