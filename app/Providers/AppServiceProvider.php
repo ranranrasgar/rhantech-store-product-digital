@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\CompanyProfile;
 use App\Models\PayoutRequest;
+use App\Models\Product;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Facades\View;
@@ -85,22 +86,44 @@ class AppServiceProvider extends ServiceProvider
         });
 
         View::composer(['layouts.admin', 'admin.*'], function ($view) {
-            static $adminPendingPayouts = null;
-            if ($adminPendingPayouts === null) {
-                $pendingPayoutsCount = PayoutRequest::where('status', 'pending')->count();
-                $pendingPayoutsList = PayoutRequest::with('store:id,name,slug,logo')
-                    ->where('status', 'pending')
-                    ->latest()
-                    ->take(5)
-                    ->get(['id', 'store_id', 'amount', 'status', 'created_at']);
+            static $adminGlobalStats = null;
+            if ($adminGlobalStats === null) {
+                try {
+                    $pendingPayoutsCount = PayoutRequest::where('status', 'pending')->count();
+                    $pendingPayoutsList = PayoutRequest::with('store:id,name,slug,logo')
+                        ->where('status', 'pending')
+                        ->latest()
+                        ->take(5)
+                        ->get(['id', 'store_id', 'amount', 'status', 'created_at']);
 
-                $adminPendingPayouts = [
-                    'pendingPayoutsCount' => $pendingPayoutsCount,
-                    'pendingPayoutsList' => $pendingPayoutsList,
-                ];
+                    $pendingProductsCount = Product::whereNotNull('store_id')
+                        ->where('approval_status', 'pending')
+                        ->count();
+
+                    $pendingProductsList = Product::with(['store:id,name,slug,logo', 'category:id,name', 'images'])
+                        ->whereNotNull('store_id')
+                        ->where('approval_status', 'pending')
+                        ->latest()
+                        ->take(6)
+                        ->get(['id', 'store_id', 'product_category_id', 'name', 'slug', 'price', 'created_at']);
+
+                    $adminGlobalStats = [
+                        'pendingPayoutsCount' => $pendingPayoutsCount,
+                        'pendingPayoutsList' => $pendingPayoutsList,
+                        'pendingProductsCount' => $pendingProductsCount,
+                        'pendingProductsList' => $pendingProductsList,
+                    ];
+                } catch (\Throwable $e) {
+                    $adminGlobalStats = [
+                        'pendingPayoutsCount' => 0,
+                        'pendingPayoutsList' => collect(),
+                        'pendingProductsCount' => 0,
+                        'pendingProductsList' => collect(),
+                    ];
+                }
             }
 
-            $view->with($adminPendingPayouts);
+            $view->with($adminGlobalStats);
         });
 
         VerifyEmail::toMailUsing(function (object $notifiable, string $url) {

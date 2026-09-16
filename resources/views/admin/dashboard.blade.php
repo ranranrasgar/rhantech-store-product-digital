@@ -63,6 +63,75 @@
             </div>
         </div>
 
+        @if(isset($pendingProductsCount) && $pendingProductsCount > 0)
+        <!-- Alert Review Produk Toko Mitra (Pending Approval) -->
+        <div class="rounded-xl border border-amber-500/40 bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent p-4 sm:p-5 shadow-xs relative overflow-hidden">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
+                <div class="flex items-start gap-3.5 min-w-0">
+                    <div class="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-xs animate-pulse">
+                        <span class="material-symbols-outlined text-[24px]">fact_check</span>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <h3 class="font-headline-sm text-sm sm:text-base font-bold text-on-surface">
+                                Ada {{ $pendingProductsCount }} Produk Toko Menunggu Review &amp; Persetujuan
+                            </h3>
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-500 text-white uppercase tracking-wider">
+                                Butuh Tindakan
+                            </span>
+                        </div>
+                        <p class="text-xs text-on-surface-variant mt-1 leading-relaxed max-w-3xl">
+                            Mitra toko seller telah mengajukan produk digital baru ke platform. Periksa kelayakan konten file, harga, dan deskripsi produk sebelum dipublikasikan ke etalase utama marketplace.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2.5 shrink-0 self-end md:self-center">
+                    <a href="{{ route('admin.products.index', ['approval_status' => 'pending']) }}" 
+                       class="px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-xs active:scale-95">
+                        <span>Review Sekarang ({{ $pendingProductsCount }})</span>
+                        <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Preview Antrean Produk Menunggu Review (Maksimal 6 Produk Teratas) -->
+            @if(isset($pendingProductsList) && $pendingProductsList->isNotEmpty())
+            <div class="mt-4 pt-3 border-t border-amber-500/20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                @foreach($pendingProductsList as $pendingProd)
+                @php
+                    $pImg = $pendingProd->images->where('is_main', true)->first() ?? $pendingProd->images->first();
+                @endphp
+                <div class="p-2.5 rounded-lg bg-surface border border-outline-variant/60 flex items-center justify-between gap-2.5 hover:border-amber-500/50 transition">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                        <div class="w-9 h-9 rounded-lg bg-surface-variant border border-outline-variant overflow-hidden shrink-0 flex items-center justify-center">
+                            @if($pImg)
+                                <img src="{{ asset('storage/' . $pImg->image_path) }}" class="w-full h-full object-cover">
+                            @else
+                                <span class="material-symbols-outlined text-[16px] text-on-surface-variant">inventory_2</span>
+                            @endif
+                        </div>
+                        <div class="min-w-0">
+                            <h4 class="text-xs font-bold text-on-surface truncate" title="{{ $pendingProd->name }}">
+                                {{ $pendingProd->name }}
+                            </h4>
+                            <div class="text-[11px] text-on-surface-variant truncate flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[12px] text-teal-600">storefront</span>
+                                <span>{{ $pendingProd->store->name ?? 'Toko Mitra' }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="{{ route('admin.products.edit', $pendingProd) }}" class="px-2.5 py-1 rounded bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-300 text-[11px] font-bold shrink-0 transition flex items-center gap-1">
+                        <span>Periksa</span>
+                        <span class="material-symbols-outlined text-[12px]">open_in_new</span>
+                    </a>
+                </div>
+                @endforeach
+            </div>
+            @endif
+        </div>
+        @endif
+
         <!-- 4 Primary Metric Cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-md">
             <!-- Total Revenue -->
@@ -95,7 +164,14 @@
                     <div class="w-10 h-10 rounded-lg bg-purple-500/10 text-purple-600 flex items-center justify-center">
                         <span class="material-symbols-outlined" style="font-size: 20px;">storefront</span>
                     </div>
-                    <span class="text-xs font-bold text-purple-600">{{ $totalProducts }} Produk</span>
+                    <div class="flex items-center gap-1.5">
+                        <span class="text-xs font-bold text-purple-600">{{ $totalProducts }} Produk</span>
+                        @if(isset($pendingProductsCount) && $pendingProductsCount > 0)
+                            <a href="{{ route('admin.products.index', ['approval_status' => 'pending']) }}" class="px-1.5 py-0.5 bg-amber-500 text-white rounded-full text-[10px] font-extrabold animate-pulse" title="{{ $pendingProductsCount }} produk butuh review">
+                                {{ $pendingProductsCount }} review
+                            </a>
+                        @endif
+                    </div>
                 </div>
                 <p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-1">Total Toko</p>
                 <h3 class="font-display-md text-display-md font-bold text-on-surface">{{ number_format($totalStores) }}</h3>

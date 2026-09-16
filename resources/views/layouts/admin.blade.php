@@ -166,10 +166,17 @@
 <span class="material-symbols-outlined text-[1rem]">groups</span>
                     Clients
                 </a>
-<a class="font-label-md text-label-md {{ request()->routeIs('admin.products.*') ? 'bg-surface-variant font-semibold before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[3px] before:bg-[#58a6ff] before:rounded-r-md relative' : 'text-on-surface hover:bg-surface-variant/50 hover:underline' }} px-3 py-1.5 flex items-center gap-2 transition-all rounded-md" href="{{ route('admin.products.index') }}" wire:navigate>
-<span class="material-symbols-outlined text-[1rem]">inventory_2</span>
-                    Digital Products
-                </a>
+<a class="font-label-md text-label-md {{ request()->routeIs('admin.products.*') ? 'bg-surface-variant font-semibold before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[3px] before:bg-[#58a6ff] before:rounded-r-md relative' : 'text-on-surface hover:bg-surface-variant/50 hover:underline' }} px-3 py-1.5 flex items-center justify-between transition-all rounded-md" href="{{ route('admin.products.index') }}" wire:navigate>
+    <span class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-[1rem]">inventory_2</span>
+        Digital Products
+    </span>
+    @if(isset($pendingProductsCount) && $pendingProductsCount > 0)
+        <span class="px-1.5 py-0.5 bg-amber-500 text-white rounded-full text-[10px] font-extrabold animate-pulse" title="{{ $pendingProductsCount }} produk menunggu review">
+            {{ $pendingProductsCount }}
+        </span>
+    @endif
+</a>
 <a class="font-label-md text-label-md {{ request()->routeIs('admin.product_categories.*') ? 'bg-surface-variant font-semibold before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[3px] before:bg-[#58a6ff] before:rounded-r-md relative' : 'text-on-surface hover:bg-surface-variant/50 hover:underline' }} pl-9 pr-3 py-1.5 flex items-center gap-2 transition-all rounded-md text-sm" href="{{ route('admin.product_categories.index') }}" wire:navigate>
 <span class="material-symbols-outlined text-[1rem]">category</span>
                     Categories
