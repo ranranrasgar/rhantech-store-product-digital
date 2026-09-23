@@ -325,21 +325,27 @@
             <a href="{{ route('tenant.dashboard') }}" class="hover:text-white/90 transition-colors">
                 <span class="material-symbols-outlined text-[13px] align-middle">storefront</span> Client Area
             </a>
+            @php
+                $allSocial = [];
+                if (!empty($company->social_links) && is_array($company->social_links)) {
+                    $allSocial = $company->social_links;
+                } else {
+                    if (!empty($company->website))   $allSocial[] = ['platform' => 'website',   'url' => $company->website,   'name' => 'Website'];
+                    if (!empty($company->facebook))  $allSocial[] = ['platform' => 'facebook',  'url' => $company->facebook,  'name' => 'Facebook'];
+                    if (!empty($company->instagram)) $allSocial[] = ['platform' => 'instagram', 'url' => $company->instagram, 'name' => 'Instagram'];
+                    if (!empty($company->linkedin))  $allSocial[] = ['platform' => 'linkedin',  'url' => $company->linkedin,  'name' => 'LinkedIn'];
+                    if (!empty($company->youtube))   $allSocial[] = ['platform' => 'youtube',   'url' => $company->youtube,   'name' => 'YouTube'];
+                }
+                
+                $validSocials = array_filter($allSocial, function($soc) {
+                    $pUrl = $soc['url'] ?? '#';
+                    return !empty($pUrl) && $pUrl !== '#';
+                });
+            @endphp
+            @if(count($validSocials) > 0)
             <span class="h-3 w-px bg-white/15"></span>
             <span class="text-white/40">Ikuti kami:</span>
             <div class="inline-flex items-center gap-2.5">
-                @php
-                    $allSocial = [];
-                    if (!empty($company->social_links) && is_array($company->social_links)) {
-                        $allSocial = $company->social_links;
-                    } else {
-                        if (!empty($company->website))   $allSocial[] = ['platform' => 'website',   'url' => $company->website,   'name' => 'Website'];
-                        if (!empty($company->facebook))  $allSocial[] = ['platform' => 'facebook',  'url' => $company->facebook,  'name' => 'Facebook'];
-                        if (!empty($company->instagram)) $allSocial[] = ['platform' => 'instagram', 'url' => $company->instagram, 'name' => 'Instagram'];
-                        if (!empty($company->linkedin))  $allSocial[] = ['platform' => 'linkedin',  'url' => $company->linkedin,  'name' => 'LinkedIn'];
-                        if (!empty($company->youtube))   $allSocial[] = ['platform' => 'youtube',   'url' => $company->youtube,   'name' => 'YouTube'];
-                    }
-                @endphp
                 @foreach($allSocial as $soc)
                     @php
                         $pKey = strtolower($soc['platform'] ?? 'custom');
@@ -375,6 +381,7 @@
                     @endif
                 @endforeach
             </div>
+            @endif
         </div>
         <div class="flex items-center gap-2">
             @guest
