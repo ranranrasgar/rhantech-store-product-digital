@@ -282,21 +282,21 @@
                 {{ $company->company_name ?? 'rhantech' }}
             </a>
             <div class="hidden md:flex items-center gap-lg nav-links">
-                <a class="nav-link {{ request()->is('/') ? 'active text-orange-600 dark:text-orange-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-orange-600 dark:hover:text-orange-400 transition-colors duration-200" href="{{ url('/#home') }}">Home</a>
-                <a class="nav-link {{ request()->routeIs('about') ? 'active text-orange-600 dark:text-orange-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-orange-600 dark:hover:text-orange-400 transition-colors duration-200" href="{{ route('about') }}" wire:navigate>About</a>
-                <a class="nav-link text-on-surface-variant dark:text-on-surface-variant/80 hover:text-orange-600 dark:hover:text-orange-400 transition-colors duration-200" href="{{ url('/#services') }}">Services</a>
-                <a class="nav-link {{ request()->routeIs('projects.*') ? 'active text-orange-600 dark:text-orange-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-orange-600 dark:hover:text-orange-400 transition-colors duration-200" href="{{ route('projects.index') }}" wire:navigate>Portfolio</a>
-                <a class="nav-link {{ request()->routeIs('products.*') || request()->routeIs('checkout.*') ? 'active text-orange-600 dark:text-orange-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-orange-600 dark:hover:text-orange-400 transition-colors duration-200" href="{{ route('products.index') }}">Store</a>
-                <a class="nav-link {{ request()->routeIs('clients.*') ? 'active text-orange-600 dark:text-orange-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-orange-600 dark:hover:text-orange-400 transition-colors duration-200" href="{{ route('clients.index') }}" wire:navigate>Clients</a>
-                <a class="nav-link {{ request()->routeIs('contact') ? 'active text-orange-600 dark:text-orange-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-orange-600 dark:hover:text-orange-400 transition-colors duration-200" href="{{ url('/contact') }}" wire:navigate>Contact</a>
+                <a class="nav-link {{ request()->is('/') ? 'active text-sky-600 dark:text-sky-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ url('/#home') }}">Home</a>
+                <a class="nav-link {{ request()->routeIs('about') ? 'active text-sky-600 dark:text-sky-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ route('about') }}" wire:navigate>About</a>
+                <a class="nav-link text-on-surface-variant dark:text-on-surface-variant/80 hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ url('/#services') }}">Services</a>
+                <a class="nav-link {{ request()->routeIs('projects.*') ? 'active text-sky-600 dark:text-sky-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ route('projects.index') }}" wire:navigate>Portfolio</a>
+                <a class="nav-link {{ request()->routeIs('products.*') || request()->routeIs('checkout.*') ? 'active text-sky-600 dark:text-sky-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ route('products.index') }}">Store</a>
+                <a class="nav-link {{ request()->routeIs('clients.*') ? 'active text-sky-600 dark:text-sky-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ route('clients.index') }}" wire:navigate>Clients</a>
+                <a class="nav-link {{ request()->routeIs('contact') ? 'active text-sky-600 dark:text-sky-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ url('/contact') }}" wire:navigate>Contact</a>
             </div>
             <div class="flex items-center gap-2">
                 @guest
-                    <a class="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-200 hover:text-orange-600 dark:hover:text-orange-400 px-3 py-2 transition-colors flex items-center gap-1" href="{{ route('login') }}">
+                    <a class="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-200 hover:text-sky-600 dark:hover:text-sky-400 px-3 py-2 transition-colors flex items-center gap-1" href="{{ route('login') }}">
                         <span class="material-symbols-outlined text-[17px]">login</span>
                         <span>Login</span>
                     </a>
-                    <a class="hidden md:inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-bold text-xs sm:text-sm active:scale-95 transition-all duration-150 shadow-none" href="{{ route('register') }}">
+                    <a class="hidden md:inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-sky-500 hover:bg-sky-600 text-white rounded-xl font-bold text-xs sm:text-sm active:scale-95 transition-all duration-150 shadow-none" href="{{ route('register') }}">
                         <span class="material-symbols-outlined text-[17px]">rocket_launch</span>
                         <span>Buat Website / Project</span>
                     </a>
@@ -401,8 +401,8 @@
                     
                     <!-- Toko / Akun Suggestion -->
                     <template x-if="results && results.stores && results.stores.length > 0">
-                        <div class="p-2 border-b border-slate-100 dark:border-slate-800 bg-orange-50/50 dark:bg-orange-950/20">
-                            <div class="text-[10px] font-bold uppercase tracking-wider text-orange-600 dark:text-orange-400 px-1 mb-1.5 flex items-center gap-1">
+                        <div class="p-2 border-b border-slate-100 dark:border-slate-800 bg-sky-50/50 dark:bg-sky-950/20">
+                            <div class="text-[10px] font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400 px-1 mb-1.5 flex items-center gap-1">
                                 <span class="material-symbols-outlined text-[13px]">storefront</span>
                                 <span>Toko / Akun</span>
                             </div>
@@ -416,7 +416,7 @@
                                                 <div class="text-[9px] text-slate-400 font-mono" x-text="'/@' + st.slug"></div>
                                             </div>
                                         </div>
-                                        <span class="text-[10px] text-orange-600 dark:text-orange-400 font-bold shrink-0 flex items-center gap-0.5">
+                                        <span class="text-[10px] text-sky-600 dark:text-sky-400 font-bold shrink-0 flex items-center gap-0.5">
                                             <span>Lihat Toko</span>
                                             <span class="material-symbols-outlined text-[11px]">arrow_forward</span>
                                         </span>
@@ -451,7 +451,7 @@
 
                     <!-- View all link -->
                     <a :href="'{{ route('products.index') }}?search=' + encodeURIComponent(query)"
-                       class="block py-2 px-3 text-center bg-zinc-50 dark:bg-zinc-900/80 hover:bg-slate-100 dark:hover:bg-slate-800 text-orange-600 dark:text-orange-400 font-bold text-[11px] border-t border-slate-100 dark:border-slate-800">
+                       class="block py-2 px-3 text-center bg-zinc-50 dark:bg-zinc-900/80 hover:bg-slate-100 dark:hover:bg-slate-800 text-sky-600 dark:text-sky-400 font-bold text-[11px] border-t border-slate-100 dark:border-slate-800">
                         <span x-text="'Lihat semua hasil untuk &quot;' + query + '&quot;'"></span> →
                     </a>
                 </div>
@@ -463,7 +463,7 @@
                 <a href="{{ route('cart.index') }}" class="header-action-btn relative !p-2 !rounded-xl !bg-white/10 hover:!bg-white/20 border border-white/10 transition-all flex items-center justify-center" title="Keranjang">
                     <span class="material-symbols-outlined text-[20px] text-white">shopping_cart</span>
                     <span data-cart-count
-                        class="absolute -top-1 -right-1 bg-orange-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full min-w-[16px] text-center leading-none shadow"
+                        class="absolute -top-1 -right-1 bg-sky-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full min-w-[16px] text-center leading-none shadow"
                         style="{{ $cartCount > 0 ? '' : 'display:none' }}">{{ $cartCount }}</span>
                 </a>
 
@@ -473,7 +473,7 @@
                     <div class="relative" x-data="{ open: false }" @click.outside="open = false">
                         <button type="button"
                                 @click="open = !open" 
-                                class="flex items-center focus:outline-none p-0.5 rounded-full ring-2 ring-orange-500/40 cursor-pointer active:scale-95 transition-transform"
+                                class="flex items-center focus:outline-none p-0.5 rounded-full ring-2 ring-sky-500/40 cursor-pointer active:scale-95 transition-transform"
                                 aria-haspopup="true"
                                 :aria-expanded="open"
                                 title="Menu Akun">
@@ -499,7 +499,7 @@
                             </a>
                             @endif
                             <a href="{{ route('tenant.dashboard') }}" class="flex items-center gap-2.5 px-3.5 py-2 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
-                                <span class="material-symbols-outlined text-[17px] text-orange-500">storefront</span> Dashboard Toko
+                                <span class="material-symbols-outlined text-[17px] text-sky-500">storefront</span> Dashboard Toko
                             </a>
                             <a href="{{ route('tenant.purchases.index') }}" class="flex items-center gap-2.5 px-3.5 py-2 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
                                 <span class="material-symbols-outlined text-[17px] text-amber-500">receipt_long</span> Riwayat Belanja
@@ -614,7 +614,7 @@
                     <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ route('legal.privacy') }}">Kebijakan Privasi (UU PDP)</a></li>
                     <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ route('legal.copyright') }}">Hak Cipta & Lisensi (HAKI)</a></li>
                     <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ route('legal.refund') }}">Kebijakan Refund Konsumen</a></li>
-                    <li class="pt-1"><a class="text-[11px] text-orange-600 hover:underline flex items-center gap-1 font-medium" href="https://simpktn.kemendag.go.id" target="_blank" rel="noopener noreferrer">Layanan Ditjen PKTN Kemendag ↗</a></li>
+                    <li class="pt-1"><a class="text-[11px] text-sky-600 hover:underline flex items-center gap-1 font-medium" href="https://simpktn.kemendag.go.id" target="_blank" rel="noopener noreferrer">Layanan Ditjen PKTN Kemendag ↗</a></li>
                 </ul>
             </div>
         </div>
@@ -724,7 +724,7 @@
                             navLinks.forEach(link => {
                                 const href = link.getAttribute('href');
                                 if (href && href.includes('/#')) {
-                                    link.classList.remove('active', 'text-orange-600', 'dark:text-orange-400', 'font-bold', 'text-secondary', 'dark:text-secondary-fixed-dim', 'font-semibold');
+                                    link.classList.remove('active', 'text-sky-600', 'dark:text-sky-400', 'font-bold', 'text-secondary', 'dark:text-secondary-fixed-dim', 'font-semibold');
                                     link.classList.add('text-on-surface-variant', 'dark:text-on-surface-variant/80');
                                 }
                             });
@@ -733,7 +733,7 @@
                             const activeLink = document.querySelector(`.nav-link[href$="/#${id}"]`);
                             if (activeLink) {
                                 activeLink.classList.remove('text-on-surface-variant', 'dark:text-on-surface-variant/80');
-                                activeLink.classList.add('active', 'text-orange-600', 'dark:text-orange-400', 'font-bold');
+                                activeLink.classList.add('active', 'text-sky-600', 'dark:text-sky-400', 'font-bold');
                             }
                         }
                     });

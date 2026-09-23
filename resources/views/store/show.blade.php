@@ -969,7 +969,7 @@
                                         </div>
                                     </div>
                                     <div class="p-3">
-                                        <h3 class="text-slate-800 text-[11px] md:text-xs font-bold line-clamp-2 leading-tight group-hover:text-orange-500 transition-colors h-8">{{ $product->name }}</h3>
+                                        <h3 class="text-slate-800 text-[11px] md:text-xs font-bold line-clamp-2 leading-tight group-hover:text-sky-500 transition-colors h-8">{{ $product->name }}</h3>
                                         @if($product->discount_price)
                                             <div class="font-black text-rose-600 text-sm md:text-base mt-2">Rp {{ number_format($product->discount_price, 0, ',', '.') }}</div>
                                             <div class="text-[9px] md:text-[10px] text-slate-400 line-through">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
@@ -1029,7 +1029,7 @@
                                             'amber' => ['bg' => 'from-amber-50 to-yellow-50', 'border' => 'border-amber-200', 'main' => 'bg-amber-500', 'text' => 'text-amber-600', 'hover' => 'hover:bg-amber-600'],
                                             'sky' => ['bg' => 'from-sky-50 to-blue-50', 'border' => 'border-sky-200', 'main' => 'bg-sky-500', 'text' => 'text-sky-600', 'hover' => 'hover:bg-sky-600'],
                                             'violet' => ['bg' => 'from-violet-50 to-purple-50', 'border' => 'border-violet-200', 'main' => 'bg-violet-500', 'text' => 'text-violet-600', 'hover' => 'hover:bg-violet-600'],
-                                            default => ['bg' => 'from-rose-50 to-orange-50', 'border' => 'border-rose-200', 'main' => 'bg-rose-500', 'text' => 'text-rose-600', 'hover' => 'hover:bg-rose-600']
+                                            default => ['bg' => 'from-rose-50 to-sky-50', 'border' => 'border-rose-200', 'main' => 'bg-rose-500', 'text' => 'text-rose-600', 'hover' => 'hover:bg-rose-600']
                                         };
                                     @endphp
                                     <div class="snap-start shrink-0 w-[280px] h-24 bg-gradient-to-br {{ $themeColors['bg'] }} border {{ $themeColors['border'] }} rounded-xl flex items-center relative overflow-hidden shadow-sm hover:shadow-md transition-shadow">
