@@ -1,5 +1,5 @@
 @extends('layouts.public')
-@section('title', 'Contact Us - ' . ($company->name ?? 'rhantech'))
+@section('title', 'Hubungi Kami - ' . ($company->name ?? 'rhantech'))
 
 @section('content')
 <section class="max-w-container-max mx-auto px-lg py-2xl">
@@ -8,11 +8,11 @@
         <!-- Contact Info -->
         <div>
             <span class="inline-block py-1 px-3 rounded-full bg-surface-container text-on-surface font-label-md text-label-md mb-6 border border-outline-variant/30">
-                Get In Touch
+                Hubungi Kami
             </span>
-            <h1 class="font-display-lg-mobile md:font-headline-xl text-on-background dark:text-white mb-md">Let's talk about your next project.</h1>
+            <h1 class="font-display-lg-mobile md:font-headline-xl text-on-background dark:text-white mb-md">Mari bicarakan proyek Anda selanjutnya.</h1>
             <p class="font-body-lg text-on-surface-variant mb-xl">
-                Whether you have a question, a project idea, or just want to say hi, we're always open to discussing new opportunities.
+                Apakah Anda memiliki pertanyaan, ide proyek, atau sekadar ingin menyapa, kami selalu terbuka untuk mendiskusikan peluang baru.
             </p>
 
             <div class="space-y-lg">
@@ -34,7 +34,7 @@
                         <span class="material-symbols-outlined">call</span>
                     </div>
                     <div>
-                        <h4 class="font-label-md font-bold text-on-background dark:text-white mb-1">Phone</h4>
+                        <h4 class="font-label-md font-bold text-on-background dark:text-white mb-1">Telepon</h4>
                         <p class="font-body-md text-on-surface">{{ $company->phone }}</p>
                     </div>
                 </div>
@@ -46,7 +46,7 @@
                         <span class="material-symbols-outlined">location_on</span>
                     </div>
                     <div>
-                        <h4 class="font-label-md font-bold text-on-background dark:text-white mb-1">Address</h4>
+                        <h4 class="font-label-md font-bold text-on-background dark:text-white mb-1">Alamat</h4>
                         <p class="font-body-md text-on-surface whitespace-pre-wrap">{{ $company->address }}</p>
                     </div>
                 </div>
@@ -111,7 +111,7 @@
 
         <!-- Contact Form -->
         <div class="bg-surface rounded-lg border border-outline-variant shadow-lg p-lg md:p-xl">
-            <h3 class="font-headline-lg text-on-background dark:text-white mb-md">Send us a message</h3>
+            <h3 class="font-headline-lg text-on-background dark:text-white mb-md">Kirim pesan kepada kami</h3>
             
             @if(session('success'))
             <div class="mb-lg p-md bg-[#E0F2FE] border border-[#BAE6FD] text-[#0369A1] rounded-lg font-label-md">
@@ -123,40 +123,40 @@
                 @csrf
                 {{-- Honeypot: bot akan mengisi field ini, manusia tidak melihatnya --}}
                 <div style="position:absolute;left:-9999px;top:-9999px;opacity:0;pointer-events:none;" aria-hidden="true" tabindex="-1">
-                    <label for="website_url">Website (leave empty)</label>
+                    <label for="website_url">Website (biarkan kosong)</label>
                     <input type="text" id="website_url" name="website_url" value="" autocomplete="off" tabindex="-1">
                 </div>
                 {{-- Timestamp untuk deteksi submit terlalu cepat --}}
                 <input type="hidden" name="form_loaded_at" id="form_loaded_at" value="">
                 <div>
-                    <label class="block font-label-md text-on-surface mb-xs">Your Name *</label>
+                    <label class="block font-label-md text-on-surface mb-xs">Nama Anda *</label>
                     <input type="text" name="name" required value="{{ old('name') }}" class="w-full pl-4 pr-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-primary focus:ring-1 focus:ring-primary/20">
                     @error('name')<span class="text-error text-xs">{{ $message }}</span>@enderror
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
                     <div>
-                        <label class="block font-label-md text-on-surface mb-xs">Email Address *</label>
+                        <label class="block font-label-md text-on-surface mb-xs">Alamat Email *</label>
                         <input type="email" name="email" required value="{{ old('email') }}" class="w-full pl-4 pr-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-primary focus:ring-1 focus:ring-primary/20">
                         @error('email')<span class="text-error text-xs">{{ $message }}</span>@enderror
                     </div>
                     <div>
-                        <label class="block font-label-md text-on-surface mb-xs">Phone Number</label>
+                        <label class="block font-label-md text-on-surface mb-xs">Nomor Telepon</label>
                         <input type="text" name="phone" value="{{ old('phone') }}" class="w-full pl-4 pr-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-primary focus:ring-1 focus:ring-primary/20">
                         @error('phone')<span class="text-error text-xs">{{ $message }}</span>@enderror
                     </div>
                 </div>
                 <div>
-                    <label class="block font-label-md text-on-surface mb-xs">Subject *</label>
+                    <label class="block font-label-md text-on-surface mb-xs">Subjek *</label>
                     <input type="text" name="subject" required value="{{ old('subject') }}" class="w-full pl-4 pr-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-primary focus:ring-1 focus:ring-primary/20">
                     @error('subject')<span class="text-error text-xs">{{ $message }}</span>@enderror
                 </div>
                 <div>
-                    <label class="block font-label-md text-on-surface mb-xs">Message *</label>
+                    <label class="block font-label-md text-on-surface mb-xs">Pesan *</label>
                     <textarea name="message" required rows="5" class="w-full pl-4 pr-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-primary focus:ring-1 focus:ring-primary/20">{{ old('message') }}</textarea>
                     @error('message')<span class="text-error text-xs">{{ $message }}</span>@enderror
                 </div>
                 <div class="pt-sm border-t border-outline-variant/30 mt-sm">
-                    <button type="submit" class="w-full px-lg py-4 bg-primary text-white rounded-lg font-label-md font-bold hover:brightness-110 transition shadow text-lg">Send Message</button>
+                    <button type="submit" class="w-full px-lg py-4 bg-primary text-white rounded-lg font-label-md font-bold hover:brightness-110 transition shadow text-lg">Kirim Pesan</button>
                 </div>
             </form>
         </div>
