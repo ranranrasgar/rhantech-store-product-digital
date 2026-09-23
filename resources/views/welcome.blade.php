@@ -303,8 +303,8 @@
                                                 </div>
                                                 @endif
 
-                                                <!-- Bottom Overlay & Product Details -->
-                                                <div class="absolute inset-0 bg-black/30 pointer-events-none"></div>
+                                                <!-- Bottom Gradient Overlay & Product Details -->
+                                                <div class="absolute inset-x-0 bottom-0 h-3/4 bg-gradient-to-t from-slate-950/95 via-slate-900/60 to-transparent pointer-events-none z-0"></div>
                                                 <div class="absolute bottom-0 inset-x-0 p-3 sm:p-4 text-white flex items-end justify-between gap-2 sm:gap-3 z-10">
                                                     <div class="min-w-0">
                                                         <div class="flex items-center gap-1 sm:gap-1.5 text-amber-400 text-[11px] sm:text-xs font-bold mb-0.5 sm:mb-1">
