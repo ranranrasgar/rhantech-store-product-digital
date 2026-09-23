@@ -119,51 +119,40 @@ class ProductController extends Controller
         }
 
         // Metadata hanya dimuat pada saat full page load dan di-cache 30 menit
-        $categories = Cache::remember('products_page_categories_v2', 1800, function () {
-            return \App\Models\ProductCategory::select(['id', 'store_id', 'name'])
-                ->whereHas('products', function ($q) {
-                    $q->published();
-                })
-                ->withCount(['products' => function ($q) {
-                    $q->published();
-                }])
-                ->with('store:id,name')
-                ->orderByDesc('products_count')
-                ->orderByRaw('store_id IS NULL DESC, name ASC')
-                ->get();
-        });
+        $categories = \App\Models\ProductCategory::select(['id', 'store_id', 'name'])
+            ->whereHas('products', function ($q) {
+                $q->published();
+            })
+            ->withCount(['products' => function ($q) {
+                $q->published();
+            }])
+            ->with('store:id,name')
+            ->orderByDesc('products_count')
+            ->orderByRaw('store_id IS NULL DESC, name ASC')
+            ->get();
 
-        $types = Cache::remember('products_page_types_v2', 1800, function () {
-            return \App\Models\ProductType::select(['id', 'store_id', 'name'])
-                ->whereHas('products', function ($q) {
-                    $q->published();
-                })
-                ->withCount(['products' => function ($q) {
-                    $q->published();
-                }])
-                ->with('store:id,name')
-                ->orderByRaw('store_id IS NULL DESC, name ASC')
-                ->get();
-        });
+        $types = \App\Models\ProductType::select(['id', 'store_id', 'name'])
+            ->whereHas('products', function ($q) {
+                $q->published();
+            })
+            ->withCount(['products' => function ($q) {
+                $q->published();
+            }])
+            ->with('store:id,name')
+            ->orderByRaw('store_id IS NULL DESC, name ASC')
+            ->get();
 
-        $stores = Cache::remember('products_page_stores_v2', 1800, function () {
-            return \App\Models\Store::select(['id', 'name', 'slug'])->get();
-        });
+        $stores = \App\Models\Store::select(['id', 'name', 'slug'])->get();
 
-        $banners = Cache::remember('products_page_banners_v2', 1800, function () {
-            return \App\Models\Banner::where('is_active', true)->get()->keyBy('position');
-        });
+        $banners = \App\Models\Banner::where('is_active', true)->get()->keyBy('position');
 
-        // Produk unggulan yang paling banyak diklik / dilihat + relasi store dan image
-        $topProducts = Cache::remember('products_page_top_products_v2', 1800, function () {
-            return Product::with(['store:id,name,slug', 'images'])
-                ->published()
-                ->select(['id', 'store_id', 'name', 'slug', 'price', 'discount_price', 'views', 'sales_count'])
-                ->orderBy('views', 'desc')
-                ->orderBy('sales_count', 'desc')
-                ->limit(5)
-                ->get();
-        });
+        $topProducts = Product::with(['store:id,name,slug', 'images'])
+            ->published()
+            ->select(['id', 'store_id', 'name', 'slug', 'price', 'discount_price', 'views', 'sales_count'])
+            ->orderBy('views', 'desc')
+            ->orderBy('sales_count', 'desc')
+            ->limit(5)
+            ->get();
 
         // Banner Toko Rekomendasi & Beriklan (Carousel Slide Bergantian)
         $adStores = \App\Models\Store::where('ad_balance', '>', 0)
