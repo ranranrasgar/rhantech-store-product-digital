@@ -166,24 +166,22 @@ class ProductController extends Controller
         });
 
         // Banner Toko Rekomendasi & Beriklan (Carousel Slide Bergantian)
-        $adStores = Cache::remember('products_page_ad_stores_v2', 1800, function () {
-            return \App\Models\Store::where('ad_balance', '>', 0)
-                ->whereHas('ads', function ($q) {
-                    $q->activeAndFunded()->whereNotNull('product_id', 'and');
-                })
-                ->with([
-                    'ads' => function ($q) {
-                        $q->activeAndFunded()->whereNotNull('product_id')->with(['product.images', 'product.category:id,name'])->orderBy('bid_price', 'desc');
-                    },
-                    'products' => function ($q) {
-                        $q->published()->select(['products.id', 'products.store_id', 'products.name', 'products.slug', 'products.price', 'products.discount_price'])->with('images')->latest('products.created_at')->take(6);
-                    },
-                    'showcaseProducts' => function ($q) {
-                        $q->published()->select(['products.id', 'products.store_id', 'products.name', 'products.slug', 'products.price', 'products.discount_price'])->with('images')->latest('products.created_at')->take(6);
-                    }
-                ])
-                ->get(['id', 'name', 'slug', 'logo', 'description', 'ad_balance', 'views']);
-        });
+        $adStores = \App\Models\Store::where('ad_balance', '>', 0)
+            ->whereHas('ads', function ($q) {
+                $q->activeAndFunded()->whereNotNull('product_id', 'and');
+            })
+            ->with([
+                'ads' => function ($q) {
+                    $q->activeAndFunded()->whereNotNull('product_id')->with(['product.images', 'product.category:id,name'])->orderBy('bid_price', 'desc');
+                },
+                'products' => function ($q) {
+                    $q->published()->select(['products.id', 'products.store_id', 'products.name', 'products.slug', 'products.price', 'products.discount_price'])->with('images')->latest('products.created_at')->take(6);
+                },
+                'showcaseProducts' => function ($q) {
+                    $q->published()->select(['products.id', 'products.store_id', 'products.name', 'products.slug', 'products.price', 'products.discount_price'])->with('images')->latest('products.created_at')->take(6);
+                }
+            ])
+            ->get(['id', 'name', 'slug', 'logo', 'description', 'ad_balance', 'views']);
 
         $adStores->each(function ($store) {
             $store->is_sponsored_ad = true;
