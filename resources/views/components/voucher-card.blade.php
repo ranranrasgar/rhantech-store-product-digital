@@ -116,7 +116,7 @@
                             <span class="material-symbols-outlined text-[12px]">{{ $isFree ? 'redeem' : 'sell' }}</span>
                             {{ $isFree ? 'Kupon Gratis' : 'Kupon Diskon' }}
                         </span>
-                        <span class="inline-flex items-center gap-0.5 text-[9.5px] font-bold px-2 py-0.5 rounded-full bg-orange-50 dark:bg-orange-950/60 text-orange-700 dark:text-orange-300 border border-orange-200 dark:border-orange-800" title="Maksimal 1 kali pakai per akun pelanggan">
+                        <span class="inline-flex items-center gap-0.5 text-[9.5px] font-bold px-2 py-0.5 rounded-full bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 border border-sky-200 dark:border-sky-800" title="Maksimal 1 kali pakai per akun pelanggan">
                             <span class="material-symbols-outlined text-[11px]">person</span>
                             1x Pakai
                         </span>

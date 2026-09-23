@@ -34,7 +34,7 @@
 
                 <!-- Action Buttons -->
                 <div class="flex items-center gap-2">
-                    <button id="pwa-install-btn" class="flex-1 py-2 px-3.5 bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs rounded-xl transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
+                    <button id="pwa-install-btn" class="flex-1 py-2 px-3.5 bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs rounded-xl transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
                         <span class="material-symbols-outlined text-[16px]">install_mobile</span>
                         <span>Install Sekarang</span>
                     </button>

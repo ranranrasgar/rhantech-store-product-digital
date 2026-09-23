@@ -72,8 +72,8 @@
                 </div>
 
                 <!-- 4. Modul Project & Portofolio Toko -->
-                <div class="p-3.5 rounded-2xl bg-orange-500/5 dark:bg-orange-400/5 border border-orange-500/20 flex items-start gap-3">
-                    <div class="w-8 h-8 rounded-xl bg-orange-500/10 text-orange-600 dark:text-orange-400 flex items-center justify-center shrink-0">
+                <div class="p-3.5 rounded-2xl bg-sky-500/5 dark:bg-sky-400/5 border border-sky-500/20 flex items-start gap-3">
+                    <div class="w-8 h-8 rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-400 flex items-center justify-center shrink-0">
                         <span class="material-symbols-outlined text-[18px]">folder_special</span>
                     </div>
                     <div>

@@ -43,7 +43,7 @@
             @endphp
             @if($clientCount > 0)
             <div class="absolute bottom-3 left-3 bg-surface-container-lowest/90 dark:bg-black/75 backdrop-blur text-xs font-medium text-on-surface px-2.5 py-1 rounded-md flex items-center gap-1.5 border border-outline-variant/30">
-                <span class="material-symbols-outlined text-xs text-secondary">verified</span>
+                <span class="material-symbols-outlined text-xs text-primary">verified</span>
                 @if($clientCount === 1)
                     <span class="truncate max-w-[150px] font-semibold">{{ $firstClient->name }}</span>
                 @else

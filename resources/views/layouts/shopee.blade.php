@@ -408,11 +408,11 @@
                         <!-- Header User Card -->
                         <div class="px-4 py-3 border-b border-zinc-100 dark:border-zinc-800 bg-slate-50/70 dark:bg-slate-900/50">
                             <div class="flex items-center gap-3">
-                                <x-user-avatar class="w-10 h-10 rounded-full border-2 border-orange-400/40 shrink-0" />
+                                <x-user-avatar class="w-10 h-10 rounded-full border-2 border-sky-400/40 shrink-0" />
                                 <div class="min-w-0 flex-1">
                                     <p class="font-bold text-zinc-800 dark:text-zinc-100 truncate text-xs">{{ auth()->user()->name }}</p>
                                     <p class="text-[11px] text-zinc-500 dark:text-zinc-400 truncate">{{ auth()->user()->email }}</p>
-                                    <span class="inline-block mt-1 px-1.5 py-0.5 rounded text-[10px] font-semibold {{ strtolower(auth()->user()->role ?? '') === 'admin' ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400' : 'bg-orange-500/15 text-orange-600 dark:text-orange-400' }}">
+                                    <span class="inline-block mt-1 px-1.5 py-0.5 rounded text-[10px] font-semibold {{ strtolower(auth()->user()->role ?? '') === 'admin' ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400' : 'bg-sky-500/15 text-sky-600 dark:text-sky-400' }}">
                                         {{ strtolower(auth()->user()->role ?? '') === 'admin' ? 'Administrator' : 'Pengguna' }}
                                     </span>
                                 </div>
@@ -422,24 +422,24 @@
                         <!-- Menu Links -->
                         <div class="py-1">
                             @if(strtolower(auth()->user()->role ?? '') === 'admin')
-                            <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2.5 px-4 py-2 text-slate-700 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-800/80 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
+                            <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2.5 px-4 py-2 text-slate-700 dark:text-slate-200 hover:bg-sky-50 dark:hover:bg-slate-800/80 hover:text-sky-600 dark:hover:text-sky-400 transition-colors">
                                 <span class="material-symbols-outlined text-[18px] text-amber-500">admin_panel_settings</span> 
                                 <span class="font-medium">Dashboard Admin</span>
                             </a>
                             @endif
 
-                            <a href="{{ route('tenant.dashboard') }}" class="flex items-center gap-2.5 px-4 py-2 text-slate-700 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-800/80 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
+                            <a href="{{ route('tenant.dashboard') }}" class="flex items-center gap-2.5 px-4 py-2 text-slate-700 dark:text-slate-200 hover:bg-sky-50 dark:hover:bg-slate-800/80 hover:text-sky-600 dark:hover:text-sky-400 transition-colors">
                                 <span class="material-symbols-outlined text-[18px] text-[#00d4ff]">storefront</span> 
                                 <span class="font-medium">Dashboard Toko</span>
                             </a>
 
-                            <a href="{{ route('tenant.purchases.index') }}" class="flex items-center gap-2.5 px-4 py-2 text-slate-700 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-800/80 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
+                            <a href="{{ route('tenant.purchases.index') }}" class="flex items-center gap-2.5 px-4 py-2 text-slate-700 dark:text-slate-200 hover:bg-sky-50 dark:hover:bg-slate-800/80 hover:text-sky-600 dark:hover:text-sky-400 transition-colors">
                                 <span class="material-symbols-outlined text-[18px] text-emerald-500">receipt_long</span> 
                                 <span class="font-medium">Riwayat Pembelian</span>
                             </a>
 
-                            <a href="{{ route('tenant.profile.index') }}" class="flex items-center gap-2.5 px-4 py-2 text-slate-700 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-800/80 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
-                                <span class="material-symbols-outlined text-[18px] text-orange-500">person</span> 
+                            <a href="{{ route('tenant.profile.index') }}" class="flex items-center gap-2.5 px-4 py-2 text-slate-700 dark:text-slate-200 hover:bg-sky-50 dark:hover:bg-slate-800/80 hover:text-sky-600 dark:hover:text-sky-400 transition-colors">
+                                <span class="material-symbols-outlined text-[18px] text-sky-500">person</span> 
                                 <span class="font-medium">Profil & Akun</span>
                             </a>
                         </div>
@@ -514,8 +514,8 @@
                 
                 <!-- Toko / Akun Suggestion -->
                 <template x-if="results && results.stores && results.stores.length > 0">
-                    <div class="p-2 border-b border-slate-100 dark:border-slate-800 bg-orange-50/50 dark:bg-orange-950/20">
-                        <div class="text-[10px] font-bold uppercase tracking-wider text-orange-600 dark:text-orange-400 px-1 mb-1.5 flex items-center gap-1">
+                    <div class="p-2 border-b border-slate-100 dark:border-slate-800 bg-sky-50/50 dark:bg-sky-950/20">
+                        <div class="text-[10px] font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400 px-1 mb-1.5 flex items-center gap-1">
                             <span class="material-symbols-outlined text-[13px]">storefront</span>
                             <span>Toko / Akun</span>
                         </div>
@@ -529,7 +529,7 @@
                                             <div class="text-[9px] text-slate-400 font-mono" x-text="'/@' + st.slug"></div>
                                         </div>
                                     </div>
-                                    <span class="text-[10px] text-orange-600 dark:text-orange-400 font-bold shrink-0 flex items-center gap-0.5">
+                                    <span class="text-[10px] text-sky-600 dark:text-sky-400 font-bold shrink-0 flex items-center gap-0.5">
                                         <span>Lihat Toko</span>
                                         <span class="material-symbols-outlined text-[11px]">arrow_forward</span>
                                     </span>
@@ -564,7 +564,7 @@
 
                 <!-- View all link -->
                 <a :href="'{{ route('products.index') }}?search=' + encodeURIComponent(query)"
-                   class="block py-2 px-3 text-center bg-zinc-50 dark:bg-zinc-900/80 hover:bg-slate-100 dark:hover:bg-slate-800 text-orange-600 dark:text-orange-400 font-bold text-[11px] border-t border-slate-100 dark:border-slate-800">
+                   class="block py-2 px-3 text-center bg-zinc-50 dark:bg-zinc-900/80 hover:bg-slate-100 dark:hover:bg-slate-800 text-sky-600 dark:text-sky-400 font-bold text-[11px] border-t border-slate-100 dark:border-slate-800">
                     <span x-text="'Lihat semua hasil untuk &quot;' + query + '&quot;'"></span> →
                 </a>
             </div>
@@ -785,7 +785,7 @@
                             navLinks.forEach(link => {
                                 const href = link.getAttribute('href');
                                 if (href && href.includes('/#')) {
-                                    link.classList.remove('active', 'text-secondary', 'dark:text-secondary-fixed-dim', 'font-semibold');
+                                    link.classList.remove('active', 'text-primary', 'dark:text-primary-fixed-dim', 'font-semibold');
                                     link.classList.add('text-on-surface-variant', 'dark:text-on-surface-variant/80');
                                 }
                             });
@@ -794,7 +794,7 @@
                             const activeLink = document.querySelector(`.nav-link[href$="/#${id}"]`);
                             if (activeLink) {
                                 activeLink.classList.remove('text-on-surface-variant', 'dark:text-on-surface-variant/80');
-                                activeLink.classList.add('active', 'text-secondary', 'dark:text-secondary-fixed-dim', 'font-semibold');
+                                activeLink.classList.add('active', 'text-primary', 'dark:text-primary-fixed-dim', 'font-semibold');
                             }
                         }
                     });

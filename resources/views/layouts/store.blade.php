@@ -124,7 +124,7 @@
                 <a href="{{ route('products.index') }}" 
                    class="inline-flex items-center gap-1.5 p-2 sm:px-3.5 sm:py-1.5 rounded-xl sm:rounded-lg bg-surface-container border border-outline-variant hover:border-primary hover:text-primary text-xs font-bold text-on-surface transition-all shadow-xs shrink-0" 
                    title="Jelajahi Toko & Produk Lain">
-                    <span class="material-symbols-outlined text-[18px] sm:text-[16px] text-secondary">storefront</span>
+                    <span class="material-symbols-outlined text-[18px] sm:text-[16px] text-primary">storefront</span>
                     <span class="hidden sm:inline">Jelajahi Toko Lain</span>
                 </a>
 

@@ -18,7 +18,7 @@
                 </h1>
                 
                 @if(!empty($company->tagline))
-                <p class="text-lg md:text-xl font-medium text-secondary mb-6">
+                <p class="text-lg md:text-xl font-medium text-primary mb-6">
                     {{ $company->tagline }}
                 </p>
                 @endif
@@ -69,7 +69,7 @@
 
                     @if(!empty($company->mission))
                     <div class="bg-surface rounded-2xl border border-outline-variant/40 p-6">
-                        <div class="flex items-center gap-2.5 mb-3 text-secondary">
+                        <div class="flex items-center gap-2.5 mb-3 text-primary">
                             <span class="material-symbols-outlined text-[22px]">flag</span>
                             <h3 class="font-bold text-base text-on-surface">Misi Kami</h3>
                         </div>
@@ -99,7 +99,7 @@
                         </div>
 
                         <div class="p-4 bg-surface rounded-xl border border-outline-variant/30 text-center">
-                            <div class="text-3xl font-black text-secondary mb-1">
+                            <div class="text-3xl font-black text-primary mb-1">
                                 {{ $totalProducts > 0 ? $totalProducts . '+' : '50+' }}
                             </div>
                             <div class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">
@@ -161,7 +161,7 @@
 
                     @if(!empty($company->address))
                     <div class="flex items-start gap-3">
-                        <div class="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center text-secondary flex-shrink-0 mt-0.5">
+                        <div class="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center text-primary flex-shrink-0 mt-0.5">
                             <span class="material-symbols-outlined text-[18px]">location_on</span>
                         </div>
                         <div class="min-w-0">
