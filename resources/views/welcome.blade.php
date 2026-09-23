@@ -68,7 +68,7 @@
         @php
             $heroMode = $company->hero_mode ?? 'custom';
             $heroBadge = $company->hero_badge ?? 'Marketplace Produk Digital';
-            $heroTitle = $company->hero_title ?? 'Katalog Developer & Aplikasi Siap Pakai';
+            $heroTitle = $company->hero_title ?? 'Pusat Aplikasi Digital Siap Pakai';
             $heroSubtitle = $company->hero_subtitle ?? 'Temukan source code siap deploy, template aplikasi, dan sistem digital berkualitas langsung dari developer terverifikasi untuk mempercepat proyek Anda.';
             $heroBtnPrimaryText = $company->hero_btn_primary_text ?? 'Jelajahi Produk';
             $heroBtnPrimaryUrl = $company->hero_btn_primary_url ?? url('/products');
@@ -157,11 +157,11 @@
                                     {{ $heroTitle }}
                                 @endif
                             @else
-                                Developer &amp; <span class="text-primary font-extrabold">Aplikasi Siap Pakai</span>
+                                Pusat Aplikasi <span class="text-primary font-extrabold">Digital Siap Pakai</span>
                             @endif
                         </h1>
                         <p class="text-xs sm:text-sm md:text-body-lg text-on-surface-variant max-w-2xl mt-2 text-balance leading-relaxed">
-                            {{ (!empty($heroSubtitle) && !Str::contains($heroSubtitle, 'engineering excellence') && !Str::contains($heroSubtitle, 'keunggulan dalam bidang engineering')) ? $heroSubtitle : 'Temukan source code siap deploy, template aplikasi, dan sistem digital berkualitas langsung dari developer terverifikasi untuk mempercepat proyek Anda.' }}
+                            {{ (!empty($heroSubtitle) && !Str::contains($heroSubtitle, 'engineering excellence') && !Str::contains($heroSubtitle, 'keunggulan dalam bidang engineering')) ? $heroSubtitle : 'Temukan berbagai aplikasi, template web, dan sistem bisnis yang siap digunakan langsung. Praktis, berkualitas, dan aman.' }}
                         </p>
                     </div>
                 </div>
