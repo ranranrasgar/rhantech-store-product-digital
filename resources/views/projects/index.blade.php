@@ -289,7 +289,7 @@
                         </template>
 
                         <template x-if="type">
-                            <span class="inline-flex items-center gap-1 text-xs bg-secondary/15 text-secondary px-2.5 py-1 rounded-full font-medium">
+                            <span class="inline-flex items-center gap-1 text-xs bg-primary/15 text-primary px-2.5 py-1 rounded-full font-medium">
                                 <span class="material-symbols-outlined text-xs">devices</span>
                                 <span x-text="type"></span>
                                 <button type="button" @click="setType('')" class="hover:text-error">
@@ -349,7 +349,7 @@
                     </span>
                 </template>
                 <template x-if="type">
-                    <span class="inline-flex items-center gap-1 text-xs bg-secondary/15 text-secondary px-2.5 py-1 rounded-full font-medium">
+                    <span class="inline-flex items-center gap-1 text-xs bg-primary/15 text-primary px-2.5 py-1 rounded-full font-medium">
                         <span class="material-symbols-outlined text-xs">devices</span>
                         <span x-text="type"></span>
                         <button type="button" @click="setType('')" class="hover:text-error">

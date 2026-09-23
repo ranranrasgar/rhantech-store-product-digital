@@ -147,7 +147,7 @@
     </style>
 @livewireStyles
 </head>
-<body class="bg-background text-on-background font-body-md text-body-md antialiased selection:bg-secondary-container selection:text-on-secondary-container flex flex-col min-h-screen">
+<body class="bg-background text-on-background font-body-md text-body-md antialiased selection:bg-primary-container selection:text-on-secondary-container flex flex-col min-h-screen">
 
 <style>
 /* ── Modern Tech Header (Synchronized with Products / Marketplace) ── */
@@ -724,7 +724,7 @@
                             navLinks.forEach(link => {
                                 const href = link.getAttribute('href');
                                 if (href && href.includes('/#')) {
-                                    link.classList.remove('active', 'text-sky-600', 'dark:text-sky-400', 'font-bold', 'text-secondary', 'dark:text-secondary-fixed-dim', 'font-semibold');
+                                    link.classList.remove('active', 'text-sky-600', 'dark:text-sky-400', 'font-bold', 'text-primary', 'dark:text-primary-fixed-dim', 'font-semibold');
                                     link.classList.add('text-on-surface-variant', 'dark:text-on-surface-variant/80');
                                 }
                             });

@@ -807,7 +807,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-lg">
                 @foreach($services as $service)
                 <div class="bg-surface rounded-xl p-4 sm:p-lg border border-outline-variant hover:border-primary/50 transition-colors group">
-                    <div class="w-12 h-12 md:w-14 md:h-14 rounded-lg bg-secondary-container/20 text-secondary flex items-center justify-center mb-3 md:mb-md group-hover:scale-110 transition-transform">
+                    <div class="w-12 h-12 md:w-14 md:h-14 rounded-lg bg-primary/10 text-primary flex items-center justify-center mb-3 md:mb-md group-hover:scale-110 transition-transform">
                         <span class="material-symbols-outlined text-2xl md:text-3xl">{{ $service->icon ?? 'layers' }}</span>
                     </div>
                     <h3 class="text-base md:font-headline-sm font-bold text-on-background dark:text-white mb-1 md:mb-sm">{{ $service->name }}</h3>
@@ -849,7 +849,7 @@
                     </div>
                     <div class="p-3 sm:p-md">
                         <h3 class="text-sm md:font-headline-sm font-bold text-on-background dark:text-white mb-1 truncate group-hover:text-primary transition-colors">{{ $project->title }}</h3>
-                        <span class="inline-flex items-center gap-1 font-label-md text-xs md:text-sm text-secondary group-hover:text-primary transition-colors font-semibold">
+                        <span class="inline-flex items-center gap-1 font-label-md text-xs md:text-sm text-primary group-hover:text-primary transition-colors font-semibold">
                             View Detail <span class="material-symbols-outlined text-xs group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
                         </span>
                     </div>

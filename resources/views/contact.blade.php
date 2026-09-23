@@ -18,19 +18,19 @@
             <div class="space-y-lg">
                 @if(isset($company) && $company->email)
                 <div class="flex items-start gap-md">
-                    <div class="p-3 bg-surface-container-high rounded-full text-secondary">
+                    <div class="p-3 bg-surface-container-high rounded-full text-primary">
                         <span class="material-symbols-outlined">mail</span>
                     </div>
                     <div>
                         <h4 class="font-label-md font-bold text-on-background dark:text-white mb-1">Email</h4>
-                        <a href="mailto:{{ $company->email }}" class="font-body-md text-secondary hover:underline">{{ $company->email }}</a>
+                        <a href="mailto:{{ $company->email }}" class="font-body-md text-primary hover:underline">{{ $company->email }}</a>
                     </div>
                 </div>
                 @endif
                 
                 @if(isset($company) && $company->phone)
                 <div class="flex items-start gap-md">
-                    <div class="p-3 bg-surface-container-high rounded-full text-secondary">
+                    <div class="p-3 bg-surface-container-high rounded-full text-primary">
                         <span class="material-symbols-outlined">call</span>
                     </div>
                     <div>
@@ -42,7 +42,7 @@
 
                 @if(isset($company) && $company->address)
                 <div class="flex items-start gap-md">
-                    <div class="p-3 bg-surface-container-high rounded-full text-secondary">
+                    <div class="p-3 bg-surface-container-high rounded-full text-primary">
                         <span class="material-symbols-outlined">location_on</span>
                     </div>
                     <div>
@@ -130,29 +130,29 @@
                 <input type="hidden" name="form_loaded_at" id="form_loaded_at" value="">
                 <div>
                     <label class="block font-label-md text-on-surface mb-xs">Your Name *</label>
-                    <input type="text" name="name" required value="{{ old('name') }}" class="w-full pl-4 pr-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-secondary focus:ring-1 focus:ring-secondary/20">
+                    <input type="text" name="name" required value="{{ old('name') }}" class="w-full pl-4 pr-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-primary focus:ring-1 focus:ring-primary/20">
                     @error('name')<span class="text-error text-xs">{{ $message }}</span>@enderror
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
                     <div>
                         <label class="block font-label-md text-on-surface mb-xs">Email Address *</label>
-                        <input type="email" name="email" required value="{{ old('email') }}" class="w-full pl-4 pr-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-secondary focus:ring-1 focus:ring-secondary/20">
+                        <input type="email" name="email" required value="{{ old('email') }}" class="w-full pl-4 pr-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-primary focus:ring-1 focus:ring-primary/20">
                         @error('email')<span class="text-error text-xs">{{ $message }}</span>@enderror
                     </div>
                     <div>
                         <label class="block font-label-md text-on-surface mb-xs">Phone Number</label>
-                        <input type="text" name="phone" value="{{ old('phone') }}" class="w-full pl-4 pr-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-secondary focus:ring-1 focus:ring-secondary/20">
+                        <input type="text" name="phone" value="{{ old('phone') }}" class="w-full pl-4 pr-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-primary focus:ring-1 focus:ring-primary/20">
                         @error('phone')<span class="text-error text-xs">{{ $message }}</span>@enderror
                     </div>
                 </div>
                 <div>
                     <label class="block font-label-md text-on-surface mb-xs">Subject *</label>
-                    <input type="text" name="subject" required value="{{ old('subject') }}" class="w-full pl-4 pr-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-secondary focus:ring-1 focus:ring-secondary/20">
+                    <input type="text" name="subject" required value="{{ old('subject') }}" class="w-full pl-4 pr-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-primary focus:ring-1 focus:ring-primary/20">
                     @error('subject')<span class="text-error text-xs">{{ $message }}</span>@enderror
                 </div>
                 <div>
                     <label class="block font-label-md text-on-surface mb-xs">Message *</label>
-                    <textarea name="message" required rows="5" class="w-full pl-4 pr-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-secondary focus:ring-1 focus:ring-secondary/20">{{ old('message') }}</textarea>
+                    <textarea name="message" required rows="5" class="w-full pl-4 pr-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-primary focus:ring-1 focus:ring-primary/20">{{ old('message') }}</textarea>
                     @error('message')<span class="text-error text-xs">{{ $message }}</span>@enderror
                 </div>
                 <div class="pt-sm border-t border-outline-variant/30 mt-sm">
