@@ -801,8 +801,8 @@
     <section id="services" class="py-12 md:py-2xl bg-surface-container">
         <div class="max-w-container-max mx-auto px-4 sm:px-lg">
             <div class="text-center mb-8 md:mb-xl">
-                <h2 class="text-2xl md:font-headline-xl font-black text-on-background dark:text-white mb-2 md:mb-md">Our Services</h2>
-                <p class="text-xs md:text-body-lg text-on-surface-variant max-w-2xl mx-auto">Comprehensive digital solutions tailored to your business needs.</p>
+                <h2 class="text-2xl md:font-headline-xl font-black text-on-background dark:text-white mb-2 md:mb-md">Layanan Kami</h2>
+                <p class="text-xs md:text-body-lg text-on-surface-variant max-w-2xl mx-auto">Solusi digital komprehensif yang disesuaikan dengan kebutuhan bisnis Anda.</p>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-lg">
                 @foreach($services as $service)
