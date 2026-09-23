@@ -282,10 +282,10 @@
                 {{ $company->company_name ?? 'rhantech' }}
             </a>
             <div class="hidden md:flex items-center gap-lg nav-links">
-                <a class="nav-link {{ request()->is('/') ? 'active text-sky-600 dark:text-sky-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ url('/#home') }}">Home</a>
+                <a class="nav-link {{ request()->is('/') ? 'active text-sky-600 dark:text-sky-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ url('/?bypass=1#home') }}">Home</a>
                 {{-- <a class="nav-link {{ request()->routeIs('about') ? 'active text-sky-600 dark:text-sky-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ route('about') }}" wire:navigate>About</a> --}}
-                {{-- <a class="nav-link text-on-surface-variant dark:text-on-surface-variant/80 hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ url('/#services') }}">Services</a> --}}
-                {{-- <a class="nav-link {{ request()->routeIs('projects.*') ? 'active text-sky-600 dark:text-sky-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ route('projects.index') }}" wire:navigate>Portfolio</a> --}}
+                <a class="nav-link text-on-surface-variant dark:text-on-surface-variant/80 hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ url('/?bypass=1#services') }}">Services</a>
+                <a class="nav-link {{ request()->routeIs('projects.*') ? 'active text-sky-600 dark:text-sky-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ route('projects.index') }}" wire:navigate>Portfolio</a>
                 <a class="nav-link {{ request()->routeIs('products.*') || request()->routeIs('checkout.*') ? 'active text-sky-600 dark:text-sky-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ route('products.index') }}">Store</a>
                 {{-- <a class="nav-link {{ request()->routeIs('clients.*') ? 'active text-sky-600 dark:text-sky-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ route('clients.index') }}" wire:navigate>Clients</a> --}}
                 <a class="nav-link {{ request()->routeIs('contact') ? 'active text-sky-600 dark:text-sky-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ url('/contact') }}" wire:navigate>Contact</a>
@@ -593,8 +593,8 @@
                 <h4 class="font-label-md text-label-md text-on-background dark:text-white font-bold mb-4 uppercase tracking-wider text-xs">Perusahaan</h4>
                 <ul class="flex flex-col gap-2.5 text-xs">
                     {{-- <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ route('about') }}" wire:navigate>Tentang Kami</a></li> --}}
-                    {{-- <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/#services') }}">Layanan</a></li> --}}
-                    {{-- <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/projects') }}" wire:navigate>Portofolio</a></li> --}}
+                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/?bypass=1#services') }}">Layanan</a></li>
+                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ route('projects.index') }}" wire:navigate>Portofolio</a></li>
                     <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/products') }}">Katalog Produk</a></li>
                 </ul>
             </div>
