@@ -18,6 +18,9 @@ class PublicController extends Controller
 {
     public function home()
     {
+        if ($redirectUrl = config('app.home_redirect')) {
+            return redirect($redirectUrl);
+        }
         $services = Service::query()->where('is_active', true)->select(['id', 'name', 'slug', 'short_description', 'icon'])->get();
         $projects = Project::query()->with('projectCategory:id,name,slug')->where('status', 'published')->select(['id', 'project_category_id', 'title', 'slug', 'short_description', 'thumbnail', 'created_at'])->latest()->take(3)->get();
         $clients = Client::query()->where('is_active', true)->select(['id', 'name', 'logo', 'website'])->get();
