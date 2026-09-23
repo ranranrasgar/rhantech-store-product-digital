@@ -73,15 +73,16 @@ class ProductController extends Controller
         }
 
         // Prioritaskan produk beriklan aktif berdasarkan BID TERTINGGI (Ad Auction / Peringkat Iklan)
-        // Bid lebih tinggi (misal Rp1.000 vs Rp100) otomatis menempati posisi nomor 1 teratas
-        $query->select('products.*')->addSelect([
-            'max_bid' => \App\Models\SellerAd::selectRaw('COALESCE(MAX(bid_price), 0)')
-                ->join('stores', 'stores.id', '=', 'seller_ads.store_id')
-                ->whereColumn('seller_ads.product_id', 'products.id')
-                ->where('seller_ads.status', 'active')
-                ->where('stores.ad_balance', '>', 0)
-                ->limit(1)
-        ])->orderByDesc('max_bid');
+        // Bid lebih tinggi otomatis menempati posisi teratas. 
+        // Subquery diletakkan langsung di orderBy agar tidak konflik saat pagination count.
+        $adSubquery = \App\Models\SellerAd::selectRaw('COALESCE(MAX(bid_price), 0)')
+            ->join('stores', 'stores.id', '=', 'seller_ads.store_id')
+            ->whereColumn('seller_ads.product_id', 'products.id')
+            ->where('seller_ads.status', 'active')
+            ->where('stores.ad_balance', '>', 0)
+            ->limit(1);
+
+        $query->select('products.*')->orderByDesc($adSubquery);
 
         if ($request->sort == 'best_seller') {
             $query->withCount(['orders' => function ($q) {
