@@ -16,9 +16,9 @@ use Illuminate\Support\Facades\Log;
 
 class PublicController extends Controller
 {
-    public function home()
+    public function home(Request $request)
     {
-        if ($redirectUrl = config('app.home_redirect')) {
+        if (!$request->has('bypass') && $redirectUrl = config('app.home_redirect')) {
             return redirect($redirectUrl);
         }
         $services = Service::query()->where('is_active', true)->select(['id', 'name', 'slug', 'short_description', 'icon'])->get();
