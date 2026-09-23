@@ -119,7 +119,7 @@ class ProductController extends Controller
         }
 
         // Metadata hanya dimuat pada saat full page load dan di-cache 30 menit
-        $categories = Cache::remember('products_page_categories', 1800, function () {
+        $categories = Cache::remember('products_page_categories_v2', 1800, function () {
             return \App\Models\ProductCategory::select(['id', 'store_id', 'name'])
                 ->whereHas('products', function ($q) {
                     $q->published();
@@ -133,7 +133,7 @@ class ProductController extends Controller
                 ->get();
         });
 
-        $types = Cache::remember('products_page_types', 1800, function () {
+        $types = Cache::remember('products_page_types_v2', 1800, function () {
             return \App\Models\ProductType::select(['id', 'store_id', 'name'])
                 ->whereHas('products', function ($q) {
                     $q->published();
@@ -146,16 +146,16 @@ class ProductController extends Controller
                 ->get();
         });
 
-        $stores = Cache::remember('products_page_stores', 1800, function () {
+        $stores = Cache::remember('products_page_stores_v2', 1800, function () {
             return \App\Models\Store::select(['id', 'name', 'slug'])->get();
         });
 
-        $banners = Cache::remember('products_page_banners', 1800, function () {
+        $banners = Cache::remember('products_page_banners_v2', 1800, function () {
             return \App\Models\Banner::where('is_active', true)->get()->keyBy('position');
         });
 
         // Produk unggulan yang paling banyak diklik / dilihat + relasi store dan image
-        $topProducts = Cache::remember('products_page_top_products', 1800, function () {
+        $topProducts = Cache::remember('products_page_top_products_v2', 1800, function () {
             return Product::with(['store:id,name,slug', 'images'])
                 ->published()
                 ->select(['id', 'store_id', 'name', 'slug', 'price', 'discount_price', 'views', 'sales_count'])
@@ -166,7 +166,7 @@ class ProductController extends Controller
         });
 
         // Banner Toko Rekomendasi & Beriklan (Carousel Slide Bergantian)
-        $adStores = Cache::remember('products_page_ad_stores', 1800, function () {
+        $adStores = Cache::remember('products_page_ad_stores_v2', 1800, function () {
             return \App\Models\Store::where('ad_balance', '>', 0)
                 ->whereHas('ads', function ($q) {
                     $q->activeAndFunded()->whereNotNull('product_id', 'and');
