@@ -40,7 +40,7 @@
                         "on-tertiary-container": "#7073ff",
                         "surface-container-low": "rgb(var(--theme-surface-low) / <alpha-value>)",
                         "tertiary-fixed-dim": "#c0c1ff",
-                        "secondary-fixed-dim": "#38bdf8",
+                        "secondary-fixed-dim": "#fb923c",
                         "surface-variant": "rgb(var(--theme-surface-variant) / <alpha-value>)",
                         "background": "rgb(var(--theme-background) / <alpha-value>)",
                         "on-secondary-container": "#0369a1",
@@ -48,7 +48,7 @@
                         "surface-dim": "#cbdbf5",
                         "on-secondary-fixed-variant": "#075985",
                         "surface-container-lowest": "rgb(var(--theme-surface-lowest) / <alpha-value>)",
-                        "secondary": "#0284c7",
+                        "secondary": "#ea580c",
                         "surface-container-highest": "rgb(var(--theme-surface-highest) / <alpha-value>)",
                         "tertiary-container": "#07006c",
                         "on-primary": "#ffffff",
@@ -152,10 +152,10 @@
 <style>
 /* ── Modern Tech Header (Synchronized with Products / Marketplace) ── */
 .site-header {
-    background: linear-gradient(135deg, #050e1d 0%, #081d38 50%, #0a2d52 100%);
+    background: #0a1628;
     position: fixed; top: 0; left: 0; right: 0;
     z-index: 50;
-    box-shadow: 0 4px 25px rgba(0,0,0,0.45);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
     padding-top: env(safe-area-inset-top, 0px);
 }
 .site-header::before {
@@ -173,20 +173,11 @@
     position: relative;
     z-index: 1;
 }
-.site-header::after {
-    content: '';
-    position: absolute; bottom: 0; left: 0; right: 0;
-    height: 2.5px;
-    background: linear-gradient(90deg, transparent 0%, rgba(56, 189, 248, 0.8) 30%, rgba(251, 191, 36, 0.7) 55%, rgba(0, 212, 255, 0.8) 80%, transparent 100%);
-    z-index: 2;
-    pointer-events: none;
-}
+
 .header-logo {
     font-size: 22px; font-weight: 900;
     letter-spacing: -0.5px;
-    background: linear-gradient(135deg, #ffffff, #a8e6f0);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #ffffff;
     text-decoration: none;
     display: flex; align-items: center; gap: 8px;
     transition: opacity 0.2s;
@@ -194,7 +185,7 @@
 .header-logo:hover { opacity: 0.85; }
 .header-logo .logo-dot {
     width: 8px; height: 8px;
-    background: #0284c7;
+    background: #ea580c;
     border-radius: 50%;
     box-shadow: 0 0 10px rgba(2, 132, 199, 0.4);
     animation: pulse-dot 2s infinite;
@@ -212,7 +203,7 @@
     transition: border-color 0.2s, background 0.2s;
 }
 .search-bar-wrap:focus-within {
-    border-color: #0284c7;
+    border-color: #ea580c;
     background: rgba(255,255,255,0.12);
     box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2);
 }
@@ -228,7 +219,7 @@
 }
 .search-bar-wrap input::placeholder { color: rgba(255,255,255,0.45); }
 .search-bar-wrap button {
-    background: #0284c7;
+    background: #ea580c;
     border: none; color: #fff;
     padding: 10px 18px;
     cursor: pointer; transition: background 0.15s;
@@ -252,7 +243,7 @@
 }
 .header-action-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
 .header-action-btn.primary {
-    background: #0284c7;
+    background: #ea580c;
     color: #fff;
     font-weight: 700;
 }
@@ -262,7 +253,7 @@
     transition: color 0.15s;
     cursor: pointer; text-decoration: none;
 }
-.search-tag:hover { color: #38bdf8; }
+.search-tag:hover { color: #fb923c; }
 .search-tag-sep { color: rgba(255,255,255,0.2); margin: 0 2px; }
 
 /* Responsive fallbacks to prevent header elements duplication before Tailwind CDN loads */
@@ -291,21 +282,21 @@
                 {{ $company->company_name ?? 'rhantech' }}
             </a>
             <div class="hidden md:flex items-center gap-lg nav-links">
-                <a class="nav-link {{ request()->is('/') ? 'active text-sky-600 dark:text-sky-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ url('/#home') }}">Home</a>
-                <a class="nav-link {{ request()->routeIs('about') ? 'active text-sky-600 dark:text-sky-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ route('about') }}" wire:navigate>About</a>
-                <a class="nav-link text-on-surface-variant dark:text-on-surface-variant/80 hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ url('/#services') }}">Services</a>
-                <a class="nav-link {{ request()->routeIs('projects.*') ? 'active text-sky-600 dark:text-sky-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ route('projects.index') }}" wire:navigate>Portfolio</a>
-                <a class="nav-link {{ request()->routeIs('products.*') || request()->routeIs('checkout.*') ? 'active text-sky-600 dark:text-sky-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ route('products.index') }}">Store</a>
-                <a class="nav-link {{ request()->routeIs('clients.*') ? 'active text-sky-600 dark:text-sky-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ route('clients.index') }}" wire:navigate>Clients</a>
-                <a class="nav-link {{ request()->routeIs('contact') ? 'active text-sky-600 dark:text-sky-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ url('/contact') }}" wire:navigate>Contact</a>
+                <a class="nav-link {{ request()->is('/') ? 'active text-orange-600 dark:text-orange-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-orange-600 dark:hover:text-orange-400 transition-colors duration-200" href="{{ url('/#home') }}">Home</a>
+                <a class="nav-link {{ request()->routeIs('about') ? 'active text-orange-600 dark:text-orange-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-orange-600 dark:hover:text-orange-400 transition-colors duration-200" href="{{ route('about') }}" wire:navigate>About</a>
+                <a class="nav-link text-on-surface-variant dark:text-on-surface-variant/80 hover:text-orange-600 dark:hover:text-orange-400 transition-colors duration-200" href="{{ url('/#services') }}">Services</a>
+                <a class="nav-link {{ request()->routeIs('projects.*') ? 'active text-orange-600 dark:text-orange-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-orange-600 dark:hover:text-orange-400 transition-colors duration-200" href="{{ route('projects.index') }}" wire:navigate>Portfolio</a>
+                <a class="nav-link {{ request()->routeIs('products.*') || request()->routeIs('checkout.*') ? 'active text-orange-600 dark:text-orange-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-orange-600 dark:hover:text-orange-400 transition-colors duration-200" href="{{ route('products.index') }}">Store</a>
+                <a class="nav-link {{ request()->routeIs('clients.*') ? 'active text-orange-600 dark:text-orange-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-orange-600 dark:hover:text-orange-400 transition-colors duration-200" href="{{ route('clients.index') }}" wire:navigate>Clients</a>
+                <a class="nav-link {{ request()->routeIs('contact') ? 'active text-orange-600 dark:text-orange-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-orange-600 dark:hover:text-orange-400 transition-colors duration-200" href="{{ url('/contact') }}" wire:navigate>Contact</a>
             </div>
             <div class="flex items-center gap-2">
                 @guest
-                    <a class="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-200 hover:text-sky-600 dark:hover:text-sky-400 px-3 py-2 transition-colors flex items-center gap-1" href="{{ route('login') }}">
+                    <a class="text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-200 hover:text-orange-600 dark:hover:text-orange-400 px-3 py-2 transition-colors flex items-center gap-1" href="{{ route('login') }}">
                         <span class="material-symbols-outlined text-[17px]">login</span>
                         <span>Login</span>
                     </a>
-                    <a class="hidden md:inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-sky-500 hover:bg-sky-600 text-white rounded-xl font-bold text-xs sm:text-sm active:scale-95 transition-all duration-150 shadow-sm" href="{{ route('register') }}">
+                    <a class="hidden md:inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-bold text-xs sm:text-sm active:scale-95 transition-all duration-150 shadow-none" href="{{ route('register') }}">
                         <span class="material-symbols-outlined text-[17px]">rocket_launch</span>
                         <span>Buat Website / Project</span>
                     </a>
@@ -321,7 +312,7 @@
                             </button>
                             
                             <!-- Dropdown Menu -->
-                            <div x-show="open" x-cloak style="display: none;" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95" class="absolute right-0 mt-2 w-56 bg-surface-container-lowest border border-outline-variant rounded-md shadow-xl py-2 z-50">
+                            <div x-show="open" x-cloak style="display: none;" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95" class="absolute right-0 mt-2 w-56 bg-surface-container-lowest border border-outline-variant rounded-md shadow-none py-2 z-50">
                                 <a href="{{ route('tenant.profile.index') }}" class="block px-4 py-3 border-b border-outline-variant/50 mb-1 hover:bg-surface-container-low transition-colors">
                                     <p class="text-sm font-bold text-on-surface truncate">{{ auth()->user()->name }}</p>
                                     <p class="text-xs text-on-surface-variant truncate mb-1">{{ auth()->user()->email }}</p>
@@ -389,7 +380,7 @@
                  @click.outside="open = false"
                  @keydown.escape.window="open = false">
                 <form action="{{ route('products.index') }}" method="GET" class="m-0">
-                    <div class="search-bar-wrap !border-white/20 !bg-white/10 focus-within:!border-[#0284c7]">
+                    <div class="search-bar-wrap !border-white/20 !bg-white/10 focus-within:!border-[#ea580c]">
                         <input type="text" name="search" x-model="query"
                             @input.debounce.250ms="fetchSuggest()"
                             @focus="if(query.trim().length >= 2) fetchSuggest()"
@@ -406,12 +397,12 @@
                 <div x-show="open" 
                      x-cloak
                      style="display: none;"
-                     class="absolute top-full left-0 right-0 mt-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl shadow-2xl overflow-hidden z-50 text-xs">
+                     class="absolute top-full left-0 right-0 mt-1.5 bg-white dark:bg-slate-900 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-none overflow-hidden z-50 text-xs">
                     
                     <!-- Toko / Akun Suggestion -->
                     <template x-if="results && results.stores && results.stores.length > 0">
-                        <div class="p-2 border-b border-slate-100 dark:border-slate-800 bg-sky-50/50 dark:bg-sky-950/20">
-                            <div class="text-[10px] font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400 px-1 mb-1.5 flex items-center gap-1">
+                        <div class="p-2 border-b border-slate-100 dark:border-slate-800 bg-orange-50/50 dark:bg-orange-950/20">
+                            <div class="text-[10px] font-bold uppercase tracking-wider text-orange-600 dark:text-orange-400 px-1 mb-1.5 flex items-center gap-1">
                                 <span class="material-symbols-outlined text-[13px]">storefront</span>
                                 <span>Toko / Akun</span>
                             </div>
@@ -419,13 +410,13 @@
                                 <template x-for="st in results.stores" :key="'store-'+st.id">
                                     <a :href="st.url" class="flex items-center justify-between gap-2 p-1.5 rounded-lg hover:bg-white dark:hover:bg-slate-800 transition-colors">
                                         <div class="flex items-center gap-2 min-w-0">
-                                            <img :src="st.logo" class="w-6 h-6 rounded-lg object-cover border border-slate-200 dark:border-slate-700 shrink-0">
+                                            <img :src="st.logo" class="w-6 h-6 rounded-lg object-cover border border-zinc-200 dark:border-zinc-800 shrink-0">
                                             <div class="min-w-0">
-                                                <div class="font-bold text-slate-800 dark:text-white truncate text-[11px]" x-text="st.name"></div>
+                                                <div class="font-bold text-zinc-800 dark:text-zinc-100 truncate text-[11px]" x-text="st.name"></div>
                                                 <div class="text-[9px] text-slate-400 font-mono" x-text="'/@' + st.slug"></div>
                                             </div>
                                         </div>
-                                        <span class="text-[10px] text-sky-600 dark:text-sky-400 font-bold shrink-0 flex items-center gap-0.5">
+                                        <span class="text-[10px] text-orange-600 dark:text-orange-400 font-bold shrink-0 flex items-center gap-0.5">
                                             <span>Lihat Toko</span>
                                             <span class="material-symbols-outlined text-[11px]">arrow_forward</span>
                                         </span>
@@ -447,11 +438,11 @@
                                     <a :href="pr.url" class="flex items-center justify-between gap-2 p-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
                                         <div class="flex items-center gap-2 min-w-0">
                                             <template x-if="pr.image">
-                                                <img :src="pr.image" class="w-6 h-6 rounded-md object-cover border border-slate-200 dark:border-slate-700 shrink-0">
+                                                <img :src="pr.image" class="w-6 h-6 rounded-md object-cover border border-zinc-200 dark:border-zinc-800 shrink-0">
                                             </template>
                                             <div class="font-medium text-slate-700 dark:text-slate-200 truncate text-[11px]" x-text="pr.name"></div>
                                         </div>
-                                        <span class="font-bold text-[#0284c7] text-[10px] shrink-0" x-text="pr.price_formatted"></span>
+                                        <span class="font-bold text-[#ea580c] text-[10px] shrink-0" x-text="pr.price_formatted"></span>
                                     </a>
                                 </template>
                             </div>
@@ -460,7 +451,7 @@
 
                     <!-- View all link -->
                     <a :href="'{{ route('products.index') }}?search=' + encodeURIComponent(query)"
-                       class="block py-2 px-3 text-center bg-slate-50 dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-800 text-sky-600 dark:text-sky-400 font-bold text-[11px] border-t border-slate-100 dark:border-slate-800">
+                       class="block py-2 px-3 text-center bg-zinc-50 dark:bg-zinc-900/80 hover:bg-slate-100 dark:hover:bg-slate-800 text-orange-600 dark:text-orange-400 font-bold text-[11px] border-t border-slate-100 dark:border-slate-800">
                         <span x-text="'Lihat semua hasil untuk &quot;' + query + '&quot;'"></span> →
                     </a>
                 </div>
@@ -472,17 +463,17 @@
                 <a href="{{ route('cart.index') }}" class="header-action-btn relative !p-2 !rounded-xl !bg-white/10 hover:!bg-white/20 border border-white/10 transition-all flex items-center justify-center" title="Keranjang">
                     <span class="material-symbols-outlined text-[20px] text-white">shopping_cart</span>
                     <span data-cart-count
-                        class="absolute -top-1 -right-1 bg-sky-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full min-w-[16px] text-center leading-none shadow"
+                        class="absolute -top-1 -right-1 bg-orange-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full min-w-[16px] text-center leading-none shadow"
                         style="{{ $cartCount > 0 ? '' : 'display:none' }}">{{ $cartCount }}</span>
                 </a>
 
                 @guest
-                    <a href="{{ route('login') }}" class="header-action-btn primary text-xs !py-2 !px-3 !rounded-xl font-bold whitespace-nowrap shadow-sm">Login</a>
+                    <a href="{{ route('login') }}" class="header-action-btn primary text-xs !py-2 !px-3 !rounded-xl font-bold whitespace-nowrap shadow-none">Login</a>
                 @else
                     <div class="relative" x-data="{ open: false }" @click.outside="open = false">
                         <button type="button"
                                 @click="open = !open" 
-                                class="flex items-center focus:outline-none p-0.5 rounded-full ring-2 ring-sky-500/40 cursor-pointer active:scale-95 transition-transform"
+                                class="flex items-center focus:outline-none p-0.5 rounded-full ring-2 ring-orange-500/40 cursor-pointer active:scale-95 transition-transform"
                                 aria-haspopup="true"
                                 :aria-expanded="open"
                                 title="Menu Akun">
@@ -497,10 +488,10 @@
                              x-transition:leave="transition ease-in duration-100"
                              x-transition:leave-start="transform opacity-100 scale-100"
                              x-transition:leave-end="transform opacity-0 scale-95"
-                             class="absolute right-0 mt-2 w-52 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl py-2 z-50 text-xs">
+                             class="absolute right-0 mt-2 w-52 bg-white dark:bg-slate-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-none py-2 z-50 text-xs">
                             <div class="px-3.5 py-2 border-b border-slate-100 dark:border-slate-800">
-                                <p class="font-bold text-slate-800 dark:text-white truncate">{{ auth()->user()->name }}</p>
-                                <p class="text-[11px] text-slate-500 dark:text-slate-400 truncate">{{ auth()->user()->email }}</p>
+                                <p class="font-bold text-zinc-800 dark:text-zinc-100 truncate">{{ auth()->user()->name }}</p>
+                                <p class="text-[11px] text-zinc-500 dark:text-zinc-400 truncate">{{ auth()->user()->email }}</p>
                             </div>
                             @if(strtolower(auth()->user()->role ?? '') === 'admin')
                             <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2.5 px-3.5 py-2 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
@@ -508,7 +499,7 @@
                             </a>
                             @endif
                             <a href="{{ route('tenant.dashboard') }}" class="flex items-center gap-2.5 px-3.5 py-2 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
-                                <span class="material-symbols-outlined text-[17px] text-sky-500">storefront</span> Dashboard Toko
+                                <span class="material-symbols-outlined text-[17px] text-orange-500">storefront</span> Dashboard Toko
                             </a>
                             <a href="{{ route('tenant.purchases.index') }}" class="flex items-center gap-2.5 px-3.5 py-2 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
                                 <span class="material-symbols-outlined text-[17px] text-amber-500">receipt_long</span> Riwayat Belanja
@@ -623,7 +614,7 @@
                     <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ route('legal.privacy') }}">Kebijakan Privasi (UU PDP)</a></li>
                     <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ route('legal.copyright') }}">Hak Cipta & Lisensi (HAKI)</a></li>
                     <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ route('legal.refund') }}">Kebijakan Refund Konsumen</a></li>
-                    <li class="pt-1"><a class="text-[11px] text-sky-600 hover:underline flex items-center gap-1 font-medium" href="https://simpktn.kemendag.go.id" target="_blank" rel="noopener noreferrer">Layanan Ditjen PKTN Kemendag ↗</a></li>
+                    <li class="pt-1"><a class="text-[11px] text-orange-600 hover:underline flex items-center gap-1 font-medium" href="https://simpktn.kemendag.go.id" target="_blank" rel="noopener noreferrer">Layanan Ditjen PKTN Kemendag ↗</a></li>
                 </ul>
             </div>
         </div>
@@ -733,7 +724,7 @@
                             navLinks.forEach(link => {
                                 const href = link.getAttribute('href');
                                 if (href && href.includes('/#')) {
-                                    link.classList.remove('active', 'text-sky-600', 'dark:text-sky-400', 'font-bold', 'text-secondary', 'dark:text-secondary-fixed-dim', 'font-semibold');
+                                    link.classList.remove('active', 'text-orange-600', 'dark:text-orange-400', 'font-bold', 'text-secondary', 'dark:text-secondary-fixed-dim', 'font-semibold');
                                     link.classList.add('text-on-surface-variant', 'dark:text-on-surface-variant/80');
                                 }
                             });
@@ -742,7 +733,7 @@
                             const activeLink = document.querySelector(`.nav-link[href$="/#${id}"]`);
                             if (activeLink) {
                                 activeLink.classList.remove('text-on-surface-variant', 'dark:text-on-surface-variant/80');
-                                activeLink.classList.add('active', 'text-sky-600', 'dark:text-sky-400', 'font-bold');
+                                activeLink.classList.add('active', 'text-orange-600', 'dark:text-orange-400', 'font-bold');
                             }
                         }
                     });
@@ -765,5 +756,6 @@
     @include('components.pwa-install-prompt')
     @include('components.file-size-guard')
     @livewireScripts
+    @stack('scripts')
 </body>
 </html>

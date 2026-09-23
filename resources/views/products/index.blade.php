@@ -586,7 +586,7 @@
             @php $mainBanner = $banners->get('main'); @endphp
             <a href="{{ $mainBanner->link ?? '#' }}" class="{{ ($hasSide1 || $hasSide2) ? 'flex-[2] h-[160px] md:h-full' : 'w-full h-[180px] md:h-[260px]' }} overflow-hidden rounded-xl shadow-sm relative group cursor-pointer block">
                 <img src="{{ asset('storage/' . $mainBanner->image_path) }}" alt="{{ $mainBanner->title ?? 'Banner Utama' }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                <div class="absolute inset-0 bg-gradient-to-r from-black/25 to-transparent"></div>
+                <div class="absolute inset-0 bg-black/20"></div>
             </a>
         @endif
 
@@ -873,7 +873,7 @@
 
         {{-- ── TOKO / AKUN DITEMUKAN ── --}}
         @if(request('search') && isset($matchedStores) && $matchedStores->isNotEmpty())
-        <div class="mb-5 bg-gradient-to-r from-sky-50/80 via-white to-sky-50/40 dark:from-slate-800/90 dark:via-slate-800 dark:to-slate-800/60 p-3.5 md:p-4 rounded-xl border border-sky-200/80 dark:border-slate-700 shadow-xs">
+        <div class="mb-5 bg-surface-container-low dark:bg-slate-800 p-3.5 md:p-4 rounded-xl border border-outline-variant dark:border-slate-700">
             <div class="text-[11px] font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400 mb-2.5 flex items-center justify-between">
                 <span class="flex items-center gap-1.5">
                     <span class="material-symbols-outlined text-[16px]">storefront</span>

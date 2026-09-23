@@ -145,7 +145,7 @@
             <!-- Clean flat header when no custom image is uploaded -->
             <div class="relative px-6 pt-7 pb-5 bg-slate-100 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-800 overflow-hidden">
                 <div class="relative z-10 flex items-center gap-3">
-                    <div class="w-12 h-12 rounded-2xl bg-sky-500 text-white flex items-center justify-center shrink-0">
+                    <div class="w-12 h-12 rounded-2xl bg-orange-500 text-white flex items-center justify-center shrink-0">
                         <span class="material-symbols-outlined text-[26px]">{{ $targetBadge['icon'] }}</span>
                     </div>
                     <div>
@@ -177,7 +177,7 @@
                 @if($popupAd->link_url)
                     <a href="{{ $popupAd->link_url }}"
                        @click="close()"
-                       class="w-full sm:flex-1 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl sm:rounded-2xl bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs sm:text-sm transition-colors text-center">
+                       class="w-full sm:flex-1 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl sm:rounded-2xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs sm:text-sm transition-colors text-center">
                         <span>{{ $popupAd->link_text ?: 'Lihat Selengkapnya' }}</span>
                         <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
                     </a>
@@ -189,7 +189,7 @@
                 @else
                     <button type="button"
                             @click="close()"
-                            class="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl sm:rounded-2xl bg-sky-500 hover:bg-sky-600 text-white font-bold text-xs sm:text-sm transition-colors text-center cursor-pointer">
+                            class="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl sm:rounded-2xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs sm:text-sm transition-colors text-center cursor-pointer">
                         <span>{{ $popupAd->link_text ?: 'Mengerti & Tutup' }}</span>
                     </button>
                 @endif

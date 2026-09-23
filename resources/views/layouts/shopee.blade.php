@@ -71,7 +71,7 @@
                         "on-tertiary-container": "#7073ff",
                         "surface-container-low": "rgb(var(--theme-surface-low) / <alpha-value>)",
                         "tertiary-fixed-dim": "#c0c1ff",
-                        "secondary-fixed-dim": "#38bdf8",
+                        "secondary-fixed-dim": "#fb923c",
                         "surface-variant": "rgb(var(--theme-surface-variant) / <alpha-value>)",
                         "background": "rgb(var(--theme-background) / <alpha-value>)",
                         "on-secondary-container": "#0369a1",
@@ -79,7 +79,7 @@
                         "surface-dim": "#cbdbf5",
                         "on-secondary-fixed-variant": "#075985",
                         "surface-container-lowest": "rgb(var(--theme-surface-lowest) / <alpha-value>)",
-                        "secondary": "#0284c7",
+                        "secondary": "#ea580c",
                         "surface-container-highest": "rgb(var(--theme-surface-highest) / <alpha-value>)",
                         "tertiary-container": "#07006c",
                         "on-primary": "#ffffff",
@@ -385,7 +385,7 @@
                     <button type="button" 
                             @click="open = !open" 
                             class="flex items-center gap-2 py-1 px-2.5 rounded-full hover:bg-white/10 text-white/80 hover:text-white transition-all cursor-pointer group select-none border border-transparent hover:border-white/15 focus:outline-none"
-                            :class="{ 'bg-white/15 border-white/25 text-white shadow-sm': open }"
+                            :class="{ 'bg-white/15 border-white/25 text-white shadow-none': open }"
                             title="Menu Akun">
                         <x-user-avatar class="w-5 h-5 rounded-full border border-white/30 group-hover:border-white/70 transition-colors shrink-0" />
                         <span class="text-[12px] font-medium max-w-[130px] truncate text-white/90 group-hover:text-white">{{ auth()->user()->name }}</span>
@@ -403,16 +403,16 @@
                          x-transition:leave="transition ease-in duration-100"
                          x-transition:leave-start="transform opacity-100 scale-100 translate-y-0"
                          x-transition:leave-end="transform opacity-0 scale-95 -translate-y-1"
-                         class="absolute right-0 mt-2 w-64 bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl py-2 z-50 text-xs">
+                         class="absolute right-0 mt-2 w-64 bg-white dark:bg-[#0f172a] border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-none py-2 z-50 text-xs">
                         
                         <!-- Header User Card -->
-                        <div class="px-4 py-3 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/70 dark:bg-slate-900/50">
+                        <div class="px-4 py-3 border-b border-zinc-100 dark:border-zinc-800 bg-slate-50/70 dark:bg-slate-900/50">
                             <div class="flex items-center gap-3">
-                                <x-user-avatar class="w-10 h-10 rounded-full border-2 border-sky-400/40 shrink-0" />
+                                <x-user-avatar class="w-10 h-10 rounded-full border-2 border-orange-400/40 shrink-0" />
                                 <div class="min-w-0 flex-1">
-                                    <p class="font-bold text-slate-800 dark:text-white truncate text-xs">{{ auth()->user()->name }}</p>
-                                    <p class="text-[11px] text-slate-500 dark:text-slate-400 truncate">{{ auth()->user()->email }}</p>
-                                    <span class="inline-block mt-1 px-1.5 py-0.5 rounded text-[10px] font-semibold {{ strtolower(auth()->user()->role ?? '') === 'admin' ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400' : 'bg-sky-500/15 text-sky-600 dark:text-sky-400' }}">
+                                    <p class="font-bold text-zinc-800 dark:text-zinc-100 truncate text-xs">{{ auth()->user()->name }}</p>
+                                    <p class="text-[11px] text-zinc-500 dark:text-zinc-400 truncate">{{ auth()->user()->email }}</p>
+                                    <span class="inline-block mt-1 px-1.5 py-0.5 rounded text-[10px] font-semibold {{ strtolower(auth()->user()->role ?? '') === 'admin' ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400' : 'bg-orange-500/15 text-orange-600 dark:text-orange-400' }}">
                                         {{ strtolower(auth()->user()->role ?? '') === 'admin' ? 'Administrator' : 'Pengguna' }}
                                     </span>
                                 </div>
@@ -422,30 +422,30 @@
                         <!-- Menu Links -->
                         <div class="py-1">
                             @if(strtolower(auth()->user()->role ?? '') === 'admin')
-                            <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2.5 px-4 py-2 text-slate-700 dark:text-slate-200 hover:bg-sky-50 dark:hover:bg-slate-800/80 hover:text-sky-600 dark:hover:text-sky-400 transition-colors">
+                            <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2.5 px-4 py-2 text-slate-700 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-800/80 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
                                 <span class="material-symbols-outlined text-[18px] text-amber-500">admin_panel_settings</span> 
                                 <span class="font-medium">Dashboard Admin</span>
                             </a>
                             @endif
 
-                            <a href="{{ route('tenant.dashboard') }}" class="flex items-center gap-2.5 px-4 py-2 text-slate-700 dark:text-slate-200 hover:bg-sky-50 dark:hover:bg-slate-800/80 hover:text-sky-600 dark:hover:text-sky-400 transition-colors">
+                            <a href="{{ route('tenant.dashboard') }}" class="flex items-center gap-2.5 px-4 py-2 text-slate-700 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-800/80 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
                                 <span class="material-symbols-outlined text-[18px] text-[#00d4ff]">storefront</span> 
                                 <span class="font-medium">Dashboard Toko</span>
                             </a>
 
-                            <a href="{{ route('tenant.purchases.index') }}" class="flex items-center gap-2.5 px-4 py-2 text-slate-700 dark:text-slate-200 hover:bg-sky-50 dark:hover:bg-slate-800/80 hover:text-sky-600 dark:hover:text-sky-400 transition-colors">
+                            <a href="{{ route('tenant.purchases.index') }}" class="flex items-center gap-2.5 px-4 py-2 text-slate-700 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-800/80 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
                                 <span class="material-symbols-outlined text-[18px] text-emerald-500">receipt_long</span> 
                                 <span class="font-medium">Riwayat Pembelian</span>
                             </a>
 
-                            <a href="{{ route('tenant.profile.index') }}" class="flex items-center gap-2.5 px-4 py-2 text-slate-700 dark:text-slate-200 hover:bg-sky-50 dark:hover:bg-slate-800/80 hover:text-sky-600 dark:hover:text-sky-400 transition-colors">
-                                <span class="material-symbols-outlined text-[18px] text-sky-500">person</span> 
+                            <a href="{{ route('tenant.profile.index') }}" class="flex items-center gap-2.5 px-4 py-2 text-slate-700 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-800/80 hover:text-orange-600 dark:hover:text-orange-400 transition-colors">
+                                <span class="material-symbols-outlined text-[18px] text-orange-500">person</span> 
                                 <span class="font-medium">Profil & Akun</span>
                             </a>
                         </div>
 
                         <!-- Logout -->
-                        <form method="POST" action="{{ route('logout') }}" class="border-t border-slate-100 dark:border-slate-800/80 mt-1 pt-1">
+                        <form method="POST" action="{{ route('logout') }}" class="border-t border-zinc-100 dark:border-zinc-800 mt-1 pt-1">
                             @csrf
                             <button type="submit" class="w-full text-left flex items-center gap-2.5 px-4 py-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors font-semibold cursor-pointer">
                                 <span class="material-symbols-outlined text-[18px]">logout</span> Keluar
@@ -510,12 +510,12 @@
             <div x-show="open" 
                  x-cloak
                  style="display: none;"
-                 class="absolute top-full left-0 right-0 mt-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl shadow-2xl overflow-hidden z-50 text-xs">
+                 class="absolute top-full left-0 right-0 mt-1.5 bg-white dark:bg-slate-900 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-none overflow-hidden z-50 text-xs">
                 
                 <!-- Toko / Akun Suggestion -->
                 <template x-if="results && results.stores && results.stores.length > 0">
-                    <div class="p-2 border-b border-slate-100 dark:border-slate-800 bg-sky-50/50 dark:bg-sky-950/20">
-                        <div class="text-[10px] font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400 px-1 mb-1.5 flex items-center gap-1">
+                    <div class="p-2 border-b border-slate-100 dark:border-slate-800 bg-orange-50/50 dark:bg-orange-950/20">
+                        <div class="text-[10px] font-bold uppercase tracking-wider text-orange-600 dark:text-orange-400 px-1 mb-1.5 flex items-center gap-1">
                             <span class="material-symbols-outlined text-[13px]">storefront</span>
                             <span>Toko / Akun</span>
                         </div>
@@ -523,13 +523,13 @@
                             <template x-for="st in results.stores" :key="'store-'+st.id">
                                 <a :href="st.url" class="flex items-center justify-between gap-2 p-1.5 rounded-lg hover:bg-white dark:hover:bg-slate-800 transition-colors">
                                     <div class="flex items-center gap-2 min-w-0">
-                                        <img :src="st.logo" class="w-6 h-6 rounded-lg object-cover border border-slate-200 dark:border-slate-700 shrink-0">
+                                        <img :src="st.logo" class="w-6 h-6 rounded-lg object-cover border border-zinc-200 dark:border-zinc-800 shrink-0">
                                         <div class="min-w-0">
-                                            <div class="font-bold text-slate-800 dark:text-white truncate text-[11px]" x-text="st.name"></div>
+                                            <div class="font-bold text-zinc-800 dark:text-zinc-100 truncate text-[11px]" x-text="st.name"></div>
                                             <div class="text-[9px] text-slate-400 font-mono" x-text="'/@' + st.slug"></div>
                                         </div>
                                     </div>
-                                    <span class="text-[10px] text-sky-600 dark:text-sky-400 font-bold shrink-0 flex items-center gap-0.5">
+                                    <span class="text-[10px] text-orange-600 dark:text-orange-400 font-bold shrink-0 flex items-center gap-0.5">
                                         <span>Lihat Toko</span>
                                         <span class="material-symbols-outlined text-[11px]">arrow_forward</span>
                                     </span>
@@ -551,11 +551,11 @@
                                 <a :href="pr.url" class="flex items-center justify-between gap-2 p-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
                                     <div class="flex items-center gap-2 min-w-0">
                                         <template x-if="pr.image">
-                                            <img :src="pr.image" class="w-6 h-6 rounded-md object-cover border border-slate-200 dark:border-slate-700 shrink-0">
+                                            <img :src="pr.image" class="w-6 h-6 rounded-md object-cover border border-zinc-200 dark:border-zinc-800 shrink-0">
                                         </template>
                                         <div class="font-medium text-slate-700 dark:text-slate-200 truncate text-[11px]" x-text="pr.name"></div>
                                     </div>
-                                    <span class="font-bold text-[#0284c7] text-[10px] shrink-0" x-text="pr.price_formatted"></span>
+                                    <span class="font-bold text-[#ea580c] text-[10px] shrink-0" x-text="pr.price_formatted"></span>
                                 </a>
                             </template>
                         </div>
@@ -564,7 +564,7 @@
 
                 <!-- View all link -->
                 <a :href="'{{ route('products.index') }}?search=' + encodeURIComponent(query)"
-                   class="block py-2 px-3 text-center bg-slate-50 dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-800 text-sky-600 dark:text-sky-400 font-bold text-[11px] border-t border-slate-100 dark:border-slate-800">
+                   class="block py-2 px-3 text-center bg-zinc-50 dark:bg-zinc-900/80 hover:bg-slate-100 dark:hover:bg-slate-800 text-orange-600 dark:text-orange-400 font-bold text-[11px] border-t border-slate-100 dark:border-slate-800">
                     <span x-text="'Lihat semua hasil untuk &quot;' + query + '&quot;'"></span> →
                 </a>
             </div>
@@ -593,7 +593,7 @@
             </a>
             {{-- Mobile login / User profile --}}
             @guest
-            <a href="{{ route('login') }}" class="header-action-btn primary md:hidden text-xs !py-2 !px-3 !rounded-xl font-bold whitespace-nowrap shadow-sm">Masuk</a>
+            <a href="{{ route('login') }}" class="header-action-btn primary md:hidden text-xs !py-2 !px-3 !rounded-xl font-bold whitespace-nowrap shadow-none">Masuk</a>
             @else
             <div class="relative md:hidden" x-data="{ open: false }" @click.outside="open = false">
                 <button type="button"
@@ -613,10 +613,10 @@
                      x-transition:leave="transition ease-in duration-100"
                      x-transition:leave-start="transform opacity-100 scale-100"
                      x-transition:leave-end="transform opacity-0 scale-95"
-                     class="absolute right-0 mt-2 w-52 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl py-2 z-50 text-xs">
+                     class="absolute right-0 mt-2 w-52 bg-white dark:bg-slate-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-none py-2 z-50 text-xs">
                     <div class="px-3.5 py-2 border-b border-slate-100 dark:border-slate-800">
-                        <p class="font-bold text-slate-800 dark:text-white truncate">{{ auth()->user()->name }}</p>
-                        <p class="text-[11px] text-slate-500 dark:text-slate-400 truncate">{{ auth()->user()->email }}</p>
+                        <p class="font-bold text-zinc-800 dark:text-zinc-100 truncate">{{ auth()->user()->name }}</p>
+                        <p class="text-[11px] text-zinc-500 dark:text-zinc-400 truncate">{{ auth()->user()->email }}</p>
                     </div>
                     @if(strtolower(auth()->user()->role ?? '') === 'admin')
                     <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2.5 px-3.5 py-2 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">

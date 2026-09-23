@@ -37,48 +37,50 @@ class ChatController extends Controller
         if (!$store) {
             return response()->json(['conversations' => [], 'unread_total' => 0]);
         }
-
         $storeId = $store->id;
 
-        // Get all unique users who messaged this store
-        $userIds = ChatMessage::where('store_id', $storeId)
-            ->distinct('user_id')
-            ->pluck('user_id');
+        // Optimized: Get the latest message ID for each user chatting with this store
+        $latestMessageIds = ChatMessage::where('store_id', $storeId)
+            ->selectRaw('MAX(id) as id')
+            ->groupBy('user_id')
+            ->pluck('id');
+
+        // Fetch those exact messages with the associated user
+        $latestMessages = ChatMessage::with('user:id,name,email')
+            ->whereIn('id', $latestMessageIds)
+            ->get();
+
+        // Get unread counts grouped by user_id
+        $unreadCounts = ChatMessage::where('store_id', $storeId)
+            ->where('sender_type', 'user')
+            ->where('is_read', false)
+            ->selectRaw('user_id, count(*) as count')
+            ->groupBy('user_id')
+            ->pluck('count', 'user_id');
 
         $conversations = [];
         $unreadTotal = 0;
 
-        foreach ($userIds as $userId) {
-            $user = User::find($userId);
-            if (!$user) continue;
-
-            $lastMessage = ChatMessage::where('store_id', $storeId)
-                ->where('user_id', $userId)
-                ->latest()
-                ->first();
-
-            $unreadCount = ChatMessage::where('store_id', $storeId)
-                ->where('user_id', $userId)
-                ->where('sender_type', 'user')
-                ->where('is_read', false)
-                ->count();
-
-            $unreadTotal += $unreadCount;
+        foreach ($latestMessages as $msg) {
+            if (!$msg->user) continue;
+            
+            $uCount = $unreadCounts->get($msg->user_id, 0);
+            $unreadTotal += $uCount;
 
             $conversations[] = [
-                'user_id' => $user->id,
-                'user_name' => $user->name,
-                'user_avatar' => 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=random',
-                'user_email' => $user->email,
-                'last_message' => $lastMessage ? $lastMessage->message : '',
-                'last_time' => $lastMessage ? $lastMessage->created_at->diffForHumans() : '',
-                'last_time_raw' => $lastMessage ? $lastMessage->created_at : now(),
-                'unread_count' => $unreadCount,
+                'user_id' => $msg->user_id,
+                'user_name' => $msg->user->name,
+                'user_avatar' => 'https://ui-avatars.com/api/?name=' . urlencode($msg->user->name) . '&background=random',
+                'user_email' => $msg->user->email,
+                'last_message' => $msg->message,
+                'last_time' => $msg->created_at->diffForHumans(),
+                'last_time_raw' => $msg->created_at,
+                'unread_count' => $uCount,
             ];
         }
 
         usort($conversations, function ($a, $b) {
-            return strtotime($b['last_time_raw']) - strtotime($a['last_time_raw']);
+            return $b['last_time_raw']->timestamp <=> $a['last_time_raw']->timestamp;
         });
 
         return response()->json([
@@ -110,7 +112,7 @@ class ChatController extends Controller
             ->where('is_read', false)
             ->update(['is_read' => true]);
 
-        $messages = ChatMessage::with('product')
+        $messages = ChatMessage::with(['product', 'product.images'])
             ->where('store_id', $store->id)
             ->where('user_id', $userId)
             ->orderBy('created_at', 'asc')

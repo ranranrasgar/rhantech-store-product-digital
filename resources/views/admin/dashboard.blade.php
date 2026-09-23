@@ -152,7 +152,7 @@
                     <div class="w-10 h-10 rounded-lg bg-[#E0F2FE] text-[#0284C7] flex items-center justify-center">
                         <span class="material-symbols-outlined" style="font-size: 20px;">receipt_long</span>
                     </div>
-                    <span class="text-xs font-bold text-sky-600">Sukses</span>
+                    <span class="text-xs font-bold text-orange-600">Sukses</span>
                 </div>
                 <p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-1">Transaksi Berhasil</p>
                 <h3 class="font-display-md text-display-md font-bold text-on-surface">{{ number_format($totalOrders) }}</h3>
@@ -221,12 +221,12 @@
             <!-- Saldo Iklan Beredar di Tenant -->
             <div class="bg-surface rounded-md border border-outline-variant p-4 flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-lg bg-sky-500/10 text-[#0284c7] flex items-center justify-center shrink-0">
+                    <div class="w-10 h-10 rounded-lg bg-orange-500/10 text-[#ea580c] flex items-center justify-center shrink-0">
                         <span class="material-symbols-outlined text-[20px]">account_balance_wallet</span>
                     </div>
                     <div>
                         <p class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Saldo Iklan di Toko</p>
-                        <h4 class="text-lg font-black text-[#0284c7]">Rp {{ number_format($totalAdBalance, 0, ',', '.') }}</h4>
+                        <h4 class="text-lg font-black text-[#ea580c]">Rp {{ number_format($totalAdBalance, 0, ',', '.') }}</h4>
                     </div>
                 </div>
                 <div class="text-right text-[11px] text-on-surface-variant">
@@ -259,7 +259,7 @@
             <!-- Total Platform Traffic -->
             <div class="bg-surface rounded-md border border-outline-variant p-4 flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-lg bg-sky-500/10 text-sky-600 flex items-center justify-center shrink-0">
+                    <div class="w-10 h-10 rounded-lg bg-orange-500/10 text-orange-600 flex items-center justify-center shrink-0">
                         <span class="material-symbols-outlined text-[20px]">visibility</span>
                     </div>
                     <div>
@@ -268,7 +268,7 @@
                     </div>
                 </div>
                 <div class="text-right">
-                    <span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-300">
+                    <span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300">
                         +{{ number_format($todayVisitsCount) }} hari ini
                     </span>
                 </div>
@@ -404,7 +404,7 @@
             <!-- Header Section -->
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-outline-variant/60 pb-3">
                 <div class="flex items-center gap-2.5">
-                    <div class="w-8 h-8 rounded-lg bg-sky-500/10 text-sky-600 flex items-center justify-center">
+                    <div class="w-8 h-8 rounded-lg bg-orange-500/10 text-orange-600 flex items-center justify-center">
                         <span class="material-symbols-outlined text-[20px]">monitoring</span>
                     </div>
                     <div>
@@ -430,8 +430,8 @@
                             <p class="text-xs text-on-surface-variant">Volume pageviews & pengunjung unik per hari</p>
                         </div>
                         <div class="flex items-center gap-4 text-xs font-semibold">
-                            <span class="flex items-center gap-1.5 text-sky-600">
-                                <span class="w-2.5 h-2.5 rounded-full bg-sky-500"></span> Total Kunjungan
+                            <span class="flex items-center gap-1.5 text-orange-600">
+                                <span class="w-2.5 h-2.5 rounded-full bg-orange-500"></span> Total Kunjungan
                             </span>
                             <span class="flex items-center gap-1.5 text-emerald-600">
                                 <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Pengunjung Unik
@@ -454,13 +454,13 @@
                             <div>
                                 <div class="flex justify-between items-center text-xs mb-1.5">
                                     <span class="flex items-center gap-2 font-bold text-on-surface">
-                                        <span class="material-symbols-outlined text-[18px] text-sky-600">computer</span>
+                                        <span class="material-symbols-outlined text-[18px] text-orange-600">computer</span>
                                         Komputer / Laptop (Desktop)
                                     </span>
                                     <span class="font-bold text-on-surface">{{ $deviceStats['desktop'] }}%</span>
                                 </div>
                                 <div class="w-full h-2 rounded-full bg-surface-container-high overflow-hidden">
-                                    <div class="h-full rounded-full bg-sky-500 transition-all duration-500" style="width: {{ $deviceStats['desktop'] }}%"></div>
+                                    <div class="h-full rounded-full bg-orange-500 transition-all duration-500" style="width: {{ $deviceStats['desktop'] }}%"></div>
                                 </div>
                             </div>
 
@@ -739,8 +739,8 @@
             <div class="relative w-full rounded-xl overflow-hidden border border-outline-variant bg-surface-container-low" style="height: 480px; z-index: 1;">
                 <div id="adminGeoMap" class="w-full h-full"></div>
                 <!-- Controls overlay hint -->
-                <div class="absolute bottom-3 left-3 z-[1000] pointer-events-none bg-slate-950/80 backdrop-blur-xs text-white px-3 py-1.5 rounded-lg text-[11px] font-medium flex items-center gap-1.5 border border-white/15 shadow-md">
-                    <span class="material-symbols-outlined text-[15px] text-sky-400 leading-none">pan_tool</span>
+                <div class="absolute bottom-3 left-3 z-[1000] pointer-events-none bg-slate-950/80 backdrop-blur-xs text-white px-3 py-1.5 rounded-lg text-[11px] font-medium flex items-center gap-1.5 border border-white/15 shadow-none">
+                    <span class="material-symbols-outlined text-[15px] text-orange-400 leading-none">pan_tool</span>
                     <span>Klik &amp; Geser (Drag) • Scroll Mouse untuk Zoom In/Out</span>
                 </div>
             </div>
@@ -838,7 +838,7 @@
                 <div class="space-y-4 mt-4">
                     @forelse($recentMessages as $msg)
                     <div class="flex gap-3 items-start relative pb-3 border-b border-outline-variant/30 last:border-0 last:pb-0">
-                        <div class="w-8 h-8 rounded-full border border-sky-500 flex items-center justify-center text-sky-500 flex-shrink-0 mt-0.5 bg-surface">
+                        <div class="w-8 h-8 rounded-full border border-orange-500 flex items-center justify-center text-orange-500 flex-shrink-0 mt-0.5 bg-surface">
                             <span class="material-symbols-outlined" style="font-size: 16px;">mail</span>
                         </div>
                         <div class="min-w-0 flex-1">
@@ -899,7 +899,7 @@
                     datasets: [{
                         label: 'Pendapatan (Rp)',
                         data: data,
-                        backgroundColor: isDaily ? '#0ea5e9' : '#0284c7',
+                        backgroundColor: isDaily ? '#f97316' : '#ea580c',
                         borderRadius: isDaily ? 2 : 4,
                         borderSkipped: false,
                         barPercentage: barPct,
@@ -1061,13 +1061,13 @@
                         {
                             label: 'Total Kunjungan',
                             data: visitorTotalData,
-                            borderColor: '#0ea5e9',
+                            borderColor: '#f97316',
                             backgroundColor: gradTotal,
                             borderWidth: 2.5,
                             fill: true,
                             tension: 0.35,
                             pointRadius: 4,
-                            pointBackgroundColor: '#0ea5e9',
+                            pointBackgroundColor: '#f97316',
                             pointBorderColor: '#ffffff',
                             pointBorderWidth: 1.5,
                             pointHoverRadius: 6,

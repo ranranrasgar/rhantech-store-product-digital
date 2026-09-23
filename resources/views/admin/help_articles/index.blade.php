@@ -20,7 +20,7 @@
         </div>
     @endif
 
-    <div class="bg-surface border border-outline-variant rounded-xl shadow-sm overflow-hidden">
+    <div class="bg-surface border border-outline-variant rounded-xl shadow-none overflow-hidden">
         <table class="w-full text-left border-collapse">
             <thead>
                 <tr class="bg-surface-variant/30 text-xs uppercase text-on-surface-variant font-bold border-b border-outline-variant">

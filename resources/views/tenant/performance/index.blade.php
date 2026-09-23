@@ -3,27 +3,27 @@
 @section('title', 'Performa Toko & Analitik')
 
 @section('content')
-<div class="flex-1 overflow-y-auto p-4 md:p-8 bg-[#f8fafc] dark:bg-[#090d16] text-[#0f172a] dark:text-[#f1f5f9] transition-colors duration-200" x-data="{ tab: 'tinjauan' }">
+<div class="flex-1 overflow-y-auto p-4 md:p-8 bg-[#fafafa] dark:bg-[#000000] text-[#09090b] dark:text-[#ededed] transition-colors duration-200" x-data="{ tab: 'tinjauan' }">
     <div class="max-w-7xl mx-auto space-y-6">
 
         <!-- Header Hero & Summary -->
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-                <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-2.5">
+                <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2.5">
                     Performa & Analisis Toko
                 </h1>
-                <p class="text-xs md:text-sm text-slate-500 dark:text-slate-400 mt-1">
+                <p class="text-xs md:text-sm text-zinc-500 dark:text-zinc-400 mt-1">
                     Pantau metrik penjualan, tren konversi, efektivitas produk, dan statistik kunjungan toko digital Anda.
                 </p>
             </div>
 
             <!-- Header Quick Actions -->
             <div class="flex flex-wrap items-center gap-3">
-                <div class="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] text-xs font-semibold text-slate-600 dark:text-slate-300">
+                <div class="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-white dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 text-xs font-semibold text-zinc-600 dark:text-zinc-300">
                     <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                     Real-time (Hari Ini: {{ date('d M Y') }})
                 </div>
-                <a href="{{ route('tenant.orders.index') }}" class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white text-xs md:text-sm font-bold active:scale-95 transition-all flex items-center gap-2">
+                <a href="{{ route('tenant.orders.index') }}" class="px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white dark:bg-orange-600 dark:hover:bg-orange-500 dark:text-white text-xs md:text-sm font-bold active:scale-95 transition-all flex items-center gap-2">
                     <span class="material-symbols-outlined text-[18px]">receipt_long</span>
                     Lihat Penjualan
                 </a>
@@ -33,18 +33,18 @@
         <!-- 5 Key Performance Metrics Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 md:gap-5">
             <!-- Total Omset / Penjualan -->
-            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5">
+            <div class="bg-white dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-5">
                 <div class="flex items-center justify-between">
-                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Penjualan</span>
+                    <span class="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Total Penjualan</span>
                     <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
                         <span class="material-symbols-outlined text-[22px]">payments</span>
                     </div>
                 </div>
                 <div class="mt-4">
-                    <div class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                    <div class="text-2xl font-black text-zinc-900 dark:text-zinc-100 tracking-tight">
                         Rp {{ number_format($totalSales, 0, ',', '.') }}
                     </div>
-                    <div class="mt-2 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                    <div class="mt-2 flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
                         <span>Total saldo toko</span>
                         <span class="font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-0.5">
                             <span class="material-symbols-outlined text-[14px]">trending_up</span> Aktif
@@ -54,18 +54,18 @@
             </div>
 
             <!-- Total Pengunjung / Visitor -->
-            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5">
+            <div class="bg-white dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-5">
                 <div class="flex items-center justify-between">
-                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Pengunjung</span>
+                    <span class="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Total Pengunjung</span>
                     <div class="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center">
                         <span class="material-symbols-outlined text-[22px]">visibility</span>
                     </div>
                 </div>
                 <div class="mt-4">
-                    <div class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                    <div class="text-2xl font-black text-zinc-900 dark:text-zinc-100 tracking-tight">
                         {{ number_format($totalVisitors ?? 0) }}
                     </div>
-                    <div class="mt-2 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                    <div class="mt-2 flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
                         <span>{{ number_format($productViews ?? 0) }} view produk</span>
                         <span class="font-semibold text-purple-600 dark:text-purple-400">Visitor</span>
                     </div>
@@ -73,20 +73,20 @@
             </div>
 
             <!-- Pesanan Berhasil -->
-            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5">
+            <div class="bg-white dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-5">
                 <div class="flex items-center justify-between">
-                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Pesanan Berhasil</span>
-                    <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center">
+                    <span class="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Pesanan Berhasil</span>
+                    <div class="w-10 h-10 rounded-xl bg-zinc-100 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 flex items-center justify-center">
                         <span class="material-symbols-outlined text-[22px]">shopping_bag</span>
                     </div>
                 </div>
                 <div class="mt-4">
-                    <div class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                    <div class="text-2xl font-black text-zinc-900 dark:text-zinc-100 tracking-tight">
                         {{ number_format($totalOrders) }} <span class="text-xs font-normal text-slate-400">order</span>
                     </div>
-                    <div class="mt-2 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                    <div class="mt-2 flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
                         <span>Dari {{ $allOrdersCount }} checkout</span>
-                        <span class="font-bold text-slate-900 dark:text-white">
+                        <span class="font-bold text-zinc-900 dark:text-zinc-100">
                             {{ $conversionRate }}% Sukses
                         </span>
                     </div>
@@ -94,18 +94,18 @@
             </div>
 
             <!-- Rata-rata Nilai Pesanan (AOV) -->
-            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5">
+            <div class="bg-white dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-5">
                 <div class="flex items-center justify-between">
-                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Rata-rata Order</span>
+                    <span class="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Rata-rata Order</span>
                     <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
                         <span class="material-symbols-outlined text-[22px]">calculate</span>
                     </div>
                 </div>
                 <div class="mt-4">
-                    <div class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                    <div class="text-2xl font-black text-zinc-900 dark:text-zinc-100 tracking-tight">
                         Rp {{ number_format($averageOrderValue, 0, ',', '.') }}
                     </div>
-                    <div class="mt-2 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                    <div class="mt-2 flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
                         <span>Per transaksi</span>
                         <span class="font-medium text-slate-400">Nilai AOV</span>
                     </div>
@@ -113,20 +113,20 @@
             </div>
 
             <!-- Produk Aktif & Terbit -->
-            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5">
+            <div class="bg-white dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-5">
                 <div class="flex items-center justify-between">
-                    <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Produk Tayang</span>
+                    <span class="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Produk Tayang</span>
                     <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center">
                         <span class="material-symbols-outlined text-[22px]">inventory_2</span>
                     </div>
                 </div>
                 <div class="mt-4">
-                    <div class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                    <div class="text-2xl font-black text-zinc-900 dark:text-zinc-100 tracking-tight">
                         {{ number_format($activeProducts) }} <span class="text-xs font-semibold text-slate-400">/ {{ number_format($totalProducts) }}</span>
                     </div>
-                    <div class="mt-2 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                    <div class="mt-2 flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400">
                         <span>Katalog digital</span>
-                        <a href="{{ route('tenant.products.index') }}" class="font-bold text-slate-700 dark:text-slate-300 hover:underline">
+                        <a href="{{ route('tenant.products.index') }}" class="font-bold text-zinc-700 dark:text-zinc-300 hover:underline">
                             Kelola
                         </a>
                     </div>
@@ -135,23 +135,23 @@
         </div>
 
         <!-- Main Card Section with Tabs -->
-        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl overflow-hidden">
+        <div class="bg-white dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-2xl overflow-hidden">
             
             <!-- Tab Navigation Bar -->
-            <div class="border-b border-slate-100 dark:border-[#222f49] px-6 flex items-center gap-8 overflow-x-auto hide-scrollbar bg-slate-50/50 dark:bg-[#0c1220]/50">
-                <button @click="tab = 'tinjauan'" :class="tab === 'tinjauan' ? 'text-sky-600 dark:text-sky-400 border-sky-500 dark:border-sky-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200'" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 flex items-center gap-2 cursor-pointer">
+            <div class="border-b border-zinc-100 dark:border-zinc-800 px-6 flex items-center gap-8 overflow-x-auto hide-scrollbar bg-slate-50/50 dark:bg-[#0c1220]/50">
+                <button @click="tab = 'tinjauan'" :class="tab === 'tinjauan' ? 'text-orange-600 dark:text-orange-400 border-orange-500 dark:border-orange-400' : 'text-zinc-500 dark:text-zinc-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200'" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 flex items-center gap-2 cursor-pointer">
                     <span class="material-symbols-outlined text-[18px]">query_stats</span>
                     Tinjauan Performa
                 </button>
-                <button @click="tab = 'produk'" :class="tab === 'produk' ? 'text-sky-600 dark:text-sky-400 border-sky-500 dark:border-sky-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200'" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 flex items-center gap-2 cursor-pointer">
+                <button @click="tab = 'produk'" :class="tab === 'produk' ? 'text-orange-600 dark:text-orange-400 border-orange-500 dark:border-orange-400' : 'text-zinc-500 dark:text-zinc-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200'" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 flex items-center gap-2 cursor-pointer">
                     <span class="material-symbols-outlined text-[18px]">view_in_ar</span>
                     Performa Produk
                 </button>
-                <button @click="tab = 'funnel'" :class="tab === 'funnel' ? 'text-sky-600 dark:text-sky-400 border-sky-500 dark:border-sky-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200'" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 flex items-center gap-2 cursor-pointer">
+                <button @click="tab = 'funnel'" :class="tab === 'funnel' ? 'text-orange-600 dark:text-orange-400 border-orange-500 dark:border-orange-400' : 'text-zinc-500 dark:text-zinc-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200'" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 flex items-center gap-2 cursor-pointer">
                     <span class="material-symbols-outlined text-[18px]">filter_alt</span>
                     Funnel Konversi
                 </button>
-                <button @click="tab = 'sumber'" :class="tab === 'sumber' ? 'text-sky-600 dark:text-sky-400 border-sky-500 dark:border-sky-400' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200'" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 flex items-center gap-2 cursor-pointer">
+                <button @click="tab = 'sumber'" :class="tab === 'sumber' ? 'text-orange-600 dark:text-orange-400 border-orange-500 dark:border-orange-400' : 'text-zinc-500 dark:text-zinc-400 border-transparent hover:text-slate-800 dark:hover:text-slate-200'" class="py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 flex items-center gap-2 cursor-pointer">
                     <span class="material-symbols-outlined text-[18px]">traffic</span>
                     Sumber Traffic & Saluran
                 </button>
@@ -166,10 +166,10 @@
                     <div class="lg:col-span-8 space-y-6">
                         <div class="flex items-center justify-between">
                             <div>
-                                <h3 class="text-base font-bold text-slate-900 dark:text-white">Tren Aktivitas Penjualan</h3>
-                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Ringkasan aktivitas checkout dan transaksi toko sepanjang hari ini.</p>
+                                <h3 class="text-base font-bold text-zinc-900 dark:text-zinc-100">Tren Aktivitas Penjualan</h3>
+                                <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Ringkasan aktivitas checkout dan transaksi toko sepanjang hari ini.</p>
                             </div>
-                            <span class="px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-[#222f49]">
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold bg-zinc-100 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-800">
                                 24 Jam Terakhir
                             </span>
                         </div>
@@ -179,16 +179,16 @@
                             <div class="flex items-center justify-between mb-8">
                                 <div>
                                     <span class="text-xs font-medium text-slate-400">Total Nilai Penjualan</span>
-                                    <div class="text-xl font-extrabold text-slate-900 dark:text-white">Rp {{ number_format($totalSales, 0, ',', '.') }}</div>
+                                    <div class="text-xl font-extrabold text-zinc-900 dark:text-zinc-100">Rp {{ number_format($totalSales, 0, ',', '.') }}</div>
                                 </div>
                                 <div class="flex items-center gap-3 text-xs font-medium">
-                                    <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-sky-500"></span> Transaksi Paid</div>
+                                    <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-orange-500"></span> Transaksi Paid</div>
                                     <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Pending</div>
                                 </div>
                             </div>
 
                             <!-- Visual Mock Distribution -->
-                            <div class="h-44 flex items-end justify-between gap-2 pt-6 border-b border-slate-200 dark:border-[#222f49] pb-2">
+                            <div class="h-44 flex items-end justify-between gap-2 pt-6 border-b border-zinc-200 dark:border-zinc-800 pb-2">
                                 @php
                                     $timeSlots = ['00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00', '21:00', '24:00'];
                                 @endphp
@@ -199,7 +199,7 @@
                                     @endphp
                                     <div class="flex-1 flex flex-col items-center gap-1 group">
                                         <div class="w-full max-w-[28px] bg-slate-200/60 dark:bg-slate-800/80 rounded-t-lg h-32 flex items-end justify-center p-0.5 gap-0.5 overflow-hidden">
-                                            <div class="w-1/2 bg-sky-500 rounded-t transition-all duration-500 group-hover:brightness-110" style="height: {{ $heightPaid }}%;"></div>
+                                            <div class="w-1/2 bg-orange-500 rounded-t transition-all duration-500 group-hover:brightness-110" style="height: {{ $heightPaid }}%;"></div>
                                             <div class="w-1/2 bg-amber-500/70 rounded-t transition-all duration-500 group-hover:brightness-110" style="height: {{ $heightPending }}%;"></div>
                                         </div>
                                         <span class="text-[10px] text-slate-400 font-mono mt-1">{{ $slot }}</span>
@@ -208,7 +208,7 @@
                             </div>
                             <div class="mt-4 flex items-center justify-between text-xs text-slate-400">
                                 <span>Estimasi volume berdasarkan jam operasional toko</span>
-                                <span class="font-semibold text-slate-600 dark:text-slate-300">GMT+07 (WIB)</span>
+                                <span class="font-semibold text-zinc-600 dark:text-zinc-300">GMT+07 (WIB)</span>
                             </div>
                         </div>
 
@@ -217,8 +217,8 @@
                     <!-- Right: Performance Health Breakdown -->
                     <div class="lg:col-span-4 space-y-6">
                         <div>
-                            <h3 class="text-base font-bold text-slate-900 dark:text-white">Kesehatan Transaksi</h3>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Rasio efisiensi proses checkout pesanan.</p>
+                            <h3 class="text-base font-bold text-zinc-900 dark:text-zinc-100">Kesehatan Transaksi</h3>
+                            <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Rasio efisiensi proses checkout pesanan.</p>
                         </div>
 
                         <div class="bg-slate-50 dark:bg-[#0c1220] border border-slate-200/70 dark:border-[#1e293b] rounded-2xl p-6 space-y-5">
@@ -226,11 +226,11 @@
                             <!-- Stat Item 1 -->
                             <div class="space-y-2">
                                 <div class="flex items-center justify-between text-xs font-bold">
-                                    <span class="text-slate-600 dark:text-slate-300">Tingkat Penyelesaian Pesanan</span>
-                                    <span class="text-slate-900 dark:text-white">{{ $conversionRate }}%</span>
+                                    <span class="text-zinc-600 dark:text-zinc-300">Tingkat Penyelesaian Pesanan</span>
+                                    <span class="text-zinc-900 dark:text-zinc-100">{{ $conversionRate }}%</span>
                                 </div>
                                 <div class="h-2 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
-                                    <div class="h-full bg-sky-500 rounded-full transition-all duration-700" style="width: {{ max(5, $conversionRate) }}%"></div>
+                                    <div class="h-full bg-orange-500 rounded-full transition-all duration-700" style="width: {{ max(5, $conversionRate) }}%"></div>
                                 </div>
                                 <p class="text-[11px] text-slate-400">Persentase invoice yang berhasil terbayar dan file telah didistribusikan.</p>
                             </div>
@@ -238,7 +238,7 @@
                             <!-- Stat Item 2 -->
                             <div class="space-y-2 pt-3 border-t border-slate-200/60 dark:border-[#1e293b]">
                                 <div class="flex items-center justify-between text-xs font-bold">
-                                    <span class="text-slate-600 dark:text-slate-300">Tingkat Menunggu Pembayaran</span>
+                                    <span class="text-zinc-600 dark:text-zinc-300">Tingkat Menunggu Pembayaran</span>
                                     <span class="text-amber-600 dark:text-amber-400">
                                         {{ $allOrdersCount > 0 ? round(($pendingOrders / $allOrdersCount) * 100, 1) : 0 }}%
                                     </span>
@@ -252,7 +252,7 @@
                             <!-- Stat Item 3: Katalog Aktif -->
                             <div class="space-y-2 pt-3 border-t border-slate-200/60 dark:border-[#1e293b]">
                                 <div class="flex items-center justify-between text-xs font-bold">
-                                    <span class="text-slate-600 dark:text-slate-300">Rasio Katalog Aktif</span>
+                                    <span class="text-zinc-600 dark:text-zinc-300">Rasio Katalog Aktif</span>
                                     <span class="text-emerald-600 dark:text-emerald-400">
                                         {{ $totalProducts > 0 ? round(($activeProducts / $totalProducts) * 100) : 100 }}%
                                     </span>
@@ -271,13 +271,13 @@
                 <div class="space-y-4">
                     <div class="flex items-center justify-between">
                         <div>
-                            <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                            <h3 class="text-base font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
                                 <span class="material-symbols-outlined text-[20px] text-purple-600 dark:text-purple-400">visibility</span>
                                 Produk Paling Banyak Dilihat
                             </h3>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Produk digital dengan jumlah kunjungan dan minat tertinggi dari pengunjung toko.</p>
+                            <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Produk digital dengan jumlah kunjungan dan minat tertinggi dari pengunjung toko.</p>
                         </div>
-                        <button @click="tab = 'produk'" class="text-xs font-bold text-slate-700 dark:text-slate-300 hover:underline flex items-center gap-1 cursor-pointer">
+                        <button @click="tab = 'produk'" class="text-xs font-bold text-zinc-700 dark:text-zinc-300 hover:underline flex items-center gap-1 cursor-pointer">
                             Semua Produk <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
                         </button>
                     </div>
@@ -289,9 +289,9 @@
                             $pct = $maxProductViews > 0 ? round(($viewsCount / $maxProductViews) * 100) : 0;
                             $pImg = $prod->images->where('is_main', true)->first() ?? $prod->images->first();
                         @endphp
-                        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-4 flex flex-col justify-between relative group hover:border-purple-500/50 transition-colors">
+                        <div class="bg-white dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-4 flex flex-col justify-between relative group hover:border-purple-500/50 transition-colors">
                             <div class="flex items-start gap-3">
-                                <div class="relative w-14 h-14 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 overflow-hidden shrink-0 flex items-center justify-center">
+                                <div class="relative w-14 h-14 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 overflow-hidden shrink-0 flex items-center justify-center">
                                     @if($pImg)
                                         <img src="{{ asset('storage/' . $pImg->image_path) }}" class="w-full h-full object-cover">
                                     @else
@@ -302,31 +302,31 @@
                                     </span>
                                 </div>
                                 <div class="min-w-0 flex-1">
-                                    <h4 class="font-bold text-xs text-slate-900 dark:text-white truncate" title="{{ $prod->name }}">
+                                    <h4 class="font-bold text-xs text-zinc-900 dark:text-zinc-100 truncate" title="{{ $prod->name }}">
                                         {{ $prod->name }}
                                     </h4>
                                     <span class="text-[11px] text-slate-400 block mt-0.5 truncate">{{ $prod->category->name ?? 'Umum' }}</span>
-                                    <div class="font-bold text-xs text-slate-900 dark:text-white mt-1">
+                                    <div class="font-bold text-xs text-zinc-900 dark:text-zinc-100 mt-1">
                                         Rp {{ number_format($prod->discount_price ?? $prod->price, 0, ',', '.') }}
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="mt-4 pt-3 border-t border-slate-100 dark:border-[#222f49]">
+                            <div class="mt-4 pt-3 border-t border-zinc-100 dark:border-zinc-800">
                                 <div class="flex items-center justify-between text-xs mb-1.5">
-                                    <span class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Total Dilihat</span>
+                                    <span class="text-[11px] text-zinc-500 dark:text-zinc-400 font-medium">Total Dilihat</span>
                                     <span class="inline-flex items-center gap-1 font-extrabold text-xs text-purple-600 dark:text-purple-400">
                                         <span class="material-symbols-outlined text-[14px]">visibility</span>
                                         {{ number_format($viewsCount) }} kali
                                     </span>
                                 </div>
-                                <div class="w-full h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                                <div class="w-full h-1.5 bg-zinc-100 dark:bg-zinc-900 rounded-full overflow-hidden">
                                     <div class="h-full bg-purple-500 rounded-full transition-all duration-500" style="width: {{ max(6, $pct) }}%"></div>
                                 </div>
                             </div>
                         </div>
                         @empty
-                        <div class="col-span-full py-8 text-center text-slate-400 border border-dashed border-slate-200 dark:border-slate-800 rounded-2xl">
+                        <div class="col-span-full py-8 text-center text-slate-400 border border-dashed border-zinc-200 dark:border-zinc-800 rounded-2xl">
                             <p class="text-xs">Belum ada produk yang dilihat oleh pengunjung.</p>
                         </div>
                         @endforelse
@@ -334,23 +334,23 @@
                 </div>
 
                 <!-- Strategic Recommendations Banner -->
-                <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-5">
+                <div class="bg-white dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-5">
                     <div class="flex items-start gap-4">
-                        <div class="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white flex items-center justify-center shrink-0">
+                        <div class="w-12 h-12 rounded-xl bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 flex items-center justify-center shrink-0">
                             <span class="material-symbols-outlined text-[24px]">rocket_launch</span>
                         </div>
                         <div>
-                            <h4 class="text-sm font-bold text-slate-900 dark:text-white">Tingkatkan Omset Toko dengan Dekorasi &amp; Promo</h4>
-                            <p class="text-xs text-slate-600 dark:text-slate-300 mt-1 max-w-2xl">
+                            <h4 class="text-sm font-bold text-zinc-900 dark:text-zinc-100">Tingkatkan Omset Toko dengan Dekorasi &amp; Promo</h4>
+                            <p class="text-xs text-zinc-600 dark:text-zinc-300 mt-1 max-w-2xl">
                                 Toko yang memiliki banner promosi menarik, deskripsi produk lengkap dengan tautan demo, dan kode kupon diskon terbukti meningkatkan konversi hingga 3x lipat.
                             </p>
                         </div>
                     </div>
                     <div class="flex items-center gap-3 shrink-0">
-                        <a href="{{ route('tenant.appearance.index') }}" class="px-4 py-2 rounded-xl bg-white dark:bg-[#161f33] border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-800 dark:text-white hover:bg-slate-50 dark:hover:bg-[#1d273d] transition-all">
+                        <a href="{{ route('tenant.appearance.index') }}" class="px-4 py-2 rounded-xl bg-white dark:bg-[#161f33] border border-zinc-200 dark:border-zinc-800 text-xs font-bold text-zinc-800 dark:text-zinc-100 hover:bg-slate-50 dark:hover:bg-[#1d273d] transition-all">
                             Dekorasi Toko
                         </a>
-                        <a href="{{ route('tenant.campaigns.index') }}" class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white text-xs font-bold transition-all active:scale-95">
+                        <a href="{{ route('tenant.campaigns.index') }}" class="px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white dark:bg-orange-600 dark:hover:bg-orange-500 dark:text-white text-xs font-bold transition-all active:scale-95">
                             Buat Promo
                         </a>
                     </div>
@@ -362,17 +362,17 @@
             <div x-show="tab === 'produk'" class="p-6 md:p-8 space-y-6" style="display: none;">
                 <div class="flex items-center justify-between">
                     <div>
-                        <h3 class="text-base font-bold text-slate-900 dark:text-white">Peringkat & Performa Produk Digital</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Urutan produk digital dari yang paling sering dilihat hingga penjualan tertinggi.</p>
+                        <h3 class="text-base font-bold text-zinc-900 dark:text-zinc-100">Peringkat & Performa Produk Digital</h3>
+                        <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Urutan produk digital dari yang paling sering dilihat hingga penjualan tertinggi.</p>
                     </div>
-                    <a href="{{ route('tenant.products.create') }}" class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white text-xs font-bold active:scale-95 transition-all flex items-center gap-1.5">
+                    <a href="{{ route('tenant.products.create') }}" class="px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white dark:bg-orange-600 dark:hover:bg-orange-500 dark:text-white text-xs font-bold active:scale-95 transition-all flex items-center gap-1.5">
                         <span class="material-symbols-outlined text-[16px]">add_circle</span> Tambah Produk
                     </a>
                 </div>
 
-                <div class="border border-slate-200/80 dark:border-[#222f49] rounded-2xl overflow-hidden">
+                <div class="border border-zinc-200 dark:border-zinc-800 rounded-2xl overflow-hidden">
                     <table class="w-full text-left text-xs md:text-sm whitespace-nowrap">
-                        <thead class="bg-slate-50 dark:bg-[#0c1220] border-b border-slate-200/80 dark:border-[#222f49] text-slate-500 dark:text-slate-400 uppercase tracking-wider text-[11px] font-bold">
+                        <thead class="bg-slate-50 dark:bg-[#0c1220] border-b border-zinc-200 dark:border-zinc-800 text-zinc-500 dark:text-zinc-400 uppercase tracking-wider text-[11px] font-bold">
                             <tr>
                                 <th class="p-4 pl-6">Peringkat & Produk Digital</th>
                                 <th class="p-4">Kategori</th>
@@ -394,7 +394,7 @@
                                         <span class="w-6 text-center text-xs font-black text-slate-400 group-hover:text-slate-600">
                                             #{{ $index + 1 }}
                                         </span>
-                                        <div class="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center shrink-0 overflow-hidden text-slate-400">
+                                        <div class="w-12 h-12 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center shrink-0 overflow-hidden text-slate-400">
                                             @if($product->images->count() > 0)
                                                 @php $pImg = $product->images->where('is_main', true)->first() ?? $product->images->first(); @endphp
                                                 <img src="{{ asset('storage/' . $pImg->image_path) }}" class="w-full h-full object-cover">
@@ -403,7 +403,7 @@
                                             @endif
                                         </div>
                                         <div class="min-w-0">
-                                            <div class="font-bold text-slate-900 dark:text-white truncate max-w-xs md:max-w-md">
+                                            <div class="font-bold text-zinc-900 dark:text-zinc-100 truncate max-w-xs md:max-w-md">
                                                 {{ $product->name }}
                                             </div>
                                             <div class="text-xs text-slate-400 mt-0.5">
@@ -412,7 +412,7 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td class="p-4 text-slate-600 dark:text-slate-300">
+                                <td class="p-4 text-zinc-600 dark:text-zinc-300">
                                     {{ $product->category->name ?? 'Umum' }}
                                 </td>
                                 <td class="p-4">
@@ -426,7 +426,7 @@
                                         <div class="h-full bg-purple-500 rounded-full" style="width: {{ max(6, $pct) }}%"></div>
                                     </div>
                                 </td>
-                                <td class="p-4 font-bold text-slate-900 dark:text-white">
+                                <td class="p-4 font-bold text-zinc-900 dark:text-zinc-100">
                                     Rp {{ number_format($product->discount_price ?? $product->price, 0, ',', '.') }}
                                     @if($product->discount_price && $product->discount_price < $product->price)
                                         <span class="block text-[10px] text-slate-400 line-through font-normal">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
@@ -461,7 +461,7 @@
                                 <td colspan="6" class="p-12 text-center text-slate-400">
                                     <span class="material-symbols-outlined text-4xl mb-2 opacity-50">inventory_2</span>
                                     <p class="text-sm">Belum ada produk yang didaftarkan pada toko Anda.</p>
-                                    <a href="{{ route('tenant.products.create') }}" class="mt-3 inline-flex items-center gap-1 text-xs font-bold text-slate-700 dark:text-slate-300 hover:underline">
+                                    <a href="{{ route('tenant.products.create') }}" class="mt-3 inline-flex items-center gap-1 text-xs font-bold text-zinc-700 dark:text-zinc-300 hover:underline">
                                         <span class="material-symbols-outlined text-[14px]">add</span> Tambah Produk Sekarang
                                     </a>
                                 </td>
@@ -475,23 +475,23 @@
             <!-- TAB 3: FUNNEL KONVERSI -->
             <div x-show="tab === 'funnel'" class="p-6 md:p-8 space-y-6" style="display: none;">
                 <div>
-                    <h3 class="text-base font-bold text-slate-900 dark:text-white">Alur Perjalanan Pembeli (Conversion Funnel)</h3>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Analisis tahapan pengunjung dari melihat produk hingga menyelesaikan pembayaran.</p>
+                    <h3 class="text-base font-bold text-zinc-900 dark:text-zinc-100">Alur Perjalanan Pembeli (Conversion Funnel)</h3>
+                    <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Analisis tahapan pengunjung dari melihat produk hingga menyelesaikan pembayaran.</p>
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     
                     <!-- Funnel Step 1 -->
                     <div class="bg-slate-50 dark:bg-[#0c1220] border border-slate-200/80 dark:border-[#1e293b] rounded-2xl p-6 relative overflow-hidden">
-                        <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center font-bold mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-zinc-100 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 flex items-center justify-center font-bold mb-4">
                             1
                         </div>
-                        <h4 class="text-sm font-bold text-slate-900 dark:text-white">Eksplorasi & Kunjungan</h4>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Calon pembeli membuka katalog toko dan halaman detail produk Anda.</p>
+                        <h4 class="text-sm font-bold text-zinc-900 dark:text-zinc-100">Eksplorasi & Kunjungan</h4>
+                        <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Calon pembeli membuka katalog toko dan halaman detail produk Anda.</p>
                         
                         <div class="mt-6 pt-4 border-t border-slate-200 dark:border-[#1e293b] flex items-center justify-between">
                             <span class="text-xs text-slate-400">Total Pengunjung</span>
-                            <span class="text-base font-extrabold text-slate-900 dark:text-white">{{ max(1, $allOrdersCount * 5) }} Sesi</span>
+                            <span class="text-base font-extrabold text-zinc-900 dark:text-zinc-100">{{ max(1, $allOrdersCount * 5) }} Sesi</span>
                         </div>
                     </div>
 
@@ -500,8 +500,8 @@
                         <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold mb-4">
                             2
                         </div>
-                        <h4 class="text-sm font-bold text-slate-900 dark:text-white">Checkout / Buat Pesanan</h4>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Pengunjung tertarik dan membuat invoice pembayaran produk.</p>
+                        <h4 class="text-sm font-bold text-zinc-900 dark:text-zinc-100">Checkout / Buat Pesanan</h4>
+                        <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Pengunjung tertarik dan membuat invoice pembayaran produk.</p>
                         
                         <div class="mt-6 pt-4 border-t border-slate-200 dark:border-[#1e293b] flex items-center justify-between">
                             <span class="text-xs text-slate-400">Invoice Terbit</span>
@@ -514,8 +514,8 @@
                         <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold mb-4">
                             3
                         </div>
-                        <h4 class="text-sm font-bold text-slate-900 dark:text-white">Pembayaran Sukses & Unduh</h4>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Pembayaran terverifikasi dan pelanggan mengunduh file produk digital.</p>
+                        <h4 class="text-sm font-bold text-zinc-900 dark:text-zinc-100">Pembayaran Sukses & Unduh</h4>
+                        <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Pembayaran terverifikasi dan pelanggan mengunduh file produk digital.</p>
                         
                         <div class="mt-6 pt-4 border-t border-slate-200 dark:border-[#1e293b] flex items-center justify-between">
                             <span class="text-xs text-slate-400">Transaksi Selesai</span>
@@ -526,12 +526,12 @@
                 </div>
 
                 <!-- Funnel Conversion Ratio Summary -->
-                <div class="bg-white dark:bg-[#161f33] border border-slate-200 dark:border-slate-700/60 rounded-2xl p-6 flex items-center justify-between">
+                <div class="bg-white dark:bg-[#161f33] border border-zinc-200 dark:border-zinc-800/60 rounded-2xl p-6 flex items-center justify-between">
                     <div>
                         <span class="text-xs text-slate-400">Total Overall Conversion Rate</span>
-                        <div class="text-2xl font-black text-slate-900 dark:text-white mt-0.5">{{ $conversionRate }}%</div>
+                        <div class="text-2xl font-black text-zinc-900 dark:text-zinc-100 mt-0.5">{{ $conversionRate }}%</div>
                     </div>
-                    <a href="{{ route('tenant.orders.index') }}" class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white text-xs font-bold active:scale-95 transition-all">
+                    <a href="{{ route('tenant.orders.index') }}" class="px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white dark:bg-orange-600 dark:hover:bg-orange-500 dark:text-white text-xs font-bold active:scale-95 transition-all">
                         Kelola Status Transaksi
                     </a>
                 </div>
@@ -540,34 +540,34 @@
             <!-- TAB 4: SUMBER TRAFFIC & SALURAN -->
             <div x-show="tab === 'sumber'" class="p-6 md:p-8 space-y-6" style="display: none;">
                 <div>
-                    <h3 class="text-base font-bold text-slate-900 dark:text-white">Saluran Traffic & Rujukan Penjualan</h3>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Sumber pengunjung yang mengarahkan pembeli ke etalase toko digital Anda.</p>
+                    <h3 class="text-base font-bold text-zinc-900 dark:text-zinc-100">Saluran Traffic & Rujukan Penjualan</h3>
+                    <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Sumber pengunjung yang mengarahkan pembeli ke etalase toko digital Anda.</p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     
                     <!-- Saluran 1: Etalase Publik & Website -->
-                    <div class="border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 flex items-start gap-4 hover:border-slate-400 dark:hover:border-slate-600 transition-all">
-                        <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center shrink-0">
+                    <div class="border border-zinc-200 dark:border-zinc-800 rounded-2xl p-5 flex items-start gap-4 hover:border-slate-400 dark:hover:border-slate-600 transition-all">
+                        <div class="w-10 h-10 rounded-xl bg-zinc-100 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 flex items-center justify-center shrink-0">
                             <span class="material-symbols-outlined text-[22px]">language</span>
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center justify-between">
-                                <h4 class="text-sm font-bold text-slate-900 dark:text-white">Katalog Website & Pencarian</h4>
-                                <span class="text-xs font-bold text-slate-900 dark:text-white">75%</span>
+                                <h4 class="text-sm font-bold text-zinc-900 dark:text-zinc-100">Katalog Website & Pencarian</h4>
+                                <span class="text-xs font-bold text-zinc-900 dark:text-zinc-100">75%</span>
                             </div>
                             <p class="text-xs text-slate-400 mt-1">Pengunjung langsung dari pencarian marketplace dan etalase utama.</p>
                         </div>
                     </div>
 
                     <!-- Saluran 2: Program Mitra Affiliate -->
-                    <div class="border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 flex items-start gap-4 hover:border-slate-400 dark:hover:border-slate-600 transition-all">
+                    <div class="border border-zinc-200 dark:border-zinc-800 rounded-2xl p-5 flex items-start gap-4 hover:border-slate-400 dark:hover:border-slate-600 transition-all">
                         <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center shrink-0">
                             <span class="material-symbols-outlined text-[22px]">handshake</span>
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center justify-between">
-                                <h4 class="text-sm font-bold text-slate-900 dark:text-white">Mitra Affiliate & Referral</h4>
+                                <h4 class="text-sm font-bold text-zinc-900 dark:text-zinc-100">Mitra Affiliate & Referral</h4>
                                 <span class="text-xs font-bold text-indigo-600 dark:text-indigo-400">15%</span>
                             </div>
                             <p class="text-xs text-slate-400 mt-1">Tautan rujukan promotor afiliasi yang aktif mempromosikannya.</p>
@@ -578,13 +578,13 @@
                     </div>
 
                     <!-- Saluran 3: Media Sosial & Promosi Langsung -->
-                    <div class="border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 flex items-start gap-4 hover:border-slate-400 dark:hover:border-slate-600 transition-all">
+                    <div class="border border-zinc-200 dark:border-zinc-800 rounded-2xl p-5 flex items-start gap-4 hover:border-slate-400 dark:hover:border-slate-600 transition-all">
                         <div class="w-10 h-10 rounded-xl bg-pink-500/10 text-pink-500 flex items-center justify-center shrink-0">
                             <span class="material-symbols-outlined text-[22px]">share</span>
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center justify-between">
-                                <h4 class="text-sm font-bold text-slate-900 dark:text-white">Media Sosial & Direct Link</h4>
+                                <h4 class="text-sm font-bold text-zinc-900 dark:text-zinc-100">Media Sosial & Direct Link</h4>
                                 <span class="text-xs font-bold text-pink-600 dark:text-pink-400">10%</span>
                             </div>
                             <p class="text-xs text-slate-400 mt-1">Tautan yang dibagikan melalui Instagram, TikTok, WhatsApp, dan grup komunitas.</p>
@@ -592,13 +592,13 @@
                     </div>
 
                     <!-- Saluran 4: Campaign Diskon & Event -->
-                    <div class="border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 flex items-start gap-4 hover:border-slate-400 dark:hover:border-slate-600 transition-all">
+                    <div class="border border-zinc-200 dark:border-zinc-800 rounded-2xl p-5 flex items-start gap-4 hover:border-slate-400 dark:hover:border-slate-600 transition-all">
                         <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center shrink-0">
                             <span class="material-symbols-outlined text-[22px]">campaign</span>
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center justify-between">
-                                <h4 class="text-sm font-bold text-slate-900 dark:text-white">Campaign & Flash Sale</h4>
+                                <h4 class="text-sm font-bold text-zinc-900 dark:text-zinc-100">Campaign & Flash Sale</h4>
                                 <span class="text-xs font-bold text-amber-600 dark:text-amber-400">Aktif</span>
                             </div>
                             <p class="text-xs text-slate-400 mt-1">Event promo voucher dan flash deal khusus pelanggan toko.</p>

@@ -104,15 +104,15 @@
 @livewireStyles
 <style>
 :root {
-    --theme-primary: 14 165 233;
-    --theme-primary-hover: 2 132 199;
+    --theme-primary: 249 115 22;
+    --theme-primary-hover: 234 88 12;
 }
 .btn-primary, .btn-sky {
-    background-color: #0ea5e9 !important;
+    background-color: #f97316 !important;
     color: #ffffff !important;
 }
 .btn-primary:hover, .btn-sky:hover {
-    background-color: #0284c7 !important;
+    background-color: #ea580c !important;
 }
 /* Hilangkan semua shadow blur & degradasi pada object di dashboard tenant */
 *, ::before, ::after {
@@ -132,8 +132,8 @@ html, body {
     width: 100%;
 }
 body {
-    background: #f0f4f8;
-    color: #1a202c;
+    background: #fafafa;
+    color: #09090b;
     min-height: 100vh;
     font-family: 'Geist', sans-serif;
     margin: 0;
@@ -141,38 +141,38 @@ body {
 }
 /* Dark mode override */
 body.dark, html.dark body {
-    background: #0d1117;
-    color: #fff;
+    background: #000000;
+    color: #ededed;
 }
 
 /* ── Sidebar ── */
 .tenant-sidebar {
     background: #ffffff;
-    border-right: 1px solid #e5e7eb;
+    border-right: 1px solid #e4e4e7;
     position: fixed; left:0; top:0;
     height: 100vh; width: 240px;
     display: flex; flex-direction: column;
     z-index: 50; overflow-y: auto;
     transition: background 0.2s, border-color 0.2s;
 }
-html.dark .tenant-sidebar { background: #010409; border-right-color: #30363d; }
+html.dark .tenant-sidebar { background: #000000; border-right-color: #27272a; }
 
 /* Brand */
 .sidebar-brand {
     padding: 20px 20px 16px;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid #e4e4e7;
     display: flex; align-items: center; gap: 10px;
     text-decoration: none; flex-shrink: 0;
     transition: border-color 0.2s;
 }
-html.dark .sidebar-brand { border-bottom-color: #30363d; }
+html.dark .sidebar-brand { border-bottom-color: #27272a; }
 
 .brand-dot-s {
     width: 8px; height: 8px; border-radius: 50%;
-    background: #0284c7;
+    background: #ea580c;
     flex-shrink: 0; display:inline-block;
 }
-html.dark .brand-dot-s { background: #38bdf8; }
+html.dark .brand-dot-s { background: #fb923c; }
 
 .brand-name-s {
     font-size: 16px; font-weight: 900; letter-spacing: -0.3px;
@@ -204,19 +204,19 @@ html.dark .nav-section-label { color: #8b949e; }
     color: #4b5563; text-decoration: none;
     transition: all 0.15s ease; position: relative;
 }
-.nav-link:hover { background: #f0f9ff; color: #0284c7; }
-.nav-link.active { background: #0284c7; color: #ffffff; font-weight: 600; }
+.nav-link:hover { background: #fff7ed; color: #ea580c; }
+.nav-link.active { background: #ea580c; color: #ffffff; font-weight: 600; }
 .nav-link.active::before {
     content: ''; position: absolute;
     left: -4px; top: 6px; bottom: 6px;
     width: 3px; border-radius: 0 3px 3px 0;
-    background: #0284c7;
+    background: #ea580c;
 }
 
 html.dark .nav-link { color: #8b949e; }
-html.dark .nav-link:hover { background: #0c4a6e/30; color: #38bdf8; }
-html.dark .nav-link.active { background: #0284c7; color: #ffffff; font-weight: 600; }
-html.dark .nav-link.active::before { background: #38bdf8; }
+html.dark .nav-link:hover { background: rgba(249, 115, 22, 0.1); color: #f97316; }
+html.dark .nav-link.active { background: rgba(249, 115, 22, 0.1); color: #f97316; font-weight: 600; }
+html.dark .nav-link.active::before { background: #f97316; }
 
 .nav-link .material-symbols-outlined { font-size: 18px; width: 20px; text-align: center; flex-shrink: 0; opacity: 0.7; }
 .nav-link.active .material-symbols-outlined { opacity: 1; color: inherit; }
@@ -237,7 +237,7 @@ html.dark .sidebar-user-email { color: rgba(255,255,255,0.3); }
 /* ── Top bar ── */
 .tenant-topbar {
     background: #ffffff;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid #e4e4e7;
     position: sticky; top: 0; z-index: 40;
     height: 56px; display: flex; align-items: center;
     padding: 0 12px; justify-content: space-between;
@@ -247,7 +247,7 @@ html.dark .sidebar-user-email { color: rgba(255,255,255,0.3); }
 @media (min-width: 768px) {
     .tenant-topbar { padding: 0 24px; gap: 16px; }
 }
-html.dark .tenant-topbar { background: #010409; border-bottom-color: #30363d; }
+html.dark .tenant-topbar { background: #000000; border-bottom-color: #27272a; }
 
 /* Icon btn */
 .topbar-icon-btn {
@@ -501,7 +501,7 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
                         @keydown.enter.prevent="submitSearch()"
                         placeholder="Cari produk atau toko..." 
                         autocomplete="off"
-                        class="w-full pl-9 pr-8 py-1.5 md:py-2 text-xs md:text-sm bg-slate-100 dark:bg-[#161b22] border border-slate-200 dark:border-[#30363d] rounded-xl text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all"
+                        class="w-full pl-9 pr-8 py-1.5 md:py-2 text-xs md:text-sm bg-slate-100 dark:bg-[#000000] border border-slate-200 dark:border-zinc-800 rounded-xl text-zinc-900 dark:text-zinc-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
                     >
                     <button 
                         type="button" 
@@ -513,7 +513,7 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
                         <span class="material-symbols-outlined text-[16px]">close</span>
                     </button>
                     <div x-show="loading" class="absolute right-2.5" style="display: none;">
-                        <span class="inline-block w-4 h-4 border-2 border-sky-500 border-t-transparent rounded-full animate-spin"></span>
+                        <span class="inline-block w-4 h-4 border-2 border-orange-500 border-t-transparent rounded-full animate-spin"></span>
                     </div>
                 </div>
 
@@ -527,12 +527,12 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
                     x-transition:leave="transition ease-in duration-100"
                     x-transition:leave-start="opacity-100 translate-y-0"
                     x-transition:leave-end="opacity-0 translate-y-1"
-                    class="absolute left-0 right-0 top-full mt-1.5 bg-white dark:bg-[#161b22] border border-slate-200 dark:border-[#30363d] rounded-2xl shadow-xl z-50 overflow-hidden max-h-[75vh] overflow-y-auto"
+                    class="absolute left-0 right-0 top-full mt-1.5 bg-white dark:bg-[#000000] border border-slate-200 dark:border-zinc-800 rounded-2xl shadow-none z-50 overflow-hidden max-h-[75vh] overflow-y-auto"
                     style="display: none;"
                 >
                     <!-- Stores Section -->
                     <template x-if="results.stores.length > 0">
-                        <div class="p-2 border-b border-slate-100 dark:border-[#222f49]">
+                        <div class="p-2 border-b border-zinc-100 dark:border-zinc-800">
                             <div class="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 flex items-center justify-between">
                                 <span>Toko Terkait</span>
                                 <span class="text-[10px] lowercase" x-text="results.stores.length + ' ditemukan'"></span>
@@ -541,10 +541,10 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
                                 <template x-for="st in results.stores" :key="'store-'+st.id">
                                     <a :href="st.url" class="flex items-center justify-between p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors group">
                                         <div class="flex items-center gap-2.5 min-w-0">
-                                            <img :src="st.logo" :alt="st.name" class="w-8 h-8 rounded-full object-cover border border-slate-200 dark:border-slate-700 shrink-0">
+                                            <img :src="st.logo" :alt="st.name" class="w-8 h-8 rounded-full object-cover border border-zinc-200 dark:border-zinc-800 shrink-0">
                                             <div class="min-w-0">
                                                 <div class="flex items-center gap-1.5">
-                                                    <span class="text-xs font-bold text-slate-800 dark:text-slate-200 truncate group-hover:text-[#00838f] transition-colors" x-text="st.name"></span>
+                                                    <span class="text-xs font-bold text-zinc-800 dark:text-zinc-200 truncate group-hover:text-[#00838f] transition-colors" x-text="st.name"></span>
                                                     <template x-if="st.is_pro">
                                                         <span class="bg-amber-500 text-white text-[9px] px-1 py-0.2 rounded font-black tracking-wide">PRO</span>
                                                     </template>
@@ -571,7 +571,7 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
                                     <div class="flex items-center justify-between p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors group">
                                         <a :href="prod.url" class="flex items-center gap-2.5 min-w-0 flex-1">
                                             <template x-if="prod.image">
-                                                <img :src="prod.image" :alt="prod.name" class="w-9 h-9 rounded-lg object-cover border border-slate-200 dark:border-slate-700 shrink-0">
+                                                <img :src="prod.image" :alt="prod.name" class="w-9 h-9 rounded-lg object-cover border border-zinc-200 dark:border-zinc-800 shrink-0">
                                             </template>
                                             <template x-if="!prod.image">
                                                 <div class="w-9 h-9 rounded-lg bg-teal-50 dark:bg-teal-950/40 border border-teal-100 dark:border-teal-900/40 text-[#00838f] flex items-center justify-center shrink-0">
@@ -579,7 +579,7 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
                                                 </div>
                                             </template>
                                             <div class="min-w-0 flex-1">
-                                                <div class="text-xs font-bold text-slate-800 dark:text-slate-200 truncate group-hover:text-[#00838f] transition-colors" x-text="prod.name"></div>
+                                                <div class="text-xs font-bold text-zinc-800 dark:text-zinc-200 truncate group-hover:text-[#00838f] transition-colors" x-text="prod.name"></div>
                                                 <div class="flex items-center gap-2 text-[11px] text-slate-400">
                                                     <span class="font-semibold text-emerald-600 dark:text-emerald-400" x-text="prod.price_formatted"></span>
                                                     <template x-if="prod.store_name">
@@ -592,7 +592,7 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
                                             </div>
                                         </a>
                                         <template x-if="prod.is_mine && prod.edit_url">
-                                            <a :href="prod.edit_url" class="ml-2 px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-[#00838f] hover:text-white text-slate-600 dark:text-slate-300 text-[11px] font-bold transition-colors shrink-0" title="Edit Produk">
+                                            <a :href="prod.edit_url" class="ml-2 px-2 py-1 rounded-lg bg-zinc-100 dark:bg-zinc-900 hover:bg-[#00838f] hover:text-white text-zinc-600 dark:text-zinc-300 text-[11px] font-bold transition-colors shrink-0" title="Edit Produk">
                                                 Edit
                                             </a>
                                         </template>
@@ -609,7 +609,7 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
                     </div>
 
                     <!-- Footer: Search All in Public Products -->
-                    <div class="p-2 bg-slate-50 dark:bg-slate-900/80 border-t border-slate-100 dark:border-[#222f49] text-center">
+                    <div class="p-2 bg-slate-50 dark:bg-slate-900/80 border-t border-zinc-100 dark:border-zinc-800 text-center">
                         <button type="button" @click="submitSearch()" class="text-xs font-bold text-[#00838f] hover:underline flex items-center justify-center gap-1 w-full py-1 cursor-pointer">
                             <span>Lihat semua hasil di katalog produk</span>
                             <span class="material-symbols-outlined text-[14px]">open_in_new</span>
@@ -634,7 +634,7 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
                     <a href="{{ route('tenant.profile.index') }}" style="display:block; padding:10px 12px 8px; border-bottom:1px solid #e5e7eb; margin-bottom:4px; text-decoration:none; transition:background 0.2s;" class="html-dark-border hover-bg-gray">
                         <div class="dropdown-user-name" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ auth()->user()->name ?? 'Admin' }}</div>
                         <div class="dropdown-user-email" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-bottom:4px;">{{ auth()->user()->email ?? '' }}</div>
-                        <div style="font-size:11px; color:#0284c7; font-weight:600; display:flex; align-items:center; gap:2px;">
+                        <div style="font-size:11px; color:#ea580c; font-weight:600; display:flex; align-items:center; gap:2px;">
                             <span class="material-symbols-outlined" style="font-size:12px;">edit</span> Edit Profil
                         </div>
                     </a>
@@ -663,54 +663,54 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
 </main>
 
 <!-- Mobile Native Bottom Navigation Bar (Dock Bar) -->
-<nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#0d1117]/95 backdrop-blur-md border-t border-slate-200/80 dark:border-slate-800/80 px-2 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-lg transition-transform duration-200" style="-webkit-tap-highlight-color: transparent;">
+<nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-[#000000]/95 backdrop-blur-md border-t border-slate-200/80 dark:border-slate-800/80 px-2 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-none transition-transform duration-200" style="-webkit-tap-highlight-color: transparent;">
     <div class="grid grid-cols-5 items-center justify-around max-w-md mx-auto text-center">
         <!-- Beranda -->
-        <a href="{{ route('tenant.dashboard') }}" class="flex flex-col items-center justify-center py-1 select-none active:scale-90 transition-transform {{ request()->routeIs('tenant.dashboard') ? 'text-sky-600 dark:text-sky-400 font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200' }}">
+        <a href="{{ route('tenant.dashboard') }}" class="flex flex-col items-center justify-center py-1 select-none active:scale-90 transition-transform {{ request()->routeIs('tenant.dashboard') ? 'text-orange-600 dark:text-orange-400 font-bold' : 'text-zinc-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-slate-200' }}">
             <div class="relative">
                 <span class="material-symbols-outlined text-[24px] {{ request()->routeIs('tenant.dashboard') ? 'fill-1' : '' }}">space_dashboard</span>
                 @if(request()->routeIs('tenant.dashboard'))
-                    <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-sky-500 dark:bg-sky-400"></span>
+                    <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-orange-500 dark:bg-orange-400"></span>
                 @endif
             </div>
             <span class="text-[10px] mt-0.5 tracking-tight">Beranda</span>
         </a>
 
         <!-- Katalog -->
-        <a href="{{ route('tenant.products.index') }}" class="flex flex-col items-center justify-center py-1 select-none active:scale-90 transition-transform {{ request()->routeIs('tenant.products.*') ? 'text-sky-600 dark:text-sky-400 font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200' }}">
+        <a href="{{ route('tenant.products.index') }}" class="flex flex-col items-center justify-center py-1 select-none active:scale-90 transition-transform {{ request()->routeIs('tenant.products.*') ? 'text-orange-600 dark:text-orange-400 font-bold' : 'text-zinc-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-slate-200' }}">
             <div class="relative">
                 <span class="material-symbols-outlined text-[24px]">inventory_2</span>
                 @if(request()->routeIs('tenant.products.*'))
-                    <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-sky-500 dark:bg-sky-400"></span>
+                    <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-orange-500 dark:bg-orange-400"></span>
                 @endif
             </div>
             <span class="text-[10px] mt-0.5 tracking-tight">Produk</span>
         </a>
 
         <!-- Pesanan -->
-        <a href="{{ route('tenant.orders.index') }}" class="flex flex-col items-center justify-center py-1 select-none active:scale-90 transition-transform relative {{ request()->routeIs('tenant.orders.*') ? 'text-sky-600 dark:text-sky-400 font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200' }}">
+        <a href="{{ route('tenant.orders.index') }}" class="flex flex-col items-center justify-center py-1 select-none active:scale-90 transition-transform relative {{ request()->routeIs('tenant.orders.*') ? 'text-orange-600 dark:text-orange-400 font-bold' : 'text-zinc-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-slate-200' }}">
             <div class="relative">
                 <span class="material-symbols-outlined text-[24px]">receipt_long</span>
                 @if(request()->routeIs('tenant.orders.*'))
-                    <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-sky-500 dark:bg-sky-400"></span>
+                    <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-orange-500 dark:bg-orange-400"></span>
                 @endif
             </div>
             <span class="text-[10px] mt-0.5 tracking-tight">Pesanan</span>
         </a>
 
         <!-- Keuangan -->
-        <a href="{{ route('tenant.payouts.index') }}" class="flex flex-col items-center justify-center py-1 select-none active:scale-90 transition-transform {{ request()->routeIs('tenant.payouts.*') || request()->routeIs('tenant.balance.*') ? 'text-sky-600 dark:text-sky-400 font-bold' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200' }}">
+        <a href="{{ route('tenant.payouts.index') }}" class="flex flex-col items-center justify-center py-1 select-none active:scale-90 transition-transform {{ request()->routeIs('tenant.payouts.*') || request()->routeIs('tenant.balance.*') ? 'text-orange-600 dark:text-orange-400 font-bold' : 'text-zinc-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-slate-200' }}">
             <div class="relative">
                 <span class="material-symbols-outlined text-[24px]">account_balance_wallet</span>
                 @if(request()->routeIs('tenant.payouts.*') || request()->routeIs('tenant.balance.*'))
-                    <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-sky-500 dark:bg-sky-400"></span>
+                    <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-orange-500 dark:bg-orange-400"></span>
                 @endif
             </div>
             <span class="text-[10px] mt-0.5 tracking-tight">Keuangan</span>
         </a>
 
         <!-- Menu Toko (Drawer Trigger) -->
-        <button type="button" @click="sidebarOpen = true" class="flex flex-col items-center justify-center py-1 select-none active:scale-90 transition-transform text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 cursor-pointer">
+        <button type="button" @click="sidebarOpen = true" class="flex flex-col items-center justify-center py-1 select-none active:scale-90 transition-transform text-zinc-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-slate-200 cursor-pointer">
             <span class="material-symbols-outlined text-[24px]">grid_view</span>
             <span class="text-[10px] mt-0.5 tracking-tight">Menu Toko</span>
         </button>

@@ -25,7 +25,7 @@
     @endif
 
     {{-- Message Card --}}
-    <div class="bg-surface rounded-2xl border border-outline-variant p-6 md:p-8 shadow-sm">
+    <div class="bg-surface rounded-2xl border border-outline-variant p-6 md:p-8 shadow-none">
         {{-- Header Info --}}
         <div class="flex flex-col md:flex-row md:items-start justify-between gap-4 border-b border-outline-variant/60 pb-6 mb-6">
             <div class="space-y-1.5">
@@ -34,11 +34,11 @@
                         {{ $message->subject ?: '(Tanpa Subjek)' }}
                     </h3>
                     @if($message->read_at)
-                    <span class="px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-bold border border-slate-200 dark:border-slate-700">
+                    <span class="px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 text-xs font-bold border border-zinc-200 dark:border-zinc-800">
                         Dibaca: {{ $message->read_at->format('d M Y H:i') }}
                     </span>
                     @else
-                    <span class="px-2 py-0.5 rounded-full bg-sky-100 dark:bg-sky-950 text-sky-700 dark:text-sky-300 text-xs font-bold border border-sky-300 dark:border-sky-800">
+                    <span class="px-2 py-0.5 rounded-full bg-orange-100 dark:bg-orange-950 text-orange-700 dark:text-orange-300 text-xs font-bold border border-orange-300 dark:border-orange-800">
                         Pesan Baru
                     </span>
                     @endif
@@ -131,7 +131,7 @@
          x-transition:enter="transition ease-out duration-200"
          x-transition:enter-start="opacity-0 -translate-y-2"
          x-transition:enter-end="opacity-100 translate-y-0"
-         class="bg-surface rounded-2xl border border-primary/30 p-6 md:p-8 shadow-sm">
+         class="bg-surface rounded-2xl border border-primary/30 p-6 md:p-8 shadow-none">
         
         <div class="flex items-center justify-between pb-4 mb-4 border-b border-outline-variant">
             <div class="flex items-center gap-2">

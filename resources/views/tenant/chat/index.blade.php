@@ -8,11 +8,11 @@
     <!-- Top Header -->
     <div class="flex items-center justify-between mb-4 flex-shrink-0">
         <div>
-            <h1 class="text-xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
+            <h1 class="text-xl font-bold text-zinc-800 dark:text-zinc-100 flex items-center gap-2">
                 <span class="material-symbols-outlined text-primary">chat</span>
                 Chat Pelanggan
             </h1>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Komunikasi langsung dengan calon pembeli & pelanggan toko Anda.</p>
+            <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Komunikasi langsung dengan calon pembeli & pelanggan toko Anda.</p>
         </div>
         <div class="flex items-center gap-2">
             <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
@@ -22,17 +22,17 @@
     </div>
 
     <!-- Chat Container Card -->
-    <div class="flex-1 bg-white dark:bg-[#161b22] border border-slate-200 dark:border-[#30363d] rounded-2xl shadow-sm overflow-hidden flex flex-col md:flex-row min-h-0">
+    <div class="flex-1 bg-white dark:bg-[#000000] border border-slate-200 dark:border-zinc-800 rounded-2xl shadow-none overflow-hidden flex flex-col md:flex-row min-h-0">
         
         <!-- Left Column: Customer Conversations List -->
-        <div class="w-full md:w-80 lg:w-96 border-r border-slate-200 dark:border-[#30363d] flex flex-col bg-slate-50/50 dark:bg-[#0d1117]/40 flex-shrink-0">
+        <div class="w-full md:w-80 lg:w-96 border-r border-slate-200 dark:border-zinc-800 flex flex-col bg-slate-50/50 dark:bg-[#000000]/40 flex-shrink-0">
             <!-- Search bar -->
-            <div class="p-3 border-b border-slate-200 dark:border-[#30363d] bg-white dark:bg-[#161b22]">
+            <div class="p-3 border-b border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#000000]">
                 <div class="relative flex items-center">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
                         <span class="material-symbols-outlined text-[18px] leading-none">search</span>
                     </div>
-                    <input type="text" x-model="searchQuery" placeholder="Cari nama pelanggan..." class="w-full pl-9 pr-3 py-1.5 text-xs rounded-xl bg-slate-100 dark:bg-[#21262d] border border-transparent focus:border-primary dark:focus:border-blue-500 focus:bg-white dark:focus:bg-[#161b22] focus:outline-none text-slate-800 dark:text-white placeholder:text-slate-400 transition-all">
+                    <input type="text" x-model="searchQuery" placeholder="Cari nama pelanggan..." class="w-full pl-9 pr-3 py-1.5 text-xs rounded-xl bg-slate-100 dark:bg-[#21262d] border border-transparent focus:border-primary dark:focus:border-blue-500 focus:bg-white dark:focus:bg-[#161b22] focus:outline-none text-zinc-800 dark:text-zinc-100 placeholder:text-slate-400 transition-all">
                 </div>
             </div>
 
@@ -52,10 +52,10 @@
 
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center justify-between gap-1 mb-1">
-                                <h4 class="text-xs font-bold text-slate-800 dark:text-white truncate" x-text="conv.user_name"></h4>
+                                <h4 class="text-xs font-bold text-zinc-800 dark:text-zinc-100 truncate" x-text="conv.user_name"></h4>
                                 <span class="text-[10px] text-slate-400 whitespace-nowrap" x-text="conv.last_time"></span>
                             </div>
-                            <p class="text-xs truncate" :class="conv.unread_count > 0 ? 'font-bold text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400'" x-text="conv.last_message || 'Mulai percakapan...'"></p>
+                            <p class="text-xs truncate" :class="conv.unread_count > 0 ? 'font-bold text-zinc-900 dark:text-zinc-100' : 'text-zinc-500 dark:text-zinc-400'" x-text="conv.last_message || 'Mulai percakapan...'"></p>
                         </div>
                     </div>
                 </template>
@@ -69,17 +69,17 @@
         </div>
 
         <!-- Right Column: Active Chat Window -->
-        <div class="flex-1 flex flex-col bg-white dark:bg-[#161b22] min-w-0">
+        <div class="flex-1 flex flex-col bg-white dark:bg-[#000000] min-w-0">
             
             <template x-if="selectedUser">
                 <div class="flex-1 flex flex-col h-full min-h-0">
                     
                     <!-- Chat Header -->
-                    <div class="p-3.5 px-4 border-b border-slate-200 dark:border-[#30363d] flex items-center justify-between bg-slate-50/70 dark:bg-[#161b22] flex-shrink-0">
+                    <div class="p-3.5 px-4 border-b border-slate-200 dark:border-zinc-800 flex items-center justify-between bg-slate-50/70 dark:bg-[#000000] flex-shrink-0">
                         <div class="flex items-center gap-3">
                             <img :src="selectedUser.avatar" class="w-9 h-9 rounded-full object-cover border border-slate-200 dark:border-gray-700">
                             <div>
-                                <h3 class="text-sm font-bold text-slate-800 dark:text-white" x-text="selectedUser.name"></h3>
+                                <h3 class="text-sm font-bold text-zinc-800 dark:text-zinc-100" x-text="selectedUser.name"></h3>
                                 <p class="text-[11px] text-slate-400" x-text="selectedUser.email"></p>
                             </div>
                         </div>
@@ -91,27 +91,27 @@
                     </div>
 
                     <!-- Messages Container -->
-                    <div class="flex-1 overflow-y-auto p-4 space-y-3 bg-[#f8fafc] dark:bg-[#0d1117]/60" id="tenantMessageContainer">
+                    <div class="flex-1 overflow-y-auto p-4 space-y-3 bg-[#f8fafc] dark:bg-[#000000]/60" id="tenantMessageContainer">
                         
                         <template x-for="msg in messages" :key="msg.id">
                             <div class="flex flex-col" :class="msg.sender_type === 'tenant' ? 'items-end' : 'items-start'">
                                 
                                 <!-- Attached Product snippet if any -->
                                 <template x-if="msg.product">
-                                    <div class="mb-1 p-2 rounded-xl bg-white dark:bg-[#21262d] border border-slate-200 dark:border-[#30363d] shadow-sm max-w-xs flex items-center gap-2.5">
+                                    <div class="mb-1 p-2 rounded-xl bg-white dark:bg-[#21262d] border border-slate-200 dark:border-zinc-800 shadow-none max-w-xs flex items-center gap-2.5">
                                         <img x-show="msg.product.image" :src="msg.product.image" class="w-10 h-10 rounded-lg object-cover">
                                         <div class="min-w-0 flex-1">
-                                            <p class="text-xs font-bold text-slate-800 dark:text-white truncate" x-text="msg.product.name"></p>
+                                            <p class="text-xs font-bold text-zinc-800 dark:text-zinc-100 truncate" x-text="msg.product.name"></p>
                                             <p class="text-xs font-extrabold text-primary" x-text="'Rp ' + msg.product.price"></p>
                                         </div>
                                     </div>
                                 </template>
 
                                 <!-- Message Bubble -->
-                                <div class="max-w-[75%] rounded-2xl px-4 py-2.5 shadow-sm text-xs leading-relaxed"
+                                <div class="max-w-[75%] rounded-2xl px-4 py-2.5 shadow-none text-xs leading-relaxed"
                                      :class="msg.sender_type === 'tenant' 
                                         ? 'bg-primary text-white rounded-br-none' 
-                                        : 'bg-white dark:bg-[#21262d] text-slate-800 dark:text-slate-100 border border-slate-200/80 dark:border-[#30363d] rounded-bl-none'">
+                                        : 'bg-white dark:bg-[#21262d] text-slate-800 dark:text-slate-100 border border-slate-200/80 dark:border-zinc-800 rounded-bl-none'">
                                     <p class="whitespace-pre-line" x-text="msg.message"></p>
                                     <div class="text-[9px] mt-1 text-right opacity-75" x-text="msg.created_at"></div>
                                 </div>
@@ -124,14 +124,14 @@
                     </div>
 
                     <!-- Input Area -->
-                    <div class="p-3 border-t border-slate-200 dark:border-[#30363d] bg-white dark:bg-[#161b22] flex-shrink-0">
+                    <div class="p-3 border-t border-slate-200 dark:border-zinc-800 bg-white dark:bg-[#000000] flex-shrink-0">
                         <form @submit.prevent="sendMessage()" class="flex items-end gap-2">
                             <div class="flex-1 bg-slate-100 dark:bg-[#21262d] rounded-2xl border border-slate-200 dark:border-transparent focus-within:border-primary dark:focus-within:border-blue-500 focus-within:bg-white dark:focus-within:bg-[#161b22] p-2 transition-all">
                                 <textarea x-model="newMessage" 
                                           @keydown.enter.prevent="if(!$event.shiftKey) sendMessage()"
                                           placeholder="Tulis balasan untuk pelanggan... (Tekan Enter untuk kirim)" 
                                           rows="2" 
-                                          class="w-full bg-transparent border-none text-xs text-slate-800 dark:text-white placeholder:text-slate-400 focus:outline-none resize-none leading-relaxed"></textarea>
+                                          class="w-full bg-transparent border-none text-xs text-zinc-800 dark:text-zinc-100 placeholder:text-slate-400 focus:outline-none resize-none leading-relaxed"></textarea>
                             </div>
                             <button type="submit" 
                                     :disabled="!newMessage.trim() || isSending"
@@ -146,11 +146,11 @@
 
             <!-- No conversation selected -->
             <template x-if="!selectedUser">
-                <div class="flex-1 flex flex-col items-center justify-center p-8 text-center text-slate-400 bg-slate-50/30 dark:bg-[#0d1117]/30">
+                <div class="flex-1 flex flex-col items-center justify-center p-8 text-center text-slate-400 bg-slate-50/30 dark:bg-[#000000]/30">
                     <div class="w-16 h-16 rounded-full bg-primary/10 text-primary flex items-center justify-center mb-3">
                         <span class="material-symbols-outlined text-3xl">chat</span>
                     </div>
-                    <h3 class="text-sm font-bold text-slate-800 dark:text-white mb-1">Pilih Pelanggan untuk Memulai Chat</h3>
+                    <h3 class="text-sm font-bold text-zinc-800 dark:text-zinc-100 mb-1">Pilih Pelanggan untuk Memulai Chat</h3>
                     <p class="text-xs max-w-sm">Pilih salah satu kontak di sisi kiri untuk melihat riwayat obrolan dan mengirimkan respon.</p>
                 </div>
             </template>

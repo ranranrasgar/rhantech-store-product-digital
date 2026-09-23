@@ -338,7 +338,7 @@ document.addEventListener('alpine:init', () => {
         </a>
 
         <a href="{{ route('admin.products.index', array_merge(request()->query(), ['origin' => 'internal'])) }}" 
-           class="p-4 rounded-xl border transition-all flex flex-col justify-between {{ request('origin') === 'internal' ? 'bg-sky-500/15 border-sky-500 text-sky-700 dark:text-sky-400 shadow-xs' : 'bg-surface border-outline-variant text-on-surface hover:bg-surface-container-highest' }}">
+           class="p-4 rounded-xl border transition-all flex flex-col justify-between {{ request('origin') === 'internal' ? 'bg-orange-500/15 border-orange-500 text-orange-700 dark:text-orange-400 shadow-xs' : 'bg-surface border-outline-variant text-on-surface hover:bg-surface-container-highest' }}">
             <span class="text-xs font-semibold text-on-surface-variant">Milik Platform (Internal)</span>
             <span class="text-2xl font-black mt-1">{{ $internalCount }}</span>
         </a>
@@ -440,14 +440,14 @@ document.addEventListener('alpine:init', () => {
                                                 {{ $product->store->name }}
                                             </span>
                                         @else
-                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-sky-500/10 text-sky-700 dark:text-sky-400 border border-sky-500/20">
+                                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-orange-500/10 text-orange-700 dark:text-orange-400 border border-orange-500/20">
                                                 <span class="material-symbols-outlined text-[12px]">verified</span>
                                                 Platform Official
                                             </span>
                                         @endif
 
                                         @if(!empty($product->download_links))
-                                            <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300" title="{{ count($product->download_links) }} Tautan Unduhan Eksternal">
+                                            <span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300" title="{{ count($product->download_links) }} Tautan Unduhan Eksternal">
                                                 <span class="material-symbols-outlined text-[12px]">link</span> {{ count($product->download_links) }} Link
                                             </span>
                                         @endif
@@ -585,7 +585,7 @@ document.addEventListener('alpine:init', () => {
 
     <!-- MODAL PENOLAKAN PRODUK -->
     <div x-show="rejectModalOpen" x-cloak class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-        <div class="bg-surface rounded-2xl border border-outline-variant p-6 w-full max-w-md shadow-2xl" @click.away="rejectModalOpen = false">
+        <div class="bg-surface rounded-2xl border border-outline-variant p-6 w-full max-w-md shadow-none" @click.away="rejectModalOpen = false">
             <div class="flex items-center gap-2.5 text-rose-600 mb-2">
                 <span class="material-symbols-outlined text-2xl">warning</span>
                 <h3 class="text-base font-bold text-on-surface">Tolak Publikasi Produk</h3>
@@ -627,7 +627,7 @@ document.addEventListener('alpine:init', () => {
 
                 <div class="flex justify-end gap-2 pt-2 border-t border-outline-variant">
                     <button type="button" @click="rejectModalOpen = false" :disabled="isRejecting" class="px-4 py-2 text-xs font-semibold text-on-surface-variant hover:bg-surface-container rounded-lg">Batal</button>
-                    <button type="submit" :disabled="isRejecting" class="px-4 py-2 text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white rounded-lg shadow-sm transition flex items-center gap-1.5">
+                    <button type="submit" :disabled="isRejecting" class="px-4 py-2 text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white rounded-lg shadow-none transition flex items-center gap-1.5">
                         <span class="material-symbols-outlined text-[16px]" x-show="!isRejecting">cancel</span>
                         <span class="material-symbols-outlined text-[16px] animate-spin" x-show="isRejecting" style="display: none;">progress_activity</span>
                         <span x-text="isRejecting ? 'Menyimpan...' : 'Konfirmasi Tolak'"></span>
@@ -640,7 +640,7 @@ document.addEventListener('alpine:init', () => {
     <!-- FLOATING TOAST NOTIFICATION CONTAINER -->
     <div class="fixed bottom-5 right-5 z-50 flex flex-col gap-2.5 pointer-events-none">
         <template x-for="toast in toasts" :key="toast.id">
-            <div class="pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl shadow-xl text-white text-xs md:text-sm font-semibold transition-all transform duration-300 border"
+            <div class="pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl shadow-none text-white text-xs md:text-sm font-semibold transition-all transform duration-300 border"
                  :class="{
                      'bg-emerald-600 border-emerald-500': toast.type === 'success',
                      'bg-amber-600 border-amber-500': toast.type === 'info' || toast.type === 'warning',

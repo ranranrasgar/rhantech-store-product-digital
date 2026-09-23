@@ -45,6 +45,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (input.dataset.maxSize) {
                 maxLimitBytes = parseInt(input.dataset.maxSize, 10);
                 limitLabel = (maxLimitBytes / (1024 * 1024)).toFixed(0) + ' MB';
+            } else if (input.dataset.maxSize === '0' || input.dataset.noLimit !== undefined) {
+                // Explicit no-limit flag
+                return;
+            } else if (input.name === 'sql_file' || (input.accept && input.accept.includes('.sql'))) {
+                // File SQL backup/restore — tidak ada batas (skip check)
+                return;
             } else if (input.name === 'file' || (input.accept && (input.accept.includes('zip') || input.accept.includes('rar')))) {
                 maxLimitBytes = 100 * 1024 * 1024; // 100MB for digital product delivery archives
                 limitLabel = '100 MB';

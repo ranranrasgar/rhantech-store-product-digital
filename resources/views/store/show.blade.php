@@ -223,7 +223,7 @@
                 
                 @if(isset($myAffiliateLink))
                 <!-- 1. LINK REFERRAL AFILIASI AKTIF -->
-                <div class="p-4 bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-emerald-500/10 border border-amber-500/30 rounded-2xl space-y-3">
+                <div class="p-4 bg-surface-container border border-outline-variant/60 rounded-2xl space-y-3">
                     <div class="flex items-center justify-between">
                         <span class="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
                             <span class="material-symbols-outlined text-[18px]">loyalty</span>
@@ -313,7 +313,7 @@
 
                 @else
                 <!-- PENGUNJUNG BELUM LOGIN -->
-                <div class="p-5 bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-primary/10 border border-amber-500/30 rounded-2xl space-y-3.5 text-center">
+                <div class="p-5 bg-surface-container border border-outline-variant/60 rounded-2xl space-y-3.5 text-center">
                     <div class="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-600 flex items-center justify-center mx-auto shadow-xs">
                         <span class="material-symbols-outlined text-2xl">monetization_on</span>
                     </div>
@@ -366,7 +366,7 @@
     <div class="hidden md:block relative w-full min-h-[350px] bg-[#1a1a1a]">
         <!-- Background Banner (Image / Gradient / Color) -->
         <div class="absolute inset-0 bg-cover bg-center opacity-85" style="{{ $headerBgStyle }}"></div>
-        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
+        <div class="absolute inset-0 bg-black/55"></div>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col justify-end pt-24 pb-8 relative z-10">
             <div class="flex flex-row items-end gap-6">
@@ -384,7 +384,7 @@
                     <h1 class="text-3xl font-bold mb-2 drop-shadow-md flex items-center gap-2 flex-wrap">
                         {{ $store->name }}
                         @if($store->isPro())
-                            <span class="bg-gradient-to-r from-amber-400 to-amber-600 text-white text-xs px-2 py-0.5 rounded-full font-black shadow-lg flex items-center gap-1 border border-amber-300">
+                            <span class="bg-amber-500 text-white text-xs px-2 py-0.5 rounded-full font-black flex items-center gap-1 border border-amber-400">
                                 <span class="material-symbols-outlined text-[14px]">stars</span> PRO
                             </span>
                         @endif
@@ -454,7 +454,7 @@
     <div class="md:hidden relative w-full bg-[#0d1322] overflow-hidden text-white">
         <!-- Banner Background (Image / Gradient / Color) -->
         <div class="absolute inset-0 bg-cover bg-center opacity-85 scale-105" style="{{ $headerBgStyle }}"></div>
-        <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-slate-950/75 to-[#0d1322]"></div>
+        <div class="absolute inset-0 bg-black/65"></div>
         
         <div class="relative z-10 px-4 pt-5 pb-5 space-y-3">
             <!-- Top Identity Row -->
@@ -478,7 +478,7 @@
                     <h1 class="text-base font-extrabold text-white leading-tight line-clamp-2 drop-shadow-md">
                         {{ $store->name }}
                         @if($store->isPro())
-                            <span class="inline-flex bg-gradient-to-r from-amber-400 to-amber-600 text-white text-[9px] px-1.5 py-0.5 rounded-md font-black shadow-lg items-center gap-0.5 border border-amber-300 align-middle ml-1">
+                            <span class="inline-flex bg-amber-500 text-white text-[9px] px-1.5 py-0.5 rounded-md font-black items-center gap-0.5 border border-amber-400 align-middle ml-1">
                                 <span class="material-symbols-outlined text-[10px]">stars</span> PRO
                             </span>
                         @endif
@@ -655,7 +655,7 @@
             @endphp
             @if($vpHeader !== 'none' && $headerCampaigns->isNotEmpty())
                 <!-- KUPON & VOUCHER TOKO (Fallback) -->
-                <div class="mb-6 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-primary/5 via-emerald-500/5 to-amber-500/5 border border-primary/20 shadow-xs">
+                <div class="mb-6 p-4 sm:p-5 rounded-2xl bg-surface-container border border-outline-variant/60">
                     <div class="flex items-center justify-between gap-3 mb-3.5">
                         <div class="flex items-center gap-2.5">
                             <div class="w-8 h-8 rounded-xl bg-primary text-white flex items-center justify-center shadow-xs">
@@ -963,7 +963,7 @@
                                         </div>
                                         @endif
                                         <div class="absolute bottom-0 left-0 right-0 bg-slate-900/5 backdrop-blur-sm">
-                                            <div class="bg-gradient-to-r from-rose-500/90 to-orange-500/90 text-white text-center text-[10px] font-bold py-1 backdrop-blur-md">
+                                            <div class="bg-rose-600 text-white text-center text-[10px] font-bold py-1">
                                                 🔥 STOK TERBATAS
                                             </div>
                                         </div>
@@ -992,7 +992,7 @@
                     @endphp
                     @if($blockCampaigns->isNotEmpty())
                         <!-- REAL STORE CAMPAIGNS / VOUCHERS -->
-                        <div class="w-full p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-primary/5 via-emerald-500/5 to-amber-500/5 border border-primary/20 shadow-xs">
+                        <div class="w-full p-4 sm:p-5 rounded-2xl bg-surface-container border border-outline-variant/60">
                             <div class="flex items-center justify-between gap-3 mb-3.5">
                                 <div class="flex items-center gap-2.5">
                                     <div class="w-8 h-8 rounded-xl bg-primary text-white flex items-center justify-center shadow-xs">
@@ -1049,7 +1049,7 @@
                         </div>
                     @else
                         <!-- Placeholder when no coupons yet -->
-                        <div class="w-full p-4 rounded-2xl bg-gradient-to-r from-rose-500/5 to-amber-500/5 border border-rose-200/50 dark:border-rose-900/30 flex items-center gap-3">
+                        <div class="w-full p-4 rounded-2xl bg-surface-container border border-outline-variant/60 flex items-center gap-3">
                             <div class="w-9 h-9 rounded-xl bg-rose-500/10 text-rose-500 flex items-center justify-center shrink-0">
                                 <span class="material-symbols-outlined text-[20px]">confirmation_number</span>
                             </div>

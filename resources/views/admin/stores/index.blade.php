@@ -422,7 +422,7 @@
     {{-- MODAL 1: EDIT TOKO & PENGATURAN PRO                      --}}
     {{-- ======================================================== --}}
     <div x-show="isEditModalOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-        <div @click.away="isEditModalOpen = false" class="bg-surface-container-lowest border border-outline-variant rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto shadow-2xl p-6 space-y-5">
+        <div @click.away="isEditModalOpen = false" class="bg-surface-container-lowest border border-outline-variant rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto shadow-none p-6 space-y-5">
             <div class="flex items-center justify-between border-b border-outline-variant/40 pb-3">
                 <div class="flex items-center gap-2">
                     <span class="material-symbols-outlined text-primary text-xl">edit_note</span>
@@ -536,7 +536,7 @@
     {{-- MODAL 2: BANNED / SUSPEND TOKO                           --}}
     {{-- ======================================================== --}}
     <div x-show="isBanModalOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-        <div @click.away="isBanModalOpen = false" class="bg-surface-container-lowest border border-outline-variant rounded-2xl w-full max-w-lg shadow-2xl p-6 space-y-4">
+        <div @click.away="isBanModalOpen = false" class="bg-surface-container-lowest border border-outline-variant rounded-2xl w-full max-w-lg shadow-none p-6 space-y-4">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-xl bg-rose-500/10 text-rose-600 flex items-center justify-center shrink-0">
                     <span class="material-symbols-outlined text-2xl">block</span>
@@ -610,7 +610,7 @@
     {{-- MODAL 3: UNBAN / PULIHKAN TOKO                           --}}
     {{-- ======================================================== --}}
     <div x-show="isUnbanModalOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-        <div @click.away="isUnbanModalOpen = false" class="bg-surface-container-lowest border border-outline-variant rounded-2xl w-full max-w-md shadow-2xl p-6 space-y-4">
+        <div @click.away="isUnbanModalOpen = false" class="bg-surface-container-lowest border border-outline-variant rounded-2xl w-full max-w-md shadow-none p-6 space-y-4">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0">
                     <span class="material-symbols-outlined text-2xl">lock_open</span>
@@ -643,7 +643,7 @@
     {{-- MODAL 4: HAPUS TOKO & INSPEKSI TABEL TERKAIT             --}}
     {{-- ======================================================== --}}
     <div x-show="isDeleteModalOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-        <div @click.away="isDeleteModalOpen = false" class="bg-surface-container-lowest border border-outline-variant rounded-2xl w-full max-w-lg shadow-2xl p-6 space-y-5">
+        <div @click.away="isDeleteModalOpen = false" class="bg-surface-container-lowest border border-outline-variant rounded-2xl w-full max-w-lg shadow-none p-6 space-y-5">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-xl bg-rose-500/10 text-rose-600 flex items-center justify-center shrink-0">
                     <span class="material-symbols-outlined text-2xl">delete_forever</span>
@@ -701,7 +701,7 @@
 
                     <div class="p-2.5 rounded-xl bg-surface-container-low border border-outline-variant/40 flex items-center justify-between">
                         <span class="text-on-surface-variant flex items-center gap-1.5">
-                            <span class="material-symbols-outlined text-sm text-sky-500">group</span>
+                            <span class="material-symbols-outlined text-sm text-orange-500">group</span>
                             <span>Pengikut Toko</span>
                         </span>
                         <span class="font-black text-on-surface" x-text="relatedData.related?.followers || 0"></span>
@@ -755,7 +755,7 @@
     {{-- MODAL 5: DETAIL ANALISIS KESEHATAN TOKO                  --}}
     {{-- ======================================================== --}}
     <div x-show="isDetailModalOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-        <div @click.away="isDetailModalOpen = false" class="bg-surface-container-lowest border border-outline-variant rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl p-6 space-y-5">
+        <div @click.away="isDetailModalOpen = false" class="bg-surface-container-lowest border border-outline-variant rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-none p-6 space-y-5">
             <div class="flex items-center justify-between border-b border-outline-variant/40 pb-3">
                 <div class="flex items-center gap-2">
                     <span class="material-symbols-outlined text-primary text-xl">analytics</span>

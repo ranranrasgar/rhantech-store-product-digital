@@ -27,7 +27,7 @@
                 <span class="material-symbols-outlined text-[16px]">visibility</span>
                 Lihat di Dashboard Tenant
             </a>
-            <a href="{{ route('admin.pro_plans.create') }}" class="bg-primary text-on-primary px-4 py-2 rounded-lg font-bold text-xs hover:bg-primary/90 transition-colors flex items-center gap-1.5 shadow-sm" wire:navigate>
+            <a href="{{ route('admin.pro_plans.create') }}" class="bg-primary text-on-primary px-4 py-2 rounded-lg font-bold text-xs hover:bg-primary/90 transition-colors flex items-center gap-1.5 shadow-none" wire:navigate>
                 <span class="material-symbols-outlined text-[18px]">add</span>
                 Tambah Paket PRO
             </a>
@@ -36,7 +36,7 @@
 
     {{-- Metric Stat Cards --}}
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div class="p-4 rounded-xl bg-surface-container-lowest border border-outline-variant shadow-sm flex items-center gap-3">
+        <div class="p-4 rounded-xl bg-surface-container-lowest border border-outline-variant shadow-none flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
                 <span class="material-symbols-outlined text-[24px]">verified</span>
             </div>
@@ -46,8 +46,8 @@
             </div>
         </div>
 
-        <div class="p-4 rounded-xl bg-surface-container-lowest border border-outline-variant shadow-sm flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-sky-100 dark:bg-sky-950/50 text-sky-600 dark:text-sky-400 flex items-center justify-center shrink-0">
+        <div class="p-4 rounded-xl bg-surface-container-lowest border border-outline-variant shadow-none flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-orange-100 dark:bg-orange-950/50 text-orange-600 dark:text-orange-400 flex items-center justify-center shrink-0">
                 <span class="material-symbols-outlined text-[24px]">receipt_long</span>
             </div>
             <div>
@@ -56,7 +56,7 @@
             </div>
         </div>
 
-        <div class="p-4 rounded-xl bg-surface-container-lowest border border-outline-variant shadow-sm flex items-center gap-3">
+        <div class="p-4 rounded-xl bg-surface-container-lowest border border-outline-variant shadow-none flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
                 <span class="material-symbols-outlined text-[24px]">payments</span>
             </div>
@@ -106,7 +106,7 @@
 
     {{-- TAB 1: DAFTAR PAKET PRO --}}
     <div x-show="activeTab === 'plans'" x-cloak class="space-y-4">
-        <div class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden shadow-sm">
+        <div class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden shadow-none">
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse text-sm">
                     <thead>
@@ -218,7 +218,7 @@
     {{-- TAB 2: RIWAYAT TRANSAKSI LANGGANAN PRO --}}
     <div x-show="activeTab === 'transactions'" x-cloak class="space-y-4">
         {{-- Filter Box Transaksi --}}
-        <div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-4 shadow-sm">
+        <div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-4 shadow-none">
             <form method="GET" action="{{ route('admin.pro_plans.index') }}" class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
                 <input type="hidden" name="tab" value="transactions">
 
@@ -254,7 +254,7 @@
         </div>
 
         {{-- Tabel Riwayat Transaksi --}}
-        <div class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden shadow-sm">
+        <div class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden shadow-none">
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse text-sm">
                     <thead>
@@ -320,7 +320,7 @@
                                 {{-- Metode Bayar --}}
                                 <td class="p-4 whitespace-nowrap">
                                     @if(strtolower($sub->payment_method) === 'saldo toko')
-                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-sky-50 dark:bg-sky-950 text-sky-700 dark:text-sky-300 font-semibold text-[11px]">
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-orange-50 dark:bg-orange-950 text-orange-700 dark:text-orange-300 font-semibold text-[11px]">
                                             <span class="material-symbols-outlined text-[13px]">account_balance_wallet</span>
                                             Potong Saldo
                                         </span>

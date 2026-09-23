@@ -424,7 +424,7 @@
             <div class="flex justify-end pt-4 border-t border-outline-variant">
                 <button type="submit" 
                         :disabled="isSubmitting"
-                        class="px-6 py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:brightness-110 transition-all shadow-md flex items-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed">
+                        class="px-6 py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:brightness-110 transition-all shadow-none flex items-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed">
                     <span x-show="!isSubmitting" class="material-symbols-outlined text-[18px]">save</span>
                     <svg x-show="isSubmitting" x-cloak class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -672,7 +672,7 @@
                             
                             <!-- Preview Baru jika ada -->
                             <template x-if="heroPreview">
-                                <div class="relative w-40 h-48 rounded-xl overflow-hidden border-2 border-emerald-500 shadow-md">
+                                <div class="relative w-40 h-48 rounded-xl overflow-hidden border-2 border-emerald-500 shadow-none">
                                     <img :src="heroPreview" class="w-full h-full object-cover">
                                     <span class="absolute bottom-1 right-1 px-2 py-0.5 rounded bg-emerald-600 text-[10px] text-white font-bold shadow">Foto Baru</span>
                                 </div>
@@ -682,12 +682,12 @@
                             <template x-if="!heroPreview">
                                 <div>
                                     @if(isset($profile) && $profile->hero_image)
-                                        <div class="relative w-40 h-48 rounded-xl overflow-hidden border border-outline-variant shadow-sm">
+                                        <div class="relative w-40 h-48 rounded-xl overflow-hidden border border-outline-variant shadow-none">
                                             <img src="{{ asset('storage/' . $profile->hero_image) }}" class="w-full h-full object-cover">
                                             <span class="absolute bottom-1 right-1 px-2 py-0.5 rounded bg-black/70 text-[10px] text-white font-bold">Saat Ini</span>
                                         </div>
                                     @else
-                                        <div class="relative w-40 h-48 rounded-xl overflow-hidden border border-outline-variant shadow-sm">
+                                        <div class="relative w-40 h-48 rounded-xl overflow-hidden border border-outline-variant shadow-none">
                                             <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover">
                                             <span class="absolute bottom-1 right-1 px-2 py-0.5 rounded bg-black/70 text-[10px] text-white font-bold">Default</span>
                                         </div>
@@ -703,7 +703,7 @@
             <div class="flex justify-end pt-4 border-t border-outline-variant">
                 <button type="submit" 
                         :disabled="isSubmitting"
-                        class="px-6 py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:brightness-110 transition-all shadow-md flex items-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed">
+                        class="px-6 py-2.5 bg-primary text-white rounded-xl font-bold text-sm hover:brightness-110 transition-all shadow-none flex items-center gap-2 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed">
                     <span x-show="!isSubmitting" class="material-symbols-outlined text-[18px]">save</span>
                     <svg x-show="isSubmitting" x-cloak class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -748,7 +748,7 @@
                     </div>
                     <div class="h-20 bg-slate-50 rounded-xl border border-slate-200 p-3 flex gap-2">
                         <div class="w-1/3 bg-white rounded-lg border border-slate-200 p-2">
-                            <div class="h-2 w-8 bg-sky-500 rounded mb-1.5"></div>
+                            <div class="h-2 w-8 bg-orange-500 rounded mb-1.5"></div>
                             <div class="h-1.5 w-12 bg-slate-200 rounded"></div>
                         </div>
                         <div class="flex-1 bg-white rounded-lg border border-slate-200 p-2 flex flex-col justify-between">
@@ -772,13 +772,13 @@
                                 <p class="text-xs text-slate-400">Tampilan GitHub-style OLED dark</p>
                             </div>
                         </div>
-                        <span x-show="currentTheme === 'dark'" class="flex items-center gap-1 text-sky-300 font-bold text-xs bg-sky-950/80 px-2.5 py-1 rounded-full border border-sky-800">
+                        <span x-show="currentTheme === 'dark'" class="flex items-center gap-1 text-orange-300 font-bold text-xs bg-orange-950/80 px-2.5 py-1 rounded-full border border-orange-800">
                             <span class="material-symbols-outlined text-[14px]">check_circle</span> Aktif
                         </span>
                     </div>
                     <div class="h-20 bg-[#161b22] rounded-xl border border-slate-700 p-3 flex gap-2">
                         <div class="w-1/3 bg-[#0d1117] rounded-lg border border-slate-700 p-2">
-                            <div class="h-2 w-8 bg-sky-400 rounded mb-1.5"></div>
+                            <div class="h-2 w-8 bg-orange-400 rounded mb-1.5"></div>
                             <div class="h-1.5 w-12 bg-slate-700 rounded"></div>
                         </div>
                         <div class="flex-1 bg-[#0d1117] rounded-lg border border-slate-700 p-2 flex flex-col justify-between">
@@ -825,7 +825,7 @@
         <!-- Summary Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div class="p-5 bg-surface rounded-2xl border border-outline-variant shadow-xs flex items-center gap-4">
-                <div class="w-12 h-12 rounded-xl bg-sky-500/10 text-sky-500 flex items-center justify-center shrink-0">
+                <div class="w-12 h-12 rounded-xl bg-orange-500/10 text-orange-500 flex items-center justify-center shrink-0">
                     <span class="material-symbols-outlined text-[24px]">database</span>
                 </div>
                 <div>
@@ -982,7 +982,7 @@
                     <form action="{{ route('admin.company.backup_media') }}" method="POST">
                         @csrf
                         <button type="submit" onclick="this.disabled=true; this.innerHTML='<span class=\'material-symbols-outlined text-[16px] animate-spin\'>sync</span> Mengompres media...'; this.form.submit();"
-                                class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm whitespace-nowrap cursor-pointer">
+                                class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-none whitespace-nowrap cursor-pointer">
                             <span class="material-symbols-outlined text-[17px]">archive</span>
                             Buat Backup Media (.zip)
                         </button>
@@ -1061,7 +1061,7 @@
             <div class="p-6 border-b border-outline-variant flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                     <div class="flex items-center gap-2">
-                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-sky-500/10 text-sky-600 border border-sky-500/20">SQL Data</span>
+                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-orange-500/10 text-orange-600 border border-orange-500/20">SQL Data</span>
                         <h3 class="text-base font-bold text-on-surface flex items-center gap-2">
                             <span class="material-symbols-outlined text-primary text-[20px]">database</span>
                             Backup &amp; Restore Database (SQL)
@@ -1074,7 +1074,7 @@
                     <form action="{{ route('admin.company.backup') }}" method="POST">
                         @csrf
                         <button type="submit" onclick="this.disabled=true; this.innerHTML='<span class=\'material-symbols-outlined text-[16px] animate-spin\'>sync</span> Membuat backup...'; this.form.submit();"
-                                class="px-4 py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm whitespace-nowrap cursor-pointer">
+                                class="px-4 py-2.5 bg-orange-600 hover:bg-orange-700 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-none whitespace-nowrap cursor-pointer">
                             <span class="material-symbols-outlined text-[17px]">add_circle</span>
                             Buat Backup Database
                         </button>
@@ -1194,7 +1194,7 @@
                                 <p class="text-xs text-slate-400">Tampilan GitHub-style OLED dark</p>
                             </div>
                         </div>
-                        <span x-show="currentTheme === 'dark'" class="flex items-center gap-1 text-sky-300 font-bold text-xs bg-sky-950/80 px-2.5 py-1 rounded-full border border-sky-800">
+                        <span x-show="currentTheme === 'dark'" class="flex items-center gap-1 text-orange-300 font-bold text-xs bg-orange-950/80 px-2.5 py-1 rounded-full border border-orange-800">
                             <span class="material-symbols-outlined text-[14px]">check_circle</span> Aktif
                         </span>
                     </div>
@@ -1226,7 +1226,7 @@
                     <form action="{{ route('admin.company.optimize_database') }}" method="POST" class="mt-6">
                         @csrf
                         <input type="hidden" name="action" value="clear_cache">
-                        <button type="submit" class="w-full px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-sm">
+                        <button type="submit" class="w-full px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-none">
                             <span class="material-symbols-outlined text-[16px]">refresh</span>
                             Clear Application Cache
                         </button>
@@ -1247,7 +1247,7 @@
                     <form action="{{ route('admin.company.optimize_database') }}" method="POST" class="mt-6">
                         @csrf
                         <input type="hidden" name="action" value="optimize">
-                        <button type="submit" class="w-full px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-sm">
+                        <button type="submit" class="w-full px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-none">
                             <span class="material-symbols-outlined text-[16px]">bolt</span>
                             Optimize Application
                         </button>

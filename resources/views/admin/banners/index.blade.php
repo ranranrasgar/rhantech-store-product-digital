@@ -37,7 +37,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
             
             {{-- Main Banner --}}
-            <div class="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-100 dark:border-slate-700 p-5 col-span-1 lg:col-span-2">
+            <div class="bg-white dark:bg-slate-800 rounded-lg shadow-none border border-gray-100 dark:border-slate-700 p-5 col-span-1 lg:col-span-2">
                 @php $main = $banners->get('main'); @endphp
                 <div class="flex items-center justify-between mb-4 pb-2 border-b border-gray-100 dark:border-slate-700">
                     <div>
@@ -85,7 +85,7 @@
 
             <div class="col-span-1 flex flex-col gap-6">
                 {{-- Side Banner 1 --}}
-                <div class="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-100 dark:border-slate-700 p-5">
+                <div class="bg-white dark:bg-slate-800 rounded-lg shadow-none border border-gray-100 dark:border-slate-700 p-5">
                     @php $side1 = $banners->get('side_1'); @endphp
                     <div class="flex items-center justify-between mb-4 pb-2 border-b border-gray-100 dark:border-slate-700">
                         <h3 class="font-bold text-base text-gray-800 dark:text-gray-100">Samping (Atas)</h3>
@@ -124,7 +124,7 @@
                 </div>
 
                 {{-- Side Banner 2 --}}
-                <div class="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-100 dark:border-slate-700 p-5">
+                <div class="bg-white dark:bg-slate-800 rounded-lg shadow-none border border-gray-100 dark:border-slate-700 p-5">
                     @php $side2 = $banners->get('side_2'); @endphp
                     <div class="flex items-center justify-between mb-4 pb-2 border-b border-gray-100 dark:border-slate-700">
                         <h3 class="font-bold text-base text-gray-800 dark:text-gray-100">Samping (Bawah)</h3>
@@ -173,7 +173,7 @@
 
     {{-- Cropper Modal --}}
     <div x-show="showModal" style="display: none;" class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-black/60 p-4 sm:p-0">
-        <div class="relative w-full max-w-4xl max-h-full rounded-lg bg-white shadow-xl dark:bg-slate-800" @click.away="closeCropper()">
+        <div class="relative w-full max-w-4xl max-h-full rounded-lg bg-white shadow-none dark:bg-slate-800" @click.away="closeCropper()">
             <div class="flex items-center justify-between rounded-t border-b p-4 sm:p-5 dark:border-slate-600">
                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
                     Sesuaikan Gambar (Drag & Zoom)

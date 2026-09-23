@@ -6,41 +6,41 @@
 <div class="p-4 md:p-6 max-w-5xl mx-auto w-full" x-data="broadcastApp()">
     <div class="flex items-center justify-between mb-6">
         <div>
-            <h1 class="text-2xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
+            <h1 class="text-2xl font-bold text-zinc-800 dark:text-zinc-100 flex items-center gap-2">
                 WhatsApp Broadcast 
                 <span class="bg-amber-500 text-white text-[10px] px-2 py-0.5 rounded font-black tracking-wider uppercase">PRO</span>
             </h1>
-            <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Kirim pesan promo massal ke semua pelanggan Anda.</p>
+            <p class="text-zinc-500 dark:text-zinc-400 text-sm mt-1">Kirim pesan promo massal ke semua pelanggan Anda.</p>
         </div>
     </div>
 
     <!-- Stats -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700 flex items-center gap-4">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-zinc-200 dark:border-zinc-800 flex items-center gap-4">
             <div class="w-12 h-12 rounded-xl bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300 flex items-center justify-center shrink-0">
                 <span class="material-symbols-outlined text-2xl">group</span>
             </div>
             <div>
-                <div class="text-slate-500 dark:text-slate-400 text-xs font-bold mb-1">Total Pelanggan</div>
-                <div class="text-2xl font-black text-slate-800 dark:text-white">{{ $customers->count() }}</div>
+                <div class="text-zinc-500 dark:text-zinc-400 text-xs font-bold mb-1">Total Pelanggan</div>
+                <div class="text-2xl font-black text-zinc-800 dark:text-zinc-100">{{ $customers->count() }}</div>
             </div>
         </div>
-        <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700 flex items-center gap-4">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-zinc-200 dark:border-zinc-800 flex items-center gap-4">
             <div class="w-12 h-12 rounded-xl bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-300 flex items-center justify-center shrink-0">
                 <span class="material-symbols-outlined text-2xl">mark_email_read</span>
             </div>
             <div>
-                <div class="text-slate-500 dark:text-slate-400 text-xs font-bold mb-1">Pesan Berhasil</div>
-                <div class="text-2xl font-black text-slate-800 dark:text-white">0</div>
+                <div class="text-zinc-500 dark:text-zinc-400 text-xs font-bold mb-1">Pesan Berhasil</div>
+                <div class="text-2xl font-black text-zinc-800 dark:text-zinc-100">0</div>
             </div>
         </div>
-        <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-slate-200 dark:border-slate-700 flex items-center gap-4">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 border border-zinc-200 dark:border-zinc-800 flex items-center gap-4">
             <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400 flex items-center justify-center shrink-0">
                 <span class="material-symbols-outlined text-2xl">generating_tokens</span>
             </div>
             <div>
-                <div class="text-slate-500 dark:text-slate-400 text-xs font-bold mb-1">Sisa Kuota</div>
-                <div class="text-2xl font-black text-slate-800 dark:text-white">&infin;</div>
+                <div class="text-zinc-500 dark:text-zinc-400 text-xs font-bold mb-1">Sisa Kuota</div>
+                <div class="text-2xl font-black text-zinc-800 dark:text-zinc-100">&infin;</div>
             </div>
         </div>
     </div>
@@ -48,13 +48,13 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Editor -->
         <div class="lg:col-span-2 space-y-6">
-            <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
-                <div class="px-5 py-4 border-b border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 flex items-center justify-between">
-                    <h2 class="font-bold text-slate-800 dark:text-white flex items-center gap-2">
-                        <span class="material-symbols-outlined text-slate-700 dark:text-slate-300">edit_document</span>
+            <div class="bg-white dark:bg-slate-800 rounded-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
+                <div class="px-5 py-4 border-b border-zinc-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-slate-800/50 flex items-center justify-between">
+                    <h2 class="font-bold text-zinc-800 dark:text-zinc-100 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-zinc-700 dark:text-zinc-300">edit_document</span>
                         Tulis Pesan
                     </h2>
-                    <button @click="insertVariable('[NAMA]')" class="text-xs bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 px-2 py-1 rounded transition-colors font-medium">
+                    <button @click="insertVariable('[NAMA]')" class="text-xs bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-zinc-700 dark:text-zinc-300 px-2 py-1 rounded transition-colors font-medium">
                         + Sisipkan [NAMA]
                     </button>
                 </div>
@@ -62,13 +62,13 @@
                     <textarea 
                         x-model="message"
                         rows="8" 
-                        class="w-full bg-slate-50 dark:bg-[#0d1117] border border-slate-200 dark:border-slate-700 rounded-xl p-4 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:border-slate-500 focus:ring-1 focus:ring-slate-500 transition-all resize-none"
+                        class="w-full bg-slate-50 dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 text-sm text-zinc-800 dark:text-zinc-200 focus:outline-none focus:border-slate-500 focus:ring-1 focus:ring-slate-500 transition-all resize-none"
                         placeholder="Halo [NAMA], ada promo diskon 50% nih di toko kami..."></textarea>
                     
                     <div class="mt-4 flex items-center justify-between">
-                        <span class="text-xs text-slate-500 dark:text-slate-400 font-medium"><span x-text="message.length"></span> karakter</span>
+                        <span class="text-xs text-zinc-500 dark:text-zinc-400 font-medium"><span x-text="message.length"></span> karakter</span>
                         
-                        <button @click="sendBroadcast()" :disabled="isSending || message.trim() === '' || selectedCustomers.length === 0" class="px-6 py-2.5 bg-sky-500 hover:bg-sky-600 disabled:opacity-50 disabled:cursor-not-allowed text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white text-sm font-bold rounded-xl transition-all active:scale-95 flex items-center gap-2 cursor-pointer">
+                        <button @click="sendBroadcast()" :disabled="isSending || message.trim() === '' || selectedCustomers.length === 0" class="px-6 py-2.5 bg-orange-500 hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed text-white dark:bg-orange-600 dark:hover:bg-orange-500 dark:text-white text-sm font-bold rounded-xl transition-all active:scale-95 flex items-center gap-2 cursor-pointer">
                             <span class="material-symbols-outlined text-[18px]" x-show="!isSending">send</span>
                             <span class="material-symbols-outlined text-[18px] animate-spin" x-show="isSending">progress_activity</span>
                             <span x-text="isSending ? 'Mengirim...' : 'Kirim Broadcast'"></span>
@@ -86,25 +86,25 @@
 
         <!-- Target -->
         <div class="lg:col-span-1 space-y-6">
-            <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 flex flex-col h-[500px]">
-                <div class="p-4 border-b border-slate-200 dark:border-slate-700">
+            <div class="bg-white dark:bg-slate-800 rounded-2xl border border-zinc-200 dark:border-zinc-800 flex flex-col h-[500px]">
+                <div class="p-4 border-b border-zinc-200 dark:border-zinc-800">
                     <div class="flex items-center justify-between mb-3">
-                        <h2 class="font-bold text-slate-800 dark:text-white text-sm">Penerima (<span x-text="selectedCustomers.length"></span>/<span x-text="customers.length"></span>)</h2>
-                        <button @click="selectAll()" class="text-xs text-slate-900 dark:text-white font-bold hover:underline" x-text="selectedCustomers.length === customers.length ? 'Batal Semua' : 'Pilih Semua'"></button>
+                        <h2 class="font-bold text-zinc-800 dark:text-zinc-100 text-sm">Penerima (<span x-text="selectedCustomers.length"></span>/<span x-text="customers.length"></span>)</h2>
+                        <button @click="selectAll()" class="text-xs text-zinc-900 dark:text-zinc-100 font-bold hover:underline" x-text="selectedCustomers.length === customers.length ? 'Batal Semua' : 'Pilih Semua'"></button>
                     </div>
                     <div class="relative">
                         <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">search</span>
-                        <input type="text" x-model="searchQuery" placeholder="Cari pelanggan..." class="w-full pl-9 pr-3 py-2 bg-slate-50 dark:bg-[#0d1117] border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:border-slate-500 transition-all">
+                        <input type="text" x-model="searchQuery" placeholder="Cari pelanggan..." class="w-full pl-9 pr-3 py-2 bg-slate-50 dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-lg text-xs text-zinc-800 dark:text-zinc-200 focus:outline-none focus:border-slate-500 transition-all">
                     </div>
                 </div>
                 
                 <div class="flex-1 overflow-y-auto p-2 space-y-1 custom-scrollbar">
                     <template x-for="(customer, index) in filteredCustomers" :key="index">
                         <label class="flex items-center gap-3 p-2 hover:bg-slate-50 dark:hover:bg-slate-700/50 rounded-lg cursor-pointer transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-700">
-                            <input type="checkbox" :value="customer.phone" x-model="selectedCustomers" class="w-4 h-4 text-slate-900 dark:text-white rounded border-slate-300 focus:ring-slate-900 focus:ring-1">
+                            <input type="checkbox" :value="customer.phone" x-model="selectedCustomers" class="w-4 h-4 text-zinc-900 dark:text-zinc-100 rounded border-slate-300 focus:ring-slate-900 focus:ring-1">
                             <div class="min-w-0">
-                                <div class="text-sm font-bold text-slate-800 dark:text-white truncate" x-text="customer.name || 'Pelanggan'"></div>
-                                <div class="text-xs text-slate-500 dark:text-slate-400 font-mono" x-text="customer.phone"></div>
+                                <div class="text-sm font-bold text-zinc-800 dark:text-zinc-100 truncate" x-text="customer.name || 'Pelanggan'"></div>
+                                <div class="text-xs text-zinc-500 dark:text-zinc-400 font-mono" x-text="customer.phone"></div>
                             </div>
                         </label>
                     </template>

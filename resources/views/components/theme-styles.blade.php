@@ -169,7 +169,7 @@
         --tw-shadow-colored: 0 0 #0000 !important;
         box-shadow: none !important;
     }
-    .shadow, .shadow-xs, .shadow-sm, .shadow-md, .shadow-lg, .shadow-xl, .shadow-2xl, .shadow-2xs {
+    .shadow, .shadow-xs, .shadow-none, .shadow-none, .shadow-none, .shadow-none, .shadow-none, .shadow-2xs {
         box-shadow: none !important;
     }
     [class*="drop-shadow"] {

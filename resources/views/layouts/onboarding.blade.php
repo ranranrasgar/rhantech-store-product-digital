@@ -32,18 +32,18 @@ tailwind.config = {
 </style>
 @include("components.theme-init")
 </head>
-<body class="h-full bg-gradient-to-br from-slate-50 via-white to-teal-50/30 dark:from-[#060b14] dark:via-[#090d16] dark:to-[#060b14] text-slate-900 dark:text-white antialiased">
+<body class="h-full bg-gradient-to-br from-slate-50 via-white to-teal-50/30 dark:from-[#060b14] dark:via-[#090d16] dark:to-[#060b14] text-zinc-900 dark:text-zinc-100 antialiased">
 
 {{-- Top Bar --}}
 <header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 sm:px-8 py-4">
-    <a href="{{ url("/") }}" class="flex items-center gap-2 text-slate-800 dark:text-white hover:opacity-80 transition">
+    <a href="{{ url("/") }}" class="flex items-center gap-2 text-zinc-800 dark:text-zinc-100 hover:opacity-80 transition">
         @if(isset($company) && $company->logo)
             <img src="{{ asset("storage/".$company->logo) }}" alt="{{ $company->company_name }}" class="h-7 w-auto object-contain">
         @else
             <span class="font-black text-xl tracking-tight text-[#00838f]">Rhantech</span>
         @endif
     </a>
-    <div class="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
+    <div class="flex items-center gap-3 text-xs text-zinc-500 dark:text-zinc-400">
         <span>Masuk sebagai <span class="font-bold text-slate-700 dark:text-slate-200">{{ auth()->user()->name }}</span></span>
         <form method="POST" action="{{ route("logout") }}">
             @csrf

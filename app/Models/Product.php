@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -91,7 +92,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereTags($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereViews($value)
- * @mixin \Eloquent
+ * @mixin \Illuminate\Database\Eloquent\Model
  */
 class Product extends Model
 {
@@ -161,7 +162,7 @@ class Product extends Model
         return $this->hasMany(ProductReview::class)->where('is_visible', true)->latest();
     }
 
-    public function scopeApproved($query)
+    public function scopeApproved(Builder $query)
     {
         return $query->where(function ($q) {
             $q->whereNull('products.store_id')
@@ -169,7 +170,7 @@ class Product extends Model
         });
     }
 
-    public function scopePublished($query)
+    public function scopePublished(Builder $query)
     {
         return $query->where('products.is_active', true)
             ->where(function ($q) {
@@ -280,7 +281,7 @@ class Product extends Model
     /**
      * Dapatkan harga diskon terbaik (dari campaign aktif atau manual discount_price)
      */
-    public function getDiscountPriceAttribute($value)
+    public function getDiscountPriceAttribute(mixed $value)
     {
         $campaign = $this->active_discount_campaign;
         

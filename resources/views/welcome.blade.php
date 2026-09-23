@@ -63,9 +63,7 @@
 <div class="hidden md:block">
     <!-- Hero Section -->
     <section class="pb-12 md:pb-2xl px-4 sm:px-lg md:px-xl max-w-container-max mx-auto min-h-[70vh] md:min-h-[85vh] flex flex-col justify-center relative" id="home">
-        <!-- Abstract Background Element -->
-        <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-secondary-container/20 rounded-full blur-[100px] -z-10"></div>
-        <div class="absolute bottom-20 left-10 w-[300px] h-[300px] bg-primary/5 rounded-full blur-[80px] -z-10"></div>
+
         
         @php
             $heroMode = $company->hero_mode ?? 'custom';
@@ -165,19 +163,6 @@
                         <p class="text-xs sm:text-sm md:text-body-lg text-on-surface-variant max-w-2xl mt-2 text-balance leading-relaxed">
                             {{ (!empty($heroSubtitle) && !Str::contains($heroSubtitle, 'engineering excellence') && !Str::contains($heroSubtitle, 'keunggulan dalam bidang engineering')) ? $heroSubtitle : 'Temukan source code siap deploy, template aplikasi, dan sistem digital berkualitas langsung dari developer terverifikasi untuk mempercepat proyek Anda.' }}
                         </p>
-                    </div>
-                    
-                    <!-- Controls Nav Slider -->
-                    <div class="flex items-center justify-between md:justify-end gap-3 shrink-0 pt-2 md:pt-0">
-                        <button @click="prev()" class="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-surface border border-outline-variant hover:bg-surface-container flex items-center justify-center text-on-surface transition-colors cursor-pointer" aria-label="Sebelumnya">
-                            <span class="material-symbols-outlined text-[18px] md:text-[20px] leading-none">arrow_back</span>
-                        </button>
-                        <div class="text-xs font-bold text-on-surface-variant">
-                            <span x-text="activeStore + 1" class="text-primary font-black text-sm"></span> / {{ $topStores->count() }}
-                        </div>
-                        <button @click="next()" class="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-surface border border-outline-variant hover:bg-surface-container flex items-center justify-center text-on-surface transition-colors cursor-pointer" aria-label="Berikutnya">
-                            <span class="material-symbols-outlined text-[18px] md:text-[20px] leading-none">arrow_forward</span>
-                        </button>
                     </div>
                 </div>
 
@@ -319,7 +304,7 @@
                                                 @endif
 
                                                 <!-- Bottom Overlay & Product Details -->
-                                                <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent pointer-events-none"></div>
+                                                <div class="absolute inset-0 bg-black/30 pointer-events-none"></div>
                                                 <div class="absolute bottom-0 inset-x-0 p-3 sm:p-4 text-white flex items-end justify-between gap-2 sm:gap-3 z-10">
                                                     <div class="min-w-0">
                                                         <div class="flex items-center gap-1 sm:gap-1.5 text-amber-400 text-[11px] sm:text-xs font-bold mb-0.5 sm:mb-1">
@@ -565,7 +550,7 @@
 
                                         @else
                                             {{-- Store has 0 products yet (e.g. Bio Link or new store) --}}
-                                            <div class="h-36 sm:h-40 rounded-xl bg-gradient-to-br from-teal-500/10 via-sky-500/5 to-purple-500/10 border border-outline-variant/60 p-4 flex flex-col justify-center items-center text-center">
+                                            <div class="h-36 sm:h-40 rounded-xl bg-surface-container border border-outline-variant/60 p-4 flex flex-col justify-center items-center text-center">
                                                 <div class="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mb-2">
                                                     <span class="material-symbols-outlined text-2xl">
                                                         {{ $tStore->store_mode === 'profile' ? 'link' : ($tStore->store_mode === 'hybrid' ? 'auto_awesome' : 'storefront') }}
@@ -840,8 +825,8 @@
         <div class="max-w-container-max mx-auto px-4 sm:px-lg">
             <div class="flex flex-row justify-between items-end mb-6 md:mb-xl gap-2 md:gap-md">
                 <div>
-                    <h2 class="text-2xl md:font-headline-xl font-black text-on-background dark:text-white mb-1 md:mb-md">Featured Work</h2>
-                    <p class="text-xs md:text-body-lg text-on-surface-variant max-w-2xl hidden sm:block">A glimpse into some of our recent successful partnerships.</p>
+                    <h2 class="text-2xl md:font-headline-xl font-black text-on-background dark:text-white mb-1 md:mb-md">Proyek Unggulan</h2>
+                    <p class="text-xs md:text-body-lg text-on-surface-variant max-w-2xl hidden sm:block">Sekilas tentang beberapa kemitraan sukses terbaru kami.</p>
                 </div>
                 <a href="{{ route('projects.index') }}" class="px-3 py-2 md:px-lg md:py-3 rounded-lg border border-outline-variant font-label-md text-xs md:text-label-md text-primary hover:bg-surface-container transition-colors inline-flex items-center gap-1 shrink-0 font-bold" wire:navigate>
                     <span>Lihat Semua</span> <span class="material-symbols-outlined text-[14px]">arrow_forward</span>

@@ -147,7 +147,7 @@
                                  class="w-8 h-8 rounded-full object-cover border border-outline-variant/60">
                         </button>
                         
-                        <div x-show="open" style="display: none;" class="absolute right-0 mt-2 w-52 bg-surface dark:bg-slate-800 border border-outline-variant rounded-xl shadow-xl py-2 z-50">
+                        <div x-show="open" style="display: none;" class="absolute right-0 mt-2 w-52 bg-surface dark:bg-slate-800 border border-outline-variant rounded-xl shadow-none py-2 z-50">
                             <div class="px-4 py-2 border-b border-outline-variant">
                                 <p class="text-xs font-bold text-on-surface dark:text-white truncate">{{ auth()->user()->name }}</p>
                                 <p class="text-[11px] text-on-surface-variant truncate">{{ auth()->user()->email }}</p>

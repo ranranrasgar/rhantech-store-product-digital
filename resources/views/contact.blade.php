@@ -119,8 +119,15 @@
             </div>
             @endif
 
-            <form action="{{ route('contact.store') }}" method="POST" class="flex flex-col gap-md">
+            <form action="{{ route('contact.store') }}" method="POST" class="flex flex-col gap-md" id="contact-form">
                 @csrf
+                {{-- Honeypot: bot akan mengisi field ini, manusia tidak melihatnya --}}
+                <div style="position:absolute;left:-9999px;top:-9999px;opacity:0;pointer-events:none;" aria-hidden="true" tabindex="-1">
+                    <label for="website_url">Website (leave empty)</label>
+                    <input type="text" id="website_url" name="website_url" value="" autocomplete="off" tabindex="-1">
+                </div>
+                {{-- Timestamp untuk deteksi submit terlalu cepat --}}
+                <input type="hidden" name="form_loaded_at" id="form_loaded_at" value="">
                 <div>
                     <label class="block font-label-md text-on-surface mb-xs">Your Name *</label>
                     <input type="text" name="name" required value="{{ old('name') }}" class="w-full pl-4 pr-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-secondary focus:ring-1 focus:ring-secondary/20">
@@ -156,3 +163,10 @@
     </div>
 </section>
 @endsection
+
+@push('scripts')
+<script>
+    // Set timestamp saat halaman dimuat — dipakai untuk deteksi bot yang submit terlalu cepat
+    document.getElementById('form_loaded_at').value = Math.floor(Date.now() / 1000);
+</script>
+@endpush

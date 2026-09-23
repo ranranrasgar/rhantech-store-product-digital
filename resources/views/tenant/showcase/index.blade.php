@@ -1,81 +1,126 @@
-﻿@extends('layouts.tenant')
+@extends('layouts.tenant')
 
 @section('title', 'Etalase Produk Afiliasi')
 
 @section('content')
-<div class="flex-1 overflow-y-auto bg-[#f8fafc] dark:bg-[#090d16] text-[#0f172a] dark:text-[#f1f5f9] p-4 md:p-8">
+<div class="flex-1 overflow-y-auto bg-[#fafafa] dark:bg-[#000000] text-[#09090b] dark:text-[#ededed] p-4 md:p-8 relative"
+     id="showcase-container"
+     x-data="{
+        loading: false,
+        navigate(e) {
+            let link = e.target.closest('a.ajax-tab, nav[role=\'navigation\'] a');
+            if(!link) return;
+            e.preventDefault();
+            this.loading = true;
+            fetch(link.href)
+                .then(r => r.text())
+                .then(html => {
+                    let parser = new DOMParser();
+                    let doc = parser.parseFromString(html, 'text/html');
+                    let newContent = doc.getElementById('showcase-container').innerHTML;
+                    document.getElementById('showcase-container').innerHTML = newContent;
+                    history.pushState(null, '', link.href);
+                    this.loading = false;
+                });
+        }
+     }"
+     @click="navigate"
+>
+    <!-- Loading overlay -->
+    <div x-show="loading" class="absolute inset-0 z-50 bg-white/50 dark:bg-black/50 backdrop-blur-sm flex items-center justify-center" style="display: none;">
+        <div class="w-10 h-10 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+    </div>
+    
     <div class="max-w-7xl mx-auto space-y-6">
 
         <!-- Header -->
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-                <h1 class="text-2xl md:text-3xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-2.5">
+                <h1 class="text-2xl md:text-3xl font-black tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2.5">
                     Etalase Produk Afiliasi (Showcase)
                 </h1>
-                <p class="text-xs md:text-sm text-slate-500 dark:text-slate-400 mt-1">
+                <p class="text-xs md:text-sm text-zinc-500 dark:text-zinc-400 mt-1">
                     Pilih produk digital dari platform atau toko tenant lain untuk dipajang langsung di etalase toko Anda.
                 </p>
             </div>
 
             <div class="flex items-center gap-2">
-                <a href="{{ route('help.show', 'panduan-memasang-produk-toko-lain-di-etalase-toko-saya-showcase') }}" target="_blank" class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-[#222f49] bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 transition flex items-center gap-1.5">
-                    <span class="material-symbols-outlined text-[16px] text-slate-700 dark:text-slate-300">menu_book</span>
+                <a href="{{ route('help.show', 'panduan-memasang-produk-toko-lain-di-etalase-toko-saya-showcase') }}" target="_blank" class="px-4 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 transition flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[16px] text-zinc-700 dark:text-zinc-300">menu_book</span>
                     Panduan Etalase Afiliasi
                 </a>
-                <a href="{{ route('store.show', $store->slug) }}" target="_blank" class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-[#222f49] bg-white dark:bg-[#111726] hover:bg-slate-50 dark:hover:bg-[#161f33] text-xs font-bold text-slate-700 dark:text-slate-200 transition flex items-center gap-1.5">
+                <a href="{{ route('store.show', $store->slug) }}" target="_blank" class="px-4 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#000000] hover:bg-slate-50 dark:hover:bg-[#161f33] text-xs font-bold text-slate-700 dark:text-slate-200 transition flex items-center gap-1.5">
                     <span class="material-symbols-outlined text-[16px]">visibility</span>
                     Lihat Etalase Toko Saya
                 </a>
             </div>
         </div>
 
-        <!-- Filter & Search Bar -->
-        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 space-y-4">
-            <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+        <!-- Main Unified Card Container -->
+        <div class="bg-white dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-2xl overflow-hidden shadow-2xs">
+            
+            <!-- Modern Tab Filter (Underline Style matching Products) -->
+            <div class="border-b border-zinc-100 dark:border-zinc-800 px-4 md:px-6 flex items-center gap-6 overflow-x-auto hide-scrollbar bg-slate-50/50 dark:bg-[#0c1220]/50" style="-ms-overflow-style: none; scrollbar-width: none;">
+                <a href="{{ route('tenant.showcase.index', ['tab' => 'semua', 'search' => request('search')]) }}" 
+                   class="ajax-tab py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 {{ $tab === 'semua' ? 'text-orange-600 dark:text-orange-500 border-orange-600 dark:border-orange-500' : 'text-zinc-500 dark:text-zinc-400 border-transparent hover:text-orange-600 dark:hover:text-orange-500' }}">
+                    Semua Produk
+                </a>
                 
-                <!-- Tab Kategori Produk -->
-                <div class="flex flex-wrap items-center gap-1.5 p-1 bg-slate-100 dark:bg-[#0c1220] rounded-xl border border-slate-200/60 dark:border-[#222f49]">
-                    <a href="{{ route('tenant.showcase.index', ['tab' => 'semua', 'search' => request('search')]) }}" class="px-4 py-2 rounded-lg text-xs font-bold transition {{ $tab === 'semua' ? 'bg-sky-500 text-white dark:bg-sky-600 dark:text-white' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">
-                        Semua Produk
-                    </a>
-                    <a href="{{ route('tenant.showcase.index', ['tab' => 'platform', 'search' => request('search')]) }}" class="px-4 py-2 rounded-lg text-xs font-bold transition {{ $tab === 'platform' ? 'bg-sky-500 text-white dark:bg-sky-600 dark:text-white' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">
-                        Produk Platform (Official)
-                    </a>
-                    <a href="{{ route('tenant.showcase.index', ['tab' => 'tenant', 'search' => request('search')]) }}" class="px-4 py-2 rounded-lg text-xs font-bold transition {{ $tab === 'tenant' ? 'bg-sky-500 text-white dark:bg-sky-600 dark:text-white' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">
-                        Produk Toko Tenant Lain
-                    </a>
-                    <a href="{{ route('tenant.showcase.index', ['tab' => 'terpasang', 'search' => request('search')]) }}" class="px-4 py-2 rounded-lg text-xs font-bold transition {{ $tab === 'terpasang' ? 'bg-sky-500 text-white dark:bg-sky-600 dark:text-white' : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white' }}">
-                        Dipajang di Toko Saya (<span id="showcase-counter">{{ count($myShowcaseIds) }}</span>)
-                    </a>
-                </div>
+                <a href="{{ route('tenant.showcase.index', ['tab' => 'platform', 'search' => request('search')]) }}" 
+                   class="ajax-tab py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 {{ $tab === 'platform' ? 'text-orange-600 dark:text-orange-500 border-orange-600 dark:border-orange-500' : 'text-zinc-500 dark:text-zinc-400 border-transparent hover:text-orange-600 dark:hover:text-orange-500' }}">
+                    Produk Platform (Official)
+                </a>
+                
+                <a href="{{ route('tenant.showcase.index', ['tab' => 'tenant', 'search' => request('search')]) }}" 
+                   class="ajax-tab py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 {{ $tab === 'tenant' ? 'text-orange-600 dark:text-orange-500 border-orange-600 dark:border-orange-500' : 'text-zinc-500 dark:text-zinc-400 border-transparent hover:text-orange-600 dark:hover:text-orange-500' }}">
+                    Produk Toko Tenant Lain
+                </a>
+                
+                <a href="{{ route('tenant.showcase.index', ['tab' => 'terpasang', 'search' => request('search')]) }}" 
+                   class="ajax-tab py-4 text-xs md:text-sm font-bold whitespace-nowrap transition-colors border-b-2 {{ $tab === 'terpasang' ? 'text-orange-600 dark:text-orange-500 border-orange-600 dark:border-orange-500' : 'text-zinc-500 dark:text-zinc-400 border-transparent hover:text-orange-600 dark:hover:text-orange-500' }}">
+                    Dipajang di Toko Saya <span class="ml-1.5 px-2 py-0.5 rounded-full text-[11px] {{ $tab === 'terpasang' ? 'bg-orange-100 dark:bg-orange-950/60 text-orange-700 dark:text-orange-300' : 'bg-slate-200/60 dark:bg-slate-800 text-zinc-600 dark:text-zinc-400' }}" id="showcase-counter">{{ count($myShowcaseIds) }}</span>
+                </a>
+            </div>
 
-                <!-- Form Search -->
-                <form method="GET" action="{{ route('tenant.showcase.index') }}" class="flex items-center gap-2">
+            <!-- Sleek Search Input -->
+            <div class="p-4 md:p-6 border-b border-zinc-100 dark:border-zinc-800">
+                <form method="GET" action="{{ route('tenant.showcase.index') }}" class="flex items-center gap-3">
                     <input type="hidden" name="tab" value="{{ $tab }}">
-                    <div class="relative w-full sm:w-64 flex items-center">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                    <div class="relative flex-1">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                             <span class="material-symbols-outlined text-[18px] leading-none">search</span>
                         </div>
-                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama produk / toko..." class="w-full pl-9 pr-4 py-2 rounded-xl text-xs bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] text-slate-900 dark:text-white focus:outline-none focus:border-slate-500 transition">
+                        <input type="text" 
+                               name="search" 
+                               value="{{ request('search') }}" 
+                               placeholder="Cari nama produk / toko..." 
+                               class="w-full pl-10 pr-8 py-2.5 text-xs md:text-sm bg-slate-50 dark:bg-[#0c1220] border border-zinc-200 dark:border-zinc-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 text-zinc-900 dark:text-zinc-100 transition-all placeholder-slate-400"
+                               onkeydown="if(event.key === 'Enter'){this.form.submit();}">
+                        @if(request('search'))
+                            <a href="{{ route('tenant.showcase.index', ['tab' => $tab]) }}" 
+                               class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                                <span class="material-symbols-outlined text-[16px]">close</span>
+                            </a>
+                        @endif
                     </div>
-                    <button type="submit" class="px-4 py-2 text-xs font-bold bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white rounded-xl transition cursor-pointer active:scale-95">
-                        Cari
+                    <button type="submit" class="hidden md:flex px-4 py-2.5 bg-orange-500 hover:bg-orange-600 text-white dark:bg-orange-600 dark:hover:bg-orange-500 dark:text-white font-bold text-xs rounded-xl transition-all active:scale-95 items-center gap-1.5 shrink-0">
+                        <span>Cari</span>
                     </button>
                 </form>
             </div>
-        </div>
 
-        <!-- Product Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            <!-- Product Grid -->
+            <div class="p-4 md:p-6 bg-slate-50 dark:bg-transparent">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             @forelse($products as $product)
                 @php
                     $isInstalled = in_array($product->id, $myShowcaseIds);
                     $mainImage = $product->images->where('is_main', true)->first() ?? $product->images->first();
                 @endphp
-                <div id="showcase-card-{{ $product->id }}" class="showcase-card bg-white dark:bg-[#111726] border {{ $isInstalled ? 'border-emerald-500/70 ring-1 ring-emerald-500/20' : 'border-slate-200/80 dark:border-[#222f49]' }} rounded-2xl overflow-hidden flex flex-col transition-all duration-300">
+                <div id="showcase-card-{{ $product->id }}" class="showcase-card bg-white dark:bg-[#000000] border {{ $isInstalled ? 'border-emerald-500/70 ring-1 ring-emerald-500/20' : 'border-zinc-200 dark:border-zinc-800' }} rounded-2xl overflow-hidden flex flex-col transition-all duration-300">
                     
                     <!-- Image Box -->
-                    <div class="aspect-video w-full bg-slate-100 dark:bg-slate-800 relative overflow-hidden group">
+                    <div class="aspect-video w-full bg-zinc-100 dark:bg-zinc-900 relative overflow-hidden group">
                         @if($mainImage)
                             <img src="{{ asset('storage/' . $mainImage->image_path) }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
                         @else
@@ -112,7 +157,7 @@
                         <div class="text-[11px] text-slate-400 mb-1">
                             {{ $product->category->name ?? 'Produk Digital' }}
                         </div>
-                        <h3 class="font-bold text-sm text-slate-900 dark:text-white line-clamp-2 mb-3 leading-snug">
+                        <h3 class="font-bold text-sm text-zinc-900 dark:text-zinc-100 line-clamp-2 mb-3 leading-snug">
                             {{ $product->name }}
                         </h3>
 
@@ -127,9 +172,9 @@
                                 <div class="text-[10px] uppercase font-bold text-slate-400">Harga Jual</div>
                                 @if($product->discount_price && $product->discount_price > 0 && $product->discount_price < $product->price)
                                     <div class="text-xs line-through text-slate-400">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
-                                    <div class="font-extrabold text-sm text-slate-900 dark:text-white">Rp {{ number_format($product->discount_price, 0, ',', '.') }}</div>
+                                    <div class="font-extrabold text-sm text-zinc-900 dark:text-zinc-100">Rp {{ number_format($product->discount_price, 0, ',', '.') }}</div>
                                 @else
-                                    <div class="font-extrabold text-sm text-slate-900 dark:text-white">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
+                                    <div class="font-extrabold text-sm text-zinc-900 dark:text-zinc-100">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
                                 @endif
                             </div>
 
@@ -149,7 +194,7 @@
                         <form action="{{ route('tenant.showcase.toggle', $product->id) }}" method="POST" class="w-full" onsubmit="handleShowcaseToggle(event, {{ $product->id }}, '{{ route('tenant.showcase.toggle', $product->id) }}')">
                             @csrf
                             <button type="submit" id="btn-toggle-{{ $product->id }}"
-                                    class="w-full py-2 px-3 rounded-xl {{ $isInstalled ? 'border border-rose-200 dark:border-rose-900/40 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/30 dark:hover:bg-rose-900/50 text-rose-600 dark:text-rose-400' : 'bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white active:scale-95' }} text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer">
+                                    class="w-full py-2 px-3 rounded-xl {{ $isInstalled ? 'border border-rose-200 dark:border-rose-900/40 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/30 dark:hover:bg-rose-900/50 text-rose-600 dark:text-rose-400' : 'bg-orange-500 hover:bg-orange-600 text-white dark:bg-orange-600 dark:hover:bg-orange-500 dark:text-white active:scale-95' }} text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer">
                                 @if($isInstalled)
                                     <span class="material-symbols-outlined text-[16px]">remove_shopping_cart</span>
                                     <span>Copot dari Toko Saya</span>
@@ -164,26 +209,28 @@
 
                 </div>
             @empty
-                <div class="col-span-full p-16 text-center text-slate-400 bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl">
+                <div class="col-span-full p-16 text-center text-slate-400 bg-white dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-2xl">
                     <span class="material-symbols-outlined text-4xl mb-2 text-slate-400">inventory_2</span>
-                    <h3 class="font-bold text-base text-slate-800 dark:text-white">Tidak ada produk ditemukan</h3>
+                    <h3 class="font-bold text-base text-zinc-800 dark:text-zinc-100">Tidak ada produk ditemukan</h3>
                     <p class="text-xs text-slate-400 mt-1">Coba gunakan kata kunci lain atau pilih tab produk yang berbeda.</p>
                 </div>
             @endforelse
-        </div>
-
-        <!-- Pagination -->
-        @if($products->hasPages())
-            <div class="pt-4 flex justify-center">
-                {{ $products->links() }}
-            </div>
-        @endif
+                </div> <!-- End Grid -->
+                
+                <!-- Consolidated Pagination -->
+                @if($products->hasPages())
+                <div class="mt-6 pt-4 border-t border-zinc-200 dark:border-zinc-800 flex justify-center">
+                    {{ $products->links() }}
+                </div>
+                @endif
+            </div> <!-- End Grid Container inside card -->
+        </div> <!-- End of Main Unified Card Container -->
 
     </div>
 </div>
 
 <!-- Floating Notification Toast -->
-<div id="showcase-toast" class="fixed bottom-6 right-6 z-50 transform transition-all duration-300 translate-y-20 opacity-0 pointer-events-none flex items-center gap-3 px-4 py-3 rounded-2xl bg-sky-600/95 dark:bg-sky-500/95 text-white backdrop-blur-md border border-slate-700/50 dark:border-slate-200/50 text-xs font-bold max-w-sm">
+<div id="showcase-toast" class="fixed bottom-6 right-6 z-50 transform transition-all duration-300 translate-y-20 opacity-0 pointer-events-none flex items-center gap-3 px-4 py-3 rounded-2xl bg-orange-600/95 dark:bg-orange-500/95 text-white backdrop-blur-md border border-slate-700/50 dark:border-slate-200/50 text-xs font-bold max-w-sm">
     <div id="showcase-toast-icon" class="w-7 h-7 rounded-xl bg-emerald-500/20 text-emerald-400 dark:text-emerald-600 flex items-center justify-center shrink-0">
         <span class="material-symbols-outlined text-[18px]">check_circle</span>
     </div>
@@ -265,7 +312,7 @@ function handleShowcaseToggle(event, productId, url) {
                 btn.innerHTML = '<span class="material-symbols-outlined text-[16px]">remove_shopping_cart</span> <span>Copot dari Toko Saya</span>';
                 
                 if (card) {
-                    card.classList.remove('border-slate-200/80', 'dark:border-[#222f49]');
+                    card.classList.remove('border-slate-200/80', 'dark:border-zinc-800');
                     card.classList.add('border-emerald-500/70', 'ring-1', 'ring-emerald-500/20');
                 }
                 if (badge) {
@@ -273,12 +320,12 @@ function handleShowcaseToggle(event, productId, url) {
                 }
             } else {
                 // Dicopot
-                btn.className = 'w-full py-2 px-3 rounded-xl bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white active:scale-95 text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer';
+                btn.className = 'w-full py-2 px-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white dark:bg-orange-600 dark:hover:bg-orange-500 dark:text-white active:scale-95 text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer';
                 btn.innerHTML = '<span class="material-symbols-outlined text-[16px]">add_shopping_cart</span> <span>+ Pasang di Etalase Toko</span>';
                 
                 if (card) {
                     card.classList.remove('border-emerald-500/70', 'ring-1', 'ring-emerald-500/20');
-                    card.classList.add('border-slate-200/80', 'dark:border-[#222f49]');
+                    card.classList.add('border-slate-200/80', 'dark:border-zinc-800');
                 }
                 if (badge) {
                     badge.classList.add('hidden');

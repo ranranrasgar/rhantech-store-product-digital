@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Carbon\Carbon;
 
 /**
@@ -37,7 +38,7 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|WebsiteVisit whereSessionId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|WebsiteVisit whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|WebsiteVisit whereVisitedAt($value)
- * @mixin \Eloquent
+ * @mixin \Illuminate\Database\Eloquent\Builder
  */
 class WebsiteVisit extends Model
 {
@@ -65,7 +66,7 @@ class WebsiteVisit extends Model
     /**
      * Scope for today's visits
      */
-    public function scopeToday($query)
+    public function scopeToday(Builder $query)
     {
         return $query->whereDate('visited_at', Carbon::today());
     }
@@ -73,7 +74,7 @@ class WebsiteVisit extends Model
     /**
      * Scope for visits within the last N days
      */
-    public function scopeLastDays($query, int $days = 7)
+    public function scopeLastDays(Builder $query, int $days = 7)
     {
         return $query->where('visited_at', '>=', Carbon::now()->subDays($days)->startOfDay());
     }
@@ -81,7 +82,7 @@ class WebsiteVisit extends Model
     /**
      * Scope for unique visitors (grouped by date and session/ip)
      */
-    public function scopeUniqueVisitors($query)
+    public function scopeUniqueVisitors(Builder $query)
     {
         return $query->where('is_unique_daily', true);
     }

@@ -909,7 +909,7 @@
 
                     @if($totalReviewsCount > 0)
                         <!-- Rating Summary Card -->
-                        <div class="p-5 md:p-6 rounded-2xl bg-gradient-to-br from-amber-500/10 via-surface-container-low to-primary/5 border border-amber-500/20 mb-6">
+                        <div class="p-5 md:p-6 rounded-2xl bg-surface-container-low border border-outline-variant/60 mb-6">
                             <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
                                 <!-- Overall Score -->
                                 <div class="md:col-span-4 text-center md:border-r md:border-outline-variant/60 md:pr-6">
@@ -1139,7 +1139,7 @@
                     </div>
 
                     <!-- Security Badge Banner -->
-                    <div class="p-4 rounded-xl bg-gradient-to-r from-emerald-500/10 via-surface-container-low to-blue-500/10 border border-emerald-500/30 flex items-center justify-between gap-4 flex-wrap">
+                    <div class="p-4 rounded-xl bg-surface-container border border-outline-variant/60 flex items-center justify-between gap-4 flex-wrap">
                         <div class="flex items-center gap-3">
                             <span class="material-symbols-outlined text-emerald-500 text-3xl">lock</span>
                             <div>

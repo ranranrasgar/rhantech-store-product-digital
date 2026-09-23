@@ -124,7 +124,7 @@
                              x-transition:leave="transition ease-in duration-100"
                              x-transition:leave-start="opacity-100 translate-y-0"
                              x-transition:leave-end="opacity-0 translate-y-1"
-                             class="absolute left-0 right-0 top-full mt-1 bg-surface border border-outline-variant rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto p-1.5 divide-y divide-outline-variant/30"
+                             class="absolute left-0 right-0 top-full mt-1 bg-surface border border-outline-variant rounded-lg shadow-none z-50 max-h-60 overflow-y-auto p-1.5 divide-y divide-outline-variant/30"
                              style="display: none;">
                             
                             <!-- Search status header -->
@@ -309,7 +309,7 @@
                             <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-2">
                                 <button type="button" 
                                         onclick="if(confirm('Hapus foto ini dari galeri? File di cloud akan langsung dibersihkan.')) document.getElementById('delete-img-{{ $img->id }}').submit();"
-                                        class="px-2.5 py-1 bg-error hover:bg-red-700 text-white rounded text-xs font-bold shadow-md flex items-center gap-1 transition-all">
+                                        class="px-2.5 py-1 bg-error hover:bg-red-700 text-white rounded text-xs font-bold shadow-none flex items-center gap-1 transition-all">
                                     <span class="material-symbols-outlined text-[15px]">delete</span>
                                     <span>Hapus</span>
                                 </button>

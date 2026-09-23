@@ -4,7 +4,7 @@
     <div x-show="isProModalOpen" x-transition.opacity class="fixed inset-0 bg-slate-950/80 backdrop-blur-md" @click="closeProModal()"></div>
     
     <!-- Modal Content -->
-    <div x-show="isProModalOpen" x-transition.scale.95 class="bg-white dark:bg-[#0e1626] border border-amber-400/40 rounded-3xl shadow-2xl w-full max-w-xl relative z-10 overflow-hidden flex flex-col max-h-[92vh]">
+    <div x-show="isProModalOpen" x-transition.scale.95 class="bg-white dark:bg-[#0e1626] border border-amber-400/40 rounded-3xl shadow-none w-full max-w-xl relative z-10 overflow-hidden flex flex-col max-h-[92vh]">
         <!-- Golden Decorative Glow Header -->
         <div class="relative overflow-hidden p-6 text-white pb-7" style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #0f172a 100%);">
             <div class="absolute -right-10 -top-10 w-44 h-44 rounded-full bg-amber-400/20 blur-2xl pointer-events-none"></div>
@@ -12,14 +12,14 @@
             
             <div class="relative z-10 flex items-start justify-between">
                 <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg border border-amber-300/40 shrink-0" style="background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #d97706 100%);">
+                    <div class="w-12 h-12 rounded-2xl flex items-center justify-center shadow-none border border-amber-300/40 shrink-0" style="background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #d97706 100%);">
                         <span class="material-symbols-outlined text-[26px] text-slate-950 font-black">workspace_premium</span>
                     </div>
                     <div>
                         <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black bg-amber-400/20 border border-amber-300/40 text-amber-300 mb-1">
                             <span>★ FITUR EKSKLUSIF</span>
                         </div>
-                        <h3 class="text-xl font-black text-white drop-shadow-sm">Upgrade ke Toko PRO</h3>
+                        <h3 class="text-xl font-black text-white drop-shadow-none">Upgrade ke Toko PRO</h3>
                     </div>
                 </div>
                 <button type="button" @click="closeProModal()" class="text-slate-400 hover:text-white p-1 rounded-lg transition-colors cursor-pointer">
@@ -72,8 +72,8 @@
                 </div>
 
                 <!-- 4. Modul Project & Portofolio Toko -->
-                <div class="p-3.5 rounded-2xl bg-sky-500/5 dark:bg-sky-400/5 border border-sky-500/20 flex items-start gap-3">
-                    <div class="w-8 h-8 rounded-xl bg-sky-500/10 text-sky-600 dark:text-sky-400 flex items-center justify-center shrink-0">
+                <div class="p-3.5 rounded-2xl bg-orange-500/5 dark:bg-orange-400/5 border border-orange-500/20 flex items-start gap-3">
+                    <div class="w-8 h-8 rounded-xl bg-orange-500/10 text-orange-600 dark:text-orange-400 flex items-center justify-center shrink-0">
                         <span class="material-symbols-outlined text-[18px]">folder_special</span>
                     </div>
                     <div>
@@ -87,7 +87,7 @@
             <div class="p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/10 via-yellow-400/10 to-transparent border border-amber-400/30 flex items-center justify-between gap-3">
                 <div class="flex items-center gap-3">
                     <div class="relative">
-                        <div class="w-10 h-10 rounded-full border-2 border-amber-400 p-0.5 flex items-center justify-center bg-slate-900 shadow-md">
+                        <div class="w-10 h-10 rounded-full border-2 border-amber-400 p-0.5 flex items-center justify-center bg-slate-900 shadow-none">
                             <span class="text-xs font-black text-amber-300">{{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 2)) }}</span>
                         </div>
                         <span class="absolute -bottom-1 -right-1 bg-amber-400 text-slate-950 rounded-full p-0.5 text-[9px] font-black leading-none shadow">★</span>
@@ -104,7 +104,7 @@
         </div>
 
         <!-- Footer Action -->
-        <div class="px-6 py-4 border-t border-slate-200 dark:border-[#222f49] bg-slate-50 dark:bg-[#121c30] flex items-center justify-between gap-3 shrink-0">
+        <div class="px-6 py-4 border-t border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-[#121c30] flex items-center justify-between gap-3 shrink-0">
             <div>
                 <span class="block text-[10px] text-slate-400 font-medium">Mulai dari</span>
                 <span class="text-sm font-black text-slate-900 dark:text-white">Rp 49.000 <span class="text-[10px] font-normal text-slate-400">/ bulan</span></span>
@@ -113,7 +113,7 @@
                 <button type="button" @click="closeProModal()" class="px-3.5 py-2 text-xs font-medium text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 cursor-pointer">
                     Nanti Saja
                 </button>
-                <a href="{{ route('tenant.pro.index') }}" class="px-4 py-2 rounded-xl text-xs font-black text-slate-950 shadow-md hover:scale-105 transition-all flex items-center gap-1.5 cursor-pointer" style="background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #d97706 100%);">
+                <a href="{{ route('tenant.pro.index') }}" class="px-4 py-2 rounded-xl text-xs font-black text-slate-950 shadow-none hover:scale-105 transition-all flex items-center gap-1.5 cursor-pointer" style="background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #d97706 100%);">
                     <span class="material-symbols-outlined text-[16px]">bolt</span>
                     <span>Upgrade ke Toko PRO</span>
                 </a>

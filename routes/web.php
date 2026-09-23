@@ -51,7 +51,7 @@ Route::get('/download/{token}', [\App\Http\Controllers\DownloadController::class
 Route::get('/download/{token}/file/{item}', [\App\Http\Controllers\DownloadController::class, 'downloadFile'])->name('products.download.file');
 Route::post('/products/{product}/review', [\App\Http\Controllers\ProductReviewController::class, 'store'])->name('products.review.store');
 Route::get('/contact', [PublicController::class, 'contact'])->name('contact');
-Route::post('/contact', [PublicController::class, 'storeContact'])->name('contact.store');
+Route::post('/contact', [PublicController::class, 'storeContact'])->middleware('throttle:5,1')->name('contact.store');
 
 // Help Center Routes
 Route::get('/help', [\App\Http\Controllers\HelpController::class, 'index'])->name('help.index');

@@ -19,7 +19,7 @@
     }
 
     $fallbackUi = 'https://ui-avatars.com/api/?name=' . urlencode($userName) . '&background=0284c7&color=fff&bold=true';
-    $fallbackSvg = 'data:image/svg+xml;utf8,' . rawurlencode('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><rect width="40" height="40" rx="20" fill="#0284c7"/><text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" fill="#ffffff" font-family="sans-serif" font-weight="bold" font-size="18">' . $initial . '</text></svg>');
+    $fallbackSvg = 'data:image/svg+xml;utf8,' . rawurlencode('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><rect width="40" height="40" rx="20" fill="#ea580c"/><text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" fill="#ffffff" font-family="sans-serif" font-weight="bold" font-size="18">' . $initial . '</text></svg>');
 @endphp
 
 <img 

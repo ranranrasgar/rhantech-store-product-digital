@@ -19,7 +19,7 @@
         </a>
     </div>
 
-    <form action="{{ route('admin.pro_plans.store') }}" method="POST" class="bg-surface-container-lowest p-lg rounded-xl border border-outline-variant flex flex-col gap-6 shadow-sm">
+    <form action="{{ route('admin.pro_plans.store') }}" method="POST" class="bg-surface-container-lowest p-lg rounded-xl border border-outline-variant flex flex-col gap-6 shadow-none">
         @csrf
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -154,7 +154,7 @@
             <a href="{{ route('admin.pro_plans.index') }}" class="px-5 py-2.5 rounded-lg border border-outline-variant text-on-surface font-semibold hover:bg-surface-variant transition" wire:navigate>
                 Batal
             </a>
-            <button type="submit" class="bg-primary text-on-primary px-6 py-2.5 rounded-lg font-bold hover:bg-primary/90 transition-colors shadow-sm">
+            <button type="submit" class="bg-primary text-on-primary px-6 py-2.5 rounded-lg font-bold hover:bg-primary/90 transition-colors shadow-none">
                 Simpan Paket PRO
             </button>
         </div>

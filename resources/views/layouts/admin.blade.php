@@ -316,7 +316,7 @@
          x-transition:leave="transition ease-in duration-100"
          x-transition:leave-start="transform opacity-100 scale-100 translate-y-0"
          x-transition:leave-end="transform opacity-0 scale-95 -translate-y-1"
-         class="absolute right-0 mt-2 w-60 bg-surface dark:bg-[#161f33] border border-outline-variant dark:border-[#222f49] rounded-2xl shadow-xl py-2 z-50 text-on-surface">
+         class="absolute right-0 mt-2 w-60 bg-surface dark:bg-[#161f33] border border-outline-variant dark:border-zinc-800 rounded-2xl shadow-none py-2 z-50 text-on-surface">
         
         <div class="px-4 py-3 border-b border-outline-variant/50 dark:border-white/10 bg-surface-container-low/40 dark:bg-white/5">
             <div class="flex items-center gap-3">

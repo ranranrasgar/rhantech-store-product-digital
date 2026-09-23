@@ -16,12 +16,19 @@ class PurchaseController extends Controller
         // Cari semua pesanan di mana customer_email sama dengan email user
         $baseQuery = Order::where('customer_email', $user->email);
 
-        // Counts untuk badge tab
+        // Counts untuk badge tab (Optimized to 1 query)
+        $countsQuery = (clone $baseQuery)
+            ->selectRaw('count(*) as total')
+            ->selectRaw('sum(case when status in ("paid", "downloaded") then 1 else 0 end) as completed')
+            ->selectRaw('sum(case when status = "pending" then 1 else 0 end) as pending')
+            ->selectRaw('sum(case when status = "failed" then 1 else 0 end) as cancelled')
+            ->first();
+
         $counts = [
-            'all' => (clone $baseQuery)->count(),
-            'completed' => (clone $baseQuery)->whereIn('status', ['paid', 'downloaded'])->count(),
-            'pending' => (clone $baseQuery)->where('status', 'pending')->count(),
-            'cancelled' => (clone $baseQuery)->where('status', 'failed')->count(),
+            'all' => $countsQuery->total ?? 0,
+            'completed' => $countsQuery->completed ?? 0,
+            'pending' => $countsQuery->pending ?? 0,
+            'cancelled' => $countsQuery->cancelled ?? 0,
         ];
 
         $query = (clone $baseQuery)

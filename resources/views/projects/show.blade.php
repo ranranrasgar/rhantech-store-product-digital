@@ -168,7 +168,7 @@
 
                     <!-- Tombol Order / Pembelian Produk -->
                     @if(!empty($project->order_url))
-                    <a href="{{ $project->order_url }}" target="_blank" class="w-full text-center px-md py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-lg font-label-md font-bold transition shadow-sm flex items-center justify-center gap-2">
+                    <a href="{{ $project->order_url }}" target="_blank" class="w-full text-center px-md py-2.5 bg-sky-600 hover:bg-sky-700 text-white rounded-lg font-label-md font-bold transition flex items-center justify-center gap-2">
                         <span class="material-symbols-outlined text-base">shopping_cart</span>
                         <span>Beli / Order Produk Ini</span>
                     </a>

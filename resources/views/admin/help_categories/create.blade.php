@@ -14,7 +14,7 @@
         </div>
     </div>
 
-    <div class="bg-surface border border-outline-variant rounded-xl shadow-sm p-6">
+    <div class="bg-surface border border-outline-variant rounded-xl shadow-none p-6">
         <form action="{{ route('admin.help_categories.store') }}" method="POST">
             @csrf
             

@@ -4,7 +4,7 @@
     <div x-data="buyerChatWidget()" x-init="initWidget()" class="fixed bottom-4 right-4 z-50 items-end flex">
         <!-- Chat Button (Closed State) -->
         <button x-show="!chatOpen" @click="toggleChat(true)" x-transition.opacity 
-                class="bg-primary/95 hover:bg-primary text-white shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-1.5 font-bold p-3 md:px-3.5 md:py-2 rounded-full md:rounded-xl backdrop-blur-xs relative cursor-pointer group hover:scale-105 active:scale-95" 
+                class="bg-primary/95 hover:bg-primary text-white shadow-none hover:shadow-none transition-all flex items-center justify-center gap-1.5 font-bold p-3 md:px-3.5 md:py-2 rounded-full md:rounded-xl backdrop-blur-xs relative cursor-pointer group hover:scale-105 active:scale-95" 
                 title="Buka Chat Toko">
             <span class="material-symbols-outlined text-[20px] md:text-[18px]">chat</span>
             <span class="hidden md:inline text-xs font-semibold tracking-tight">Chat Toko</span>
@@ -15,7 +15,7 @@
         </button>
 
         <!-- Chat Window (Opened State) -->
-        <div x-show="chatOpen" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 translate-y-4" class="bg-white w-screen h-[100dvh] md:w-[650px] md:h-[480px] fixed md:relative bottom-0 right-0 md:rounded-t-xl shadow-2xl flex border border-outline-variant/40 overflow-hidden z-[60]" style="display: none;">
+        <div x-show="chatOpen" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 translate-y-4" class="bg-white w-screen h-[100dvh] md:w-[650px] md:h-[480px] fixed md:relative bottom-0 right-0 md:rounded-t-xl shadow-none flex border border-outline-variant/40 overflow-hidden z-[60]" style="display: none;">
             
             <!-- Left Side (Chat List) -->
             <div class="border-r border-outline-variant/30 bg-surface-bright flex-shrink-0" :class="selectedStore ? 'hidden md:flex md:w-[240px] flex-col' : 'flex flex-col w-full md:w-[240px]'">
@@ -111,7 +111,7 @@
                                     
                                     <!-- Attached Product Card in message -->
                                     <template x-if="msg.product">
-                                        <a :href="msg.product.url" target="_blank" class="mb-1 p-2 rounded-lg bg-white border border-outline-variant/60 shadow-sm max-w-[240px] flex items-center gap-2 hover:border-primary transition">
+                                        <a :href="msg.product.url" target="_blank" class="mb-1 p-2 rounded-lg bg-white border border-outline-variant/60 shadow-none max-w-[240px] flex items-center gap-2 hover:border-primary transition">
                                             <img x-show="msg.product.image" :src="msg.product.image" class="w-9 h-9 rounded object-cover">
                                             <div class="min-w-0 flex-1">
                                                 <p class="text-[11px] font-bold text-on-surface truncate" x-text="msg.product.name"></p>
@@ -121,7 +121,7 @@
                                     </template>
 
                                     <!-- Message Bubble -->
-                                    <div class="max-w-[80%] rounded-xl px-3.5 py-2 shadow-sm text-xs leading-relaxed"
+                                    <div class="max-w-[80%] rounded-xl px-3.5 py-2 shadow-none text-xs leading-relaxed"
                                          :class="msg.sender_type === 'user'
                                             ? 'bg-primary text-white rounded-br-none'
                                             : 'bg-white text-on-surface border border-outline-variant/40 rounded-bl-none'">

@@ -43,14 +43,14 @@
         <!-- 2. Saldo Iklan Aktif Beredar -->
         <div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-5 shadow-xs flex flex-col justify-between">
             <div class="flex items-center justify-between mb-3">
-                <div class="w-10 h-10 rounded-xl bg-sky-500/10 text-[#0284c7] flex items-center justify-center">
+                <div class="w-10 h-10 rounded-xl bg-orange-500/10 text-[#ea580c] flex items-center justify-center">
                     <span class="material-symbols-outlined text-[22px]">account_balance_wallet</span>
                 </div>
-                <span class="px-2 py-0.5 rounded-full bg-sky-500/10 text-[#0284c7] text-[10px] font-black uppercase">Saldo Beredar</span>
+                <span class="px-2 py-0.5 rounded-full bg-orange-500/10 text-[#ea580c] text-[10px] font-black uppercase">Saldo Beredar</span>
             </div>
             <div>
                 <p class="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-1">Total Saldo di Dompet Toko</p>
-                <h3 class="text-2xl font-black text-[#0284c7]">Rp {{ number_format($totalAdBalanceInCirculation, 0, ',', '.') }}</h3>
+                <h3 class="text-2xl font-black text-[#ea580c]">Rp {{ number_format($totalAdBalanceInCirculation, 0, ',', '.') }}</h3>
                 <p class="text-[11px] text-on-surface-variant mt-1">Saldo aktif siap dibelanjakan untuk iklan</p>
             </div>
         </div>
@@ -161,7 +161,7 @@
                                         Midtrans (QRIS / VA)
                                     </span>
                                 @elseif($tx->payment_method === 'store_balance')
-                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-sky-500/10 text-sky-600 text-xs font-bold">
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-orange-500/10 text-orange-600 text-xs font-bold">
                                         <span class="material-symbols-outlined text-[14px]">account_balance_wallet</span>
                                         Potong Saldo Penjualan
                                     </span>
@@ -264,7 +264,7 @@
                                 @endif
                             </td>
                             <td class="p-4">
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase {{ $ad->bidding_mode === 'manual' ? 'bg-indigo-500/10 text-indigo-600' : 'bg-sky-500/10 text-sky-600' }}">
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase {{ $ad->bidding_mode === 'manual' ? 'bg-indigo-500/10 text-indigo-600' : 'bg-orange-500/10 text-orange-600' }}">
                                     {{ ucfirst($ad->bidding_mode) }}
                                 </span>
                                 <div class="text-xs font-bold text-on-surface mt-1">

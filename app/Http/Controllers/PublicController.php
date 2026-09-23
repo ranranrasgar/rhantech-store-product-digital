@@ -11,6 +11,8 @@ use App\Models\Project;
 use App\Models\Testimonial;
 use App\Models\Product;
 use App\Models\ContactMessage;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Log;
 
 class PublicController extends Controller
 {
@@ -272,12 +274,37 @@ class PublicController extends Controller
 
     public function storeContact(Request $request)
     {
+        // ── 1. HONEYPOT CHECK — bot biasanya mengisi field tersembunyi ──────
+        if (!empty($request->input('website_url'))) {
+            Log::warning('Bot blocked (honeypot filled)', ['ip' => $request->ip()]);
+            // Kembalikan respons sukses palsu agar bot tidak tahu ia diblokir
+            return redirect()->back()->with('success', 'Pesan Anda telah terkirim. Terima kasih!');
+        }
+
+        // ── 2. TIME CHECK — bot submit terlalu cepat (< 3 detik) ────────────
+        $loadedAt = (int) $request->input('form_loaded_at', 0);
+        if ($loadedAt > 0 && (time() - $loadedAt) < 3) {
+            Log::warning('Bot blocked (submitted too fast)', ['ip' => $request->ip(), 'seconds' => time() - $loadedAt]);
+            return redirect()->back()->with('success', 'Pesan Anda telah terkirim. Terima kasih!');
+        }
+
+        // ── 3. RATE LIMITING — max 3 pesan per IP per 10 menit ─────────────
+        $rateLimitKey = 'contact-form:' . $request->ip();
+        if (RateLimiter::tooManyAttempts($rateLimitKey, 3)) {
+            $seconds = RateLimiter::availableIn($rateLimitKey);
+            return back()
+                ->withInput()
+                ->withErrors(['email' => 'Terlalu banyak permintaan. Silakan coba lagi dalam ' . ceil($seconds / 60) . ' menit.']);
+        }
+        RateLimiter::hit($rateLimitKey, 600); // Decay 10 menit
+
+        // ── 4. VALIDASI NORMAL ───────────────────────────────────────────────
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'phone' => 'nullable|string|max:50',
+            'name'    => 'required|string|max:255',
+            'email'   => 'required|email|max:255',
+            'phone'   => 'nullable|string|max:50',
             'subject' => 'required|string|max:255',
-            'message' => 'required|string',
+            'message' => 'required|string|min:10',
         ]);
 
         $contactMessage = ContactMessage::create($validated);
@@ -286,9 +313,9 @@ class PublicController extends Controller
         try {
             \Illuminate\Support\Facades\Mail::to($contactMessage->email)->send(new \App\Mail\ContactMessageNotification($contactMessage));
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Failed to send contact auto-reply email: ' . $e->getMessage());
+            Log::error('Failed to send contact auto-reply email: ' . $e->getMessage());
         }
 
-        return redirect()->back()->with('success', 'Your message has been sent successfully. We will get back to you soon!');
+        return redirect()->back()->with('success', 'Pesan Anda telah terkirim. Kami akan menghubungi Anda segera!');
     }
 }

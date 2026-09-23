@@ -18,14 +18,22 @@ class OrderController extends Controller
         // Fetch products for the dropdown filter (selective columns)
         $products = Product::where('store_id', $store->id)->select(['id', 'name'])->orderBy('name')->get();
 
-        // Build the base query: support both multi-item cart orders and single product orders
-        $query = Order::where(function ($q) use ($store) {
-            $q->whereHas('orderItems.product', function ($sub) use ($store) {
-                $sub->where('products.store_id', $store->id);
-            })->orWhereHas('product', function ($sub) use ($store) {
-                $sub->where('products.store_id', $store->id);
-            });
-        })->with(['product:id,store_id,name', 'orderItems.product:id,store_id,name', 'orderItems.product.images']);
+        // Optimized: Find all order IDs belonging to this store via items or direct product linkage
+        $orderIdsFromItems = \Illuminate\Support\Facades\DB::table('order_items')
+            ->join('products', 'order_items.product_id', '=', 'products.id')
+            ->where('products.store_id', $store->id)
+            ->pluck('order_items.order_id');
+
+        $orderIdsFromProducts = \Illuminate\Support\Facades\DB::table('orders')
+            ->join('products', 'orders.product_id', '=', 'products.id')
+            ->where('products.store_id', $store->id)
+            ->pluck('orders.id');
+
+        $allOrderIds = $orderIdsFromItems->merge($orderIdsFromProducts)->unique();
+
+        // Build the base query using whereIn for massive performance boost over whereHas
+        $query = Order::whereIn('id', $allOrderIds)
+            ->with(['product:id,store_id,name', 'orderItems.product:id,store_id,name', 'orderItems.product.images']);
 
         // 1. Tab filter
         $tab = $request->input('tab', 'all');
@@ -66,20 +74,19 @@ class OrderController extends Controller
         // Execute query
         $orders = $query->latest()->paginate(20)->withQueryString();
 
-        // Calculate counts for tabs
-        $baseCountQuery = Order::where(function ($q) use ($store) {
-            $q->whereHas('orderItems.product', function ($sub) use ($store) {
-                $sub->where('products.store_id', $store->id);
-            })->orWhereHas('product', function ($sub) use ($store) {
-                $sub->where('products.store_id', $store->id);
-            });
-        });
+        // Calculate counts for tabs in ONE single query instead of 4 separate queries
+        $countsQuery = Order::whereIn('id', $allOrderIds)
+            ->selectRaw('count(*) as total')
+            ->selectRaw('sum(case when status in ("paid", "downloaded") then 1 else 0 end) as completed')
+            ->selectRaw('sum(case when status = "pending" then 1 else 0 end) as pending')
+            ->selectRaw('sum(case when status = "failed" then 1 else 0 end) as cancelled')
+            ->first();
 
         $counts = [
-            'all' => (clone $baseCountQuery)->count(),
-            'completed' => (clone $baseCountQuery)->whereIn('status', ['paid', 'downloaded'])->count(),
-            'pending' => (clone $baseCountQuery)->where('status', 'pending')->count(),
-            'cancelled' => (clone $baseCountQuery)->where('status', 'failed')->count(),
+            'all' => $countsQuery->total ?? 0,
+            'completed' => $countsQuery->completed ?? 0,
+            'pending' => $countsQuery->pending ?? 0,
+            'cancelled' => $countsQuery->cancelled ?? 0,
         ];
 
         return view('tenant.orders.index', compact('orders', 'products', 'tab', 'store', 'counts'));

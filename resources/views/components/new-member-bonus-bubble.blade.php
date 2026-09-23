@@ -25,7 +25,7 @@
          x-transition:leave-end="opacity-0 scale-95">
 
         <div @click.outside="dismiss()"
-             class="w-full max-w-[420px] bg-white dark:bg-[#161b22] rounded-2xl sm:rounded-3xl border border-slate-200 dark:border-slate-700 p-6 sm:p-7 shadow-2xl relative text-slate-900 dark:text-slate-100 max-h-[92vh] overflow-y-auto">
+             class="w-full max-w-[420px] bg-white dark:bg-[#000000] rounded-2xl sm:rounded-3xl border border-slate-200 dark:border-slate-700 p-6 sm:p-7 shadow-none relative text-slate-900 dark:text-slate-100 max-h-[92vh] overflow-y-auto">
 
             <!-- Close Button -->
             <button type="button"
@@ -77,7 +77,7 @@
                 @if(!auth()->user()->store)
                     <div class="space-y-2">
                         <a href="{{ route('tenant.dashboard') }}"
-                           class="w-full py-3 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 active:bg-slate-950 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-xs sm:text-sm shadow-sm flex items-center justify-center gap-1.5 transition-colors">
+                           class="w-full py-3 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 active:bg-slate-950 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-xs sm:text-sm shadow-none flex items-center justify-center gap-1.5 transition-colors">
                             <span>Buka Halaman &amp; Klaim Saldo</span>
                             <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
                         </a>
@@ -86,7 +86,7 @@
             @else
                 <div class="space-y-3">
                     <a href="{{ route('register') }}"
-                       class="w-full py-3 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 active:bg-slate-950 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-xs sm:text-sm shadow-sm flex items-center justify-center gap-1.5 transition-colors">
+                       class="w-full py-3 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 active:bg-slate-950 text-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 font-bold text-xs sm:text-sm shadow-none flex items-center justify-center gap-1.5 transition-colors">
                         <span>Daftar &amp; Klaim Saldo Rp 500.000</span>
                         <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
                     </a>
@@ -114,7 +114,7 @@
                 x-transition:leave="transition ease-in duration-150 transform"
                 x-transition:leave-start="opacity-100 translate-y-0 scale-100"
                 x-transition:leave-end="opacity-0 translate-y-3 scale-90"
-                class="flex items-center gap-2 py-2.5 px-4 rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 shadow-xl border border-slate-700/50 dark:border-slate-300 transition-all duration-200 cursor-pointer"
+                class="flex items-center gap-2 py-2.5 px-4 rounded-full bg-slate-900 hover:bg-slate-800 text-white dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 shadow-none border border-slate-700/50 dark:border-slate-300 transition-all duration-200 cursor-pointer"
                 title="Program Kreator: Bonus Saldo Iklan Rp 500.000"
                 aria-label="Program Kreator: Bonus Saldo Iklan Rp 500.000">
 

@@ -13,7 +13,7 @@
         <span x-show="unreadCount > 0" 
               style="display: none;" 
               x-transition
-              class="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-600 text-white text-[10px] font-black rounded-full flex items-center justify-center px-1 border-2 border-white dark:border-slate-900 shadow-md ring-1 ring-red-400/50">
+              class="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-600 text-white text-[10px] font-black rounded-full flex items-center justify-center px-1 border-2 border-white dark:border-slate-900 shadow-none ring-1 ring-red-400/50">
             <span x-text="unreadCount > 99 ? '99+' : unreadCount"></span>
         </span>
     </button>
@@ -39,7 +39,7 @@
          x-transition:leave="transition ease-in duration-100"
          x-transition:leave-start="opacity-100 translate-y-0 scale-100"
          x-transition:leave-end="opacity-0 -translate-y-2 scale-95"
-         class="fixed inset-x-3 top-16 sm:inset-auto sm:absolute sm:right-0 sm:top-full sm:mt-2 w-auto sm:w-96 max-w-sm sm:max-w-none mx-auto sm:mx-0 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl py-0 z-50 overflow-hidden text-slate-800 dark:text-slate-100">
+         class="fixed inset-x-3 top-16 sm:inset-auto sm:absolute sm:right-0 sm:top-full sm:mt-2 w-auto sm:w-96 max-w-sm sm:max-w-none mx-auto sm:mx-0 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-none py-0 z-50 overflow-hidden text-slate-800 dark:text-slate-100">
         
         <!-- Dropdown Header -->
         <div class="px-4 py-3 bg-slate-50 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between gap-2">
@@ -105,7 +105,7 @@
                    :class="{ 'bg-primary/5 dark:bg-primary/10': !item.is_read }">
                     <div class="flex items-start gap-3">
                         <!-- Icon Avatar -->
-                        <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5 font-bold shadow-sm"
+                        <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5 font-bold shadow-none"
                              :class="{
                                 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400': item.type === 'order_paid',
                                 'bg-amber-500/15 text-amber-600 dark:text-amber-400': item.type === 'order_created' || item.type === 'order_pending',

@@ -76,11 +76,11 @@
                     <div class="text-base font-black text-on-surface">{{ number_format($totalCount ?? 0) }}</div>
                 </div>
             </div>
-            <div class="px-4 py-2 rounded-xl bg-sky-50 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800 flex items-center gap-2.5">
-                <span class="material-symbols-outlined text-sky-600 dark:text-sky-400 text-[20px]">mark_email_unread</span>
+            <div class="px-4 py-2 rounded-xl bg-orange-50 dark:bg-orange-950/40 border border-orange-200 dark:border-orange-800 flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-orange-600 dark:text-orange-400 text-[20px]">mark_email_unread</span>
                 <div>
-                    <div class="text-[11px] font-semibold text-sky-700 dark:text-sky-300 uppercase tracking-wider">Belum Dibaca</div>
-                    <div class="text-base font-black text-sky-600 dark:text-sky-400">{{ number_format($unreadCount ?? 0) }}</div>
+                    <div class="text-[11px] font-semibold text-orange-700 dark:text-orange-300 uppercase tracking-wider">Belum Dibaca</div>
+                    <div class="text-base font-black text-orange-600 dark:text-orange-400">{{ number_format($unreadCount ?? 0) }}</div>
                 </div>
             </div>
             <div class="px-4 py-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 flex items-center gap-2.5">
@@ -108,7 +108,7 @@
     @endif
 
     {{-- Filter Bar --}}
-    <div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-4 shadow-sm">
+    <div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-4 shadow-none">
         <form method="GET" action="{{ route('admin.messages.index') }}" class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
             {{-- Search input --}}
             <div class="relative flex-1 min-w-[240px]">
@@ -128,9 +128,9 @@
                         Semua ({{ $totalCount }})
                     </a>
                     <a href="{{ route('admin.messages.index', array_merge(request()->except('status', 'page'), ['status' => 'unread'])) }}"
-                       class="px-3 py-1.5 rounded-md font-semibold transition flex items-center gap-1 {{ request('status') === 'unread' ? 'bg-sky-600 text-white shadow-xs' : 'text-on-surface hover:text-sky-600' }}">
+                       class="px-3 py-1.5 rounded-md font-semibold transition flex items-center gap-1 {{ request('status') === 'unread' ? 'bg-orange-600 text-white shadow-xs' : 'text-on-surface hover:text-orange-600' }}">
                         <span>Belum Dibaca</span>
-                        <span class="px-1.5 py-0.2 rounded-full text-[10px] bg-sky-100 text-sky-800 dark:bg-sky-900 dark:text-sky-200 font-bold">{{ $unreadCount }}</span>
+                        <span class="px-1.5 py-0.2 rounded-full text-[10px] bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200 font-bold">{{ $unreadCount }}</span>
                     </a>
                     <a href="{{ route('admin.messages.index', array_merge(request()->except('status', 'page'), ['status' => 'read'])) }}"
                        class="px-3 py-1.5 rounded-md font-semibold transition {{ request('status') === 'read' ? 'bg-emerald-600 text-white shadow-xs' : 'text-on-surface hover:text-emerald-600' }}">
@@ -174,7 +174,7 @@
          x-transition:leave="transition ease-in duration-100"
          x-transition:leave-start="opacity-100 translate-y-0"
          x-transition:leave-end="opacity-0 -translate-y-2"
-         class="p-3 bg-slate-900 text-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-700 flex flex-wrap items-center justify-between gap-3">
+         class="p-3 bg-slate-900 text-white dark:bg-slate-800 rounded-xl shadow-none border border-slate-700 flex flex-wrap items-center justify-between gap-3">
         <div class="flex items-center gap-3">
             <span class="material-symbols-outlined text-amber-400 text-[20px]">check_circle</span>
             <span class="text-xs font-bold">
@@ -194,7 +194,7 @@
             {{-- Tombol Tandai Belum Dibaca --}}
             <button type="button" 
                     @click="submitBulk('mark_unread')"
-                    class="px-3 py-1.5 rounded-lg bg-sky-600/30 hover:bg-sky-600 text-sky-200 hover:text-white border border-sky-500/40 text-xs font-bold transition flex items-center gap-1 cursor-pointer">
+                    class="px-3 py-1.5 rounded-lg bg-orange-600/30 hover:bg-orange-600 text-orange-200 hover:text-white border border-orange-500/40 text-xs font-bold transition flex items-center gap-1 cursor-pointer">
                 <span class="material-symbols-outlined text-[16px]">mark_email_unread</span>
                 Tandai Belum Dibaca
             </button>
@@ -228,7 +228,7 @@
     @php
         $allCurrentIds = $messages->pluck('id')->toArray();
     @endphp
-    <div class="bg-surface rounded-xl border border-outline-variant overflow-hidden flex-1 shadow-sm">
+    <div class="bg-surface rounded-xl border border-outline-variant overflow-hidden flex-1 shadow-none">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead class="bg-surface-container-low border-b border-outline-variant text-xs">
@@ -256,7 +256,7 @@
                             $cleanPhone = '62' . substr($cleanPhone, 1);
                         }
                     @endphp
-                    <tr class="transition-colors hover:bg-surface-container-lowest {{ $isRead ? 'opacity-80' : 'bg-sky-50/40 dark:bg-sky-950/20 font-medium' }}">
+                    <tr class="transition-colors hover:bg-surface-container-lowest {{ $isRead ? 'opacity-80' : 'bg-orange-50/40 dark:bg-orange-950/20 font-medium' }}">
                         {{-- Checkbox per item --}}
                         <td class="py-3 px-4 text-center">
                             <input type="checkbox" 
@@ -277,7 +277,7 @@
                             <div class="font-bold text-on-surface text-sm flex items-center gap-1.5">
                                 <span>{{ $msg->name }}</span>
                                 @if(!$isRead)
-                                    <span class="w-2 h-2 rounded-full bg-sky-500 inline-block" title="Pesan baru belum dibaca"></span>
+                                    <span class="w-2 h-2 rounded-full bg-orange-500 inline-block" title="Pesan baru belum dibaca"></span>
                                 @endif
                             </div>
                             <div class="text-xs text-on-surface-variant flex items-center gap-1 mt-0.5">
@@ -318,13 +318,13 @@
                         {{-- Status --}}
                         <td class="py-3 px-4 text-center whitespace-nowrap">
                             @if($isRead)
-                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[11px] font-bold border border-slate-200 dark:border-slate-700">
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 text-[11px] font-bold border border-zinc-200 dark:border-zinc-800">
                                 <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
                                 Dibaca
                             </span>
                             @else
-                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-sky-100 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 text-[11px] font-bold border border-sky-300 dark:border-sky-800 animate-pulse">
-                                <span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span>
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-orange-100 dark:bg-orange-950/60 text-orange-700 dark:text-orange-300 text-[11px] font-bold border border-orange-300 dark:border-orange-800 animate-pulse">
+                                <span class="w-1.5 h-1.5 rounded-full bg-orange-500"></span>
                                 Baru
                             </span>
                             @endif
@@ -420,7 +420,7 @@
          class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs"
          @keydown.escape.window="replyModalOpen = false">
         
-        <div class="bg-surface dark:bg-[#111827] border border-outline-variant rounded-2xl shadow-2xl max-w-xl w-full overflow-hidden text-on-surface"
+        <div class="bg-surface dark:bg-[#111827] border border-outline-variant rounded-2xl shadow-none max-w-xl w-full overflow-hidden text-on-surface"
              @click.outside="replyModalOpen = false"
              x-transition:enter="transition ease-out duration-200"
              x-transition:enter-start="opacity-0 scale-95"
@@ -502,7 +502,7 @@
                     <button type="button" @click="replyModalOpen = false" class="px-4 py-2 rounded-lg border border-outline-variant text-on-surface hover:bg-surface-variant text-xs font-bold transition cursor-pointer">
                         Batal
                     </button>
-                    <button type="submit" class="px-5 py-2 rounded-lg bg-primary text-on-primary text-xs font-bold hover:bg-primary/90 transition shadow-sm flex items-center gap-1.5 cursor-pointer">
+                    <button type="submit" class="px-5 py-2 rounded-lg bg-primary text-on-primary text-xs font-bold hover:bg-primary/90 transition shadow-none flex items-center gap-1.5 cursor-pointer">
                         <span class="material-symbols-outlined text-[16px]">send</span>
                         Kirim Balasan Email
                     </button>

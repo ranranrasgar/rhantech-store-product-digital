@@ -205,7 +205,7 @@
         }
     @endphp
     @if($blockCampaigns->isNotEmpty())
-        <div class="w-full p-4 rounded-2xl bg-gradient-to-r from-primary/5 via-emerald-500/5 to-amber-500/5 border border-primary/20 shadow-xs">
+        <div class="w-full p-4 rounded-2xl bg-surface-container border border-outline-variant/60">
             <div class="flex items-center gap-2 mb-3">
                 <span class="material-symbols-outlined text-[18px] text-primary">confirmation_number</span>
                 <span class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">Kupon &amp; Voucher Toko</span>

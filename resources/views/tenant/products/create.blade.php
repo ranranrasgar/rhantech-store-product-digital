@@ -6,13 +6,13 @@
      @image-validation-state.window="imageHasError = $event.detail.hasError">
 
     <!-- Mobile Native Top App Bar (Sticky on mobile) -->
-    <div class="sticky top-0 z-30 -mx-3 -mt-3 sm:-mx-4 sm:-mt-4 md:hidden bg-white/95 dark:bg-[#0d1117]/95 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 px-4 py-3 flex items-center justify-between mb-4 shadow-xs">
+    <div class="sticky top-0 z-30 -mx-3 -mt-3 sm:-mx-4 sm:-mt-4 md:hidden bg-white/95 dark:bg-[#000000]/95 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 px-4 py-3 flex items-center justify-between mb-4 shadow-xs">
         <div class="flex items-center gap-3 min-w-0">
-            <a href="{{ route('tenant.products.index') }}" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-700 dark:text-slate-200 active:scale-90 transition-transform shrink-0">
+            <a href="{{ route('tenant.products.index') }}" class="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-900 flex items-center justify-center text-slate-700 dark:text-slate-200 active:scale-90 transition-transform shrink-0">
                 <span class="material-symbols-outlined text-[20px]">arrow_back</span>
             </a>
             <div class="min-w-0">
-                <h1 class="font-extrabold text-sm text-slate-900 dark:text-white truncate leading-tight">
+                <h1 class="font-extrabold text-sm text-zinc-900 dark:text-zinc-100 truncate leading-tight">
                     {{ isset($sourceProduct) ? 'Salin Produk' : 'Tambah Produk Baru' }}
                 </h1>
                 <p class="text-[10px] text-slate-400 truncate">
@@ -21,7 +21,7 @@
             </div>
         </div>
 
-        <button type="submit" form="product-form" :disabled="submitting || imageHasError" class="shrink-0 px-3.5 py-1.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white text-xs font-black active:scale-95 transition-all flex items-center gap-1 disabled:opacity-50">
+        <button type="submit" form="product-form" :disabled="submitting || imageHasError" class="shrink-0 px-3.5 py-1.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white dark:bg-orange-600 dark:hover:bg-orange-500 dark:text-white text-xs font-black active:scale-95 transition-all flex items-center gap-1 disabled:opacity-50">
             <span x-show="submitting" x-cloak class="material-symbols-outlined animate-spin text-[14px]">progress_activity</span>
             <span x-text="submitting ? '...' : 'Simpan'">Simpan</span>
         </button>
@@ -33,15 +33,15 @@
             <span class="material-symbols-outlined text-[24px]">arrow_back</span>
         </a>
         <div>
-            <h1 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+            <h1 class="text-2xl font-black text-zinc-900 dark:text-zinc-100 tracking-tight">
                 {{ isset($sourceProduct) ? 'Salin Produk Digital' : 'Tambah Produk Digital Baru' }}
             </h1>
             @if(isset($sourceProduct))
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                    Menyalin data dari: <span class="font-bold text-sky-600 dark:text-sky-400">{{ $sourceProduct->name }}</span>
+                <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+                    Menyalin data dari: <span class="font-bold text-orange-600 dark:text-orange-400">{{ $sourceProduct->name }}</span>
                 </p>
             @else
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
                     Lengkapi informasi produk digital untuk mulai berjualan di etalase tokomu.
                 </p>
             @endif
@@ -63,14 +63,14 @@
         <!-- ========================================== -->
         <!-- CARD 1: INFORMASI UTAMA PRODUK             -->
         <!-- ========================================== -->
-        <div class="bg-white dark:bg-[#111726] rounded-2xl border border-slate-200/80 dark:border-[#222f49] p-4 md:p-6 shadow-xs space-y-4">
-            <div class="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-slate-800 text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
-                <span class="material-symbols-outlined text-[18px] text-sky-500">inventory_2</span>
+        <div class="bg-white dark:bg-[#000000] rounded-2xl border border-zinc-200 dark:border-zinc-800 p-4 md:p-6 shadow-xs space-y-4">
+            <div class="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-slate-800 text-xs font-bold text-zinc-900 dark:text-zinc-100 uppercase tracking-wider">
+                <span class="material-symbols-outlined text-[18px] text-orange-500">inventory_2</span>
                 Informasi Utama
             </div>
 
             <div>
-                <label class="block text-xs md:text-sm font-bold text-slate-800 dark:text-slate-200 mb-1.5">
+                <label class="block text-xs md:text-sm font-bold text-zinc-800 dark:text-zinc-200 mb-1.5">
                     Nama Produk <span class="text-rose-500">*</span>
                 </label>
                 <input type="text" 
@@ -78,7 +78,7 @@
                        value="{{ old('name', isset($sourceProduct) ? $sourceProduct->name . ' (Salinan)' : '') }}" 
                        required 
                        placeholder="Contoh: Source Code Aplikasi Kasir Laravel 11 & POS"
-                       class="w-full px-4 py-2.5 bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl text-xs md:text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition-all">
+                       class="w-full px-4 py-2.5 bg-slate-50 dark:bg-[#0c1220] border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs md:text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all">
                 @error('name')<span class="text-rose-500 text-xs mt-1 block">{{ $message }}</span>@enderror
             </div>
 
@@ -158,14 +158,14 @@
             }">
                 <div>
                     <div class="flex items-center justify-between mb-1.5">
-                        <label class="block text-xs md:text-sm font-bold text-slate-800 dark:text-slate-200">
+                        <label class="block text-xs md:text-sm font-bold text-zinc-800 dark:text-zinc-200">
                             Kategori
                         </label>
-                        <button type="button" @click="showAddCategoryModal = true" class="text-[11px] font-bold text-sky-600 dark:text-sky-400 hover:underline flex items-center gap-1 active:scale-95 transition-transform">
+                        <button type="button" @click="showAddCategoryModal = true" class="text-[11px] font-bold text-orange-600 dark:text-orange-400 hover:underline flex items-center gap-1 active:scale-95 transition-transform">
                             <span class="material-symbols-outlined text-[15px]">add_circle</span> + Buat Kategori
                         </button>
                     </div>
-                    <select id="category-select" name="product_category_id" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl text-xs md:text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500">
+                    <select id="category-select" name="product_category_id" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#0c1220] border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs md:text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500">
                         <option value="">-- Tanpa Kategori --</option>
                         <optgroup label="🌐 Kategori Platform">
                             @foreach($categories->whereNull('store_id') as $cat)
@@ -185,14 +185,14 @@
 
                 <div>
                     <div class="flex items-center justify-between mb-1.5">
-                        <label class="block text-xs md:text-sm font-bold text-slate-800 dark:text-slate-200">
+                        <label class="block text-xs md:text-sm font-bold text-zinc-800 dark:text-zinc-200">
                             Tipe Produk
                         </label>
-                        <button type="button" @click="showAddTypeModal = true" class="text-[11px] font-bold text-sky-600 dark:text-sky-400 hover:underline flex items-center gap-1 active:scale-95 transition-transform">
+                        <button type="button" @click="showAddTypeModal = true" class="text-[11px] font-bold text-orange-600 dark:text-orange-400 hover:underline flex items-center gap-1 active:scale-95 transition-transform">
                             <span class="material-symbols-outlined text-[15px]">add_circle</span> + Buat Tipe
                         </button>
                     </div>
-                    <select id="type-select" name="product_type_id" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl text-xs md:text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500">
+                    <select id="type-select" name="product_type_id" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#0c1220] border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs md:text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500">
                         <option value="">-- Tanpa Tipe --</option>
                         <optgroup label="🌐 Tipe Platform">
                             @foreach($types->whereNull('store_id') as $type)
@@ -212,18 +212,18 @@
 
                 <!-- Modal Buat Kategori Toko -->
                 <div x-show="showAddCategoryModal" x-cloak class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-                    <div class="bg-white dark:bg-[#111726] rounded-2xl border border-slate-200 dark:border-[#222f49] p-5 w-full max-w-sm shadow-2xl space-y-3" @click.away="showAddCategoryModal = false">
-                        <div class="flex items-center gap-2 text-slate-900 dark:text-white font-bold text-sm">
-                            <span class="material-symbols-outlined text-sky-500 text-[20px]">folder_open</span>
+                    <div class="bg-white dark:bg-[#000000] rounded-2xl border border-zinc-200 dark:border-zinc-800 p-5 w-full max-w-sm shadow-none space-y-3" @click.away="showAddCategoryModal = false">
+                        <div class="flex items-center gap-2 text-zinc-900 dark:text-zinc-100 font-bold text-sm">
+                            <span class="material-symbols-outlined text-orange-500 text-[20px]">folder_open</span>
                             Tambah Kategori Toko Baru
                         </div>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                        <p class="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
                             Kategori ini khusus dibuat untuk toko Anda dan akan muncul di filter etalase.
                         </p>
-                        <input type="text" x-model="newCategoryName" placeholder="Nama kategori baru..." class="w-full px-3.5 py-2.5 text-xs md:text-sm bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-sky-500">
+                        <input type="text" x-model="newCategoryName" placeholder="Nama kategori baru..." class="w-full px-3.5 py-2.5 text-xs md:text-sm bg-slate-50 dark:bg-[#0c1220] border border-zinc-200 dark:border-zinc-800 rounded-xl text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-orange-500">
                         <div class="flex justify-end gap-2 pt-1">
-                            <button type="button" @click="showAddCategoryModal = false" class="px-3.5 py-2 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl">Batal</button>
-                            <button type="button" @click="addCategory()" :disabled="loadingCat" class="px-4 py-2 text-xs font-bold bg-sky-500 hover:bg-sky-600 text-white rounded-xl flex items-center gap-1.5 shadow-sm disabled:opacity-50">
+                            <button type="button" @click="showAddCategoryModal = false" class="px-3.5 py-2 text-xs font-semibold text-zinc-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl">Batal</button>
+                            <button type="button" @click="addCategory()" :disabled="loadingCat" class="px-4 py-2 text-xs font-bold bg-orange-500 hover:bg-orange-600 text-white rounded-xl flex items-center gap-1.5 shadow-none disabled:opacity-50">
                                 <span x-show="loadingCat" class="material-symbols-outlined animate-spin text-[14px]">progress_activity</span>
                                 Simpan Kategori
                             </button>
@@ -233,18 +233,18 @@
 
                 <!-- Modal Buat Tipe Toko -->
                 <div x-show="showAddTypeModal" x-cloak class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-                    <div class="bg-white dark:bg-[#111726] rounded-2xl border border-slate-200 dark:border-[#222f49] p-5 w-full max-w-sm shadow-2xl space-y-3" @click.away="showAddTypeModal = false">
-                        <div class="flex items-center gap-2 text-slate-900 dark:text-white font-bold text-sm">
-                            <span class="material-symbols-outlined text-sky-500 text-[20px]">devices</span>
+                    <div class="bg-white dark:bg-[#000000] rounded-2xl border border-zinc-200 dark:border-zinc-800 p-5 w-full max-w-sm shadow-none space-y-3" @click.away="showAddTypeModal = false">
+                        <div class="flex items-center gap-2 text-zinc-900 dark:text-zinc-100 font-bold text-sm">
+                            <span class="material-symbols-outlined text-orange-500 text-[20px]">devices</span>
                             Tambah Tipe/Platform Toko
                         </div>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                        <p class="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
                             Tipe produk ini khusus dibuat untuk mengelompokkan aplikasi atau file digital toko Anda.
                         </p>
-                        <input type="text" x-model="newTypeName" placeholder="Nama tipe baru (cth: Flutter, Excel Template)..." class="w-full px-3.5 py-2.5 text-xs md:text-sm bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-sky-500">
+                        <input type="text" x-model="newTypeName" placeholder="Nama tipe baru (cth: Flutter, Excel Template)..." class="w-full px-3.5 py-2.5 text-xs md:text-sm bg-slate-50 dark:bg-[#0c1220] border border-zinc-200 dark:border-zinc-800 rounded-xl text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-orange-500">
                         <div class="flex justify-end gap-2 pt-1">
-                            <button type="button" @click="showAddTypeModal = false" class="px-3.5 py-2 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl">Batal</button>
-                            <button type="button" @click="addType()" :disabled="loadingType" class="px-4 py-2 text-xs font-bold bg-sky-500 hover:bg-sky-600 text-white rounded-xl flex items-center gap-1.5 shadow-sm disabled:opacity-50">
+                            <button type="button" @click="showAddTypeModal = false" class="px-3.5 py-2 text-xs font-semibold text-zinc-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl">Batal</button>
+                            <button type="button" @click="addType()" :disabled="loadingType" class="px-4 py-2 text-xs font-bold bg-orange-500 hover:bg-orange-600 text-white rounded-xl flex items-center gap-1.5 shadow-none disabled:opacity-50">
                                 <span x-show="loadingType" class="material-symbols-outlined animate-spin text-[14px]">progress_activity</span>
                                 Simpan Tipe
                             </button>
@@ -257,15 +257,15 @@
         <!-- ========================================== -->
         <!-- CARD 2: HARGA & AFILIASI                   -->
         <!-- ========================================== -->
-        <div class="bg-white dark:bg-[#111726] rounded-2xl border border-slate-200/80 dark:border-[#222f49] p-4 md:p-6 shadow-xs space-y-4">
-            <div class="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-slate-800 text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+        <div class="bg-white dark:bg-[#000000] rounded-2xl border border-zinc-200 dark:border-zinc-800 p-4 md:p-6 shadow-xs space-y-4">
+            <div class="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-slate-800 text-xs font-bold text-zinc-900 dark:text-zinc-100 uppercase tracking-wider">
                 <span class="material-symbols-outlined text-[18px] text-emerald-500">payments</span>
                 Harga & Komisi Penjualan
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-xs md:text-sm font-bold text-slate-800 dark:text-slate-200 mb-1.5">
+                    <label class="block text-xs md:text-sm font-bold text-zinc-800 dark:text-zinc-200 mb-1.5">
                         Harga Normal (Rp) <span class="text-rose-500">*</span>
                     </label>
                     <input type="number" 
@@ -274,11 +274,11 @@
                            min="0" 
                            placeholder="Contoh: 150000"
                            value="{{ old('price', isset($sourceProduct) ? (int)$sourceProduct->price : '') }}" 
-                           class="w-full px-4 py-2.5 bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl text-xs md:text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition-all font-semibold">
+                           class="w-full px-4 py-2.5 bg-slate-50 dark:bg-[#0c1220] border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs md:text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all font-semibold">
                     @error('price')<span class="text-rose-500 text-xs mt-1 block">{{ $message }}</span>@enderror
                 </div>
                 <div>
-                    <label class="block text-xs md:text-sm font-bold text-slate-800 dark:text-slate-200 mb-1.5">
+                    <label class="block text-xs md:text-sm font-bold text-zinc-800 dark:text-zinc-200 mb-1.5">
                         Harga Diskon (Rp) <span class="text-xs font-normal text-slate-400">- Opsional</span>
                     </label>
                     <input type="number" 
@@ -286,40 +286,40 @@
                            min="0" 
                            placeholder="Contoh: 99000 (kosongkan jika tidak ada diskon)"
                            value="{{ old('discount_price', isset($sourceProduct) && $sourceProduct->discount_price ? (int)$sourceProduct->discount_price : '') }}" 
-                           class="w-full px-4 py-2.5 bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl text-xs md:text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 transition-all font-semibold">
+                           class="w-full px-4 py-2.5 bg-slate-50 dark:bg-[#0c1220] border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs md:text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all font-semibold">
                     @error('discount_price')<span class="text-rose-500 text-xs mt-1 block">{{ $message }}</span>@enderror
                 </div>
             </div>
 
             <!-- Bagi Hasil Komisi Afiliasi (Showcase) -->
-            <div class="p-3.5 sm:p-4 rounded-xl border border-sky-500/30 bg-sky-500/[0.03] dark:bg-sky-500/[0.06] space-y-3">
+            <div class="p-3.5 sm:p-4 rounded-xl border border-orange-500/30 bg-orange-500/[0.03] dark:bg-orange-500/[0.06] space-y-3">
                 <div class="flex items-center justify-between gap-3">
                     <div class="flex items-center gap-2">
-                        <span class="material-symbols-outlined text-sky-500 text-[22px] shrink-0">storefront</span>
+                        <span class="material-symbols-outlined text-orange-500 text-[22px] shrink-0">storefront</span>
                         <div>
-                            <h4 class="text-xs font-bold text-slate-900 dark:text-white">Bagi Hasil Komisi Afiliasi (Etalase Showcase)</h4>
-                            <p class="text-[11px] text-slate-500 dark:text-slate-400">Izinkan toko lain memajang produk ini di etalase mereka dan dapatkan komisi saat terjual.</p>
+                            <h4 class="text-xs font-bold text-zinc-900 dark:text-zinc-100">Bagi Hasil Komisi Afiliasi (Etalase Showcase)</h4>
+                            <p class="text-[11px] text-zinc-500 dark:text-zinc-400">Izinkan toko lain memajang produk ini di etalase mereka dan dapatkan komisi saat terjual.</p>
                         </div>
                     </div>
                     <label class="relative inline-flex items-center cursor-pointer shrink-0">
                         <input type="checkbox" name="is_affiliate_enabled" value="1" {{ old('is_affiliate_enabled', $sourceProduct->is_affiliate_enabled ?? true) ? 'checked' : '' }} class="sr-only peer">
-                        <div class="w-10 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-sky-500"></div>
+                        <div class="w-10 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-500"></div>
                     </label>
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2.5 border-t border-sky-500/20">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2.5 border-t border-orange-500/20">
                     <div>
-                        <label class="block text-xs font-semibold text-slate-800 dark:text-slate-200 mb-1">Persentase Komisi Afiliasi (%) *</label>
+                        <label class="block text-xs font-semibold text-zinc-800 dark:text-zinc-200 mb-1">Persentase Komisi Afiliasi (%) *</label>
                         <div class="relative">
                             <input type="number" name="affiliate_commission_rate" min="0" max="100" step="0.5" 
                                    value="{{ old('affiliate_commission_rate', $sourceProduct->affiliate_commission_rate ?? 10) }}" 
                                    placeholder="10" 
-                                   class="w-full pl-3.5 pr-8 py-2 bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-sky-500">
+                                   class="w-full pl-3.5 pr-8 py-2 bg-white dark:bg-[#0c1220] border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs font-bold text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-orange-500">
                             <span class="absolute right-3 top-2 text-xs font-bold text-slate-400">%</span>
                         </div>
                         <span class="text-[10px] text-slate-400 mt-1 block">Default platform: 10%. Semakin tinggi komisi, semakin menarik bagi toko lain.</span>
                     </div>
-                    <div class="bg-white/60 dark:bg-slate-800/40 rounded-xl p-2.5 flex flex-col justify-center border border-slate-200/50 dark:border-slate-800/50 text-[11px] text-slate-500 dark:text-slate-400">
-                        <span class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1">
+                    <div class="bg-white/60 dark:bg-slate-800/40 rounded-xl p-2.5 flex flex-col justify-center border border-slate-200/50 dark:border-slate-800/50 text-[11px] text-zinc-500 dark:text-zinc-400">
+                        <span class="font-bold text-zinc-800 dark:text-zinc-200 flex items-center gap-1">
                             <span class="material-symbols-outlined text-[15px] text-amber-500">payments</span> Simulasi Etalase:
                         </span>
                         <span class="mt-0.5">Mitra afiliasi akan melihat nominal komisi ini saat memajang produk Anda di toko mereka.</span>
@@ -331,14 +331,14 @@
         <!-- ========================================== -->
         <!-- CARD 3: FOTO PRODUK (MAKS 5)               -->
         <!-- ========================================== -->
-        <div class="bg-white dark:bg-[#111726] rounded-2xl border border-slate-200/80 dark:border-[#222f49] p-4 md:p-6 shadow-xs space-y-4" x-data="productImageValidator()">
+        <div class="bg-white dark:bg-[#000000] rounded-2xl border border-zinc-200 dark:border-zinc-800 p-4 md:p-6 shadow-xs space-y-4" x-data="productImageValidator()">
             <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 flex-wrap gap-1">
-                <div class="flex items-center gap-2 text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+                <div class="flex items-center gap-2 text-xs font-bold text-zinc-900 dark:text-zinc-100 uppercase tracking-wider">
                     <span class="material-symbols-outlined text-[18px] text-indigo-500">photo_library</span>
                     Foto Produk (Maks 5) {{ isset($sourceProduct) && $sourceProduct->images->count() > 0 ? '(Opsional)' : '*' }}
                 </div>
-                <span class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1 font-medium">
-                    <span class="material-symbols-outlined text-[14px] text-sky-500">verified</span>
+                <span class="text-[11px] text-zinc-500 dark:text-zinc-400 flex items-center gap-1 font-medium">
+                    <span class="material-symbols-outlined text-[14px] text-orange-500">verified</span>
                     Maks. 2 MB per foto
                 </span>
             </div>
@@ -355,11 +355,11 @@
             </div>
             
             @if(isset($sourceProduct) && $sourceProduct->images->count() > 0)
-                <div class="p-3 bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl">
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-2 font-semibold">Foto yang disalin dari produk asal (unggah foto baru jika ingin mengganti):</p>
+                <div class="p-3 bg-slate-50 dark:bg-[#0c1220] border border-zinc-200 dark:border-zinc-800 rounded-xl">
+                    <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-2 font-semibold">Foto yang disalin dari produk asal (unggah foto baru jika ingin mengganti):</p>
                     <div class="flex flex-wrap gap-2">
                         @foreach($sourceProduct->images as $img)
-                            <img src="{{ asset('storage/' . $img->image_path) }}" class="w-16 h-16 object-cover rounded-xl border border-slate-200 dark:border-slate-700">
+                            <img src="{{ asset('storage/' . $img->image_path) }}" class="w-16 h-16 object-cover rounded-xl border border-zinc-200 dark:border-zinc-800">
                         @endforeach
                     </div>
                 </div>
@@ -372,7 +372,7 @@
                        accept=".jpg,.jpeg,.png,.webp,.gif,image/jpeg,image/png,image/webp,image/gif" 
                        @change="validateFiles($event)" 
                        {{ isset($sourceProduct) && $sourceProduct->images->count() > 0 ? '' : 'required' }} 
-                       class="w-full px-4 py-2.5 bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl text-xs md:text-sm text-slate-900 dark:text-white focus:outline-none focus:border-sky-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-sky-500/10 file:text-sky-600 dark:file:text-sky-400 hover:file:bg-sky-500/20 cursor-pointer" 
+                       class="w-full px-4 py-2.5 bg-slate-50 dark:bg-[#0c1220] border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs md:text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:border-orange-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-orange-500/10 file:text-orange-600 dark:file:text-orange-400 hover:file:bg-orange-500/20 cursor-pointer" 
                        :class="hasOversized ? 'border-rose-500 ring-1 ring-rose-500/30' : ''">
             </div>
 
@@ -386,9 +386,9 @@
             </div>
 
             <!-- Pratinjau Gambar Terpilih -->
-            <div x-show="files.length > 0" x-cloak class="p-3 bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl">
+            <div x-show="files.length > 0" x-cloak class="p-3 bg-slate-50 dark:bg-[#0c1220] border border-zinc-200 dark:border-zinc-800 rounded-xl">
                 <div class="flex items-center justify-between flex-wrap gap-2 mb-2.5">
-                    <p class="text-xs font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                    <p class="text-xs font-semibold text-zinc-800 dark:text-zinc-200 flex items-center gap-1.5">
                         <span class="material-symbols-outlined text-sm" :class="hasOversized ? 'text-rose-600' : 'text-emerald-600'" x-text="hasOversized ? 'error' : 'check_circle'"></span>
                         <span x-text="files.length + ' foto dipilih (Total: ' + totalSizeFormatted + '):'"></span>
                     </p>
@@ -399,7 +399,7 @@
                 <div class="flex flex-wrap gap-2.5">
                     <template x-for="(f, i) in files" :key="i">
                         <div class="relative rounded-xl overflow-hidden w-20 h-20 bg-white dark:bg-slate-800 shadow-xs border"
-                             :class="f.isOversized ? 'border-2 border-rose-500' : 'border-slate-200 dark:border-slate-700'">
+                             :class="f.isOversized ? 'border-2 border-rose-500' : 'border-zinc-200 dark:border-zinc-800'">
                             <img :src="f.previewUrl" class="w-full h-full object-cover">
                             <div class="absolute bottom-0 inset-x-0 p-0.5 text-[9px] truncate text-center font-mono font-bold"
                                  :class="f.isOversized ? 'bg-rose-600 text-white' : 'bg-slate-900/80 text-white'">
@@ -417,25 +417,25 @@
         <!-- ========================================== -->
         <!-- CARD 4: DESKRIPSI PRODUK                   -->
         <!-- ========================================== -->
-        <div class="bg-white dark:bg-[#111726] rounded-2xl border border-slate-200/80 dark:border-[#222f49] p-4 md:p-6 shadow-xs space-y-4">
-            <div class="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-slate-800 text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+        <div class="bg-white dark:bg-[#000000] rounded-2xl border border-zinc-200 dark:border-zinc-800 p-4 md:p-6 shadow-xs space-y-4">
+            <div class="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-slate-800 text-xs font-bold text-zinc-900 dark:text-zinc-100 uppercase tracking-wider">
                 <span class="material-symbols-outlined text-[18px] text-amber-500">description</span>
                 Deskripsi Produk
             </div>
 
             <div>
-                <label class="block text-xs md:text-sm font-bold text-slate-800 dark:text-slate-200 mb-1.5">
+                <label class="block text-xs md:text-sm font-bold text-zinc-800 dark:text-zinc-200 mb-1.5">
                     Ringkasan Singkat (Short Description) <span class="text-xs font-normal text-slate-400">- Opsional</span>
                 </label>
-                <textarea name="short_description" rows="2" placeholder="Ringkasan singkat produk untuk tampilan kartu etalase..." class="w-full px-4 py-2.5 bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl text-xs md:text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500">{{ old('short_description', $sourceProduct->short_description ?? '') }}</textarea>
+                <textarea name="short_description" rows="2" placeholder="Ringkasan singkat produk untuk tampilan kartu etalase..." class="w-full px-4 py-2.5 bg-slate-50 dark:bg-[#0c1220] border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs md:text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500">{{ old('short_description', $sourceProduct->short_description ?? '') }}</textarea>
                 @error('short_description')<span class="text-rose-500 text-xs mt-1 block">{{ $message }}</span>@enderror
             </div>
 
             <div>
-                <label class="block text-xs md:text-sm font-bold text-slate-800 dark:text-slate-200 mb-1.5">
+                <label class="block text-xs md:text-sm font-bold text-zinc-800 dark:text-zinc-200 mb-1.5">
                     Deskripsi Lengkap <span class="text-rose-500">*</span>
                 </label>
-                <div id="editor-container" class="w-full bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-b-xl text-xs md:text-sm text-slate-900 dark:text-white" style="min-height: 220px;"></div>
+                <div id="editor-container" class="w-full bg-slate-50 dark:bg-[#0c1220] border border-zinc-200 dark:border-zinc-800 rounded-b-xl text-xs md:text-sm text-zinc-900 dark:text-zinc-100" style="min-height: 220px;"></div>
                 <input type="hidden" name="description" id="description" value="{{ old('description', $sourceProduct->description ?? '') }}">
                 @error('description')<span class="text-rose-500 text-xs mt-1 block">{{ $message }}</span>@enderror
             </div>
@@ -444,29 +444,29 @@
         <!-- ========================================== -->
         <!-- CARD 5: TAUTAN UNDUHAN & DEMO              -->
         <!-- ========================================== -->
-        <div class="bg-white dark:bg-[#111726] rounded-2xl border border-slate-200/80 dark:border-[#222f49] p-4 md:p-6 shadow-xs space-y-4">
-            <div class="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-slate-800 text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+        <div class="bg-white dark:bg-[#000000] rounded-2xl border border-zinc-200 dark:border-zinc-800 p-4 md:p-6 shadow-xs space-y-4">
+            <div class="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-slate-800 text-xs font-bold text-zinc-900 dark:text-zinc-100 uppercase tracking-wider">
                 <span class="material-symbols-outlined text-[18px] text-cyan-500">cloud_download</span>
                 Tautan File & Unduhan Pembeli
             </div>
 
             <div>
-                <label class="block text-xs md:text-sm font-bold text-slate-800 dark:text-slate-200 mb-1.5">
+                <label class="block text-xs md:text-sm font-bold text-zinc-800 dark:text-zinc-200 mb-1.5">
                     Demo URL <span class="text-xs font-normal text-slate-400">- Opsional</span>
                 </label>
-                <input type="url" name="demo_url" value="{{ old('demo_url', $sourceProduct->demo_url ?? '') }}" placeholder="https://demo-aplikasi.com" class="w-full px-4 py-2.5 bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl text-xs md:text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500">
+                <input type="url" name="demo_url" value="{{ old('demo_url', $sourceProduct->demo_url ?? '') }}" placeholder="https://demo-aplikasi.com" class="w-full px-4 py-2.5 bg-slate-50 dark:bg-[#0c1220] border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs md:text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500">
                 @error('demo_url')<span class="text-rose-500 text-xs mt-1 block">{{ $message }}</span>@enderror
             </div>
 
-            <div class="p-3.5 md:p-4 bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl space-y-3">
+            <div class="p-3.5 md:p-4 bg-slate-50 dark:bg-[#0c1220] border border-zinc-200 dark:border-zinc-800 rounded-xl space-y-3">
                 <div class="flex justify-between items-center flex-wrap gap-2">
                     <div>
-                        <label class="block text-xs md:text-sm font-bold text-slate-800 dark:text-slate-200">
+                        <label class="block text-xs md:text-sm font-bold text-zinc-800 dark:text-zinc-200">
                             Tautan Unduhan Eksternal <span class="text-rose-500">*</span>
                         </label>
                         <p class="text-[11px] text-slate-400">Tautan file produk (Google Drive, Dropbox, Mega) yang akan dikirim otomatis ke email pembeli.</p>
                     </div>
-                    <button type="button" onclick="addLink()" class="text-xs bg-sky-500 hover:bg-sky-600 text-white px-3 py-1.5 rounded-xl font-bold transition-all shadow-xs flex items-center gap-1 active:scale-95">
+                    <button type="button" onclick="addLink()" class="text-xs bg-orange-500 hover:bg-orange-600 text-white px-3 py-1.5 rounded-xl font-bold transition-all shadow-xs flex items-center gap-1 active:scale-95">
                         <span class="material-symbols-outlined text-[16px]">add</span> Tambah Link
                     </button>
                 </div>
@@ -477,12 +477,12 @@
                     @endphp
                     @if(!empty($downloadLinks) && is_array($downloadLinks))
                         @foreach($downloadLinks as $idx => $link)
-                        <div class="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center p-2.5 sm:p-0 bg-white dark:bg-[#111726] sm:bg-transparent rounded-xl border sm:border-0 border-slate-200 dark:border-[#222f49]">
+                        <div class="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center p-2.5 sm:p-0 bg-white dark:bg-[#000000] sm:bg-transparent rounded-xl border sm:border-0 border-zinc-200 dark:border-zinc-800">
                             <div class="flex-1">
-                                <input type="text" name="download_links[{{ $idx }}][name]" value="{{ $link['name'] ?? '' }}" placeholder="Nama Link (cth: Full Source Code)" required class="w-full px-3 py-2 bg-slate-50 sm:bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl text-xs md:text-sm text-slate-900 dark:text-white">
+                                <input type="text" name="download_links[{{ $idx }}][name]" value="{{ $link['name'] ?? '' }}" placeholder="Nama Link (cth: Full Source Code)" required class="w-full px-3 py-2 bg-slate-50 sm:bg-white dark:bg-[#0c1220] border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs md:text-sm text-zinc-900 dark:text-zinc-100">
                             </div>
                             <div class="flex-[2]">
-                                <input type="url" name="download_links[{{ $idx }}][url]" value="{{ $link['url'] ?? '' }}" placeholder="https://drive.google.com/..." required class="w-full px-3 py-2 bg-slate-50 sm:bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl text-xs md:text-sm text-slate-900 dark:text-white">
+                                <input type="url" name="download_links[{{ $idx }}][url]" value="{{ $link['url'] ?? '' }}" placeholder="https://drive.google.com/..." required class="w-full px-3 py-2 bg-slate-50 sm:bg-white dark:bg-[#0c1220] border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs md:text-sm text-zinc-900 dark:text-zinc-100">
                             </div>
                             <div class="flex justify-end sm:block">
                                 <button type="button" onclick="if(document.querySelectorAll('#links-container > div').length > 1) this.closest('.flex').remove(); else alert('Minimal 1 tautan harus diisi.');" class="p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-xl transition-colors flex items-center gap-1 text-xs" title="Hapus Link">
@@ -493,12 +493,12 @@
                         </div>
                         @endforeach
                     @else
-                        <div class="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center p-2.5 sm:p-0 bg-white dark:bg-[#111726] sm:bg-transparent rounded-xl border sm:border-0 border-slate-200 dark:border-[#222f49]">
+                        <div class="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center p-2.5 sm:p-0 bg-white dark:bg-[#000000] sm:bg-transparent rounded-xl border sm:border-0 border-zinc-200 dark:border-zinc-800">
                             <div class="flex-1">
-                                <input type="text" name="download_links[0][name]" placeholder="Nama Link (cth: Full Source Code ZIP)" required class="w-full px-3 py-2 bg-slate-50 sm:bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl text-xs md:text-sm text-slate-900 dark:text-white">
+                                <input type="text" name="download_links[0][name]" placeholder="Nama Link (cth: Full Source Code ZIP)" required class="w-full px-3 py-2 bg-slate-50 sm:bg-white dark:bg-[#0c1220] border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs md:text-sm text-zinc-900 dark:text-zinc-100">
                             </div>
                             <div class="flex-[2]">
-                                <input type="url" name="download_links[0][url]" placeholder="https://drive.google.com/..." required class="w-full px-3 py-2 bg-slate-50 sm:bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl text-xs md:text-sm text-slate-900 dark:text-white">
+                                <input type="url" name="download_links[0][url]" placeholder="https://drive.google.com/..." required class="w-full px-3 py-2 bg-slate-50 sm:bg-white dark:bg-[#0c1220] border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs md:text-sm text-zinc-900 dark:text-zinc-100">
                             </div>
                             <div class="flex justify-end sm:block">
                                 <button type="button" onclick="if(document.querySelectorAll('#links-container > div').length > 1) this.closest('.flex').remove(); else alert('Minimal 1 tautan harus diisi.');" class="p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-xl transition-colors flex items-center gap-1 text-xs" title="Hapus Link">
@@ -515,7 +515,7 @@
         <!-- ========================================== -->
         <!-- CARD 6: TAGS & SEO                         -->
         <!-- ========================================== -->
-        <div class="bg-white dark:bg-[#111726] rounded-2xl border border-slate-200/80 dark:border-[#222f49] p-4 md:p-6 shadow-xs space-y-4"
+        <div class="bg-white dark:bg-[#000000] rounded-2xl border border-zinc-200 dark:border-zinc-800 p-4 md:p-6 shadow-xs space-y-4"
              x-data="{
                 tagsString: '{{ addslashes(old('tags', $sourceProduct->tags ?? '')) }}',
                 tagsList: [],
@@ -627,7 +627,7 @@
                 }
              }">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100 dark:border-slate-800">
-                <div class="flex items-center gap-2 text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+                <div class="flex items-center gap-2 text-xs font-bold text-zinc-900 dark:text-zinc-100 uppercase tracking-wider">
                     <span class="material-symbols-outlined text-[18px] text-purple-500">tag</span>
                     Kata Kunci Pencarian & SEO
                 </div>
@@ -648,14 +648,14 @@
                        name="tags" 
                        x-model="tagsString"
                        placeholder="Contoh: Aplikasi Kasir, POS, Toko Online, Laravel 11, PHP MySQL" 
-                       class="w-full px-4 py-2.5 bg-slate-50 dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl text-xs md:text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500">
+                       class="w-full px-4 py-2.5 bg-slate-50 dark:bg-[#0c1220] border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs md:text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500">
                 @error('tags')<span class="text-rose-500 text-xs mt-1 block">{{ $message }}</span>@enderror
 
                 <div class="mt-2.5 flex flex-wrap items-center gap-1.5 min-h-[28px]" x-show="tagsList.length > 0">
                     <span class="text-[11px] text-slate-400 font-medium mr-1">Preview Tag:</span>
                     <template x-for="(tag, index) in tagsList" :key="index">
-                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-sky-500/10 text-sky-700 dark:text-sky-300 border border-sky-500/20">
-                            <span class="text-sky-500">#</span>
+                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-orange-500/10 text-orange-700 dark:text-orange-300 border border-orange-500/20">
+                            <span class="text-orange-500">#</span>
                             <span x-text="tag"></span>
                             <button type="button" @click="removeTag(index)" class="hover:text-rose-500 text-slate-400 ml-0.5">
                                 <span class="material-symbols-outlined text-[14px]">close</span>
@@ -674,17 +674,17 @@
         <!-- ========================================== -->
         <!-- CARD 8: STATUS PUBLIKASI & MODERASI        -->
         <!-- ========================================== -->
-        <div class="bg-white dark:bg-[#111726] rounded-2xl border border-slate-200/80 dark:border-[#222f49] p-4 md:p-6 shadow-xs space-y-4">
-            <div class="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-slate-800 text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+        <div class="bg-white dark:bg-[#000000] rounded-2xl border border-zinc-200 dark:border-zinc-800 p-4 md:p-6 shadow-xs space-y-4">
+            <div class="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-slate-800 text-xs font-bold text-zinc-900 dark:text-zinc-100 uppercase tracking-wider">
                 <span class="material-symbols-outlined text-[18px] text-teal-500">verified</span>
                 Status Publikasi & Moderasi
             </div>
 
             <div>
                 <label class="flex items-center gap-3 cursor-pointer select-none">
-                    <input type="checkbox" name="is_active" value="1" {{ old('is_active', isset($sourceProduct) ? $sourceProduct->is_active : true) ? 'checked' : '' }} class="w-5 h-5 rounded-lg border-slate-300 dark:border-slate-700 text-sky-500 focus:ring-0">
+                    <input type="checkbox" name="is_active" value="1" {{ old('is_active', isset($sourceProduct) ? $sourceProduct->is_active : true) ? 'checked' : '' }} class="w-5 h-5 rounded-lg border-zinc-300 dark:border-zinc-800 text-orange-500 focus:ring-0">
                     <div>
-                        <span class="text-xs md:text-sm font-bold text-slate-900 dark:text-white block">Aktifkan Produk di Toko</span>
+                        <span class="text-xs md:text-sm font-bold text-zinc-900 dark:text-zinc-100 block">Aktifkan Produk di Toko</span>
                         <span class="text-[11px] text-slate-400">Tampil di etalase toko setelah diverifikasi dan disetujui platform.</span>
                     </div>
                 </label>
@@ -703,17 +703,17 @@
         <!-- ========================================== -->
         <!-- FORM FOOTER ACTION BAR                     -->
         <!-- ========================================== -->
-        <div class="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-slate-800 flex-wrap gap-3">
+        <div class="flex items-center justify-between pt-4 border-t border-zinc-200 dark:border-zinc-800 flex-wrap gap-3">
             <div x-show="imageHasError" x-cloak class="text-xs text-rose-600 font-semibold flex items-center gap-1 w-full sm:w-auto">
                 <span class="material-symbols-outlined text-sm">error</span>
                 <span>Ada foto yang melebihi batas 2 MB. Harap ganti foto sebelum menyimpan.</span>
             </div>
 
             <div class="flex items-center gap-3 w-full sm:w-auto sm:ml-auto">
-                <a href="{{ route('tenant.products.index') }}" class="flex-1 sm:flex-none px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs sm:text-sm font-bold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-center active:scale-95">
+                <a href="{{ route('tenant.products.index') }}" class="flex-1 sm:flex-none px-5 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 text-xs sm:text-sm font-bold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-center active:scale-95">
                     Batal
                 </a>
-                <button type="submit" :disabled="submitting || imageHasError" class="flex-1 sm:flex-none px-6 py-2.5 bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95" :class="imageHasError ? 'bg-slate-400 cursor-not-allowed' : ''">
+                <button type="submit" :disabled="submitting || imageHasError" class="flex-1 sm:flex-none px-6 py-2.5 bg-orange-500 hover:bg-orange-600 text-white dark:bg-orange-600 dark:hover:bg-orange-500 dark:text-white rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95" :class="imageHasError ? 'bg-slate-400 cursor-not-allowed' : ''">
                     <span x-show="submitting" x-cloak class="material-symbols-outlined animate-spin text-sm">progress_activity</span>
                     <span x-text="submitting ? 'Menyimpan Produk...' : '{{ isset($sourceProduct) ? 'Simpan Salinan Produk' : 'Simpan Produk' }}'"></span>
                 </button>
@@ -811,13 +811,13 @@
         const index = container.children.length;
         
         const row = document.createElement('div');
-        row.className = 'flex flex-col sm:flex-row gap-2 items-stretch sm:items-center p-2.5 sm:p-0 bg-white dark:bg-[#111726] sm:bg-transparent rounded-xl border sm:border-0 border-slate-200 dark:border-[#222f49]';
+        row.className = 'flex flex-col sm:flex-row gap-2 items-stretch sm:items-center p-2.5 sm:p-0 bg-white dark:bg-[#000000] sm:bg-transparent rounded-xl border sm:border-0 border-zinc-200 dark:border-zinc-800';
         row.innerHTML = `
             <div class="flex-1">
-                <input type="text" name="download_links[${index}][name]" placeholder="Nama Link (cth: Full Source Code)" required class="w-full px-3 py-2 bg-slate-50 sm:bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl text-xs md:text-sm text-slate-900 dark:text-white">
+                <input type="text" name="download_links[${index}][name]" placeholder="Nama Link (cth: Full Source Code)" required class="w-full px-3 py-2 bg-slate-50 sm:bg-white dark:bg-[#0c1220] border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs md:text-sm text-zinc-900 dark:text-zinc-100">
             </div>
             <div class="flex-[2]">
-                <input type="url" name="download_links[${index}][url]" placeholder="https://drive.google.com/..." required class="w-full px-3 py-2 bg-slate-50 sm:bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-xl text-xs md:text-sm text-slate-900 dark:text-white">
+                <input type="url" name="download_links[${index}][url]" placeholder="https://drive.google.com/..." required class="w-full px-3 py-2 bg-slate-50 sm:bg-white dark:bg-[#0c1220] border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs md:text-sm text-zinc-900 dark:text-zinc-100">
             </div>
             <div class="flex justify-end sm:block">
                 <button type="button" onclick="if(document.querySelectorAll('#links-container > div').length > 1) this.closest('.flex').remove(); else alert('Minimal 1 tautan harus diisi.');" class="p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-xl transition-colors flex items-center gap-1 text-xs" title="Hapus Link">

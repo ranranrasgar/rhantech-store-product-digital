@@ -138,7 +138,7 @@
                     <a href="{{ route('admin.orders.index') }}" class="px-3.5 py-1.5 rounded-xl border border-outline-variant text-xs font-semibold text-on-surface-variant hover:bg-surface-container-highest transition-colors">
                         Reset Filter
                     </a>
-                    <button type="submit" class="px-4 py-1.5 rounded-xl bg-primary text-white text-xs font-bold shadow-sm hover:opacity-90 transition-opacity flex items-center gap-1 cursor-pointer">
+                    <button type="submit" class="px-4 py-1.5 rounded-xl bg-primary text-white text-xs font-bold shadow-none hover:opacity-90 transition-opacity flex items-center gap-1 cursor-pointer">
                         <span class="material-symbols-outlined text-[15px]">filter_alt</span> Terapkan Filter
                     </button>
                 </div>
@@ -272,14 +272,14 @@
                                 @if($order->status !== 'paid' && $order->status !== 'downloaded')
                                 <form action="{{ route('admin.orders.sync_status', $order) }}" method="POST">
                                     @csrf
-                                    <button type="submit" class="px-2.5 py-1 bg-sky-600 hover:bg-sky-700 text-white rounded-lg text-xs font-bold flex items-center gap-1 shadow-sm transition-colors cursor-pointer" title="Cek status realtime dari Midtrans">
+                                    <button type="submit" class="px-2.5 py-1 bg-orange-600 hover:bg-orange-700 text-white rounded-lg text-xs font-bold flex items-center gap-1 shadow-none transition-colors cursor-pointer" title="Cek status realtime dari Midtrans">
                                         <span class="material-symbols-outlined text-[14px]">sync</span> Sync
                                     </button>
                                 </form>
 
                                 <form action="{{ route('admin.orders.approve', $order) }}" method="POST" onsubmit="return confirm('Setujui pesanan {{ $order->invoice_number }} menjadi PAID & kirim email ke pelanggan?');">
                                     @csrf @method('PATCH')
-                                    <button type="submit" class="px-2.5 py-1 bg-green-600 hover:bg-green-700 text-white rounded-lg text-xs font-bold flex items-center gap-1 shadow-sm transition-colors cursor-pointer" title="Approve / Tandai Lunas">
+                                    <button type="submit" class="px-2.5 py-1 bg-green-600 hover:bg-green-700 text-white rounded-lg text-xs font-bold flex items-center gap-1 shadow-none transition-colors cursor-pointer" title="Approve / Tandai Lunas">
                                         <span class="material-symbols-outlined text-[14px]">check_circle</span> Approve
                                     </button>
                                 </form>

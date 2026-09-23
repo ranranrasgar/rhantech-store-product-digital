@@ -79,7 +79,7 @@
                 }
             @endphp
             @if(!$hasVoucherBlock && $vpHeader !== 'none' && $headerCampaigns->isNotEmpty())
-            <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-primary/5 via-emerald-500/5 to-amber-500/5 border border-primary/20 shadow-xs">
+            <div class="p-4 sm:p-5 rounded-2xl bg-surface-container border border-outline-variant/60">
                 <div class="flex items-center gap-2 mb-3 text-sm font-black text-on-surface">
                     <span class="material-symbols-outlined text-[18px]">confirmation_number</span>
                     Kupon &amp; Voucher Toko

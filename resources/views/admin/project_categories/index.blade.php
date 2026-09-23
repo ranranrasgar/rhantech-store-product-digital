@@ -22,7 +22,7 @@
         <form action="{{ route('admin.project_categories.store') }}" method="POST" class="flex gap-2 w-full sm:w-auto">
             @csrf
             <input type="text" name="name" required placeholder="Nama Kategori Baru" class="px-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary/20 text-sm flex-1 sm:w-64">
-            <button type="submit" class="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg font-bold transition flex items-center gap-1.5 text-sm shrink-0 shadow-sm">
+            <button type="submit" class="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg font-bold transition flex items-center gap-1.5 text-sm shrink-0 shadow-none">
                 <span class="material-symbols-outlined text-[18px]">add</span> Tambah
             </button>
         </form>
@@ -36,7 +36,7 @@
     @endif
 
     <!-- Table Card -->
-    <div class="bg-surface rounded-md border border-outline-variant shadow-sm overflow-hidden">
+    <div class="bg-surface rounded-md border border-outline-variant shadow-none overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead>
@@ -109,7 +109,7 @@
          class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" 
          style="display: none;" 
          @keydown.escape.window="editModalOpen = false">
-        <div class="bg-surface border border-outline-variant rounded-xl shadow-xl w-full max-w-md overflow-hidden" 
+        <div class="bg-surface border border-outline-variant rounded-xl shadow-none w-full max-w-md overflow-hidden" 
              @click.outside="editModalOpen = false">
             <div class="px-6 py-4 border-b border-outline-variant flex items-center justify-between">
                 <h3 class="font-headline-sm text-base font-bold text-on-surface flex items-center gap-2">
@@ -142,7 +142,7 @@
                         Batal
                     </button>
                     <button type="submit" 
-                            class="bg-primary hover:bg-primary/90 text-white px-5 py-2 rounded-lg text-sm font-bold shadow-sm transition flex items-center gap-1.5">
+                            class="bg-primary hover:bg-primary/90 text-white px-5 py-2 rounded-lg text-sm font-bold shadow-none transition flex items-center gap-1.5">
                         <span class="material-symbols-outlined text-[18px]">save</span> Simpan Perubahan
                     </button>
                 </div>

@@ -3,7 +3,7 @@
 @section('title', 'Toko yang Saya Ikuti')
 
 @section('content')
-<div class="flex-1 overflow-y-auto p-4 md:p-8 bg-[#f8fafc] dark:bg-[#090d16] text-[#0f172a] dark:text-[#f1f5f9] transition-colors duration-200"
+<div class="flex-1 overflow-y-auto p-4 md:p-8 bg-[#fafafa] dark:bg-[#000000] text-[#09090b] dark:text-[#ededed] transition-colors duration-200"
      x-data="{
          unfollow(storeId, storeName) {
              if (!confirm('Apakah Anda yakin ingin berhenti mengikuti toko ' + storeName + '?')) return;
@@ -27,16 +27,16 @@
         <!-- Header -->
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-                <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-2.5">
-                    <span class="material-symbols-outlined text-slate-900 dark:text-white text-3xl">storefront</span>
+                <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2.5">
+                    <span class="material-symbols-outlined text-zinc-900 dark:text-zinc-100 text-3xl">storefront</span>
                     <span>Toko yang Saya Ikuti</span>
                 </h1>
-                <p class="text-xs md:text-sm text-slate-500 dark:text-slate-400 mt-1">
+                <p class="text-xs md:text-sm text-zinc-500 dark:text-zinc-400 mt-1">
                     Daftar toko digital favorit yang sedang Anda ikuti untuk update katalog dan promo terbaru.
                 </p>
             </div>
             <div class="flex items-center gap-2">
-                <a href="{{ route('products.index') }}" class="px-4 py-2.5 bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white rounded-xl text-xs md:text-sm font-bold transition-all flex items-center gap-2 active:scale-95">
+                <a href="{{ route('products.index') }}" class="px-4 py-2.5 bg-orange-500 hover:bg-orange-600 text-white dark:bg-orange-600 dark:hover:bg-orange-500 dark:text-white rounded-xl text-xs md:text-sm font-bold transition-all flex items-center gap-2 active:scale-95">
                     <span class="material-symbols-outlined text-[18px]">explore</span>
                     <span>Jelajahi Toko Lain</span>
                 </a>
@@ -47,11 +47,11 @@
             <!-- Store Cards Grid -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
                 @foreach($stores as $s)
-                <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-5 flex flex-col justify-between transition-all group">
+                <div class="bg-white dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-5 flex flex-col justify-between transition-all group">
                     <div>
                         <div class="flex items-start gap-3.5">
                             <!-- Logo Toko -->
-                            <div class="w-14 h-14 rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shrink-0 p-0.5">
+                            <div class="w-14 h-14 rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shrink-0 p-0.5">
                                 @if($s->logo)
                                     <img src="{{ asset('storage/' . $s->logo) }}" alt="{{ $s->name }}" class="w-full h-full object-cover rounded-[14px]">
                                 @else
@@ -61,7 +61,7 @@
 
                             <!-- Info Toko -->
                             <div class="min-w-0 flex-1">
-                                <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-1.5 truncate">
+                                <h3 class="text-base font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5 truncate">
                                     <a href="{{ url('/' . $s->slug) }}" target="_blank" class="hover:text-slate-700 dark:hover:text-slate-300 transition-colors truncate">
                                         {{ $s->name }}
                                     </a>
@@ -69,14 +69,14 @@
                                         <span class="bg-amber-500/15 text-amber-500 text-[10px] font-black px-1.5 py-0.2 rounded uppercase shrink-0">PRO</span>
                                     @endif
                                 </h3>
-                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5 truncate">
+                                <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5 truncate">
                                     {{ '@' . $s->slug }}
                                 </p>
 
                                 <!-- Meta badges -->
-                                <div class="flex items-center gap-2 mt-2 text-[11px] text-slate-500 dark:text-slate-400">
+                                <div class="flex items-center gap-2 mt-2 text-[11px] text-zinc-500 dark:text-zinc-400">
                                     <span class="flex items-center gap-1">
-                                        <span class="material-symbols-outlined text-[14px] text-slate-600 dark:text-slate-400">inventory_2</span>
+                                        <span class="material-symbols-outlined text-[14px] text-zinc-600 dark:text-zinc-400">inventory_2</span>
                                         <span>{{ $s->products_count }} Produk</span>
                                     </span>
                                     <span>•</span>
@@ -89,15 +89,15 @@
                         </div>
 
                         @if(!empty($s->description))
-                            <p class="text-xs text-slate-600 dark:text-slate-300 mt-3.5 line-clamp-2 leading-relaxed">
+                            <p class="text-xs text-zinc-600 dark:text-zinc-300 mt-3.5 line-clamp-2 leading-relaxed">
                                 {{ $s->description }}
                             </p>
                         @endif
                     </div>
 
                     <!-- Actions Footer -->
-                    <div class="pt-4 mt-4 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between gap-2">
-                        <a href="{{ url('/' . $s->slug) }}" target="_blank" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5">
+                    <div class="pt-4 mt-4 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between gap-2">
+                        <a href="{{ url('/' . $s->slug) }}" target="_blank" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-zinc-800 dark:text-zinc-200 text-xs font-bold rounded-xl transition-all flex items-center gap-1.5">
                             <span>Kunjungi Toko</span>
                             <span class="material-symbols-outlined text-[14px]">arrow_outward</span>
                         </a>
@@ -119,17 +119,17 @@
             </div>
         @else
             <!-- Empty State -->
-            <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-2xl p-12 text-center max-w-lg mx-auto">
-                <div class="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center mx-auto mb-4">
+            <div class="bg-white dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-12 text-center max-w-lg mx-auto">
+                <div class="w-16 h-16 rounded-2xl bg-zinc-100 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 flex items-center justify-center mx-auto mb-4">
                     <span class="material-symbols-outlined text-3xl">storefront</span>
                 </div>
-                <h3 class="text-base font-bold text-slate-900 dark:text-white mb-1.5">
+                <h3 class="text-base font-bold text-zinc-900 dark:text-zinc-100 mb-1.5">
                     Belum Mengikuti Toko
                 </h3>
-                <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mb-6 leading-relaxed">
+                <p class="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 mb-6 leading-relaxed">
                     Anda belum mengikuti toko digital manapun. Klik tombol <strong>+ Ikuti</strong> pada profil toko favorit Anda untuk menerima update katalog dan promo menarik.
                 </p>
-                <a href="{{ route('products.index') }}" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white text-xs sm:text-sm font-bold transition-all active:scale-95">
+                <a href="{{ route('products.index') }}" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white dark:bg-orange-600 dark:hover:bg-orange-500 dark:text-white text-xs sm:text-sm font-bold transition-all active:scale-95">
                     <span class="material-symbols-outlined text-[18px]">travel_explore</span>
                     <span>Jelajahi Toko &amp; Produk</span>
                 </a>

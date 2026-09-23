@@ -32,7 +32,7 @@
                             Toko: {{ $product->store->name }}
                         </span>
                     @else
-                        <span class="text-xs px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-700 dark:text-sky-300 font-semibold border border-sky-500/20">
+                        <span class="text-xs px-2 py-0.5 rounded-full bg-orange-500/10 text-orange-700 dark:text-orange-300 font-semibold border border-orange-500/20">
                             Platform Official
                         </span>
                     @endif
@@ -349,12 +349,12 @@
                 </div>
 
                 <!-- Info Ketentuan Ukuran File -->
-                <div class="mb-2 p-2.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-800 dark:text-slate-200 flex items-center justify-between gap-2 flex-wrap">
+                <div class="mb-2 p-2.5 rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-xs text-zinc-800 dark:text-zinc-200 flex items-center justify-between gap-2 flex-wrap">
                     <div class="flex items-center gap-2">
-                        <span class="material-symbols-outlined text-[18px] text-slate-700 dark:text-slate-300 shrink-0">info</span>
+                        <span class="material-symbols-outlined text-[18px] text-zinc-700 dark:text-zinc-300 shrink-0">info</span>
                         <span><strong>Ketentuan Foto:</strong> Setiap foto maksimal <strong>2 MB</strong> (2.048 KB). Format: JPG, JPEG, PNG, WEBP, GIF.</span>
                     </div>
-                    <span class="text-[11px] font-semibold text-slate-600 dark:text-slate-400">
+                    <span class="text-[11px] font-semibold text-zinc-600 dark:text-zinc-400">
                         Slot tersisa: <strong x-text="remainingSlot"></strong> foto
                     </span>
                 </div>
@@ -385,7 +385,7 @@
                     </div>
                     <div class="flex flex-wrap gap-3">
                         <template x-for="(f, i) in files" :key="i">
-                            <div class="relative group rounded-lg overflow-hidden w-24 bg-surface-container-lowest shadow-sm border"
+                            <div class="relative group rounded-lg overflow-hidden w-24 bg-surface-container-lowest shadow-none border"
                                  :class="f.isOversized ? 'border-2 border-rose-500' : 'border-outline-variant'">
                                 <img :src="f.previewUrl" class="w-24 h-24 object-cover">
                                 
@@ -424,7 +424,7 @@
                     <div class="flex flex-wrap gap-3">
                         <template x-for="img in savedImages" :key="img.id">
                             <div class="relative group w-24 h-24 rounded-lg overflow-hidden border transition-all"
-                                 :class="img.is_main ? 'border-primary border-2 shadow-sm' : 'border-outline-variant'">
+                                 :class="img.is_main ? 'border-primary border-2 shadow-none' : 'border-outline-variant'">
                                 <img :src="img.image_path" class="w-full h-full object-cover">
                                 
                                 <!-- Loading overlay saat proses hapus foto berlangsung -->

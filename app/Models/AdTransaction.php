@@ -36,7 +36,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|AdTransaction whereTotalAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|AdTransaction whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|AdTransaction whereUpdatedAt($value)
- * @mixin \Eloquent
+ * @mixin \Illuminate\Database\Eloquent\Model
  */
 class AdTransaction extends Model
 {

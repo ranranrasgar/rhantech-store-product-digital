@@ -63,14 +63,14 @@
         $iconName = 'confirmation_number';
         $discountLabel = rtrim(rtrim($discountVal, '0'), '.') . '% OFF';
     } else {
-        $bgGradient = 'linear-gradient(135deg, #0284c7 0%, #2563eb 100%)';
+        $bgGradient = 'linear-gradient(135deg, #ea580c 0%, #2563eb 100%)';
         $badgeText = 'POTONGAN';
         $iconName = 'local_offer';
         $discountLabel = 'Rp ' . number_format($discountVal / 1000, 0) . 'rb OFF';
     }
 @endphp
 
-<div class="relative flex flex-col sm:flex-row bg-white dark:bg-[#161b22] border {{ $hasUsed ? 'border-gray-300 dark:border-gray-800 opacity-75' : ($applied ? 'border-primary ring-2 ring-primary/30' : 'border-gray-200 dark:border-[#30363d]') }} rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden group">
+<div class="relative flex flex-col sm:flex-row bg-white dark:bg-[#000000] border {{ $hasUsed ? 'border-gray-300 dark:border-gray-800 opacity-75' : ($applied ? 'border-primary ring-2 ring-primary/30' : 'border-gray-200 dark:border-zinc-800') }} rounded-2xl shadow-none hover:shadow-none transition-all duration-200 overflow-hidden group">
     
     <!-- Left Section / Header Badge Karcis (Bulletproof Inline Gradient & Watermark) -->
     <div class="sm:w-36 p-4 flex flex-row sm:flex-col items-center justify-between sm:justify-center text-center relative border-b sm:border-b-0 sm:border-r border-dashed border-white/40 text-white shrink-0 shadow-inner overflow-hidden"
@@ -82,8 +82,8 @@
         </div>
 
         <!-- Ticket Semi-circle Cutout Notch -->
-        <div class="hidden sm:block absolute -top-3 -right-3 w-6 h-6 rounded-full border border-gray-200 dark:border-[#30363d] z-10 shadow-inner" style="background-color: var(--theme-background, #f8fafc);"></div>
-        <div class="hidden sm:block absolute -bottom-3 -right-3 w-6 h-6 rounded-full border border-gray-200 dark:border-[#30363d] z-10 shadow-inner" style="background-color: var(--theme-background, #f8fafc);"></div>
+        <div class="hidden sm:block absolute -top-3 -right-3 w-6 h-6 rounded-full border border-gray-200 dark:border-zinc-800 z-10 shadow-inner" style="background-color: var(--theme-background, #f8fafc);"></div>
+        <div class="hidden sm:block absolute -bottom-3 -right-3 w-6 h-6 rounded-full border border-gray-200 dark:border-zinc-800 z-10 shadow-inner" style="background-color: var(--theme-background, #f8fafc);"></div>
 
         <div class="flex sm:flex-col items-center gap-2 sm:gap-1.5 relative z-1">
             <div class="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-xs flex items-center justify-center shrink-0 shadow-xs border border-white/30">
@@ -107,7 +107,7 @@
     </div>
 
     <!-- Right Section / Detail Voucher -->
-    <div class="flex-1 p-3.5 sm:p-4 flex flex-col justify-between relative bg-white dark:bg-[#161b22]">
+    <div class="flex-1 p-3.5 sm:p-4 flex flex-col justify-between relative bg-white dark:bg-[#000000]">
         <div>
             <div class="flex items-start justify-between gap-2 mb-1.5">
                 <div class="flex-1 min-w-0">
@@ -116,7 +116,7 @@
                             <span class="material-symbols-outlined text-[12px]">{{ $isFree ? 'redeem' : 'sell' }}</span>
                             {{ $isFree ? 'Kupon Gratis' : 'Kupon Diskon' }}
                         </span>
-                        <span class="inline-flex items-center gap-0.5 text-[9.5px] font-bold px-2 py-0.5 rounded-full bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 border border-sky-200 dark:border-sky-800" title="Maksimal 1 kali pakai per akun pelanggan">
+                        <span class="inline-flex items-center gap-0.5 text-[9.5px] font-bold px-2 py-0.5 rounded-full bg-orange-50 dark:bg-orange-950/60 text-orange-700 dark:text-orange-300 border border-orange-200 dark:border-orange-800" title="Maksimal 1 kali pakai per akun pelanggan">
                             <span class="material-symbols-outlined text-[11px]">person</span>
                             1x Pakai
                         </span>

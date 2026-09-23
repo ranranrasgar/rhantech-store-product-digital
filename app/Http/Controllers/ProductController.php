@@ -74,14 +74,14 @@ class ProductController extends Controller
 
         // Prioritaskan produk beriklan aktif berdasarkan BID TERTINGGI (Ad Auction / Peringkat Iklan)
         // Bid lebih tinggi (misal Rp1.000 vs Rp100) otomatis menempati posisi nomor 1 teratas
-        $query->orderByRaw('(
-            SELECT COALESCE(MAX(seller_ads.bid_price), 0) 
-            FROM seller_ads 
-            JOIN stores ON stores.id = seller_ads.store_id 
-            WHERE seller_ads.product_id = products.id 
-              AND seller_ads.status = "active" 
-              AND stores.ad_balance > 0
-        ) DESC');
+        $query->select('products.*')->addSelect([
+            'max_bid' => \App\Models\SellerAd::selectRaw('COALESCE(MAX(bid_price), 0)')
+                ->join('stores', 'stores.id', '=', 'seller_ads.store_id')
+                ->whereColumn('seller_ads.product_id', 'products.id')
+                ->where('seller_ads.status', 'active')
+                ->where('stores.ad_balance', '>', 0)
+                ->limit(1)
+        ])->orderByDesc('max_bid');
 
         if ($request->sort == 'best_seller') {
             $query->withCount(['orders' => function ($q) {
@@ -117,59 +117,72 @@ class ProductController extends Controller
             return view('products._list', compact('products'))->render();
         }
 
-        // Metadata hanya dimuat pada saat full page load
-        $categories = \App\Models\ProductCategory::select(['id', 'store_id', 'name'])
-            ->whereHas('products', function ($q) {
-                $q->published();
-            })
-            ->withCount(['products' => function ($q) {
-                $q->published();
-            }])
-            ->with('store:id,name')
-            ->orderByDesc('products_count')
-            ->orderByRaw('store_id IS NULL DESC, name ASC')
-            ->get();
+        // Metadata hanya dimuat pada saat full page load dan di-cache 30 menit
+        $categories = Cache::remember('products_page_categories', 1800, function () {
+            return \App\Models\ProductCategory::select(['id', 'store_id', 'name'])
+                ->whereHas('products', function ($q) {
+                    $q->published();
+                })
+                ->withCount(['products' => function ($q) {
+                    $q->published();
+                }])
+                ->with('store:id,name')
+                ->orderByDesc('products_count')
+                ->orderByRaw('store_id IS NULL DESC, name ASC')
+                ->get();
+        });
 
-        $types = \App\Models\ProductType::select(['id', 'store_id', 'name'])
-            ->whereHas('products', function ($q) {
-                $q->published();
-            })
-            ->withCount(['products' => function ($q) {
-                $q->published();
-            }])
-            ->with('store:id,name')
-            ->orderByRaw('store_id IS NULL DESC, name ASC')
-            ->get();
+        $types = Cache::remember('products_page_types', 1800, function () {
+            return \App\Models\ProductType::select(['id', 'store_id', 'name'])
+                ->whereHas('products', function ($q) {
+                    $q->published();
+                })
+                ->withCount(['products' => function ($q) {
+                    $q->published();
+                }])
+                ->with('store:id,name')
+                ->orderByRaw('store_id IS NULL DESC, name ASC')
+                ->get();
+        });
 
-        $stores = \App\Models\Store::select(['id', 'name', 'slug'])->get();
-        $banners = \App\Models\Banner::where('is_active', true)->get()->keyBy('position');
+        $stores = Cache::remember('products_page_stores', 1800, function () {
+            return \App\Models\Store::select(['id', 'name', 'slug'])->get();
+        });
+
+        $banners = Cache::remember('products_page_banners', 1800, function () {
+            return \App\Models\Banner::where('is_active', true)->get()->keyBy('position');
+        });
 
         // Produk unggulan yang paling banyak diklik / dilihat + relasi store dan image
-        $topProducts = Product::with(['store:id,name,slug', 'images'])
-            ->published()
-            ->select(['id', 'store_id', 'name', 'slug', 'price', 'discount_price', 'views', 'sales_count'])
-            ->orderBy('views', 'desc')
-            ->orderBy('sales_count', 'desc')
-            ->limit(5)
-            ->get();
+        $topProducts = Cache::remember('products_page_top_products', 1800, function () {
+            return Product::with(['store:id,name,slug', 'images'])
+                ->published()
+                ->select(['id', 'store_id', 'name', 'slug', 'price', 'discount_price', 'views', 'sales_count'])
+                ->orderBy('views', 'desc')
+                ->orderBy('sales_count', 'desc')
+                ->limit(5)
+                ->get();
+        });
 
         // Banner Toko Rekomendasi & Beriklan (Carousel Slide Bergantian)
-        $adStores = \App\Models\Store::where('ad_balance', '>', 0)
-            ->whereHas('ads', function ($q) {
-                $q->activeAndFunded()->whereNotNull('product_id', 'and');
-            })
-            ->with([
-                'ads' => function ($q) {
-                    $q->activeAndFunded()->whereNotNull('product_id')->with(['product.images', 'product.category:id,name'])->orderBy('bid_price', 'desc');
-                },
-                'products' => function ($q) {
-                    $q->published()->select(['products.id', 'products.store_id', 'products.name', 'products.slug', 'products.price', 'products.discount_price'])->with('images')->latest('products.created_at')->take(6);
-                },
-                'showcaseProducts' => function ($q) {
-                    $q->published()->select(['products.id', 'products.store_id', 'products.name', 'products.slug', 'products.price', 'products.discount_price'])->with('images')->latest('products.created_at')->take(6);
-                }
-            ])
-            ->get(['id', 'name', 'slug', 'logo', 'description', 'ad_balance', 'views']);
+        $adStores = Cache::remember('products_page_ad_stores', 1800, function () {
+            return \App\Models\Store::where('ad_balance', '>', 0)
+                ->whereHas('ads', function ($q) {
+                    $q->activeAndFunded()->whereNotNull('product_id', 'and');
+                })
+                ->with([
+                    'ads' => function ($q) {
+                        $q->activeAndFunded()->whereNotNull('product_id')->with(['product.images', 'product.category:id,name'])->orderBy('bid_price', 'desc');
+                    },
+                    'products' => function ($q) {
+                        $q->published()->select(['products.id', 'products.store_id', 'products.name', 'products.slug', 'products.price', 'products.discount_price'])->with('images')->latest('products.created_at')->take(6);
+                    },
+                    'showcaseProducts' => function ($q) {
+                        $q->published()->select(['products.id', 'products.store_id', 'products.name', 'products.slug', 'products.price', 'products.discount_price'])->with('images')->latest('products.created_at')->take(6);
+                    }
+                ])
+                ->get(['id', 'name', 'slug', 'logo', 'description', 'ad_balance', 'views']);
+        });
 
         $adStores->each(function ($store) {
             $store->is_sponsored_ad = true;

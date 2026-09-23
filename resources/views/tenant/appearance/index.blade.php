@@ -3,7 +3,7 @@
 @section('title', 'Desain Tampilan Halaman')
 
 @section('content')
-<div class="flex flex-col h-full bg-[#f8fafc] dark:bg-[#090d16] text-[#0f172a] dark:text-[#f1f5f9] transition-colors duration-200" x-data="appearanceEditor()">
+<div class="flex flex-col h-full bg-[#fafafa] dark:bg-[#000000] text-[#09090b] dark:text-[#ededed] transition-colors duration-200" x-data="appearanceEditor()">
     
     <!-- Floating Toast Notification -->
     <div x-show="toast.show" 
@@ -13,38 +13,38 @@
          x-transition:leave="transition ease-in duration-200"
          x-transition:leave-start="opacity-100 translate-y-0 scale-100"
          x-transition:leave-end="opacity-0 translate-y-[-12px] scale-95"
-         class="fixed top-5 right-5 z-50 flex items-center gap-2.5 px-4 py-3 rounded-2xl bg-sky-600/95 text-white border border-sky-500/80 shadow-2xl backdrop-blur-md text-xs font-bold"
+         class="fixed top-5 right-5 z-50 flex items-center gap-2.5 px-4 py-3 rounded-2xl bg-orange-600/95 text-white border border-orange-500/80 shadow-none backdrop-blur-md text-xs font-bold"
          style="display: none;">
         <span class="material-symbols-outlined text-[20px] text-emerald-400">check_circle</span>
         <span x-text="toast.message"></span>
     </div>
 
     <!-- Top Action Header -->
-    <div class="sticky top-0 bg-white/95 dark:bg-[#111726]/95 backdrop-blur-md border-b border-slate-200/80 dark:border-[#222f49] px-4 sm:px-6 py-3 sm:py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 shadow-sm z-40 shrink-0">
+    <div class="sticky top-0 bg-white/95 dark:bg-[#000000]/95 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800 px-4 sm:px-6 py-3 sm:py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 shadow-none z-40 shrink-0">
         <div class="min-w-0">
-            <h1 class="text-lg sm:text-xl font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
+            <h1 class="text-lg sm:text-xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
                 Desain Tampilan Halaman
                 <span x-show="hasUnsavedChanges" x-cloak class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
                     Belum Disimpan
                 </span>
             </h1>
-            <p class="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            <p class="text-[11px] sm:text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
                 Kustomisasi tampilan profil Bio Link, susunan widget, tema warna, dan etalase digital Anda.
             </p>
         </div>
 
         <div class="flex items-center gap-2 sm:gap-3 flex-wrap sm:flex-nowrap shrink-0">
-            <button type="button" @click="resetLayout()" class="px-3 sm:px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm cursor-pointer" title="Kembalikan susunan widget etalase ke tata letak awal default">
+            <button type="button" @click="resetLayout()" class="px-3 sm:px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-zinc-600 dark:text-zinc-300 text-xs font-bold transition-all flex items-center gap-1.5 shadow-none cursor-pointer" title="Kembalikan susunan widget etalase ke tata letak awal default">
                 <span class="material-symbols-outlined text-[16px]">restart_alt</span>
                 <span class="hidden sm:inline">Reset Tata Letak</span>
                 <span class="sm:hidden">Reset</span>
             </button>
             @if($store && $store->slug)
             <button type="button" @click="openPreviewModal()" class="flex-1 sm:flex-initial justify-center px-3 sm:px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer" title="Buka live preview interaktif (Mobile & Desktop)">
-                <span class="material-symbols-outlined text-[16px] text-slate-500 dark:text-slate-400">visibility</span> <span>Preview Web</span>
+                <span class="material-symbols-outlined text-[16px] text-zinc-500 dark:text-zinc-400">visibility</span> <span>Preview Web</span>
             </button>
             @endif
-            <button @click="save()" :disabled="isSaving" :class="hasUnsavedChanges ? 'ring-2 ring-amber-400 dark:ring-amber-500' : ''" class="flex-1 sm:flex-initial justify-center px-4 sm:px-5 py-2 rounded-xl bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white text-xs font-bold transition-all flex items-center gap-1.5 disabled:opacity-60 cursor-pointer whitespace-nowrap active:scale-95">
+            <button @click="save()" :disabled="isSaving" :class="hasUnsavedChanges ? 'ring-2 ring-amber-400 dark:ring-amber-500' : ''" class="flex-1 sm:flex-initial justify-center px-4 sm:px-5 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white dark:bg-orange-600 dark:hover:bg-orange-500 dark:text-white text-xs font-bold transition-all flex items-center gap-1.5 disabled:opacity-60 cursor-pointer whitespace-nowrap active:scale-95">
                 <span class="material-symbols-outlined text-[16px]" x-text="isSaving ? 'hourglass_empty' : 'save'">save</span>
                 <span x-text="isSaving ? 'Menyimpan...' : (hasUnsavedChanges ? 'Simpan Perubahan *' : 'Simpan Perubahan')">Simpan Perubahan</span>
             </button>
@@ -52,26 +52,26 @@
     </div>
 
     <!-- Global Mode Switcher Bar (Tampil di semua perangkat: Mobile, Tablet & Desktop) -->
-    <div class="bg-slate-50/95 dark:bg-[#0c1220]/95 backdrop-blur-sm border-b border-slate-200/80 dark:border-[#222f49] px-4 sm:px-6 py-2 sm:py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 shrink-0 z-30 shadow-2xs">
+    <div class="bg-slate-50/95 dark:bg-[#0c1220]/95 backdrop-blur-sm border-b border-zinc-200 dark:border-zinc-800 px-4 sm:px-6 py-2 sm:py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 shrink-0 z-30 shadow-2xs">
         <div class="flex items-center justify-between sm:justify-start gap-2">
             <div class="flex items-center gap-1.5">
                 <span class="w-2 h-2 rounded-full animate-pulse"
-                      :class="storeMode === 'profile' ? 'bg-purple-500' : (storeMode === 'hybrid' ? 'bg-emerald-500' : 'bg-sky-500')"></span>
+                      :class="storeMode === 'profile' ? 'bg-purple-500' : (storeMode === 'hybrid' ? 'bg-emerald-500' : 'bg-orange-500')"></span>
                 <span class="text-xs font-bold text-slate-700 dark:text-slate-200 flex items-center gap-1">
                     <span class="material-symbols-outlined text-[16px] text-slate-400">tune</span>
                     <span>Pilihan Mode Halaman:</span>
                 </span>
             </div>
             <span class="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider"
-                  :class="storeMode === 'profile' ? 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20' : (storeMode === 'hybrid' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20' : 'bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20')">
+                  :class="storeMode === 'profile' ? 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20' : (storeMode === 'hybrid' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20' : 'bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20')">
                 <span x-text="storeMode === 'profile' ? 'Bio Link' : (storeMode === 'hybrid' ? 'Hybrid' : 'Toko Digital')"></span>
             </span>
         </div>
 
-        <div class="grid grid-cols-3 gap-1 p-1 bg-white dark:bg-[#111726] rounded-xl border border-slate-200 dark:border-[#222f49] w-full sm:w-auto">
+        <div class="grid grid-cols-3 gap-1 p-1 bg-white dark:bg-[#000000] rounded-xl border border-zinc-200 dark:border-zinc-800 w-full sm:w-auto">
             <!-- 1. Toko Digital -->
             <button type="button" @click="setStoreMode('store')" 
-                    :class="storeMode === 'store' ? 'bg-sky-500 text-white dark:bg-sky-600 dark:text-white font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" 
+                    :class="storeMode === 'store' ? 'bg-orange-500 text-white dark:bg-orange-600 dark:text-white font-bold' : 'text-zinc-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" 
                     class="px-2.5 py-1.5 rounded-lg text-xs transition-all flex items-center justify-center gap-1 cursor-pointer" 
                     title="Mode Toko Digital (E-Commerce Katalog Penuh)">
                 <span class="material-symbols-outlined text-[15px]">storefront</span>
@@ -80,7 +80,7 @@
 
             <!-- 2. Bio Link -->
             <button type="button" @click="setStoreMode('profile')" 
-                    :class="storeMode === 'profile' ? 'bg-sky-500 text-white dark:bg-sky-600 dark:text-white font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" 
+                    :class="storeMode === 'profile' ? 'bg-orange-500 text-white dark:bg-orange-600 dark:text-white font-bold' : 'text-zinc-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" 
                     class="px-2.5 py-1.5 rounded-lg text-xs transition-all flex items-center justify-center gap-1 cursor-pointer" 
                     title="Mode Bio Link (Profil Personal ala Linktree / Lynk.id)">
                 <span class="material-symbols-outlined text-[15px]">contact_page</span>
@@ -89,7 +89,7 @@
 
             <!-- 3. Hybrid -->
             <button type="button" @click="setStoreMode('hybrid')" 
-                    :class="storeMode === 'hybrid' ? 'bg-sky-500 text-white dark:bg-sky-600 dark:text-white font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" 
+                    :class="storeMode === 'hybrid' ? 'bg-orange-500 text-white dark:bg-orange-600 dark:text-white font-bold' : 'text-zinc-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" 
                     class="px-2.5 py-1.5 rounded-lg text-xs transition-all flex items-center justify-center gap-1 cursor-pointer" 
                     title="Mode Hybrid (Kombinasi Bio Link + Toko Digital)">
                 <span class="material-symbols-outlined text-[15px]">layers</span>
@@ -99,20 +99,20 @@
     </div>
 
     <!-- Mobile Tab Switcher (Visible only on screens < lg) -->
-    <div class="lg:hidden bg-white dark:bg-[#111726] border-b border-slate-200/80 dark:border-[#222f49] px-4 py-2 flex items-center justify-center gap-1.5 shrink-0 z-20 overflow-x-auto">
-        <button type="button" @click="mobileTab = 'palette'; sidebarTab = 'widgets'" :class="mobileTab === 'palette' ? 'bg-sky-500 text-white dark:bg-sky-600 dark:text-white font-bold' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold'" class="flex-1 py-2 px-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap">
+    <div class="lg:hidden bg-white dark:bg-[#000000] border-b border-zinc-200 dark:border-zinc-800 px-4 py-2 flex items-center justify-center gap-1.5 shrink-0 z-20 overflow-x-auto">
+        <button type="button" @click="mobileTab = 'palette'; sidebarTab = 'widgets'" :class="mobileTab === 'palette' ? 'bg-orange-500 text-white dark:bg-orange-600 dark:text-white font-bold' : 'bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 font-semibold'" class="flex-1 py-2 px-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap">
             <span class="material-symbols-outlined text-[16px]">widgets</span>
             <span>Widget</span>
         </button>
-        <button type="button" @click="mobileTab = 'voucher'; sidebarTab = 'voucher'" :class="mobileTab === 'voucher' ? 'bg-sky-500 text-white dark:bg-sky-600 dark:text-white font-bold' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold'" class="flex-1 py-2 px-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap">
+        <button type="button" @click="mobileTab = 'voucher'; sidebarTab = 'voucher'" :class="mobileTab === 'voucher' ? 'bg-orange-500 text-white dark:bg-orange-600 dark:text-white font-bold' : 'bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 font-semibold'" class="flex-1 py-2 px-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap">
             <span class="material-symbols-outlined text-[16px]">confirmation_number</span>
             <span>Voucher</span>
         </button>
-        <button type="button" @click="mobileTab = 'biolink'; sidebarTab = 'biolink'" :class="mobileTab === 'biolink' ? 'bg-sky-500 text-white dark:bg-sky-600 dark:text-white font-bold' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold'" class="flex-1 py-2 px-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap">
+        <button type="button" @click="mobileTab = 'biolink'; sidebarTab = 'biolink'" :class="mobileTab === 'biolink' ? 'bg-orange-500 text-white dark:bg-orange-600 dark:text-white font-bold' : 'bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 font-semibold'" class="flex-1 py-2 px-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap">
             <span class="material-symbols-outlined text-[16px]">link</span>
             <span>Bio Link</span>
         </button>
-        <button type="button" @click="mobileTab = 'canvas'" :class="mobileTab === 'canvas' ? 'bg-sky-500 text-white dark:bg-sky-600 dark:text-white font-bold' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold'" class="flex-1 py-2 px-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap">
+        <button type="button" @click="mobileTab = 'canvas'" :class="mobileTab === 'canvas' ? 'bg-orange-500 text-white dark:bg-orange-600 dark:text-white font-bold' : 'bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 font-semibold'" class="flex-1 py-2 px-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap">
             <span class="material-symbols-outlined text-[16px]">devices</span>
             <span>Kanvas</span>
         </button>
@@ -122,25 +122,25 @@
     <div class="flex-1 flex flex-col lg:flex-row overflow-hidden min-h-0 relative">
         
         <!-- LEFT SIDEBAR: WIDGET COMPONENT PALETTE -->
-        <div :class="(mobileTab === 'palette' || mobileTab === 'voucher' || mobileTab === 'biolink') ? 'flex' : 'hidden lg:flex'" class="w-full lg:w-[320px] border-b lg:border-b-0 lg:border-r border-slate-200/80 dark:border-[#222f49] bg-white dark:bg-[#111726] flex-col h-full z-10 shrink-0 shadow-sm overflow-hidden">
+        <div :class="(mobileTab === 'palette' || mobileTab === 'voucher' || mobileTab === 'biolink') ? 'flex' : 'hidden lg:flex'" class="w-full lg:w-[320px] border-b lg:border-b-0 lg:border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-[#000000] flex-col h-full z-10 shrink-0 shadow-none overflow-hidden">
 
             <!-- Sidebar Tab Toggle (Desktop) -->
-            <div class="hidden lg:flex border-b border-slate-100 dark:border-[#222f49]">
-                <button type="button" @click="sidebarTab = 'widgets'; mobileTab = 'palette'" :class="sidebarTab === 'widgets' ? 'border-b-2 border-sky-500 text-sky-600 dark:border-sky-400 dark:text-sky-400 font-black' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'" class="flex-1 py-2.5 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer">
+            <div class="hidden lg:flex border-b border-zinc-100 dark:border-zinc-800">
+                <button type="button" @click="sidebarTab = 'widgets'; mobileTab = 'palette'" :class="sidebarTab === 'widgets' ? 'border-b-2 border-orange-500 text-orange-600 dark:border-orange-400 dark:text-orange-400 font-black' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'" class="flex-1 py-2.5 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer">
                     <span class="material-symbols-outlined text-[15px]">widgets</span> Widget
                 </button>
-                <button type="button" @click="sidebarTab = 'voucher'; mobileTab = 'voucher'" :class="sidebarTab === 'voucher' ? 'border-b-2 border-sky-500 text-sky-600 dark:border-sky-400 dark:text-sky-400 font-black' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'" class="flex-1 py-2.5 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer">
+                <button type="button" @click="sidebarTab = 'voucher'; mobileTab = 'voucher'" :class="sidebarTab === 'voucher' ? 'border-b-2 border-orange-500 text-orange-600 dark:border-orange-400 dark:text-orange-400 font-black' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'" class="flex-1 py-2.5 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer">
                     <span class="material-symbols-outlined text-[15px]">confirmation_number</span> Kupon
                 </button>
-                <button type="button" @click="sidebarTab = 'biolink'; mobileTab = 'biolink'" :class="sidebarTab === 'biolink' ? 'border-b-2 border-sky-500 text-sky-600 dark:border-sky-400 dark:text-sky-400 font-black' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'" class="flex-1 py-2.5 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer" title="Kelola Tombol Bio Link (Linktree / Lynk.id)">
+                <button type="button" @click="sidebarTab = 'biolink'; mobileTab = 'biolink'" :class="sidebarTab === 'biolink' ? 'border-b-2 border-orange-500 text-orange-600 dark:border-orange-400 dark:text-orange-400 font-black' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'" class="flex-1 py-2.5 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer" title="Kelola Tombol Bio Link (Linktree / Lynk.id)">
                     <span class="material-symbols-outlined text-[15px]">link</span> Bio Link
                 </button>
             </div>
 
             <!-- PANEL: Widget Palette -->
             <div x-show="sidebarTab === 'widgets'" class="flex flex-col flex-1 overflow-hidden">
-            <div class="p-3.5 sm:p-4 border-b border-slate-100 dark:border-[#222f49]">
-                <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            <div class="p-3.5 sm:p-4 border-b border-zinc-100 dark:border-zinc-800">
+                <h2 class="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
                     Pilihan Blok Widget
                 </h2>
                 <p class="text-[11px] text-slate-400 mt-0.5">Klik blok di bawah untuk menambahkannya ke kanvas:</p>
@@ -156,7 +156,7 @@
                         <p class="font-bold">Mode aktif: Bio Link</p>
                         <p class="text-[11px] text-purple-700/90 dark:text-purple-400/90 mt-0.5">Halaman publik saat ini difokuskan pada tautan profil personal. Agar widget katalog produk ini tampil, ganti mode ke <strong>Toko Digital</strong> atau <strong>Hybrid</strong>.</p>
                         <div class="flex items-center gap-1.5 mt-2">
-                            <button type="button" @click="setStoreMode('store')" class="px-2.5 py-1 rounded-lg bg-sky-500 hover:bg-sky-400 text-white text-[10px] font-bold transition-all shadow-xs flex items-center gap-1 cursor-pointer">
+                            <button type="button" @click="setStoreMode('store')" class="px-2.5 py-1 rounded-lg bg-orange-500 hover:bg-orange-400 text-white text-[10px] font-bold transition-all shadow-xs flex items-center gap-1 cursor-pointer">
                                 <span class="material-symbols-outlined text-[13px]">storefront</span> Aktifkan Toko
                             </button>
                             <button type="button" @click="setStoreMode('hybrid')" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-bold transition-all shadow-xs flex items-center gap-1 cursor-pointer">
@@ -168,34 +168,34 @@
 
                 <!-- Group 1: Media & Konten -->
                 <div>
-                    <h3 class="text-xs font-bold text-slate-900 dark:text-white mb-2.5 flex items-center gap-1.5">
-                        <span class="material-symbols-outlined text-[16px] text-sky-500">photo_library</span> Media & Tampilan
+                    <h3 class="text-xs font-bold text-zinc-900 dark:text-zinc-100 mb-2.5 flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-[16px] text-orange-500">photo_library</span> Media & Tampilan
                     </h3>
                     <div class="grid grid-cols-2 gap-2.5">
                         <!-- Banner Carousel -->
-                        <div @click="addComponent('banner')" class="p-3 rounded-xl border border-slate-200 dark:border-[#222f49] hover:border-sky-500 dark:hover:border-sky-500 hover:bg-sky-50/50 dark:hover:bg-sky-950/20 cursor-pointer transition-all text-center group">
-                            <div class="w-8 h-8 rounded-lg bg-sky-500/10 text-sky-500 flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
+                        <div @click="addComponent('banner')" class="p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 hover:border-orange-500 dark:hover:border-orange-500 hover:bg-orange-50/50 dark:hover:bg-orange-950/20 cursor-pointer transition-all text-center group">
+                            <div class="w-8 h-8 rounded-lg bg-orange-500/10 text-orange-500 flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
                                 <span class="material-symbols-outlined text-[18px]">view_carousel</span>
                             </div>
-                            <span class="text-xs font-bold text-slate-800 dark:text-slate-200 block">Banner Hero</span>
+                            <span class="text-xs font-bold text-zinc-800 dark:text-zinc-200 block">Banner Hero</span>
                             <span class="text-[10px] text-slate-400">Slide Gambar</span>
                         </div>
 
                         <!-- Single Highlight Image -->
-                        <div @click="addComponent('single_image')" class="p-3 rounded-xl border border-slate-200 dark:border-[#222f49] hover:border-sky-500 dark:hover:border-sky-500 hover:bg-sky-50/50 dark:hover:bg-sky-950/20 cursor-pointer transition-all text-center group">
+                        <div @click="addComponent('single_image')" class="p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 hover:border-orange-500 dark:hover:border-orange-500 hover:bg-orange-50/50 dark:hover:bg-orange-950/20 cursor-pointer transition-all text-center group">
                             <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
                                 <span class="material-symbols-outlined text-[18px]">image</span>
                             </div>
-                            <span class="text-xs font-bold text-slate-800 dark:text-slate-200 block">Banner Tunggal</span>
+                            <span class="text-xs font-bold text-zinc-800 dark:text-zinc-200 block">Banner Tunggal</span>
                             <span class="text-[10px] text-slate-400">Gambar Penuh</span>
                         </div>
 
                         <!-- Text Block -->
-                        <div @click="addComponent('text')" class="p-3 rounded-xl border border-slate-200 dark:border-[#222f49] hover:border-sky-500 dark:hover:border-sky-500 hover:bg-sky-50/50 dark:hover:bg-sky-950/20 cursor-pointer transition-all text-center group col-span-2">
+                        <div @click="addComponent('text')" class="p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 hover:border-orange-500 dark:hover:border-orange-500 hover:bg-orange-50/50 dark:hover:bg-orange-950/20 cursor-pointer transition-all text-center group col-span-2">
                             <div class="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-500 flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
                                 <span class="material-symbols-outlined text-[18px]">format_quote</span>
                             </div>
-                            <span class="text-xs font-bold text-slate-800 dark:text-slate-200 block">Teks / Pengumuman</span>
+                            <span class="text-xs font-bold text-zinc-800 dark:text-zinc-200 block">Teks / Pengumuman</span>
                             <span class="text-[10px] text-slate-400">Blok deskripsi & informasi toko</span>
                         </div>
                     </div>
@@ -203,34 +203,34 @@
 
                 <!-- Group 2: Produk & Penjualan -->
                 <div>
-                    <h3 class="text-xs font-bold text-slate-900 dark:text-white mb-2.5 flex items-center gap-1.5">
+                    <h3 class="text-xs font-bold text-zinc-900 dark:text-zinc-100 mb-2.5 flex items-center gap-1.5">
                         <span class="material-symbols-outlined text-[16px] text-amber-500">storefront</span> Produk & Promosi
                     </h3>
                     <div class="grid grid-cols-2 gap-2.5">
                         <!-- Featured Products -->
-                        <div @click="addComponent('products')" class="p-3 rounded-xl border border-slate-200 dark:border-[#222f49] hover:border-sky-500 dark:hover:border-sky-500 hover:bg-sky-50/50 dark:hover:bg-sky-950/20 cursor-pointer transition-all text-center group">
+                        <div @click="addComponent('products')" class="p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 hover:border-orange-500 dark:hover:border-orange-500 hover:bg-orange-50/50 dark:hover:bg-orange-950/20 cursor-pointer transition-all text-center group">
                             <div class="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-500 flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
                                 <span class="material-symbols-outlined text-[18px]">grid_view</span>
                             </div>
-                            <span class="text-xs font-bold text-slate-800 dark:text-slate-200 block">Produk Pilihan</span>
+                            <span class="text-xs font-bold text-zinc-800 dark:text-zinc-200 block">Produk Pilihan</span>
                             <span class="text-[10px] text-slate-400">Grid Katalog</span>
                         </div>
 
                         <!-- Flash Sale -->
-                        <div @click="addComponent('flash_sale')" class="p-3 rounded-xl border border-slate-200 dark:border-[#222f49] hover:border-sky-500 dark:hover:border-sky-500 hover:bg-sky-50/50 dark:hover:bg-sky-950/20 cursor-pointer transition-all text-center group">
+                        <div @click="addComponent('flash_sale')" class="p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 hover:border-orange-500 dark:hover:border-orange-500 hover:bg-orange-50/50 dark:hover:bg-orange-950/20 cursor-pointer transition-all text-center group">
                             <div class="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-500 flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
                                 <span class="material-symbols-outlined text-[18px]">bolt</span>
                             </div>
-                            <span class="text-xs font-bold text-slate-800 dark:text-slate-200 block">Flash Sale</span>
+                            <span class="text-xs font-bold text-zinc-800 dark:text-zinc-200 block">Flash Sale</span>
                             <span class="text-[10px] text-slate-400">Promo Terbatas</span>
                         </div>
 
                         <!-- Voucher -->
-                        <div @click="addComponent('voucher')" class="p-3 rounded-xl border border-slate-200 dark:border-[#222f49] hover:border-sky-500 dark:hover:border-sky-500 hover:bg-sky-50/50 dark:hover:bg-sky-950/20 cursor-pointer transition-all text-center group col-span-2">
+                        <div @click="addComponent('voucher')" class="p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 hover:border-orange-500 dark:hover:border-orange-500 hover:bg-orange-50/50 dark:hover:bg-orange-950/20 cursor-pointer transition-all text-center group col-span-2">
                             <div class="w-8 h-8 rounded-lg bg-rose-500/10 text-rose-500 flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
                                 <span class="material-symbols-outlined text-[18px]">confirmation_number</span>
                             </div>
-                            <span class="text-xs font-bold text-slate-800 dark:text-slate-200 block">Kupon Voucher</span>
+                            <span class="text-xs font-bold text-zinc-800 dark:text-zinc-200 block">Kupon Voucher</span>
                             <span class="text-[10px] text-slate-400">Daftar kode kupon potongan belanja</span>
                         </div>
                     </div>
@@ -241,7 +241,7 @@
 
             <!-- PANEL: Penempatan Voucher -->
             <div x-show="sidebarTab === 'voucher'" class="flex flex-col flex-1 overflow-hidden">
-                <div class="p-3.5 sm:p-4 border-b border-slate-100 dark:border-[#222f49]">
+                <div class="p-3.5 sm:p-4 border-b border-zinc-100 dark:border-zinc-800">
                     <h2 class="text-xs font-bold uppercase tracking-wider text-rose-500 flex items-center gap-1.5">
                         <span class="material-symbols-outlined text-[15px]">confirmation_number</span>
                         Penempatan Kupon & Voucher
@@ -272,25 +272,25 @@
                         </div>
                     @else
                         <!-- Info posisi -->
-                        <div class="bg-slate-50 dark:bg-[#0c1220] rounded-xl p-3 text-[11px] text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-[#222f49] space-y-2">
-                            <p class="font-bold text-slate-700 dark:text-slate-300">📍 3 Lokasi Penempatan Otomatis (Global):</p>
+                        <div class="bg-slate-50 dark:bg-[#0c1220] rounded-xl p-3 text-[11px] text-zinc-500 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-800 space-y-2">
+                            <p class="font-bold text-zinc-700 dark:text-zinc-300">📍 3 Lokasi Penempatan Otomatis (Global):</p>
                             <ul class="space-y-1 pl-2">
                                 <li>• <b>Header Toko</b> — tampil sebagai banner promo di atas katalog etalase</li>
                                 <li>• <b>Pop-up Halaman Produk</b> — muncul saat pembeli buka produk</li>
                                 <li>• <b>Halaman Checkout</b> — tampil saat pembeli selesai beli</li>
                             </ul>
-                            <div class="pt-2 border-t border-slate-200 dark:border-slate-800 text-[10.5px] text-amber-600 dark:text-amber-400 bg-amber-500/10 p-2 rounded-lg leading-relaxed">
+                            <div class="pt-2 border-t border-zinc-200 dark:border-zinc-800 text-[10.5px] text-amber-600 dark:text-amber-400 bg-amber-500/10 p-2 rounded-lg leading-relaxed">
                                 💡 <b>Tips:</b> Jika Anda memasang <b>"Blok Kupon Voucher"</b> manual di susunan <b>Widget</b>, sistem otomatis memakai blok widget tersebut agar kupon tidak tampil dobel di etalase toko.
                             </div>
                         </div>
 
                         <!-- Slot 1: Header Toko -->
                         <div class="space-y-1.5">
-                            <label class="flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300">
+                            <label class="flex items-center gap-1.5 text-xs font-bold text-zinc-700 dark:text-zinc-300">
                                 <span class="material-symbols-outlined text-[15px] text-rose-500">store</span>
                                 Header Toko
                             </label>
-                            <select id="vp_header" x-model="voucherPlacement.header" class="w-full px-3 py-2 rounded-xl text-xs bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] text-slate-900 dark:text-white outline-none focus:border-rose-500 font-medium">
+                            <select id="vp_header" x-model="voucherPlacement.header" class="w-full px-3 py-2 rounded-xl text-xs bg-white dark:bg-[#0c1220] border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 outline-none focus:border-rose-500 font-medium">
                                 <option value="">— Otomatis (sistem) —</option>
                                 <option value="none">🚫 Nonaktifkan / Sembunyikan</option>
                                 @foreach($activeCampaigns as $c)
@@ -305,11 +305,11 @@
 
                         <!-- Slot 2: Pop-up Produk -->
                         <div class="space-y-1.5">
-                            <label class="flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300">
+                            <label class="flex items-center gap-1.5 text-xs font-bold text-zinc-700 dark:text-zinc-300">
                                 <span class="material-symbols-outlined text-[15px] text-amber-500">inventory_2</span>
                                 Pop-up Halaman Produk
                             </label>
-                            <select id="vp_product" x-model="voucherPlacement.product_page" class="w-full px-3 py-2 rounded-xl text-xs bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] text-slate-900 dark:text-white outline-none focus:border-rose-500 font-medium">
+                            <select id="vp_product" x-model="voucherPlacement.product_page" class="w-full px-3 py-2 rounded-xl text-xs bg-white dark:bg-[#0c1220] border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 outline-none focus:border-rose-500 font-medium">
                                 <option value="">— Otomatis (sistem) —</option>
                                 <option value="none">🚫 Nonaktifkan / Sembunyikan</option>
                                 @foreach($activeCampaigns as $c)
@@ -324,11 +324,11 @@
 
                         <!-- Slot 3: Checkout -->
                         <div class="space-y-1.5">
-                            <label class="flex items-center gap-1.5 text-xs font-bold text-slate-700 dark:text-slate-300">
+                            <label class="flex items-center gap-1.5 text-xs font-bold text-zinc-700 dark:text-zinc-300">
                                 <span class="material-symbols-outlined text-[15px] text-emerald-500">shopping_cart_checkout</span>
                                 Halaman Checkout
                             </label>
-                            <select id="vp_checkout" x-model="voucherPlacement.checkout" class="w-full px-3 py-2 rounded-xl text-xs bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] text-slate-900 dark:text-white outline-none focus:border-rose-500 font-medium">
+                            <select id="vp_checkout" x-model="voucherPlacement.checkout" class="w-full px-3 py-2 rounded-xl text-xs bg-white dark:bg-[#0c1220] border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 outline-none focus:border-rose-500 font-medium">
                                 <option value="">— Otomatis (sistem) —</option>
                                 <option value="none">🚫 Nonaktifkan / Sembunyikan</option>
                                 @foreach($activeCampaigns as $c)
@@ -343,7 +343,7 @@
 
                         <!-- Save Button -->
                         <div class="pt-2">
-                            <button type="button" @click="saveVoucherPlacement()" :disabled="isSavingVoucher" class="w-full py-2.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white text-xs font-bold transition-all active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-60">
+                            <button type="button" @click="saveVoucherPlacement()" :disabled="isSavingVoucher" class="w-full py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white dark:bg-orange-600 dark:hover:bg-orange-500 dark:text-white text-xs font-bold transition-all active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-60">
                                 <span class="material-symbols-outlined text-[15px]" x-text="isSavingVoucher ? 'hourglass_empty' : 'save'">save</span>
                                 <span x-text="isSavingVoucher ? 'Menyimpan...' : 'Simpan Penempatan'">Simpan Penempatan</span>
                             </button>
@@ -363,14 +363,14 @@
 
             <!-- PANEL: Bio Link Editor -->
             <div x-show="sidebarTab === 'biolink'" class="flex flex-col flex-1 overflow-hidden" style="display: none;">
-                <div class="p-3.5 sm:p-4 border-b border-slate-100 dark:border-[#222f49] flex items-center justify-between gap-2">
+                <div class="p-3.5 sm:p-4 border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between gap-2">
                     <div>
-                        <h2 class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+                        <h2 class="text-xs font-bold uppercase tracking-wider text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5">
                             <span class="material-symbols-outlined text-[16px]">link</span> Tombol Tautan Bio Link
                         </h2>
                         <p class="text-[11px] text-slate-400 mt-0.5">Tampil di mode <b>Bio Link</b> dan <b>Hybrid</b>.</p>
                     </div>
-                    <button type="button" @click="saveProfileLinks()" :disabled="isSavingLinks" class="px-3 py-1.5 rounded-lg bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white text-[11px] font-bold transition-all active:scale-95 flex items-center gap-1 cursor-pointer">
+                    <button type="button" @click="saveProfileLinks()" :disabled="isSavingLinks" class="px-3 py-1.5 rounded-lg bg-orange-500 hover:bg-orange-600 text-white dark:bg-orange-600 dark:hover:bg-orange-500 dark:text-white text-[11px] font-bold transition-all active:scale-95 flex items-center gap-1 cursor-pointer">
                         <span class="material-symbols-outlined text-[14px]">save</span>
                         <span x-text="isSavingLinks ? '...' : 'Simpan'">Simpan</span>
                     </button>
@@ -401,7 +401,7 @@
                             <button type="button" @click="addProfileLink({ title: 'Chat WhatsApp', url: 'https://wa.me/', icon: 'chat', color: '#059669' })" class="px-2 py-1.5 rounded-lg text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 hover:bg-emerald-100 transition-colors flex items-center gap-1.5 text-left cursor-pointer">
                                 <span class="material-symbols-outlined text-[14px]">chat</span> WhatsApp
                             </button>
-                            <button type="button" @click="addProfileLink({ title: 'Channel Telegram', url: 'https://t.me/', icon: 'send', color: '#0284c7' })" class="px-2 py-1.5 rounded-lg text-xs font-semibold bg-sky-50 dark:bg-sky-950/30 text-sky-600 dark:text-sky-400 border border-sky-200 dark:border-sky-800 hover:bg-sky-100 transition-colors flex items-center gap-1.5 text-left cursor-pointer">
+                            <button type="button" @click="addProfileLink({ title: 'Channel Telegram', url: 'https://t.me/', icon: 'send', color: '#ea580c' })" class="px-2 py-1.5 rounded-lg text-xs font-semibold bg-orange-50 dark:bg-orange-950/30 text-orange-600 dark:text-orange-400 border border-orange-200 dark:border-orange-800 hover:bg-orange-100 transition-colors flex items-center gap-1.5 text-left cursor-pointer">
                                 <span class="material-symbols-outlined text-[14px]">send</span> Telegram
                             </button>
                             <button type="button" @click="addProfileLink({ title: 'Website Portofolio', url: 'https://', icon: 'language', color: '#7c3aed' })" class="px-2 py-1.5 rounded-lg text-xs font-semibold bg-violet-50 dark:bg-violet-950/30 text-violet-600 dark:text-violet-400 border border-violet-200 dark:border-violet-800 hover:bg-violet-100 transition-colors flex items-center gap-1.5 text-left cursor-pointer">
@@ -416,7 +416,7 @@
                     <!-- Links List (Accordion: Collapsed by Default) -->
                     <div class="space-y-2.5">
                         <template x-for="(link, lIdx) in profileLinks" :key="lIdx">
-                            <div class="rounded-2xl bg-slate-50 dark:bg-[#0e1526] border border-slate-200 dark:border-[#222f49] shadow-xs overflow-hidden transition-all duration-200">
+                            <div class="rounded-2xl bg-slate-50 dark:bg-[#0e1526] border border-zinc-200 dark:border-zinc-800 shadow-xs overflow-hidden transition-all duration-200">
                                 <!-- Collapsed Header Bar (Always visible) -->
                                 <div @click="expandedLinkIndex = (expandedLinkIndex === lIdx ? null : lIdx)"
                                      class="p-3 flex items-center justify-between gap-2 cursor-pointer hover:bg-slate-100/70 dark:hover:bg-slate-800/50 transition-colors select-none">
@@ -425,10 +425,10 @@
                                         
                                         <!-- Mini Image or Icon Preview -->
                                         <template x-if="link.image">
-                                            <img :src="link.image" class="w-6 h-6 rounded-md object-cover border border-slate-200 dark:border-slate-700 shrink-0">
+                                            <img :src="link.image" class="w-6 h-6 rounded-md object-cover border border-zinc-200 dark:border-zinc-800 shrink-0">
                                         </template>
                                         <template x-if="!link.image">
-                                            <div class="w-6 h-6 rounded-md flex items-center justify-center text-white shrink-0 text-[11px]" :style="'background:' + (link.color || '#0284c7')">
+                                            <div class="w-6 h-6 rounded-md flex items-center justify-center text-white shrink-0 text-[11px]" :style="'background:' + (link.color || '#ea580c')">
                                                 <span class="material-symbols-outlined text-[13px]" x-text="link.icon || 'link'"></span>
                                             </div>
                                         </template>
@@ -463,19 +463,19 @@
                                         <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 block mb-1">Pilihan Layout Tampilan:</span>
                                         <div class="grid grid-cols-3 gap-1 bg-slate-200/80 dark:bg-[#161f33] p-1 rounded-xl text-center">
                                             <button type="button" @click="link.layout = 'list'; hasUnsavedChanges = true" 
-                                                    :class="(!link.layout || link.layout === 'list') ? 'bg-white dark:bg-slate-800 text-sky-600 dark:text-sky-400 shadow-xs font-black' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-semibold'" 
+                                                    :class="(!link.layout || link.layout === 'list') ? 'bg-white dark:bg-slate-800 text-orange-600 dark:text-orange-400 shadow-xs font-black' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-semibold'" 
                                                     class="py-1.5 px-1 rounded-lg text-[10px] transition-all flex flex-col items-center justify-center gap-0.5 cursor-pointer">
                                                 <span class="material-symbols-outlined text-[15px]">view_stream</span>
                                                 <span>1 Baris</span>
                                             </button>
                                             <button type="button" @click="link.layout = 'grid'; hasUnsavedChanges = true" 
-                                                    :class="link.layout === 'grid' ? 'bg-white dark:bg-slate-800 text-sky-600 dark:text-sky-400 shadow-xs font-black' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-semibold'" 
+                                                    :class="link.layout === 'grid' ? 'bg-white dark:bg-slate-800 text-orange-600 dark:text-orange-400 shadow-xs font-black' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-semibold'" 
                                                     class="py-1.5 px-1 rounded-lg text-[10px] transition-all flex flex-col items-center justify-center gap-0.5 cursor-pointer">
                                                 <span class="material-symbols-outlined text-[15px]">grid_view</span>
                                                 <span>2 Kolom</span>
                                             </button>
                                             <button type="button" @click="link.layout = 'card'; hasUnsavedChanges = true" 
-                                                    :class="link.layout === 'card' ? 'bg-white dark:bg-slate-800 text-sky-600 dark:text-sky-400 shadow-xs font-black' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-semibold'" 
+                                                    :class="link.layout === 'card' ? 'bg-white dark:bg-slate-800 text-orange-600 dark:text-orange-400 shadow-xs font-black' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-semibold'" 
                                                     class="py-1.5 px-1 rounded-lg text-[10px] transition-all flex flex-col items-center justify-center gap-0.5 cursor-pointer">
                                                 <span class="material-symbols-outlined text-[15px]">featured_play_list</span>
                                                 <span>Gambar Besar</span>
@@ -486,33 +486,33 @@
                                     <!-- Input Judul & Subtitle -->
                                     <div class="space-y-1.5">
                                         <div>
-                                            <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1">Judul Teks Tombol *</label>
-                                            <input type="text" x-model="link.title" @input="hasUnsavedChanges = true" placeholder="Judul Teks Tombol / Nama Penawaran *" class="w-full px-2.5 py-1.5 text-xs bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-lg font-bold text-slate-900 dark:text-white">
+                                            <label class="block text-[10px] font-bold text-zinc-500 dark:text-zinc-400 mb-1">Judul Teks Tombol *</label>
+                                            <input type="text" x-model="link.title" @input="hasUnsavedChanges = true" placeholder="Judul Teks Tombol / Nama Penawaran *" class="w-full px-2.5 py-1.5 text-xs bg-white dark:bg-[#0c1220] border border-zinc-200 dark:border-zinc-800 rounded-lg font-bold text-zinc-900 dark:text-zinc-100">
                                         </div>
                                         <div>
-                                            <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1">Sub-judul / Harga (Opsional)</label>
-                                            <input type="text" x-model="link.subtitle" @input="hasUnsavedChanges = true" placeholder="Sub-judul / Harga (misal: Rp 150.000 / Diskon 50%)" class="w-full px-2.5 py-1.5 text-xs bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-lg text-slate-600 dark:text-slate-300">
+                                            <label class="block text-[10px] font-bold text-zinc-500 dark:text-zinc-400 mb-1">Sub-judul / Harga (Opsional)</label>
+                                            <input type="text" x-model="link.subtitle" @input="hasUnsavedChanges = true" placeholder="Sub-judul / Harga (misal: Rp 150.000 / Diskon 50%)" class="w-full px-2.5 py-1.5 text-xs bg-white dark:bg-[#0c1220] border border-zinc-200 dark:border-zinc-800 rounded-lg text-zinc-600 dark:text-zinc-300">
                                         </div>
                                     </div>
 
                                     <!-- Deskripsi Lengkap (Teks Panjang) -->
                                     <div>
                                         <div class="flex items-center justify-between mb-1">
-                                            <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400">Deskripsi Lengkap (Teks Panjang):</label>
+                                            <label class="text-[10px] font-bold text-zinc-500 dark:text-zinc-400">Deskripsi Lengkap (Teks Panjang):</label>
                                             <span class="text-[9px] text-slate-400 font-normal">Bisa diisi banyak teks</span>
                                         </div>
-                                        <textarea x-model="link.description" @input="hasUnsavedChanges = true" rows="3" placeholder="Tuliskan keterangan lengkap detail produk/jasa, fitur, penjelasan teks panjang, panduan, dll..." class="w-full px-2.5 py-1.5 text-xs bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-lg text-slate-700 dark:text-slate-200 focus:border-teal-500 outline-none leading-relaxed custom-scrollbar"></textarea>
+                                        <textarea x-model="link.description" @input="hasUnsavedChanges = true" rows="3" placeholder="Tuliskan keterangan lengkap detail produk/jasa, fitur, penjelasan teks panjang, panduan, dll..." class="w-full px-2.5 py-1.5 text-xs bg-white dark:bg-[#0c1220] border border-zinc-200 dark:border-zinc-800 rounded-lg text-slate-700 dark:text-slate-200 focus:border-teal-500 outline-none leading-relaxed custom-scrollbar"></textarea>
                                     </div>
 
                                     <!-- Input URL Link & Teks Tombol Aksi (CTA) -->
                                     <div class="space-y-2">
                                         <div>
-                                            <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1">URL Link Tujuan *</label>
-                                            <input type="text" x-model="link.url" @input="hasUnsavedChanges = true" placeholder="URL Link: https://wa.me/... atau https://..." class="w-full px-2.5 py-1.5 text-xs bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-lg font-mono text-slate-900 dark:text-white">
+                                            <label class="block text-[10px] font-bold text-zinc-500 dark:text-zinc-400 mb-1">URL Link Tujuan *</label>
+                                            <input type="text" x-model="link.url" @input="hasUnsavedChanges = true" placeholder="URL Link: https://wa.me/... atau https://..." class="w-full px-2.5 py-1.5 text-xs bg-white dark:bg-[#0c1220] border border-zinc-200 dark:border-zinc-800 rounded-lg font-mono text-zinc-900 dark:text-zinc-100">
                                         </div>
                                         <div>
-                                            <label class="block text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-1">Teks Tombol Aksi di Halaman Detail (CTA)</label>
-                                            <input type="text" x-model="link.button_text" @input="hasUnsavedChanges = true" placeholder="Default: Buka Tautan / Pesan (Bisa: BOOK NOW, Hubungi WA, dll)" class="w-full px-2.5 py-1.5 text-xs bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-lg text-slate-900 dark:text-white font-bold">
+                                            <label class="block text-[10px] font-bold text-zinc-500 dark:text-zinc-400 mb-1">Teks Tombol Aksi di Halaman Detail (CTA)</label>
+                                            <input type="text" x-model="link.button_text" @input="hasUnsavedChanges = true" placeholder="Default: Buka Tautan / Pesan (Bisa: BOOK NOW, Hubungi WA, dll)" class="w-full px-2.5 py-1.5 text-xs bg-white dark:bg-[#0c1220] border border-zinc-200 dark:border-zinc-800 rounded-lg text-zinc-900 dark:text-zinc-100 font-bold">
                                         </div>
                                     </div>
 
@@ -520,8 +520,8 @@
                                     <div>
                                         <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 block mb-1">Foto / Sampul Thumbnail (Opsional):</span>
                                         <template x-if="link.image">
-                                            <div class="flex items-center gap-2 w-full bg-white dark:bg-[#0c1220] p-1.5 rounded-xl border border-slate-200 dark:border-[#222f49]">
-                                                <img :src="link.image" class="w-10 h-10 object-cover rounded-lg border border-slate-200 dark:border-slate-700 shrink-0">
+                                            <div class="flex items-center gap-2 w-full bg-white dark:bg-[#0c1220] p-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                                                <img :src="link.image" class="w-10 h-10 object-cover rounded-lg border border-zinc-200 dark:border-zinc-800 shrink-0">
                                                 <span class="text-[10px] text-slate-500 truncate flex-1 font-mono" x-text="link.image"></span>
                                                 <button type="button" @click="link.image = null; hasUnsavedChanges = true" class="text-rose-500 hover:text-rose-700 p-1 cursor-pointer" title="Hapus Gambar">
                                                     <span class="material-symbols-outlined text-[16px]">close</span>
@@ -530,12 +530,12 @@
                                         </template>
                                         <template x-if="!link.image">
                                             <div class="flex items-center gap-1.5 w-full">
-                                                <label class="cursor-pointer px-2.5 py-1.5 rounded-lg bg-sky-50 dark:bg-sky-950/30 text-sky-600 dark:text-sky-400 border border-sky-200 dark:border-sky-800 hover:bg-sky-100 transition-colors text-[11px] font-bold flex items-center gap-1 shrink-0">
+                                                <label class="cursor-pointer px-2.5 py-1.5 rounded-lg bg-orange-50 dark:bg-orange-950/30 text-orange-600 dark:text-orange-400 border border-orange-200 dark:border-orange-800 hover:bg-orange-100 transition-colors text-[11px] font-bold flex items-center gap-1 shrink-0">
                                                     <span class="material-symbols-outlined text-[14px]">add_photo_alternate</span>
                                                     <span>Upload Foto</span>
                                                     <input type="file" class="hidden" accept="image/*" @change="openCropper($event, link, 'image', false, (link.layout === 'card' ? 16/9 : 1/1))">
                                                 </label>
-                                                <input type="text" x-model="link.image" @input="hasUnsavedChanges = true" placeholder="atau paste URL foto..." class="flex-1 px-2 py-1.5 text-[11px] bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-lg font-mono text-slate-700 dark:text-slate-300">
+                                                <input type="text" x-model="link.image" @input="hasUnsavedChanges = true" placeholder="atau paste URL foto..." class="flex-1 px-2 py-1.5 text-[11px] bg-white dark:bg-[#0c1220] border border-zinc-200 dark:border-zinc-800 rounded-lg font-mono text-zinc-700 dark:text-zinc-300">
                                             </div>
                                         </template>
                                     </div>
@@ -543,10 +543,10 @@
                                     <!-- Badge & Icon & Color Picker -->
                                     <div class="grid grid-cols-12 gap-1.5 items-center">
                                         <div class="col-span-5">
-                                            <input type="text" x-model="link.badge" @input="hasUnsavedChanges = true" placeholder="Badge (HOT/NEW)" class="w-full px-2 py-1.5 text-xs bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-lg text-slate-900 dark:text-white uppercase font-bold text-[10px]">
+                                            <input type="text" x-model="link.badge" @input="hasUnsavedChanges = true" placeholder="Badge (HOT/NEW)" class="w-full px-2 py-1.5 text-xs bg-white dark:bg-[#0c1220] border border-zinc-200 dark:border-zinc-800 rounded-lg text-zinc-900 dark:text-zinc-100 uppercase font-bold text-[10px]">
                                         </div>
                                         <div class="col-span-5">
-                                            <select x-model="link.icon" @change="hasUnsavedChanges = true" class="w-full py-1.5 px-1.5 text-xs bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-[#222f49] rounded-lg text-slate-900 dark:text-white cursor-pointer font-semibold text-[11px]">
+                                            <select x-model="link.icon" @change="hasUnsavedChanges = true" class="w-full py-1.5 px-1.5 text-xs bg-white dark:bg-[#0c1220] border border-zinc-200 dark:border-zinc-800 rounded-lg text-zinc-900 dark:text-zinc-100 cursor-pointer font-semibold text-[11px]">
                                                 <option value="link">Ikon: Tautan</option>
                                                 <option value="chat">Ikon: WhatsApp</option>
                                                 <option value="send">Ikon: Telegram</option>
@@ -560,7 +560,7 @@
                                             </select>
                                         </div>
                                         <div class="col-span-2 flex justify-end">
-                                            <input type="color" x-model="link.color" @input="hasUnsavedChanges = true" class="w-8 h-8 rounded-lg border border-slate-200 dark:border-slate-700 cursor-pointer p-0 bg-transparent" title="Pilih warna tombol">
+                                            <input type="color" x-model="link.color" @input="hasUnsavedChanges = true" class="w-8 h-8 rounded-lg border border-zinc-200 dark:border-zinc-800 cursor-pointer p-0 bg-transparent" title="Pilih warna tombol">
                                         </div>
                                     </div>
 
@@ -572,7 +572,7 @@
                             </div>
                         </template>
 
-                        <div x-show="profileLinks.length === 0" class="p-6 text-center text-slate-400 text-xs border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl">
+                        <div x-show="profileLinks.length === 0" class="p-6 text-center text-slate-400 text-xs border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-xl">
                             Belum ada tombol link. Klik tombol tambah di bawah atau gunakan template di atas.
                         </div>
 
@@ -591,24 +591,24 @@
             <!-- Control Bar: Mode Tampilan Switcher & Viewport (Desktop/Mobile) -->
             <div class="w-full max-w-[960px] flex flex-col sm:flex-row items-center justify-between gap-3 mb-4 sm:mb-6 shrink-0">
                 <!-- Mode Tampilan Switcher -->
-                <div class="flex items-center gap-1 bg-white dark:bg-[#111726] p-1.5 rounded-2xl border border-slate-200/80 dark:border-[#222f49] overflow-x-auto max-w-full">
+                <div class="flex items-center gap-1 bg-white dark:bg-[#000000] p-1.5 rounded-2xl border border-zinc-200 dark:border-zinc-800 overflow-x-auto max-w-full">
                     <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 pl-2 pr-1 shrink-0 flex items-center gap-1">
                         <span class="material-symbols-outlined text-[14px]">tune</span> Mode:
                     </span>
                     <button type="button" @click="setStoreMode('store')" 
-                            :class="storeMode === 'store' ? 'bg-sky-500 text-white dark:bg-sky-600 dark:text-white font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" 
+                            :class="storeMode === 'store' ? 'bg-orange-500 text-white dark:bg-orange-600 dark:text-white font-bold' : 'text-zinc-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" 
                             class="px-3 py-1.5 rounded-xl text-xs transition-all flex items-center gap-1.5 cursor-pointer shrink-0" title="Mode Toko Digital (E-Commerce Katalog)">
                         <span class="material-symbols-outlined text-[16px]">storefront</span>
                         <span>Toko Digital</span>
                     </button>
                     <button type="button" @click="setStoreMode('profile')" 
-                            :class="storeMode === 'profile' ? 'bg-sky-500 text-white dark:bg-sky-600 dark:text-white font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" 
+                            :class="storeMode === 'profile' ? 'bg-orange-500 text-white dark:bg-orange-600 dark:text-white font-bold' : 'text-zinc-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" 
                             class="px-3 py-1.5 rounded-xl text-xs transition-all flex items-center gap-1.5 cursor-pointer shrink-0" title="Mode Bio Link (Linktree / Lynk.id)">
                         <span class="material-symbols-outlined text-[16px]">contact_page</span>
                         <span>Bio Link</span>
                     </button>
                     <button type="button" @click="setStoreMode('hybrid')" 
-                            :class="storeMode === 'hybrid' ? 'bg-sky-500 text-white dark:bg-sky-600 dark:text-white font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" 
+                            :class="storeMode === 'hybrid' ? 'bg-orange-500 text-white dark:bg-orange-600 dark:text-white font-bold' : 'text-zinc-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" 
                             class="px-3 py-1.5 rounded-xl text-xs transition-all flex items-center gap-1.5 cursor-pointer shrink-0" title="Mode Hybrid (Bio Link + Toko Digital)">
                         <span class="material-symbols-outlined text-[16px]">layers</span>
                         <span>Hybrid</span>
@@ -616,28 +616,28 @@
                 </div>
 
                 <!-- Viewport Switcher (Desktop / Mobile) -->
-                <div class="flex items-center gap-1 bg-white dark:bg-[#111726] p-1.5 rounded-2xl border border-slate-200/80 dark:border-[#222f49] shrink-0">
-                    <button @click="device = 'desktop'" :class="device === 'desktop' ? 'bg-sky-500 text-white dark:bg-sky-600 dark:text-white font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="px-3.5 sm:px-4 py-1.5 rounded-xl text-xs transition-all flex items-center gap-1.5 cursor-pointer">
+                <div class="flex items-center gap-1 bg-white dark:bg-[#000000] p-1.5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shrink-0">
+                    <button @click="device = 'desktop'" :class="device === 'desktop' ? 'bg-orange-500 text-white dark:bg-orange-600 dark:text-white font-bold' : 'text-zinc-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="px-3.5 sm:px-4 py-1.5 rounded-xl text-xs transition-all flex items-center gap-1.5 cursor-pointer">
                         <span class="material-symbols-outlined text-[16px]">desktop_windows</span> Desktop
                     </button>
-                    <button @click="device = 'mobile'" :class="device === 'mobile' ? 'bg-sky-500 text-white dark:bg-sky-600 dark:text-white font-bold' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="px-3.5 sm:px-4 py-1.5 rounded-xl text-xs transition-all flex items-center gap-1.5 cursor-pointer">
+                    <button @click="device = 'mobile'" :class="device === 'mobile' ? 'bg-orange-500 text-white dark:bg-orange-600 dark:text-white font-bold' : 'text-zinc-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="px-3.5 sm:px-4 py-1.5 rounded-xl text-xs transition-all flex items-center gap-1.5 cursor-pointer">
                         <span class="material-symbols-outlined text-[16px]">smartphone</span> Mobile
                     </button>
                 </div>
             </div>
 
             <!-- DESKTOP CANVAS VIEWPORT -->
-            <div x-show="device === 'desktop'" class="w-full max-w-[960px] bg-white dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] rounded-2xl overflow-hidden flex flex-col relative min-h-[600px] shrink-0 mb-12">
+            <div x-show="device === 'desktop'" class="w-full max-w-[960px] bg-white dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-2xl overflow-hidden flex flex-col relative min-h-[600px] shrink-0 mb-12">
                 
                 <!-- Browser Bar -->
-                <div class="h-9 bg-slate-100 dark:bg-[#161f33] border-b border-slate-200 dark:border-[#222f49] flex items-center px-4 gap-3 shrink-0">
+                <div class="h-9 bg-slate-100 dark:bg-[#161f33] border-b border-zinc-200 dark:border-zinc-800 flex items-center px-4 gap-3 shrink-0">
                     <div class="flex gap-1.5">
                         <div class="w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-600"></div>
                         <div class="w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-600"></div>
                         <div class="w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-600"></div>
                     </div>
                     <div class="flex-1 flex justify-center">
-                        <div class="bg-white dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] text-[11px] px-4 py-1 rounded-lg text-slate-500 w-[50%] flex items-center justify-center gap-1.5 font-mono truncate">
+                        <div class="bg-white dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 text-[11px] px-4 py-1 rounded-lg text-slate-500 w-[50%] flex items-center justify-center gap-1.5 font-mono truncate">
                             <span class="material-symbols-outlined text-[13px] text-emerald-500">lock</span>
                             <span>rhantech.com/{{ $store->slug ?? 'toko-anda' }}</span>
                         </div>
@@ -645,34 +645,34 @@
                 </div>
 
                 <!-- Desktop Store Header Banner -->
-                <div class="w-full h-[220px] bg-gradient-to-r from-sky-700 via-sky-800 to-slate-900 text-white relative overflow-hidden flex items-end p-6 border-b border-slate-200 dark:border-[#222f49] group/header">
+                <div class="w-full h-[220px] bg-gradient-to-r from-sky-700 via-sky-800 to-slate-900 text-white relative overflow-hidden flex items-end p-6 border-b border-zinc-200 dark:border-zinc-800 group/header">
                     <div class="absolute inset-0 bg-cover bg-center transition-all duration-300" :style="getBannerStyle(headerBanner)" :class="headerBanner ? 'opacity-90' : 'opacity-20'"></div>
                     <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent pointer-events-none"></div>
                     
                     <!-- Header Banner Action Buttons -->
                     <div class="absolute top-4 right-4 z-20 flex items-center gap-2">
-                        <button type="button" @click="openBannerModal()" class="cursor-pointer bg-sky-600/80 hover:bg-sky-500 backdrop-blur-md text-white px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 border border-sky-400/40 transition-all shadow-lg hover:scale-105" title="Atur Tampilan Banner (Gradien, Warna Biasa, Gambar)">
+                        <button type="button" @click="openBannerModal()" class="cursor-pointer bg-orange-600/80 hover:bg-orange-500 backdrop-blur-md text-white px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 border border-orange-400/40 transition-all shadow-none hover:scale-105" title="Atur Tampilan Banner (Gradien, Warna Biasa, Gambar)">
                             <span class="material-symbols-outlined text-[16px] text-white">palette</span>
                             <span x-text="headerBanner ? 'Atur / Ganti Banner' : 'Pasang Banner Toko'"></span>
                         </button>
-                        <button type="button" x-show="headerBanner" @click="clearHeaderBanner()" class="bg-rose-500/80 hover:bg-rose-600 text-white p-1.5 rounded-xl text-xs font-bold flex items-center justify-center border border-white/20 transition-all shadow-lg hover:scale-105" title="Hapus Settingan Banner (Reset ke Default)">
+                        <button type="button" x-show="headerBanner" @click="clearHeaderBanner()" class="bg-rose-500/80 hover:bg-rose-600 text-white p-1.5 rounded-xl text-xs font-bold flex items-center justify-center border border-white/20 transition-all shadow-none hover:scale-105" title="Hapus Settingan Banner (Reset ke Default)">
                             <span class="material-symbols-outlined text-[16px]">delete</span>
                         </button>
                     </div>
 
                     <div class="relative z-10 flex items-center justify-between w-full">
                         <div class="flex items-center gap-4">
-                            <div class="w-20 h-20 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 p-1 overflow-hidden shrink-0 shadow-lg">
+                            <div class="w-20 h-20 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 p-1 overflow-hidden shrink-0 shadow-none">
                                 @if($store && $store->logo)
                                     <img src="{{ asset('storage/' . $store->logo) }}" class="w-full h-full object-cover rounded-xl">
                                 @else
-                                    <div class="w-full h-full bg-sky-500 rounded-xl flex items-center justify-center font-bold text-xl text-white">
+                                    <div class="w-full h-full bg-orange-500 rounded-xl flex items-center justify-center font-bold text-xl text-white">
                                         {{ strtoupper(substr($store->name ?? 'T', 0, 2)) }}
                                     </div>
                                 @endif
                             </div>
                             <div>
-                                <h2 class="text-2xl font-black text-white drop-shadow-sm">{{ $store->name ?? 'Toko Anda' }}</h2>
+                                <h2 class="text-2xl font-black text-white drop-shadow-none">{{ $store->name ?? 'Toko Anda' }}</h2>
                                 <p class="text-xs text-slate-300 mt-1 max-w-md line-clamp-1">{{ $store->description ?: 'Platform penyedia produk digital terpercaya.' }}</p>
                             </div>
                         </div>
@@ -681,7 +681,7 @@
 
                 <!-- Interactive Bio Link Preview Container (Visible in profile & hybrid modes) -->
                 <div x-show="storeMode === 'profile' || storeMode === 'hybrid'" class="p-6 pb-2">
-                    <div class="w-full max-w-md mx-auto space-y-2.5 bg-slate-50/70 dark:bg-[#111726]/70 p-4 rounded-2xl border border-slate-200/80 dark:border-[#222f49]">
+                    <div class="w-full max-w-md mx-auto space-y-2.5 bg-slate-50/70 dark:bg-[#000000]/70 p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800">
                         <div class="flex items-center justify-between px-1 mb-1">
                             <span class="text-[11px] font-bold text-teal-600 dark:text-teal-400 flex items-center gap-1">
                                 <span class="material-symbols-outlined text-[15px]">link</span> Tombol Tautan Bio Link
@@ -696,14 +696,14 @@
                                 <div :class="link.layout === 'grid' ? 'col-span-1' : 'col-span-2'">
                                     <!-- 1. GRID (2 Kolom) -->
                                     <template x-if="link.layout === 'grid'">
-                                        <div class="flex flex-col bg-white dark:bg-[#161b22] border border-slate-200 dark:border-[#30363d] rounded-2xl overflow-hidden shadow-xs hover:shadow-md transition-all cursor-pointer text-left h-full"
+                                        <div class="flex flex-col bg-white dark:bg-[#000000] border border-slate-200 dark:border-zinc-800 rounded-2xl overflow-hidden shadow-xs hover:shadow-none transition-all cursor-pointer text-left h-full"
                                              @click="sidebarTab = 'biolink'; mobileTab = 'biolink'">
-                                            <div class="w-full aspect-square bg-slate-100 dark:bg-slate-800 relative overflow-hidden flex items-center justify-center">
+                                            <div class="w-full aspect-square bg-zinc-100 dark:bg-zinc-900 relative overflow-hidden flex items-center justify-center">
                                                 <template x-if="link.image">
                                                     <img :src="link.image" class="w-full h-full object-cover">
                                                 </template>
                                                 <template x-if="!link.image">
-                                                    <div class="w-full h-full flex items-center justify-center text-white" :style="`background: ${link.color || '#0284c7'};`">
+                                                    <div class="w-full h-full flex items-center justify-center text-white" :style="`background: ${link.color || '#ea580c'};`">
                                                         <span class="material-symbols-outlined text-3xl opacity-90" x-text="link.icon || 'link'"></span>
                                                     </div>
                                                 </template>
@@ -711,11 +711,11 @@
                                                     <span class="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded-md bg-black/60 backdrop-blur-md text-white text-[8px] font-black uppercase tracking-wider" x-text="link.badge"></span>
                                                 </template>
                                             </div>
-                                            <div class="p-2.5 flex flex-col flex-1 justify-between bg-white dark:bg-[#161b22]">
+                                            <div class="p-2.5 flex flex-col flex-1 justify-between bg-white dark:bg-[#000000]">
                                                 <div>
-                                                    <h4 class="font-bold text-[11px] text-slate-900 dark:text-white line-clamp-2 leading-tight" x-text="link.title || 'Judul Link'"></h4>
-                                                    <p x-show="link.subtitle" class="text-[10px] font-bold mt-0.5 truncate" :style="`color: ${link.color || '#0284c7'};`" x-text="link.subtitle"></p>
-                                                    <p x-show="link.description" class="text-[9px] text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-2 leading-tight" x-text="link.description"></p>
+                                                    <h4 class="font-bold text-[11px] text-zinc-900 dark:text-zinc-100 line-clamp-2 leading-tight" x-text="link.title || 'Judul Link'"></h4>
+                                                    <p x-show="link.subtitle" class="text-[10px] font-bold mt-0.5 truncate" :style="`color: ${link.color || '#ea580c'};`" x-text="link.subtitle"></p>
+                                                    <p x-show="link.description" class="text-[9px] text-zinc-500 dark:text-zinc-400 mt-0.5 line-clamp-2 leading-tight" x-text="link.description"></p>
                                                 </div>
                                                 <div class="mt-2 pt-1.5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[9px] font-bold text-slate-400">
                                                     <span>Buka Link</span>
@@ -727,14 +727,14 @@
 
                                     <!-- 2. CARD (Gambar Besar 1 Kolom Penuh) -->
                                     <template x-if="link.layout === 'card'">
-                                        <div class="flex flex-col bg-white dark:bg-[#161b22] border border-slate-200 dark:border-[#30363d] rounded-2xl overflow-hidden shadow-xs hover:shadow-md transition-all cursor-pointer text-left"
+                                        <div class="flex flex-col bg-white dark:bg-[#000000] border border-slate-200 dark:border-zinc-800 rounded-2xl overflow-hidden shadow-xs hover:shadow-none transition-all cursor-pointer text-left"
                                              @click="sidebarTab = 'biolink'; mobileTab = 'biolink'">
-                                            <div class="w-full aspect-[16/9] bg-slate-100 dark:bg-slate-800 relative overflow-hidden flex items-center justify-center">
+                                            <div class="w-full aspect-[16/9] bg-zinc-100 dark:bg-zinc-900 relative overflow-hidden flex items-center justify-center">
                                                 <template x-if="link.image">
                                                     <img :src="link.image" class="w-full h-full object-cover">
                                                 </template>
                                                 <template x-if="!link.image">
-                                                    <div class="w-full h-full flex items-center justify-center text-white" :style="`background: ${link.color || '#0284c7'};`">
+                                                    <div class="w-full h-full flex items-center justify-center text-white" :style="`background: ${link.color || '#ea580c'};`">
                                                         <span class="material-symbols-outlined text-4xl opacity-90" x-text="link.icon || 'link'"></span>
                                                     </div>
                                                 </template>
@@ -742,12 +742,12 @@
                                                     <span class="absolute top-2 left-2 px-2 py-0.5 rounded-lg bg-black/60 backdrop-blur-md text-white text-[9px] font-black uppercase tracking-wider" x-text="link.badge"></span>
                                                 </template>
                                             </div>
-                                            <div class="p-3 bg-white dark:bg-[#161b22]">
-                                                <h4 class="font-extrabold text-xs text-slate-900 dark:text-white leading-snug truncate" x-text="link.title || 'Judul Link'"></h4>
-                                                <p x-show="link.subtitle" class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-1" x-text="link.subtitle"></p>
-                                                <p x-show="link.description" class="text-[10px] text-slate-600 dark:text-slate-300 mt-1 line-clamp-2 leading-relaxed" x-text="link.description"></p>
+                                            <div class="p-3 bg-white dark:bg-[#000000]">
+                                                <h4 class="font-extrabold text-xs text-zinc-900 dark:text-zinc-100 leading-snug truncate" x-text="link.title || 'Judul Link'"></h4>
+                                                <p x-show="link.subtitle" class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5 line-clamp-1" x-text="link.subtitle"></p>
+                                                <p x-show="link.description" class="text-[10px] text-zinc-600 dark:text-zinc-300 mt-1 line-clamp-2 leading-relaxed" x-text="link.description"></p>
                                                 <div class="mt-2.5 w-full py-1.5 px-3 rounded-xl text-white font-bold text-[10px] text-center flex items-center justify-center gap-1 shadow-xs"
-                                                     :style="`background: ${link.color || '#0284c7'};`">
+                                                     :style="`background: ${link.color || '#ea580c'};`">
                                                     <span>Buka Tautan</span>
                                                     <span class="material-symbols-outlined text-[13px]">arrow_forward</span>
                                                 </div>
@@ -757,8 +757,8 @@
 
                                     <!-- 3. LIST (Default 1 Baris) -->
                                     <template x-if="!link.layout || link.layout === 'list'">
-                                        <div class="flex items-center gap-2.5 w-full p-2.5 rounded-2xl text-white font-bold text-xs shadow-xs hover:shadow-md hover:scale-[1.01] transition-all cursor-pointer relative overflow-hidden"
-                                             :style="`background: ${link.color || '#0284c7'};`"
+                                        <div class="flex items-center gap-2.5 w-full p-2.5 rounded-2xl text-white font-bold text-xs shadow-xs hover:shadow-none hover:scale-[1.01] transition-all cursor-pointer relative overflow-hidden"
+                                             :style="`background: ${link.color || '#ea580c'};`"
                                              @click="sidebarTab = 'biolink'; mobileTab = 'biolink'">
                                             <template x-if="link.badge">
                                                 <span class="absolute top-1 right-2 px-1.5 py-0.2 rounded-full bg-white/25 backdrop-blur-md text-[8px] font-black uppercase tracking-wider" x-text="link.badge"></span>
@@ -807,18 +807,18 @@
                     <template x-for="(comp, index) in activeComponents" :key="comp.id">
                         <div class="canvas-widget-item relative transition-all rounded-2xl" :data-id="comp.id">
                             <!-- Action Buttons / Toolbar (Always visible) -->
-                            <div class="absolute top-3 right-3 z-30 flex items-center gap-1 bg-white/95 dark:bg-slate-800/95 backdrop-blur-md border border-slate-200 dark:border-[#222f49] rounded-xl px-1.5 py-1 shadow-md">
-                                <button type="button" @click.stop="moveUp(index)" :disabled="index === 0" :class="index === 0 ? 'opacity-30 cursor-not-allowed text-slate-400' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-sky-500'" class="w-7 h-7 rounded-lg flex items-center justify-center transition-colors" title="Pindah ke Atas">
+                            <div class="absolute top-3 right-3 z-30 flex items-center gap-1 bg-white/95 dark:bg-slate-800/95 backdrop-blur-md border border-zinc-200 dark:border-zinc-800 rounded-xl px-1.5 py-1 shadow-none">
+                                <button type="button" @click.stop="moveUp(index)" :disabled="index === 0" :class="index === 0 ? 'opacity-30 cursor-not-allowed text-slate-400' : 'text-zinc-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-orange-500'" class="w-7 h-7 rounded-lg flex items-center justify-center transition-colors" title="Pindah ke Atas">
                                     <span class="material-symbols-outlined text-[16px]">arrow_upward</span>
                                 </button>
-                                <button type="button" @click.stop="moveDown(index)" :disabled="index === activeComponents.length - 1" :class="index === activeComponents.length - 1 ? 'opacity-30 cursor-not-allowed text-slate-400' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-sky-500'" class="w-7 h-7 rounded-lg flex items-center justify-center transition-colors" title="Pindah ke Bawah">
+                                <button type="button" @click.stop="moveDown(index)" :disabled="index === activeComponents.length - 1" :class="index === activeComponents.length - 1 ? 'opacity-30 cursor-not-allowed text-slate-400' : 'text-zinc-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-orange-500'" class="w-7 h-7 rounded-lg flex items-center justify-center transition-colors" title="Pindah ke Bawah">
                                     <span class="material-symbols-outlined text-[16px]">arrow_downward</span>
                                 </button>
                                 <div class="drag-handle w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-grab active:cursor-grabbing transition-colors" title="Geser Urutan (Tahan & Tarik)">
                                     <span class="material-symbols-outlined text-[18px]">drag_indicator</span>
                                 </div>
                                 <div class="w-px h-4 bg-slate-200 dark:bg-slate-700 mx-0.5"></div>
-                                <button type="button" @click.stop="openSettings(index)" class="w-7 h-7 rounded-lg flex items-center justify-center text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-950/50 hover:text-sky-700 transition-colors" title="Pengaturan Blok (Gir)">
+                                <button type="button" @click.stop="openSettings(index)" class="w-7 h-7 rounded-lg flex items-center justify-center text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-950/50 hover:text-orange-700 transition-colors" title="Pengaturan Blok (Gir)">
                                     <span class="material-symbols-outlined text-[17px]">settings</span>
                                 </button>
                                 <button type="button" @click.stop="removeComponent(index)" class="w-7 h-7 rounded-lg flex items-center justify-center text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/50 hover:text-rose-600 transition-colors" title="Hapus Blok">
@@ -828,7 +828,7 @@
 
                             <!-- BANNER HERO -->
                             <template x-if="comp.type === 'banner'">
-                                <div @click="openSettings(index)" class="relative bg-slate-50 dark:bg-[#111726] border-2 border-dashed border-slate-200 dark:border-[#222f49] hover:border-sky-500 dark:hover:border-sky-500 rounded-2xl flex flex-col items-center justify-center text-center shadow-xs transition-all h-48 overflow-hidden group/banner cursor-pointer">
+                                <div @click="openSettings(index)" class="relative bg-slate-50 dark:bg-[#000000] border-2 border-dashed border-zinc-200 dark:border-zinc-800 hover:border-orange-500 dark:hover:border-orange-500 rounded-2xl flex flex-col items-center justify-center text-center shadow-xs transition-all h-48 overflow-hidden group/banner cursor-pointer">
                                     <template x-if="comp.data?.images && comp.data.images.length > 0 && comp.data.images[0].image_url">
                                         <div class="absolute inset-0 w-full h-full">
                                             <img :src="comp.data.images[0].image_url" class="w-full h-full object-cover opacity-90 group-hover/banner:opacity-40 transition-opacity">
@@ -838,15 +838,15 @@
                                             </div>
                                             <!-- Badge Link Info -->
                                             <div class="absolute bottom-2 left-2 z-10 flex items-center gap-1.5 bg-black/60 backdrop-blur-md text-white px-2.5 py-1 rounded-lg text-[11px]">
-                                                <span class="material-symbols-outlined text-[14px] text-sky-400">link</span>
+                                                <span class="material-symbols-outlined text-[14px] text-orange-400">link</span>
                                                 <span class="font-mono truncate max-w-[200px]" x-text="comp.data.images[0].link ? comp.data.images[0].link : 'Belum ada link'"></span>
                                             </div>
                                         </div>
                                     </template>
                                     <template x-if="!comp.data?.images || comp.data.images.length === 0 || !comp.data.images[0].image_url">
                                         <div class="p-8 flex flex-col items-center justify-center w-full h-full">
-                                            <span class="material-symbols-outlined text-3xl text-sky-500 mb-1">view_carousel</span>
-                                            <span class="text-sm font-bold text-slate-800 dark:text-white">Blok Banner Slide Utama</span>
+                                            <span class="material-symbols-outlined text-3xl text-orange-500 mb-1">view_carousel</span>
+                                            <span class="text-sm font-bold text-zinc-800 dark:text-zinc-100">Blok Banner Slide Utama</span>
                                             <span class="text-xs text-slate-400 mt-0.5">Klik untuk upload gambar dan atur link tujuan banner</span>
                                         </div>
                                     </template>
@@ -855,7 +855,7 @@
 
                             <!-- SINGLE IMAGE -->
                             <template x-if="comp.type === 'single_image'">
-                                <div @click="openSettings(index)" class="relative bg-slate-50 dark:bg-[#111726] border-2 border-dashed border-slate-200 dark:border-[#222f49] hover:border-sky-500 dark:hover:border-sky-500 rounded-2xl flex flex-col items-center justify-center text-center shadow-xs transition-all h-56 overflow-hidden group/single cursor-pointer">
+                                <div @click="openSettings(index)" class="relative bg-slate-50 dark:bg-[#000000] border-2 border-dashed border-zinc-200 dark:border-zinc-800 hover:border-orange-500 dark:hover:border-orange-500 rounded-2xl flex flex-col items-center justify-center text-center shadow-xs transition-all h-56 overflow-hidden group/single cursor-pointer">
                                     <template x-if="comp.data?.image_url">
                                         <div class="absolute inset-0 w-full h-full">
                                             <img :src="comp.data.image_url" class="w-full h-full object-cover opacity-90 group-hover/single:opacity-40 transition-opacity">
@@ -873,7 +873,7 @@
                                     <template x-if="!comp.data?.image_url">
                                         <div class="p-8 flex flex-col items-center justify-center w-full h-full">
                                             <span class="material-symbols-outlined text-3xl text-emerald-500 mb-1">image</span>
-                                            <span class="text-sm font-bold text-slate-800 dark:text-white">Blok Banner Gambar Penuh</span>
+                                            <span class="text-sm font-bold text-zinc-800 dark:text-zinc-100">Blok Banner Gambar Penuh</span>
                                             <span class="text-xs text-slate-400 mt-0.5">Klik untuk upload gambar dan atur link tujuan banner</span>
                                         </div>
                                     </template>
@@ -882,15 +882,15 @@
 
                             <!-- VOUCHER -->
                             <template x-if="comp.type === 'voucher'">
-                                <div @click="openSettings(index)" class="bg-slate-50 dark:bg-[#111726] border-2 border-dashed border-slate-200 dark:border-[#222f49] hover:border-sky-500 dark:hover:border-sky-500 rounded-2xl p-6 flex items-center gap-4 shadow-xs transition-colors cursor-pointer group">
+                                <div @click="openSettings(index)" class="bg-slate-50 dark:bg-[#000000] border-2 border-dashed border-zinc-200 dark:border-zinc-800 hover:border-orange-500 dark:hover:border-orange-500 rounded-2xl p-6 flex items-center gap-4 shadow-xs transition-colors cursor-pointer group">
                                     <div class="w-12 h-12 rounded-xl bg-rose-500/10 text-rose-500 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                                         <span class="material-symbols-outlined text-2xl">confirmation_number</span>
                                     </div>
                                     <div class="flex-1">
                                         <div class="flex items-center gap-2 flex-wrap">
-                                            <h4 class="text-sm font-bold text-slate-900 dark:text-white">Blok Kupon Voucher Toko</h4>
+                                            <h4 class="text-sm font-bold text-zinc-900 dark:text-zinc-100">Blok Kupon Voucher Toko</h4>
                                             <span class="text-[10px] px-2 py-0.5 rounded-full font-bold"
-                                                  :class="(comp.data?.campaign_ids && comp.data.campaign_ids.length > 0) ? 'bg-rose-100 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'"
+                                                  :class="(comp.data?.campaign_ids && comp.data.campaign_ids.length > 0) ? 'bg-rose-100 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400' : 'bg-slate-200 dark:bg-slate-700 text-zinc-600 dark:text-zinc-300'"
                                                   x-text="(comp.data?.campaign_ids && comp.data.campaign_ids.length > 0) ? comp.data.campaign_ids.length + ' Kupon Terpilih (Klik utk Edit)' : 'Semua Kupon Aktif (Klik utk Edit)'"></span>
                                         </div>
                                         <p class="text-xs text-slate-400 mt-0.5">Menampilkan voucher diskon pilihan pembeli. Klik blok ini untuk memilih kupon mana saja yang tampil.</p>
@@ -900,12 +900,12 @@
 
                             <!-- FLASH SALE -->
                             <template x-if="comp.type === 'flash_sale'">
-                                <div class="bg-slate-50 dark:bg-[#111726] border-2 border-dashed border-slate-200 dark:border-[#222f49] hover:border-sky-500 dark:hover:border-sky-500 rounded-2xl p-6 flex items-center gap-4 shadow-xs transition-colors">
+                                <div class="bg-slate-50 dark:bg-[#000000] border-2 border-dashed border-zinc-200 dark:border-zinc-800 hover:border-orange-500 dark:hover:border-orange-500 rounded-2xl p-6 flex items-center gap-4 shadow-xs transition-colors">
                                     <div class="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center shrink-0">
                                         <span class="material-symbols-outlined text-2xl">bolt</span>
                                     </div>
                                     <div>
-                                        <h4 class="text-sm font-bold text-slate-900 dark:text-white">Blok Flash Sale Terbatas</h4>
+                                        <h4 class="text-sm font-bold text-zinc-900 dark:text-zinc-100">Blok Flash Sale Terbatas</h4>
                                         <p class="text-xs text-slate-400 mt-0.5">Menampilkan produk promo diskon kilat dengan countdown timer.</p>
                                     </div>
                                 </div>
@@ -913,8 +913,8 @@
 
                             <!-- PRODUCTS -->
                             <template x-if="comp.type === 'products'">
-                                <div class="bg-slate-50 dark:bg-[#111726] border-2 border-dashed border-slate-200 dark:border-[#222f49] hover:border-sky-500 dark:hover:border-sky-500 rounded-2xl p-6 shadow-xs transition-colors">
-                                    <h4 class="text-sm font-bold text-slate-900 dark:text-white mb-3">Grid Produk Unggulan</h4>
+                                <div class="bg-slate-50 dark:bg-[#000000] border-2 border-dashed border-zinc-200 dark:border-zinc-800 hover:border-orange-500 dark:hover:border-orange-500 rounded-2xl p-6 shadow-xs transition-colors">
+                                    <h4 class="text-sm font-bold text-zinc-900 dark:text-zinc-100 mb-3">Grid Produk Unggulan</h4>
                                     <div class="grid grid-cols-4 gap-3">
                                         <div class="h-28 bg-slate-200/60 dark:bg-slate-800 rounded-xl"></div>
                                         <div class="h-28 bg-slate-200/60 dark:bg-slate-800 rounded-xl"></div>
@@ -926,9 +926,9 @@
 
                             <!-- TEXT -->
                             <template x-if="comp.type === 'text'">
-                                <div class="bg-slate-50 dark:bg-[#111726] border-2 border-dashed border-slate-200 dark:border-[#222f49] hover:border-sky-500 dark:hover:border-sky-500 rounded-2xl p-6 shadow-xs transition-colors">
-                                    <h4 class="text-sm font-bold text-slate-900 dark:text-white mb-1">Blok Informasi / Pengumuman</h4>
-                                    <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                                <div class="bg-slate-50 dark:bg-[#000000] border-2 border-dashed border-zinc-200 dark:border-zinc-800 hover:border-orange-500 dark:hover:border-orange-500 rounded-2xl p-6 shadow-xs transition-colors">
+                                    <h4 class="text-sm font-bold text-zinc-900 dark:text-zinc-100 mb-1">Blok Informasi / Pengumuman</h4>
+                                    <p class="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
                                         Selamat datang di toko digital kami! Temukan beragam source code, template website, dan aplikasi siap pakai terbaik untuk kebutuhan proyek Anda.
                                     </p>
                                 </div>
@@ -936,14 +936,14 @@
                         </div>
                     </template>
 
-                    <div x-show="activeComponents.length === 0" class="text-center py-16 text-slate-400 text-sm border-2 border-dashed border-slate-200 dark:border-[#222f49] rounded-2xl">
+                    <div x-show="activeComponents.length === 0" class="text-center py-16 text-slate-400 text-sm border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-2xl">
                         Kanvas masih kosong. Klik blok widget di sidebar kiri untuk menambahkan.
                     </div>
                 </div>
             </div>
 
             <!-- MOBILE CANVAS VIEWPORT -->
-            <div x-show="device === 'mobile'" style="display: none;" class="w-full max-w-[375px] bg-white dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] shadow-2xl rounded-3xl sm:rounded-[2.5rem] overflow-hidden flex flex-col relative min-h-[650px] sm:min-h-[750px] shrink-0 mb-12 outline sm:outline-8 outline-slate-200/60 dark:outline-slate-800">
+            <div x-show="device === 'mobile'" style="display: none;" class="w-full max-w-[375px] bg-white dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 shadow-none rounded-3xl sm:rounded-[2.5rem] overflow-hidden flex flex-col relative min-h-[650px] sm:min-h-[750px] shrink-0 mb-12 outline sm:outline-8 outline-slate-200/60 dark:outline-slate-800">
                 
                 <!-- Mobile Status Bar -->
                 <div class="h-7 bg-slate-900 text-white text-[10px] flex justify-between items-center px-5 shrink-0">
@@ -962,11 +962,11 @@
                     
                     <!-- Mobile Header Banner Action Buttons -->
                     <div class="absolute top-3 right-3 z-20 flex items-center gap-1.5">
-                        <button type="button" @click="openBannerModal()" class="cursor-pointer bg-sky-600/80 hover:bg-sky-500 backdrop-blur-md text-white px-2.5 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1 border border-sky-400/40 transition-all shadow-md" title="Atur Banner Toko">
+                        <button type="button" @click="openBannerModal()" class="cursor-pointer bg-orange-600/80 hover:bg-orange-500 backdrop-blur-md text-white px-2.5 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1 border border-orange-400/40 transition-all shadow-none" title="Atur Banner Toko">
                             <span class="material-symbols-outlined text-[14px] text-white">palette</span>
                             <span>Banner</span>
                         </button>
-                        <button type="button" x-show="headerBanner" @click="clearHeaderBanner()" class="bg-rose-500/80 hover:bg-rose-600 text-white p-1 rounded-lg text-xs font-bold flex items-center justify-center border border-white/20 transition-all shadow-md" title="Hapus Settingan Banner">
+                        <button type="button" x-show="headerBanner" @click="clearHeaderBanner()" class="bg-rose-500/80 hover:bg-rose-600 text-white p-1 rounded-lg text-xs font-bold flex items-center justify-center border border-white/20 transition-all shadow-none" title="Hapus Settingan Banner">
                             <span class="material-symbols-outlined text-[14px]">delete</span>
                         </button>
                     </div>
@@ -976,7 +976,7 @@
                             @if($store && $store->logo)
                                 <img src="{{ asset('storage/' . $store->logo) }}" class="w-full h-full object-cover rounded-lg">
                             @else
-                                <div class="w-full h-full bg-sky-500 rounded-lg flex items-center justify-center font-bold text-sm text-white">
+                                <div class="w-full h-full bg-orange-500 rounded-lg flex items-center justify-center font-bold text-sm text-white">
                                     {{ strtoupper(substr($store->name ?? 'T', 0, 2)) }}
                                 </div>
                             @endif
@@ -990,7 +990,7 @@
 
                 <!-- Mobile Bio Link Preview Container (Visible in profile & hybrid modes) -->
                 <div x-show="storeMode === 'profile' || storeMode === 'hybrid'" class="p-3 pb-1">
-                    <div class="w-full space-y-2 bg-slate-50/70 dark:bg-[#111726]/70 p-3 rounded-2xl border border-slate-200/80 dark:border-[#222f49]">
+                    <div class="w-full space-y-2 bg-slate-50/70 dark:bg-[#000000]/70 p-3 rounded-2xl border border-zinc-200 dark:border-zinc-800">
                         <div class="flex items-center justify-between px-1 mb-0.5">
                             <span class="text-[10px] font-bold text-teal-600 dark:text-teal-400 flex items-center gap-1">
                                 <span class="material-symbols-outlined text-[14px]">link</span> Tombol Bio Link
@@ -1005,14 +1005,14 @@
                                 <div :class="link.layout === 'grid' ? 'col-span-1' : 'col-span-2'">
                                     <!-- 1. GRID (2 Kolom) -->
                                     <template x-if="link.layout === 'grid'">
-                                        <div class="flex flex-col bg-white dark:bg-[#161b22] border border-slate-200 dark:border-[#30363d] rounded-xl overflow-hidden shadow-xs hover:shadow-md transition-all cursor-pointer text-left h-full"
+                                        <div class="flex flex-col bg-white dark:bg-[#000000] border border-slate-200 dark:border-zinc-800 rounded-xl overflow-hidden shadow-xs hover:shadow-none transition-all cursor-pointer text-left h-full"
                                              @click="sidebarTab = 'biolink'; mobileTab = 'biolink'">
-                                            <div class="w-full aspect-square bg-slate-100 dark:bg-slate-800 relative overflow-hidden flex items-center justify-center">
+                                            <div class="w-full aspect-square bg-zinc-100 dark:bg-zinc-900 relative overflow-hidden flex items-center justify-center">
                                                 <template x-if="link.image">
                                                     <img :src="link.image" class="w-full h-full object-cover">
                                                 </template>
                                                 <template x-if="!link.image">
-                                                    <div class="w-full h-full flex items-center justify-center text-white" :style="`background: ${link.color || '#0284c7'};`">
+                                                    <div class="w-full h-full flex items-center justify-center text-white" :style="`background: ${link.color || '#ea580c'};`">
                                                         <span class="material-symbols-outlined text-2xl opacity-90" x-text="link.icon || 'link'"></span>
                                                     </div>
                                                 </template>
@@ -1020,11 +1020,11 @@
                                                     <span class="absolute top-1 left-1 px-1 py-0.2 rounded bg-black/60 backdrop-blur-md text-white text-[7px] font-black uppercase tracking-wider" x-text="link.badge"></span>
                                                 </template>
                                             </div>
-                                            <div class="p-2 flex flex-col flex-1 justify-between bg-white dark:bg-[#161b22]">
+                                            <div class="p-2 flex flex-col flex-1 justify-between bg-white dark:bg-[#000000]">
                                                 <div>
-                                                    <h4 class="font-bold text-[10px] text-slate-900 dark:text-white line-clamp-2 leading-tight" x-text="link.title || 'Judul Link'"></h4>
-                                                    <p x-show="link.subtitle" class="text-[9px] font-bold mt-0.5 truncate" :style="`color: ${link.color || '#0284c7'};`" x-text="link.subtitle"></p>
-                                                    <p x-show="link.description" class="text-[8px] text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-2 leading-tight" x-text="link.description"></p>
+                                                    <h4 class="font-bold text-[10px] text-zinc-900 dark:text-zinc-100 line-clamp-2 leading-tight" x-text="link.title || 'Judul Link'"></h4>
+                                                    <p x-show="link.subtitle" class="text-[9px] font-bold mt-0.5 truncate" :style="`color: ${link.color || '#ea580c'};`" x-text="link.subtitle"></p>
+                                                    <p x-show="link.description" class="text-[8px] text-zinc-500 dark:text-zinc-400 mt-0.5 line-clamp-2 leading-tight" x-text="link.description"></p>
                                                 </div>
                                                 <div class="mt-1.5 pt-1 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[8px] font-bold text-slate-400">
                                                     <span>Buka</span>
@@ -1036,14 +1036,14 @@
 
                                     <!-- 2. CARD (Gambar Besar 1 Kolom Penuh) -->
                                     <template x-if="link.layout === 'card'">
-                                        <div class="flex flex-col bg-white dark:bg-[#161b22] border border-slate-200 dark:border-[#30363d] rounded-xl overflow-hidden shadow-xs hover:shadow-md transition-all cursor-pointer text-left"
+                                        <div class="flex flex-col bg-white dark:bg-[#000000] border border-slate-200 dark:border-zinc-800 rounded-xl overflow-hidden shadow-xs hover:shadow-none transition-all cursor-pointer text-left"
                                              @click="sidebarTab = 'biolink'; mobileTab = 'biolink'">
-                                            <div class="w-full aspect-[16/9] bg-slate-100 dark:bg-slate-800 relative overflow-hidden flex items-center justify-center">
+                                            <div class="w-full aspect-[16/9] bg-zinc-100 dark:bg-zinc-900 relative overflow-hidden flex items-center justify-center">
                                                 <template x-if="link.image">
                                                     <img :src="link.image" class="w-full h-full object-cover">
                                                 </template>
                                                 <template x-if="!link.image">
-                                                    <div class="w-full h-full flex items-center justify-center text-white" :style="`background: ${link.color || '#0284c7'};`">
+                                                    <div class="w-full h-full flex items-center justify-center text-white" :style="`background: ${link.color || '#ea580c'};`">
                                                         <span class="material-symbols-outlined text-3xl opacity-90" x-text="link.icon || 'link'"></span>
                                                     </div>
                                                 </template>
@@ -1051,12 +1051,12 @@
                                                     <span class="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded bg-black/60 backdrop-blur-md text-white text-[8px] font-black uppercase tracking-wider" x-text="link.badge"></span>
                                                 </template>
                                             </div>
-                                            <div class="p-2.5 bg-white dark:bg-[#161b22]">
-                                                <h4 class="font-extrabold text-[11px] text-slate-900 dark:text-white leading-snug truncate" x-text="link.title || 'Judul Link'"></h4>
-                                                <p x-show="link.subtitle" class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-1" x-text="link.subtitle"></p>
-                                                <p x-show="link.description" class="text-[9px] text-slate-600 dark:text-slate-300 mt-0.5 line-clamp-2 leading-tight" x-text="link.description"></p>
+                                            <div class="p-2.5 bg-white dark:bg-[#000000]">
+                                                <h4 class="font-extrabold text-[11px] text-zinc-900 dark:text-zinc-100 leading-snug truncate" x-text="link.title || 'Judul Link'"></h4>
+                                                <p x-show="link.subtitle" class="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5 line-clamp-1" x-text="link.subtitle"></p>
+                                                <p x-show="link.description" class="text-[9px] text-zinc-600 dark:text-zinc-300 mt-0.5 line-clamp-2 leading-tight" x-text="link.description"></p>
                                                 <div class="mt-2 w-full py-1 px-2.5 rounded-lg text-white font-bold text-[9px] text-center flex items-center justify-center gap-1 shadow-xs"
-                                                     :style="`background: ${link.color || '#0284c7'};`">
+                                                     :style="`background: ${link.color || '#ea580c'};`">
                                                     <span>Buka Tautan</span>
                                                     <span class="material-symbols-outlined text-[11px]">arrow_forward</span>
                                                 </div>
@@ -1067,7 +1067,7 @@
                                     <!-- 3. LIST (Default 1 Baris) -->
                                     <template x-if="!link.layout || link.layout === 'list'">
                                         <div class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-white font-bold text-[11px] shadow-xs cursor-pointer relative overflow-hidden"
-                                             :style="`background: ${link.color || '#0284c7'};`"
+                                             :style="`background: ${link.color || '#ea580c'};`"
                                              @click="sidebarTab = 'biolink'; mobileTab = 'biolink'">
                                             <template x-if="link.badge">
                                                 <span class="absolute top-0.5 right-1.5 px-1 py-0.2 rounded-full bg-white/25 backdrop-blur-md text-[7px] font-black uppercase tracking-wider" x-text="link.badge"></span>
@@ -1113,18 +1113,18 @@
                     <template x-for="(comp, index) in activeComponents" :key="comp.id">
                         <div class="canvas-widget-item relative transition-all rounded-xl" :data-id="comp.id">
                             <!-- Action Buttons Mobile (Always visible) -->
-                            <div class="absolute top-2 right-2 z-30 flex items-center gap-0.5 bg-white/95 dark:bg-slate-800/95 backdrop-blur-md border border-slate-200 dark:border-[#222f49] rounded-lg px-1 py-0.5 shadow-sm">
-                                <button type="button" @click.stop="moveUp(index)" :disabled="index === 0" :class="index === 0 ? 'opacity-30 cursor-not-allowed text-slate-400' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'" class="w-5 h-5 rounded flex items-center justify-center transition-colors" title="Naik">
+                            <div class="absolute top-2 right-2 z-30 flex items-center gap-0.5 bg-white/95 dark:bg-slate-800/95 backdrop-blur-md border border-zinc-200 dark:border-zinc-800 rounded-lg px-1 py-0.5 shadow-none">
+                                <button type="button" @click.stop="moveUp(index)" :disabled="index === 0" :class="index === 0 ? 'opacity-30 cursor-not-allowed text-slate-400' : 'text-zinc-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-slate-700'" class="w-5 h-5 rounded flex items-center justify-center transition-colors" title="Naik">
                                     <span class="material-symbols-outlined text-[13px]">arrow_upward</span>
                                 </button>
-                                <button type="button" @click.stop="moveDown(index)" :disabled="index === activeComponents.length - 1" :class="index === activeComponents.length - 1 ? 'opacity-30 cursor-not-allowed text-slate-400' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'" class="w-5 h-5 rounded flex items-center justify-center transition-colors" title="Turun">
+                                <button type="button" @click.stop="moveDown(index)" :disabled="index === activeComponents.length - 1" :class="index === activeComponents.length - 1 ? 'opacity-30 cursor-not-allowed text-slate-400' : 'text-zinc-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-slate-700'" class="w-5 h-5 rounded flex items-center justify-center transition-colors" title="Turun">
                                     <span class="material-symbols-outlined text-[13px]">arrow_downward</span>
                                 </button>
                                 <div class="drag-handle w-5 h-5 rounded flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 cursor-grab active:cursor-grabbing transition-colors" title="Geser Urutan (Tahan & Tarik)">
                                     <span class="material-symbols-outlined text-[14px]">drag_indicator</span>
                                 </div>
                                 <div class="w-px h-3 bg-slate-200 dark:bg-slate-700 mx-0.5"></div>
-                                <button type="button" @click.stop="openSettings(index)" class="w-5 h-5 rounded flex items-center justify-center text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-950/50" title="Pengaturan Blok (Gir)">
+                                <button type="button" @click.stop="openSettings(index)" class="w-5 h-5 rounded flex items-center justify-center text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-950/50" title="Pengaturan Blok (Gir)">
                                     <span class="material-symbols-outlined text-[13px]">settings</span>
                                 </button>
                                 <button type="button" @click.stop="removeComponent(index)" class="w-5 h-5 rounded flex items-center justify-center text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/50" title="Hapus Blok">
@@ -1133,7 +1133,7 @@
                             </div>
 
                             <template x-if="comp.type === 'banner'">
-                                <div @click="openSettings(index)" class="relative bg-slate-50 dark:bg-[#111726] border border-slate-200 dark:border-[#222f49] rounded-xl overflow-hidden text-center h-28 flex flex-col items-center justify-center cursor-pointer group/mbanner">
+                                <div @click="openSettings(index)" class="relative bg-slate-50 dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden text-center h-28 flex flex-col items-center justify-center cursor-pointer group/mbanner">
                                     <template x-if="comp.data?.images && comp.data.images.length > 0 && comp.data.images[0].image_url">
                                         <div class="absolute inset-0 w-full h-full">
                                             <img :src="comp.data.images[0].image_url" class="w-full h-full object-cover">
@@ -1147,8 +1147,8 @@
                                     </template>
                                     <template x-if="!comp.data?.images || comp.data.images.length === 0 || !comp.data.images[0].image_url">
                                         <div class="p-2">
-                                            <span class="material-symbols-outlined text-sky-500 text-[20px] mb-0.5">view_carousel</span>
-                                            <span class="text-xs font-bold text-slate-800 dark:text-white block">Banner Slide</span>
+                                            <span class="material-symbols-outlined text-orange-500 text-[20px] mb-0.5">view_carousel</span>
+                                            <span class="text-xs font-bold text-zinc-800 dark:text-zinc-100 block">Banner Slide</span>
                                             <span class="text-[9px] text-slate-400">Klik untuk upload & atur link</span>
                                         </div>
                                     </template>
@@ -1156,7 +1156,7 @@
                             </template>
 
                             <template x-if="comp.type === 'single_image'">
-                                <div @click="openSettings(index)" class="relative bg-slate-50 dark:bg-[#111726] border border-slate-200 dark:border-[#222f49] rounded-xl overflow-hidden text-center h-36 flex flex-col items-center justify-center cursor-pointer group/msingle">
+                                <div @click="openSettings(index)" class="relative bg-slate-50 dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden text-center h-36 flex flex-col items-center justify-center cursor-pointer group/msingle">
                                     <template x-if="comp.data?.image_url">
                                         <div class="absolute inset-0 w-full h-full">
                                             <img :src="comp.data.image_url" class="w-full h-full object-cover">
@@ -1171,7 +1171,7 @@
                                     <template x-if="!comp.data?.image_url">
                                         <div class="p-2">
                                             <span class="material-symbols-outlined text-emerald-500 text-[20px] mb-0.5">image</span>
-                                            <span class="text-xs font-bold text-slate-800 dark:text-white block">Banner Gambar</span>
+                                            <span class="text-xs font-bold text-zinc-800 dark:text-zinc-100 block">Banner Gambar</span>
                                             <span class="text-[9px] text-slate-400">Klik untuk upload & atur link</span>
                                         </div>
                                     </template>
@@ -1179,22 +1179,22 @@
                             </template>
 
                             <template x-if="comp.type === 'voucher'">
-                                <div class="bg-slate-50 dark:bg-[#111726] border border-slate-200 dark:border-[#222f49] rounded-xl p-3 flex items-center gap-2.5">
+                                <div class="bg-slate-50 dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-xl p-3 flex items-center gap-2.5">
                                     <span class="material-symbols-outlined text-rose-500 text-[18px]">confirmation_number</span>
-                                    <span class="text-xs font-bold text-slate-800 dark:text-white">Kupon Voucher</span>
+                                    <span class="text-xs font-bold text-zinc-800 dark:text-zinc-100">Kupon Voucher</span>
                                 </div>
                             </template>
 
                             <template x-if="comp.type === 'flash_sale'">
-                                <div class="bg-slate-50 dark:bg-[#111726] border border-slate-200 dark:border-[#222f49] rounded-xl p-3 flex items-center gap-2.5">
+                                <div class="bg-slate-50 dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-xl p-3 flex items-center gap-2.5">
                                     <span class="material-symbols-outlined text-amber-500 text-[18px]">bolt</span>
-                                    <span class="text-xs font-bold text-slate-800 dark:text-white">Flash Sale</span>
+                                    <span class="text-xs font-bold text-zinc-800 dark:text-zinc-100">Flash Sale</span>
                                 </div>
                             </template>
 
                             <template x-if="comp.type === 'products'">
-                                <div class="bg-slate-50 dark:bg-[#111726] border border-slate-200 dark:border-[#222f49] rounded-xl p-3">
-                                    <span class="text-xs font-bold text-slate-800 dark:text-white mb-2 block">Produk Pilihan</span>
+                                <div class="bg-slate-50 dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-xl p-3">
+                                    <span class="text-xs font-bold text-zinc-800 dark:text-zinc-100 mb-2 block">Produk Pilihan</span>
                                     <div class="grid grid-cols-2 gap-2">
                                         <div class="h-16 bg-slate-200 dark:bg-slate-800 rounded-lg"></div>
                                         <div class="h-16 bg-slate-200 dark:bg-slate-800 rounded-lg"></div>
@@ -1203,14 +1203,14 @@
                             </template>
 
                             <template x-if="comp.type === 'text'">
-                                <div class="bg-slate-50 dark:bg-[#111726] border border-slate-200 dark:border-[#222f49] rounded-xl p-3">
-                                    <p class="text-[11px] text-slate-600 dark:text-slate-400 line-clamp-2">Deskripsi etalase toko digital...</p>
+                                <div class="bg-slate-50 dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-xl p-3">
+                                    <p class="text-[11px] text-zinc-600 dark:text-zinc-400 line-clamp-2">Deskripsi etalase toko digital...</p>
                                 </div>
                             </template>
                         </div>
                     </template>
 
-                    <div x-show="activeComponents.length === 0" class="text-center py-10 text-slate-400 text-xs border border-dashed border-slate-200 dark:border-[#222f49] rounded-xl">
+                    <div x-show="activeComponents.length === 0" class="text-center py-10 text-slate-400 text-xs border border-dashed border-zinc-200 dark:border-zinc-800 rounded-xl">
                         Belum ada blok widget.
                     </div>
                 </div>
@@ -1224,10 +1224,10 @@
     <div x-show="isCropperModalOpen" style="display: none;" class="fixed inset-0 z-[100] flex items-center justify-center p-4">
         <div x-show="isCropperModalOpen" x-transition.opacity class="fixed inset-0 bg-black/80 backdrop-blur-sm" @click="closeCropper()"></div>
         
-        <div x-show="isCropperModalOpen" x-transition.scale.95 class="bg-white dark:bg-[#0d1117] rounded-3xl shadow-2xl w-full max-w-4xl relative z-10 overflow-hidden flex flex-col border border-slate-200 dark:border-[#222f49]">
-            <div class="px-6 py-4 border-b border-slate-100 dark:border-[#222f49] flex justify-between items-center bg-slate-50/50 dark:bg-[#111726]">
-                <h3 class="font-bold text-lg text-slate-800 dark:text-white flex items-center gap-2">
-                    <span class="material-symbols-outlined text-sky-500">crop</span>
+        <div x-show="isCropperModalOpen" x-transition.scale.95 class="bg-white dark:bg-[#000000] rounded-3xl shadow-none w-full max-w-4xl relative z-10 overflow-hidden flex flex-col border border-zinc-200 dark:border-zinc-800">
+            <div class="px-6 py-4 border-b border-zinc-100 dark:border-zinc-800 flex justify-between items-center bg-slate-50/50 dark:bg-[#000000]">
+                <h3 class="font-bold text-lg text-zinc-800 dark:text-zinc-100 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-orange-500">crop</span>
                     Potong Gambar (<span x-text="cropperTarget?.isHeader ? 'Banner Kepala Toko' : (cropperAspectRatio === 0 ? 'Bebas' : 'Banner Slide')"></span>)
                 </h3>
                 <button @click="closeCropper()" class="text-slate-400 hover:text-rose-500 transition-colors">
@@ -1241,14 +1241,14 @@
                 </div>
             </div>
             
-            <div class="px-6 py-4 border-t border-slate-100 dark:border-[#222f49] flex justify-between items-center bg-slate-50/50 dark:bg-[#111726]">
+            <div class="px-6 py-4 border-t border-zinc-100 dark:border-zinc-800 flex justify-between items-center bg-slate-50/50 dark:bg-[#000000]">
                 <div class="text-xs text-slate-500 flex items-center gap-2">
                     <span class="material-symbols-outlined text-[16px]">info</span>
                     Geser atau perbesar gambar agar sesuai dengan area kotak.
                 </div>
                 <div class="flex gap-3">
-                    <button @click="closeCropper()" type="button" class="px-5 py-2.5 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-[#222f49] transition-colors">Batal</button>
-                    <button @click="applyCrop()" type="button" class="px-5 py-2.5 bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white rounded-xl text-sm font-bold transition-all active:scale-95 flex items-center gap-2 cursor-pointer" :class="{'opacity-50 cursor-not-allowed': isCropping}" :disabled="isCropping">
+                    <button @click="closeCropper()" type="button" class="px-5 py-2.5 rounded-xl text-sm font-bold text-zinc-600 dark:text-zinc-300 hover:bg-slate-200 dark:hover:bg-[#222f49] transition-colors">Batal</button>
+                    <button @click="applyCrop()" type="button" class="px-5 py-2.5 bg-orange-500 hover:bg-orange-600 text-white dark:bg-orange-600 dark:hover:bg-orange-500 dark:text-white rounded-xl text-sm font-bold transition-all active:scale-95 flex items-center gap-2 cursor-pointer" :class="{'opacity-50 cursor-not-allowed': isCropping}" :disabled="isCropping">
                         <span x-show="!isCropping" class="material-symbols-outlined text-[18px]">check</span>
                         <span x-show="isCropping" class="material-symbols-outlined text-[18px] animate-spin">refresh</span>
                         <span x-text="isCropping ? 'Memproses...' : 'Potong & Simpan'"></span>
@@ -1264,11 +1264,11 @@
         <div x-show="isSettingsModalOpen" x-transition.opacity class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" @click="closeSettings()"></div>
         
         <!-- Modal Content -->
-        <div x-show="isSettingsModalOpen" x-transition.scale.95 class="bg-white dark:bg-[#111726] rounded-2xl shadow-2xl w-full max-w-lg relative z-10 overflow-hidden flex flex-col max-h-[90vh]">
+        <div x-show="isSettingsModalOpen" x-transition.scale.95 class="bg-white dark:bg-[#000000] rounded-2xl shadow-none w-full max-w-lg relative z-10 overflow-hidden flex flex-col max-h-[90vh]">
             <!-- Modal Header -->
-            <div class="px-6 py-4 border-b border-slate-200 dark:border-[#222f49] flex items-center justify-between shrink-0">
-                <h3 class="font-bold text-slate-800 dark:text-white flex items-center gap-2">
-                    <span class="material-symbols-outlined text-sky-500 text-[20px]">settings</span>
+            <div class="px-6 py-4 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between shrink-0">
+                <h3 class="font-bold text-zinc-800 dark:text-zinc-100 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-orange-500 text-[20px]">settings</span>
                     Pengaturan Blok
                 </h3>
                 <button @click="closeSettings()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
@@ -1282,21 +1282,21 @@
                 <!-- Text Block Settings -->
                 <div x-show="editingData && editingData.type === 'text'" class="space-y-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Teks Pengumuman</label>
-                        <textarea x-model="editingData?.data?.text" rows="4" class="w-full bg-slate-50 dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] rounded-xl px-4 py-2.5 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:border-sky-500" placeholder="Ketik pengumuman atau deskripsi di sini..."></textarea>
+                        <label class="block text-xs font-bold text-zinc-700 dark:text-zinc-300 mb-1.5">Teks Pengumuman</label>
+                        <textarea x-model="editingData?.data?.text" rows="4" class="w-full bg-slate-50 dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-800 dark:text-zinc-200 focus:outline-none focus:border-orange-500" placeholder="Ketik pengumuman atau deskripsi di sini..."></textarea>
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Posisi Teks</label>
-                            <select x-model="editingData?.data?.align" class="w-full bg-slate-50 dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] rounded-xl px-4 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:border-sky-500">
+                            <label class="block text-xs font-bold text-zinc-700 dark:text-zinc-300 mb-1.5">Posisi Teks</label>
+                            <select x-model="editingData?.data?.align" class="w-full bg-slate-50 dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2 text-sm text-zinc-800 dark:text-zinc-200 focus:outline-none focus:border-orange-500">
                                 <option value="left">Kiri</option>
                                 <option value="center">Tengah</option>
                                 <option value="right">Kanan</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Ukuran Huruf</label>
-                            <select x-model="editingData?.data?.size" class="w-full bg-slate-50 dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] rounded-xl px-4 py-2 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:border-sky-500">
+                            <label class="block text-xs font-bold text-zinc-700 dark:text-zinc-300 mb-1.5">Ukuran Huruf</label>
+                            <select x-model="editingData?.data?.size" class="w-full bg-slate-50 dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2 text-sm text-zinc-800 dark:text-zinc-200 focus:outline-none focus:border-orange-500">
                                 <option value="sm">Kecil</option>
                                 <option value="md">Sedang</option>
                                 <option value="lg">Besar</option>
@@ -1308,10 +1308,10 @@
                 <!-- Single Image Settings -->
                 <div x-show="editingData && editingData.type === 'single_image'" class="space-y-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Gambar Banner</label>
+                        <label class="block text-xs font-bold text-zinc-700 dark:text-zinc-300 mb-1.5">Gambar Banner</label>
                         <div class="flex gap-2">
-                            <input type="text" x-model="editingData?.data?.image_url" class="flex-1 bg-slate-50 dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] rounded-xl px-4 py-2.5 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:border-sky-500" placeholder="https://contoh.com/gambar.jpg">
-                            <label class="cursor-pointer bg-sky-100 hover:bg-sky-200 text-sky-600 px-4 py-2.5 rounded-xl text-sm font-bold flex items-center justify-center transition-colors" title="Upload Gambar dari Komputer">
+                            <input type="text" x-model="editingData?.data?.image_url" class="flex-1 bg-slate-50 dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-800 dark:text-zinc-200 focus:outline-none focus:border-orange-500" placeholder="https://contoh.com/gambar.jpg">
+                            <label class="cursor-pointer bg-orange-100 hover:bg-orange-200 text-orange-600 px-4 py-2.5 rounded-xl text-sm font-bold flex items-center justify-center transition-colors" title="Upload Gambar dari Komputer">
                                 <span class="material-symbols-outlined text-[18px]">upload</span>
                                 <input type="file" class="hidden" accept="image/*" @change="openCropper($event, editingData.data, 'image_url', false, 0)">
                             </label>
@@ -1319,16 +1319,16 @@
                         <p class="text-[10px] text-slate-500 mt-1">Masukkan URL gambar atau upload dari perangkat Anda (Maks 2MB).</p>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center justify-between">
+                        <label class="block text-xs font-bold text-zinc-700 dark:text-zinc-300 mb-1.5 flex items-center justify-between">
                             <span>Link Tujuan Ketika Gambar Diklik</span>
                             <span class="text-[10px] text-slate-400 font-normal">Opsional</span>
                         </label>
                         <div class="relative">
-                            <input type="text" x-model="editingData?.data?.link" class="w-full bg-slate-50 dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] rounded-xl pl-9 pr-4 py-2.5 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:border-sky-500" placeholder="https://... atau /products/nama-produk">
+                            <input type="text" x-model="editingData?.data?.link" class="w-full bg-slate-50 dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-xl pl-9 pr-4 py-2.5 text-sm text-zinc-800 dark:text-zinc-200 focus:outline-none focus:border-orange-500" placeholder="https://... atau /products/nama-produk">
                             <span class="material-symbols-outlined absolute left-2.5 top-3 text-[18px] text-slate-400">link</span>
                         </div>
                         <p class="text-[10px] text-slate-500 mt-1">
-                            Bisa berupa link eksternal (misal: <code class="text-sky-600 font-mono">https://wa.me/...</code>) atau link halaman produk toko.
+                            Bisa berupa link eksternal (misal: <code class="text-orange-600 font-mono">https://wa.me/...</code>) atau link halaman produk toko.
                         </p>
                     </div>
                 </div>
@@ -1336,15 +1336,15 @@
                 <!-- Products Settings -->
                 <div x-show="editingData && editingData.type === 'products'" class="space-y-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Pilih Mode Produk</label>
-                        <select x-model="editingData?.data?.type" class="w-full bg-slate-50 dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] rounded-xl px-4 py-2.5 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:border-sky-500">
+                        <label class="block text-xs font-bold text-zinc-700 dark:text-zinc-300 mb-1.5">Pilih Mode Produk</label>
+                        <select x-model="editingData?.data?.type" class="w-full bg-slate-50 dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-800 dark:text-zinc-200 focus:outline-none focus:border-orange-500">
                             <option value="latest">Otomatis (Produk Terbaru)</option>
                             <option value="bestseller">Otomatis (Terlaris)</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Jumlah Maksimal Ditampilkan</label>
-                        <select x-model="editingData?.data?.count" class="w-full bg-slate-50 dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] rounded-xl px-4 py-2.5 text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus:border-sky-500">
+                        <label class="block text-xs font-bold text-zinc-700 dark:text-zinc-300 mb-1.5">Jumlah Maksimal Ditampilkan</label>
+                        <select x-model="editingData?.data?.count" class="w-full bg-slate-50 dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-800 dark:text-zinc-200 focus:outline-none focus:border-orange-500">
                             <option value="4">4 Produk</option>
                             <option value="8">8 Produk</option>
                             <option value="12">12 Produk</option>
@@ -1357,21 +1357,21 @@
 
                     <!-- Judul -->
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Judul Flash Sale</label>
-                        <input type="text" x-model="editingData.data.title" placeholder="Contoh: Flash Sale Hari Ini!" class="w-full bg-slate-50 dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] rounded-xl px-4 py-2.5 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:border-amber-500">
+                        <label class="block text-xs font-bold text-zinc-700 dark:text-zinc-300 mb-1.5">Judul Flash Sale</label>
+                        <input type="text" x-model="editingData.data.title" placeholder="Contoh: Flash Sale Hari Ini!" class="w-full bg-slate-50 dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-xs text-zinc-800 dark:text-zinc-200 focus:outline-none focus:border-amber-500">
                     </div>
 
                     <!-- Batas Waktu -->
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Batas Waktu (Countdown Timer)</label>
-                        <input type="datetime-local" x-model="editingData.data.end_date" class="w-full bg-slate-50 dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] rounded-xl px-4 py-2.5 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:border-amber-500">
+                        <label class="block text-xs font-bold text-zinc-700 dark:text-zinc-300 mb-1.5">Batas Waktu (Countdown Timer)</label>
+                        <input type="datetime-local" x-model="editingData.data.end_date" class="w-full bg-slate-50 dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-xs text-zinc-800 dark:text-zinc-200 focus:outline-none focus:border-amber-500">
                     </div>
 
                     <!-- Diskon % -->
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Persentase Diskon yang Ditampilkan (%)</label>
+                        <label class="block text-xs font-bold text-zinc-700 dark:text-zinc-300 mb-1.5">Persentase Diskon yang Ditampilkan (%)</label>
                         <div class="flex items-center gap-2">
-                            <input type="number" x-model="editingData.data.discount" min="1" max="99" class="w-24 bg-slate-50 dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] rounded-xl px-3 py-2 text-xs text-slate-800 dark:text-slate-200 focus:outline-none focus:border-amber-500">
+                            <input type="number" x-model="editingData.data.discount" min="1" max="99" class="w-24 bg-slate-50 dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-xl px-3 py-2 text-xs text-zinc-800 dark:text-zinc-200 focus:outline-none focus:border-amber-500">
                             <span class="text-xs text-slate-500">% (badge diskon pada kartu produk)</span>
                         </div>
                     </div>
@@ -1379,7 +1379,7 @@
                     <!-- Pilih Produk -->
                     <div>
                         <div class="flex items-center justify-between mb-2">
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">Produk yang Masuk Flash Sale</label>
+                            <label class="block text-xs font-bold text-zinc-700 dark:text-zinc-300">Produk yang Masuk Flash Sale</label>
                             <span class="text-[10px] text-slate-400">Centang produk yang ingin ditampilkan</span>
                         </div>
 
@@ -1392,7 +1392,7 @@
                         @endphp
 
                         @if($flashProducts->isEmpty())
-                            <div class="p-4 bg-slate-50 dark:bg-[#0d1117] rounded-xl border border-dashed border-slate-200 dark:border-[#222f49] text-center">
+                            <div class="p-4 bg-slate-50 dark:bg-[#000000] rounded-xl border border-dashed border-zinc-200 dark:border-zinc-800 text-center">
                                 <span class="material-symbols-outlined text-2xl text-slate-300">inventory_2</span>
                                 <p class="text-xs text-slate-400 mt-1">Belum ada produk aktif.</p>
                             </div>
@@ -1400,7 +1400,7 @@
                             <div class="space-y-1.5 max-h-56 overflow-y-auto pr-1 custom-scrollbar">
                                 @foreach($flashProducts as $fp)
                                 <label class="flex items-center gap-3 p-2.5 rounded-xl border cursor-pointer transition-all"
-                                    :class="(editingData.data.product_ids || []).includes({{ $fp->id }}) ? 'border-amber-400 bg-amber-50 dark:bg-amber-950/30' : 'border-slate-200 dark:border-[#222f49] hover:border-amber-300'">
+                                    :class="(editingData.data.product_ids || []).includes({{ $fp->id }}) ? 'border-amber-400 bg-amber-50 dark:bg-amber-950/30' : 'border-zinc-200 dark:border-zinc-800 hover:border-amber-300'">
                                     <input type="checkbox" class="sr-only"
                                         :checked="(editingData.data.product_ids || []).includes({{ $fp->id }})"
                                         @change="
@@ -1414,14 +1414,14 @@
                                         <span class="material-symbols-outlined text-[11px]" x-show="(editingData.data.product_ids || []).includes({{ $fp->id }})">check</span>
                                     </div>
                                     @if($fp->images->first())
-                                        <img src="{{ asset('storage/'.$fp->images->first()->image_path) }}" class="w-8 h-8 rounded-lg object-cover flex-shrink-0 border border-slate-200 dark:border-[#222f49]">
+                                        <img src="{{ asset('storage/'.$fp->images->first()->image_path) }}" class="w-8 h-8 rounded-lg object-cover flex-shrink-0 border border-zinc-200 dark:border-zinc-800">
                                     @else
                                         <div class="w-8 h-8 rounded-lg bg-slate-200 dark:bg-slate-700 flex items-center justify-center flex-shrink-0">
                                             <span class="material-symbols-outlined text-[14px] text-slate-400">image</span>
                                         </div>
                                     @endif
                                     <div class="flex-1 min-w-0">
-                                        <p class="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">{{ $fp->name }}</p>
+                                        <p class="text-xs font-bold text-zinc-800 dark:text-zinc-200 truncate">{{ $fp->name }}</p>
                                         <p class="text-[11px] text-slate-500">Rp {{ number_format($fp->price, 0, ',', '.') }}</p>
                                     </div>
                                 </label>
@@ -1438,16 +1438,16 @@
                 <div x-show="editingData && editingData.type === 'banner'" class="space-y-4">
                     <div class="flex items-center justify-between mb-2">
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">Daftar Gambar Slide Banner</label>
+                            <label class="block text-xs font-bold text-zinc-700 dark:text-zinc-300">Daftar Gambar Slide Banner</label>
                             <p class="text-[10px] text-slate-500">Tambahkan gambar slide dan link tujuannya</p>
                         </div>
-                        <button type="button" @click="if(!editingData.data.images) editingData.data.images = []; editingData.data.images.push({image_url: '', link: ''})" class="text-[11px] bg-sky-100 text-sky-600 hover:bg-sky-200 px-2.5 py-1.5 rounded-lg font-bold flex items-center gap-1 transition-colors">
+                        <button type="button" @click="if(!editingData.data.images) editingData.data.images = []; editingData.data.images.push({image_url: '', link: ''})" class="text-[11px] bg-orange-100 text-orange-600 hover:bg-orange-200 px-2.5 py-1.5 rounded-lg font-bold flex items-center gap-1 transition-colors">
                             <span class="material-symbols-outlined text-[14px]">add</span> Tambah Slide
                         </button>
                     </div>
                     
                     <template x-if="!editingData?.data?.images || editingData.data.images.length === 0">
-                        <div class="p-6 bg-slate-50 dark:bg-[#0d1117] rounded-xl border border-dashed border-slate-200 dark:border-[#222f49] text-center text-xs text-slate-400">
+                        <div class="p-6 bg-slate-50 dark:bg-[#000000] rounded-xl border border-dashed border-zinc-200 dark:border-zinc-800 text-center text-xs text-slate-400">
                             <span class="material-symbols-outlined text-2xl text-slate-300 block mb-1">collections</span>
                             Belum ada slide gambar. Klik tombol <b>Tambah Slide</b> di atas.
                         </div>
@@ -1455,7 +1455,7 @@
                     
                     <div class="space-y-3 max-h-72 overflow-y-auto pr-2 custom-scrollbar">
                         <template x-for="(img, imgIdx) in editingData?.data?.images" :key="imgIdx">
-                            <div class="p-3 bg-slate-50 dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] rounded-xl relative group">
+                            <div class="p-3 bg-slate-50 dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-xl relative group">
                                 <button type="button" @click="editingData.data.images.splice(imgIdx, 1)" class="absolute top-2 right-2 text-rose-500 hover:bg-rose-100 dark:hover:bg-rose-900/30 p-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity" title="Hapus Slide">
                                     <span class="material-symbols-outlined text-[16px]">delete</span>
                                 </button>
@@ -1463,8 +1463,8 @@
                                     <div>
                                         <label class="block text-[10px] font-bold text-slate-500 mb-1" x-text="'Slide #' + (imgIdx + 1) + ' Gambar'"></label>
                                         <div class="flex gap-2">
-                                            <input type="text" x-model="img.image_url" class="flex-1 bg-white dark:bg-[#161f33] border border-slate-200 dark:border-[#222f49] rounded-lg px-3 py-1.5 text-xs text-slate-800 dark:text-slate-200 focus:border-sky-500 focus:outline-none" placeholder="https://contoh.com/gambar.jpg">
-                                            <label class="cursor-pointer bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 px-2.5 rounded-lg flex items-center justify-center transition-colors" title="Upload Gambar Slide">
+                                            <input type="text" x-model="img.image_url" class="flex-1 bg-white dark:bg-[#161f33] border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-zinc-800 dark:text-zinc-200 focus:border-orange-500 focus:outline-none" placeholder="https://contoh.com/gambar.jpg">
+                                            <label class="cursor-pointer bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-zinc-600 dark:text-zinc-300 px-2.5 rounded-lg flex items-center justify-center transition-colors" title="Upload Gambar Slide">
                                                 <span class="material-symbols-outlined text-[15px]">upload</span>
                                                 <input type="file" class="hidden" accept="image/*" @change="openCropper($event, img, 'image_url', false, 2.5/1)">
                                             </label>
@@ -1473,7 +1473,7 @@
                                     <div>
                                         <label class="block text-[10px] font-bold text-slate-500 mb-1">Link Tujuan Ketika Slide Ini Diklik (Opsional)</label>
                                         <div class="relative">
-                                            <input type="text" x-model="img.link" class="w-full bg-white dark:bg-[#161f33] border border-slate-200 dark:border-[#222f49] rounded-lg pl-7 pr-3 py-1.5 text-xs text-slate-800 dark:text-slate-200 focus:border-sky-500 focus:outline-none" placeholder="https://... atau /products/nama-produk">
+                                            <input type="text" x-model="img.link" class="w-full bg-white dark:bg-[#161f33] border border-zinc-200 dark:border-zinc-800 rounded-lg pl-7 pr-3 py-1.5 text-xs text-zinc-800 dark:text-zinc-200 focus:border-orange-500 focus:outline-none" placeholder="https://... atau /products/nama-produk">
                                             <span class="material-symbols-outlined absolute left-2 top-2 text-[14px] text-slate-400">link</span>
                                         </div>
                                     </div>
@@ -1496,7 +1496,7 @@
                     </div>
 
                     <div class="flex items-center justify-between mb-1">
-                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">Pilih Voucher yang Ditampilkan</label>
+                        <label class="block text-xs font-bold text-zinc-700 dark:text-zinc-300">Pilih Voucher yang Ditampilkan</label>
                         <a href="{{ route('tenant.campaigns.create') }}" target="_blank" class="text-[10px] bg-rose-100 text-rose-600 hover:bg-rose-200 px-2 py-1 rounded font-bold flex items-center gap-1 transition-colors">
                             <span class="material-symbols-outlined text-[12px]">add</span> Buat Baru
                         </a>
@@ -1509,7 +1509,7 @@
                     @endphp
 
                     @if($widgetCampaigns->isEmpty())
-                        <div class="p-4 bg-slate-50 dark:bg-[#0d1117] rounded-xl border border-dashed border-slate-200 dark:border-[#222f49] text-center">
+                        <div class="p-4 bg-slate-50 dark:bg-[#000000] rounded-xl border border-dashed border-zinc-200 dark:border-zinc-800 text-center">
                             <span class="material-symbols-outlined text-2xl text-slate-300 dark:text-slate-600">confirmation_number</span>
                             <p class="text-xs text-slate-400 mt-1">Belum ada voucher/diskon aktif.</p>
                             <a href="{{ route('tenant.campaigns.create') }}" target="_blank" class="mt-2 inline-flex items-center gap-1 text-xs font-bold text-rose-500">
@@ -1520,7 +1520,7 @@
                         <div class="space-y-2 max-h-64 overflow-y-auto pr-1 custom-scrollbar">
                             @foreach($widgetCampaigns as $wc)
                             <label class="flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-all"
-                                :class="(editingData.data.campaign_ids || []).includes({{ $wc->id }}) ? 'border-rose-400 bg-rose-50 dark:bg-rose-950/30' : 'border-slate-200 dark:border-[#222f49] hover:border-rose-300'">
+                                :class="(editingData.data.campaign_ids || []).includes({{ $wc->id }}) ? 'border-rose-400 bg-rose-50 dark:bg-rose-950/30' : 'border-zinc-200 dark:border-zinc-800 hover:border-rose-300'">
                                 <input type="checkbox" class="sr-only"
                                     :checked="(editingData.data.campaign_ids || []).includes({{ $wc->id }})"
                                     @change="
@@ -1535,15 +1535,15 @@
                                 </div>
                                 <div class="flex-1 min-w-0">
                                     <div class="flex items-center gap-1.5 flex-wrap">
-                                        <span class="text-xs font-bold text-slate-800 dark:text-slate-200">{{ $wc->name }}</span>
+                                        <span class="text-xs font-bold text-zinc-800 dark:text-zinc-200">{{ $wc->name }}</span>
                                         @if($wc->code)
-                                            <span class="text-[10px] font-mono bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded">{{ $wc->code }}</span>
+                                            <span class="text-[10px] font-mono bg-zinc-100 dark:bg-zinc-900 px-1.5 py-0.5 rounded">{{ $wc->code }}</span>
                                         @endif
                                         <span class="text-[10px] font-bold {{ $wc->type === 'voucher' ? 'text-rose-600 bg-rose-100' : 'text-amber-600 bg-amber-100' }} px-1.5 py-0.5 rounded">
                                             {{ $wc->type === 'voucher' ? 'Voucher' : 'Diskon' }}
                                         </span>
                                     </div>
-                                    <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                                    <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5">
                                         Potongan: <b>{{ $wc->discount_type === 'percentage' ? $wc->discount_value.'%' : 'Rp '.number_format($wc->discount_value,0,',','.') }}</b>
                                         @if($wc->minimum_spend > 0)· Min. Rp {{ number_format($wc->minimum_spend,0,',','.') }}@endif
                                         · s/d {{ \Carbon\Carbon::parse($wc->end_date)->format('d M Y') }}
@@ -1561,9 +1561,9 @@
             </div>
             
             <!-- Modal Footer -->
-            <div class="px-6 py-4 border-t border-slate-200 dark:border-[#222f49] bg-slate-50 dark:bg-[#161f33] flex items-center justify-end gap-3 shrink-0 rounded-b-2xl">
-                <button @click="closeSettings()" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">Batal</button>
-                <button @click="saveSettings()" class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white text-xs font-bold transition-all active:scale-95 cursor-pointer">Simpan Pengaturan</button>
+            <div class="px-6 py-4 border-t border-zinc-200 dark:border-zinc-800 bg-slate-50 dark:bg-[#161f33] flex items-center justify-end gap-3 shrink-0 rounded-b-2xl">
+                <button @click="closeSettings()" class="px-4 py-2 rounded-xl text-xs font-bold text-zinc-600 dark:text-zinc-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">Batal</button>
+                <button @click="saveSettings()" class="px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white dark:bg-orange-600 dark:hover:bg-orange-500 dark:text-white text-xs font-bold transition-all active:scale-95 cursor-pointer">Simpan Pengaturan</button>
             </div>
         </div>
     </div>
@@ -1574,15 +1574,15 @@
         <div x-show="isBannerModalOpen" x-transition.opacity class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" @click="closeBannerModal()"></div>
         
         <!-- Modal Content -->
-        <div x-show="isBannerModalOpen" x-transition.scale.95 class="bg-white dark:bg-[#111726] rounded-2xl shadow-2xl w-full max-w-xl relative z-10 overflow-hidden flex flex-col max-h-[92vh]">
+        <div x-show="isBannerModalOpen" x-transition.scale.95 class="bg-white dark:bg-[#000000] rounded-2xl shadow-none w-full max-w-xl relative z-10 overflow-hidden flex flex-col max-h-[92vh]">
             <!-- Header -->
-            <div class="px-6 py-4 border-b border-slate-200 dark:border-[#222f49] flex items-center justify-between shrink-0 bg-slate-50/50 dark:bg-[#161f33]">
+            <div class="px-6 py-4 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between shrink-0 bg-slate-50/50 dark:bg-[#161f33]">
                 <div class="flex items-center gap-2.5">
                     <div class="w-8 h-8 rounded-xl bg-slate-900 text-white flex items-center justify-center">
                         <span class="material-symbols-outlined text-[18px]">palette</span>
                     </div>
                     <div>
-                        <h3 class="font-bold text-sm text-slate-900 dark:text-white">Pengaturan Banner Header Toko</h3>
+                        <h3 class="font-bold text-sm text-zinc-900 dark:text-zinc-100">Pengaturan Banner Header Toko</h3>
                         <p class="text-[11px] text-slate-400">Pilih warna gradien, warna biasa, upload foto, atau hapus settingan</p>
                     </div>
                 </div>
@@ -1592,14 +1592,14 @@
             </div>
 
             <!-- Tab Switcher -->
-            <div class="flex border-b border-slate-200 dark:border-[#222f49] px-6 bg-slate-50/30 dark:bg-[#131b2e] shrink-0">
-                <button type="button" @click="bannerTab = 'gradient'" :class="bannerTab === 'gradient' ? 'border-sky-500 text-sky-600 dark:border-sky-400 dark:text-sky-400 font-bold' : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-medium'" class="px-4 py-3 border-b-2 text-xs flex items-center gap-1.5 transition-all">
+            <div class="flex border-b border-zinc-200 dark:border-zinc-800 px-6 bg-slate-50/30 dark:bg-[#131b2e] shrink-0">
+                <button type="button" @click="bannerTab = 'gradient'" :class="bannerTab === 'gradient' ? 'border-orange-500 text-orange-600 dark:border-orange-400 dark:text-orange-400 font-bold' : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-medium'" class="px-4 py-3 border-b-2 text-xs flex items-center gap-1.5 transition-all">
                     <span class="material-symbols-outlined text-[16px]">gradient</span> Warna Gradien
                 </button>
-                <button type="button" @click="bannerTab = 'solid'" :class="bannerTab === 'solid' ? 'border-sky-500 text-sky-600 dark:border-sky-400 dark:text-sky-400 font-bold' : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-medium'" class="px-4 py-3 border-b-2 text-xs flex items-center gap-1.5 transition-all">
+                <button type="button" @click="bannerTab = 'solid'" :class="bannerTab === 'solid' ? 'border-orange-500 text-orange-600 dark:border-orange-400 dark:text-orange-400 font-bold' : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-medium'" class="px-4 py-3 border-b-2 text-xs flex items-center gap-1.5 transition-all">
                     <span class="material-symbols-outlined text-[16px]">format_color_fill</span> Warna Biasa
                 </button>
-                <button type="button" @click="bannerTab = 'image'" :class="bannerTab === 'image' ? 'border-sky-500 text-sky-600 dark:border-sky-400 dark:text-sky-400 font-bold' : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-medium'" class="px-4 py-3 border-b-2 text-xs flex items-center gap-1.5 transition-all">
+                <button type="button" @click="bannerTab = 'image'" :class="bannerTab === 'image' ? 'border-orange-500 text-orange-600 dark:border-orange-400 dark:text-orange-400 font-bold' : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-medium'" class="px-4 py-3 border-b-2 text-xs flex items-center gap-1.5 transition-all">
                     <span class="material-symbols-outlined text-[16px]">image</span> Gambar Foto
                 </button>
             </div>
@@ -1609,8 +1609,8 @@
                 
                 <!-- Live Mini Preview -->
                 <div>
-                    <label class="block text-[11px] font-bold text-slate-600 dark:text-slate-300 mb-1.5">Live Preview Banner Toko</label>
-                    <div class="w-full h-28 rounded-2xl relative overflow-hidden flex items-end p-4 border border-slate-200 dark:border-[#222f49] transition-all duration-300" :style="getBannerStyle(previewBanner)">
+                    <label class="block text-[11px] font-bold text-zinc-600 dark:text-zinc-300 mb-1.5">Live Preview Banner Toko</label>
+                    <div class="w-full h-28 rounded-2xl relative overflow-hidden flex items-end p-4 border border-zinc-200 dark:border-zinc-800 transition-all duration-300" :style="getBannerStyle(previewBanner)">
                         <div class="absolute inset-0 bg-slate-950/40 pointer-events-none"></div>
                         <div class="relative z-10 flex items-center gap-3">
                             <div class="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center font-bold text-white text-sm shrink-0">
@@ -1627,24 +1627,24 @@
                 <!-- Tab 1: Warna Gradien -->
                 <div x-show="bannerTab === 'gradient'" class="space-y-4 relative">
                     @if(!$store->isPro())
-                    <div class="absolute inset-0 z-20 bg-white/70 dark:bg-[#111726]/80 backdrop-blur-[2px] flex flex-col items-center justify-center rounded-2xl p-4 text-center border border-slate-200 dark:border-slate-800">
+                    <div class="absolute inset-0 z-20 bg-white/70 dark:bg-[#000000]/80 backdrop-blur-[2px] flex flex-col items-center justify-center rounded-2xl p-4 text-center border border-zinc-200 dark:border-zinc-800">
                         <span class="material-symbols-outlined text-4xl text-amber-500 mb-2">stars</span>
-                        <h4 class="font-bold text-slate-800 dark:text-white mb-1">Fitur Toko PRO</h4>
-                        <p class="text-[11px] text-slate-600 dark:text-slate-400 mb-4 max-w-xs">Gunakan dekorasi banner gradien eksklusif untuk tampilan toko yang lebih premium.</p>
-                        <a href="{{ route('tenant.pro.index') }}" class="px-4 py-2 bg-sky-500 hover:bg-sky-600 text-white rounded-xl text-xs font-bold transition-all active:scale-95">Upgrade ke PRO</a>
+                        <h4 class="font-bold text-zinc-800 dark:text-zinc-100 mb-1">Fitur Toko PRO</h4>
+                        <p class="text-[11px] text-zinc-600 dark:text-zinc-400 mb-4 max-w-xs">Gunakan dekorasi banner gradien eksklusif untuk tampilan toko yang lebih premium.</p>
+                        <a href="{{ route('tenant.pro.index') }}" class="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-xs font-bold transition-all active:scale-95">Upgrade ke PRO</a>
                     </div>
                     @endif
                     <div class="flex items-center justify-between">
-                        <label class="text-xs font-bold text-slate-700 dark:text-slate-300">Pilihan Gradien Populer</label>
+                        <label class="text-xs font-bold text-zinc-700 dark:text-zinc-300">Pilihan Gradien Populer</label>
                         <span class="text-[10px] text-slate-400">Klik untuk memilih gradien</span>
                     </div>
 
                     <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
                         <template x-for="(grad, gIdx) in presetGradients" :key="gIdx">
-                            <button type="button" @click="selectPreset(grad.value)" :class="previewBanner === grad.value ? 'ring-2 ring-sky-500 ring-offset-2 dark:ring-offset-[#111726]' : 'border border-slate-200/60 dark:border-[#222f49]'" class="h-16 rounded-xl relative overflow-hidden flex flex-col justify-end p-2 text-left group transition-all hover:scale-[1.02]" :style="`background: ${grad.value};`">
+                            <button type="button" @click="selectPreset(grad.value)" :class="previewBanner === grad.value ? 'ring-2 ring-orange-500 ring-offset-2 dark:ring-offset-[#111726]' : 'border border-slate-200/60 dark:border-zinc-800'" class="h-16 rounded-xl relative overflow-hidden flex flex-col justify-end p-2 text-left group transition-all hover:scale-[1.02]" :style="`background: ${grad.value};`">
                                 <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
-                                <span class="relative z-10 text-[11px] font-bold text-white drop-shadow-sm truncate" x-text="grad.name"></span>
-                                <span x-show="previewBanner === grad.value" class="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-white text-sky-600 flex items-center justify-center shadow-md">
+                                <span class="relative z-10 text-[11px] font-bold text-white drop-shadow-none truncate" x-text="grad.name"></span>
+                                <span x-show="previewBanner === grad.value" class="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-white text-orange-600 flex items-center justify-center shadow-none">
                                     <span class="material-symbols-outlined text-[13px] font-black">check</span>
                                 </span>
                             </button>
@@ -1652,26 +1652,26 @@
                     </div>
 
                     <!-- Custom Gradient Generator -->
-                    <div class="pt-3 border-t border-slate-200 dark:border-[#222f49] space-y-2.5">
-                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">Kombinasi Gradien Sendiri</label>
+                    <div class="pt-3 border-t border-zinc-200 dark:border-zinc-800 space-y-2.5">
+                        <label class="block text-xs font-bold text-zinc-700 dark:text-zinc-300">Kombinasi Gradien Sendiri</label>
                         <div class="flex items-center gap-3">
                             <div class="flex-1">
                                 <span class="block text-[10px] text-slate-400 mb-1">Warna Awal</span>
-                                <div class="flex items-center gap-2 bg-slate-50 dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] rounded-xl px-2.5 py-1.5">
+                                <div class="flex items-center gap-2 bg-slate-50 dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-xl px-2.5 py-1.5">
                                     <input type="color" x-model="customGradStart" @input="updateCustomGradient()" class="w-6 h-6 rounded cursor-pointer border-0 bg-transparent">
-                                    <input type="text" x-model="customGradStart" @input="updateCustomGradient()" class="w-full text-xs font-mono text-slate-800 dark:text-slate-200 bg-transparent outline-none">
+                                    <input type="text" x-model="customGradStart" @input="updateCustomGradient()" class="w-full text-xs font-mono text-zinc-800 dark:text-zinc-200 bg-transparent outline-none">
                                 </div>
                             </div>
                             <div class="flex-1">
                                 <span class="block text-[10px] text-slate-400 mb-1">Warna Akhir</span>
-                                <div class="flex items-center gap-2 bg-slate-50 dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] rounded-xl px-2.5 py-1.5">
+                                <div class="flex items-center gap-2 bg-slate-50 dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-xl px-2.5 py-1.5">
                                     <input type="color" x-model="customGradEnd" @input="updateCustomGradient()" class="w-6 h-6 rounded cursor-pointer border-0 bg-transparent">
-                                    <input type="text" x-model="customGradEnd" @input="updateCustomGradient()" class="w-full text-xs font-mono text-slate-800 dark:text-slate-200 bg-transparent outline-none">
+                                    <input type="text" x-model="customGradEnd" @input="updateCustomGradient()" class="w-full text-xs font-mono text-zinc-800 dark:text-zinc-200 bg-transparent outline-none">
                                 </div>
                             </div>
                             <div class="w-28">
                                 <span class="block text-[10px] text-slate-400 mb-1">Arah Sudut</span>
-                                <select x-model="customGradDeg" @change="updateCustomGradient()" class="w-full bg-slate-50 dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] rounded-xl px-2 py-2 text-xs text-slate-800 dark:text-slate-200 outline-none">
+                                <select x-model="customGradDeg" @change="updateCustomGradient()" class="w-full bg-slate-50 dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-xl px-2 py-2 text-xs text-zinc-800 dark:text-zinc-200 outline-none">
                                     <option value="90deg">90° (Kiri ke Kanan)</option>
                                     <option value="135deg">135° (Diagonal)</option>
                                     <option value="180deg">180° (Atas ke Bawah)</option>
@@ -1685,15 +1685,15 @@
                 <!-- Tab 2: Warna Biasa (Solid) -->
                 <div x-show="bannerTab === 'solid'" class="space-y-4">
                     <div class="flex items-center justify-between">
-                        <label class="text-xs font-bold text-slate-700 dark:text-slate-300">Pilihan Warna Biasa (Solid)</label>
+                        <label class="text-xs font-bold text-zinc-700 dark:text-zinc-300">Pilihan Warna Biasa (Solid)</label>
                         <span class="text-[10px] text-slate-400">Pilihan warna minimalis elegan</span>
                     </div>
 
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                         <template x-for="(col, cIdx) in presetSolidColors" :key="cIdx">
-                            <button type="button" @click="selectPreset(col.value)" :class="previewBanner === col.value ? 'ring-2 ring-sky-500 ring-offset-2 dark:ring-offset-[#111726]' : 'border border-slate-200/60 dark:border-[#222f49]'" class="h-14 rounded-xl relative overflow-hidden flex flex-col justify-end p-2 text-left group transition-all hover:scale-[1.02]" :style="`background-color: ${col.value};`">
-                                <span class="relative z-10 text-[10px] font-bold text-white drop-shadow-sm truncate" x-text="col.name"></span>
-                                <span x-show="previewBanner === col.value" class="absolute top-1 right-1 w-4 h-4 rounded-full bg-white text-sky-600 flex items-center justify-center shadow-md">
+                            <button type="button" @click="selectPreset(col.value)" :class="previewBanner === col.value ? 'ring-2 ring-orange-500 ring-offset-2 dark:ring-offset-[#111726]' : 'border border-slate-200/60 dark:border-zinc-800'" class="h-14 rounded-xl relative overflow-hidden flex flex-col justify-end p-2 text-left group transition-all hover:scale-[1.02]" :style="`background-color: ${col.value};`">
+                                <span class="relative z-10 text-[10px] font-bold text-white drop-shadow-none truncate" x-text="col.name"></span>
+                                <span x-show="previewBanner === col.value" class="absolute top-1 right-1 w-4 h-4 rounded-full bg-white text-orange-600 flex items-center justify-center shadow-none">
                                     <span class="material-symbols-outlined text-[12px] font-black">check</span>
                                 </span>
                             </button>
@@ -1701,12 +1701,12 @@
                     </div>
 
                     <!-- Custom Solid Color -->
-                    <div class="pt-3 border-t border-slate-200 dark:border-[#222f49] space-y-2">
-                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">Pilih Warna Bebas (Color Picker)</label>
+                    <div class="pt-3 border-t border-zinc-200 dark:border-zinc-800 space-y-2">
+                        <label class="block text-xs font-bold text-zinc-700 dark:text-zinc-300">Pilih Warna Bebas (Color Picker)</label>
                         <div class="flex items-center gap-3">
-                            <div class="flex items-center gap-2.5 bg-slate-50 dark:bg-[#0d1117] border border-slate-200 dark:border-[#222f49] rounded-xl px-3.5 py-2 flex-1">
+                            <div class="flex items-center gap-2.5 bg-slate-50 dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-xl px-3.5 py-2 flex-1">
                                 <input type="color" x-model="customSolidColor" @input="previewBanner = customSolidColor" class="w-8 h-8 rounded-lg cursor-pointer border-0 bg-transparent">
-                                <input type="text" x-model="customSolidColor" @input="previewBanner = customSolidColor" class="w-full text-xs font-mono font-bold text-slate-800 dark:text-slate-200 bg-transparent outline-none uppercase" placeholder="#0f172a">
+                                <input type="text" x-model="customSolidColor" @input="previewBanner = customSolidColor" class="w-full text-xs font-mono font-bold text-zinc-800 dark:text-zinc-200 bg-transparent outline-none uppercase" placeholder="#0f172a">
                             </div>
                         </div>
                     </div>
@@ -1715,9 +1715,9 @@
                 <!-- Tab 3: Upload Gambar -->
                 <div x-show="bannerTab === 'image'" class="space-y-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">Upload Gambar dari Perangkat</label>
-                        <label class="cursor-pointer bg-sky-50 dark:bg-sky-950/30 hover:bg-sky-100 dark:hover:bg-sky-900/40 text-sky-600 dark:text-sky-300 border-2 border-dashed border-sky-300 dark:border-sky-800 rounded-xl p-5 flex flex-col items-center justify-center gap-1.5 transition-all text-center">
-                            <span class="material-symbols-outlined text-3xl text-sky-500">cloud_upload</span>
+                        <label class="block text-xs font-bold text-zinc-700 dark:text-zinc-300 mb-2">Upload Gambar dari Perangkat</label>
+                        <label class="cursor-pointer bg-orange-50 dark:bg-orange-950/30 hover:bg-orange-100 dark:hover:bg-orange-900/40 text-orange-600 dark:text-orange-300 border-2 border-dashed border-orange-300 dark:border-orange-800 rounded-xl p-5 flex flex-col items-center justify-center gap-1.5 transition-all text-center">
+                            <span class="material-symbols-outlined text-3xl text-orange-500">cloud_upload</span>
                             <span class="text-xs font-bold">Pilih File Foto Banner (Maks 5MB)</span>
                             <span class="text-[10px] text-slate-400">Rasio rekomendasi 3:1 (misal 1200x400 px) dengan fitur crop & potong rapi</span>
                             <input type="file" class="hidden" accept="image/*" @change="uploadHeaderBannerFromModal($event)">
@@ -1725,14 +1725,14 @@
                     </div>
 
                     <!-- Preset Images -->
-                    <div class="pt-3 border-t border-slate-200 dark:border-[#222f49]">
-                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">Atau Gunakan Gambar Wallpaper Bawaan</label>
+                    <div class="pt-3 border-t border-zinc-200 dark:border-zinc-800">
+                        <label class="block text-xs font-bold text-zinc-700 dark:text-zinc-300 mb-2">Atau Gunakan Gambar Wallpaper Bawaan</label>
                         <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
                             <template x-for="(img, iIdx) in presetImages" :key="iIdx">
-                                <button type="button" @click="selectPreset(img.url)" :class="previewBanner === img.url ? 'ring-2 ring-sky-500 ring-offset-2 dark:ring-offset-[#111726]' : 'border border-slate-200 dark:border-[#222f49]'" class="h-16 rounded-xl relative overflow-hidden group transition-all text-left">
+                                <button type="button" @click="selectPreset(img.url)" :class="previewBanner === img.url ? 'ring-2 ring-orange-500 ring-offset-2 dark:ring-offset-[#111726]' : 'border border-zinc-200 dark:border-zinc-800'" class="h-16 rounded-xl relative overflow-hidden group transition-all text-left">
                                     <img :src="img.url" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
                                     <div class="absolute inset-0 bg-black/40 flex items-end p-2">
-                                        <span class="text-[10px] font-bold text-white drop-shadow-sm truncate" x-text="img.name"></span>
+                                        <span class="text-[10px] font-bold text-white drop-shadow-none truncate" x-text="img.name"></span>
                                     </div>
                                 </button>
                             </template>
@@ -1743,7 +1743,7 @@
             </div>
 
             <!-- Footer -->
-            <div class="px-6 py-3.5 border-t border-slate-200 dark:border-[#222f49] bg-slate-50 dark:bg-[#161f33] flex items-center justify-between gap-3 shrink-0">
+            <div class="px-6 py-3.5 border-t border-zinc-200 dark:border-zinc-800 bg-slate-50 dark:bg-[#161f33] flex items-center justify-between gap-3 shrink-0">
                 <!-- Tombol Hapus Settingan Banner -->
                 <button type="button" @click="clearHeaderBanner()" class="px-3.5 py-2 rounded-xl text-rose-500 hover:bg-rose-100/70 dark:hover:bg-rose-950/40 text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer" title="Hapus settingan banner dan kembali ke default">
                     <span class="material-symbols-outlined text-[16px]">delete</span>
@@ -1751,8 +1751,8 @@
                 </button>
 
                 <div class="flex items-center gap-2">
-                    <button type="button" @click="closeBannerModal()" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">Batal</button>
-                    <button type="button" @click="applyBannerModal()" class="px-4 py-2 rounded-xl bg-sky-500 hover:bg-sky-600 text-white dark:bg-sky-600 dark:hover:bg-sky-500 dark:text-white text-xs font-bold transition-all active:scale-95 cursor-pointer">Terapkan Banner</button>
+                    <button type="button" @click="closeBannerModal()" class="px-4 py-2 rounded-xl text-xs font-bold text-zinc-600 dark:text-zinc-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">Batal</button>
+                    <button type="button" @click="applyBannerModal()" class="px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white dark:bg-orange-600 dark:hover:bg-orange-500 dark:text-white text-xs font-bold transition-all active:scale-95 cursor-pointer">Terapkan Banner</button>
                 </div>
             </div>
         </div>
@@ -1841,13 +1841,13 @@
             
             <!-- Mobile Frame Viewport (390px iPhone Frame) -->
             <div x-show="previewDevice === 'mobile'" 
-                 class="w-full max-w-[390px] h-[820px] max-h-[88vh] bg-slate-950 rounded-[44px] p-3 shadow-2xl ring-1 ring-white/15 flex flex-col relative shrink-0 transition-all duration-300">
+                 class="w-full max-w-[390px] h-[820px] max-h-[88vh] bg-slate-950 rounded-[44px] p-3 shadow-none ring-1 ring-white/15 flex flex-col relative shrink-0 transition-all duration-300">
                 <!-- Dynamic Island / Speaker Notch -->
                 <div class="w-28 h-4 bg-black rounded-full mx-auto mb-2 shrink-0 flex items-center justify-center">
                     <div class="w-2.5 h-2.5 rounded-full bg-slate-900 border border-slate-800"></div>
                 </div>
                 <!-- Iframe Container -->
-                <div class="flex-1 w-full bg-white dark:bg-[#090d16] rounded-[32px] overflow-hidden relative shadow-inner">
+                <div class="flex-1 w-full bg-white dark:bg-[#000000] rounded-[32px] overflow-hidden relative shadow-inner">
                     <iframe id="preview-iframe-mobile" :src="isPreviewModalOpen ? previewUrl : 'about:blank'" class="w-full h-full border-0"></iframe>
                 </div>
                 <!-- Bottom Bar Indicator -->
@@ -1856,7 +1856,7 @@
 
             <!-- Desktop Frame Viewport (Browser Frame) -->
             <div x-show="previewDevice === 'desktop'" 
-                 class="w-full max-w-5xl h-[820px] max-h-[88vh] bg-slate-900 rounded-2xl shadow-2xl ring-1 ring-white/15 flex flex-col overflow-hidden transition-all duration-300">
+                 class="w-full max-w-5xl h-[820px] max-h-[88vh] bg-slate-900 rounded-2xl shadow-none ring-1 ring-white/15 flex flex-col overflow-hidden transition-all duration-300">
                 <!-- Browser Window Header -->
                 <div class="h-9 bg-slate-800/90 border-b border-slate-700 px-4 flex items-center gap-3 shrink-0">
                     <div class="flex gap-1.5">
@@ -1872,7 +1872,7 @@
                     </div>
                 </div>
                 <!-- Iframe Container -->
-                <div class="flex-1 w-full bg-white dark:bg-[#090d16] overflow-hidden relative">
+                <div class="flex-1 w-full bg-white dark:bg-[#000000] overflow-hidden relative">
                     <iframe id="preview-iframe-desktop" :src="isPreviewModalOpen ? previewUrl : 'about:blank'" class="w-full h-full border-0"></iframe>
                 </div>
             </div>
@@ -1935,14 +1935,14 @@
             isBannerModalOpen: false,
             bannerTab: 'gradient',
             previewBanner: '',
-            customGradStart: '#0284c7',
+            customGradStart: '#ea580c',
             customGradEnd: '#06b6d4',
             customGradDeg: '135deg',
             customSolidColor: '#0f172a',
             
             presetGradients: [
                 { name: 'Midnight Sky', value: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%)' },
-                { name: 'Cyber Blue', value: 'linear-gradient(135deg, #022c43 0%, #0284c7 50%, #06b6d4 100%)' },
+                { name: 'Cyber Blue', value: 'linear-gradient(135deg, #022c43 0%, #ea580c 50%, #06b6d4 100%)' },
                 { name: 'Royal Purple', value: 'linear-gradient(135deg, #1e1b4b 0%, #581c87 50%, #7c3aed 100%)' },
                 { name: 'Sunset Crimson', value: 'linear-gradient(135deg, #450a0a 0%, #991b1b 50%, #f97316 100%)' },
                 { name: 'Emerald Tech', value: 'linear-gradient(135deg, #022c22 0%, #065f46 50%, #10b981 100%)' },
@@ -2180,7 +2180,7 @@
                     draggable: '.canvas-widget-item',
                     handle: '.drag-handle',
                     ghostClass: 'opacity-40',
-                    chosenClass: 'ring-2 ring-sky-500 rounded-2xl',
+                    chosenClass: 'ring-2 ring-orange-500 rounded-2xl',
                     onEnd: () => {
                         const items = Array.from(el.querySelectorAll('.canvas-widget-item'));
                         const newIds = items.map(node => node.getAttribute('data-id')).filter(Boolean);
@@ -2246,7 +2246,7 @@
                     url: preset.url || 'https://',
                     image: preset.image || null,
                     icon: preset.icon || 'link',
-                    color: preset.color || '#0284c7',
+                    color: preset.color || '#ea580c',
                     layout: preset.layout || 'list',
                     badge: preset.badge || '',
                     is_active: true
@@ -2259,7 +2259,7 @@
                     url: 'https://',
                     image: null,
                     icon: 'link',
-                    color: '#0284c7',
+                    color: '#ea580c',
                     layout: 'list',
                     badge: '',
                     is_active: true

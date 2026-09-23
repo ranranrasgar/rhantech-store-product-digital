@@ -8,7 +8,7 @@
             <h2 class="font-headline-sm font-bold text-on-surface">User Management</h2>
             <p class="font-body-md text-on-surface-variant">Kelola akun pengguna, hak akses, dan kepemilikan toko.</p>
         </div>
-        <a href="{{ route('admin.users.create') }}" class="bg-primary text-on-primary px-4 py-2 rounded-xl font-bold hover:bg-primary/90 transition-colors flex items-center gap-2 self-start sm:self-auto shadow-sm" wire:navigate>
+        <a href="{{ route('admin.users.create') }}" class="bg-primary text-on-primary px-4 py-2 rounded-xl font-bold hover:bg-primary/90 transition-colors flex items-center gap-2 self-start sm:self-auto shadow-none" wire:navigate>
             <span class="material-symbols-outlined text-[1.25rem]">add</span> Add New User
         </a>
     </div>

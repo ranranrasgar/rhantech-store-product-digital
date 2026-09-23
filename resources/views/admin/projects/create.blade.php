@@ -133,7 +133,7 @@
                              x-transition:leave="transition ease-in duration-100"
                              x-transition:leave-start="opacity-100 translate-y-0"
                              x-transition:leave-end="opacity-0 translate-y-1"
-                             class="absolute left-0 right-0 top-full mt-1 bg-surface border border-outline-variant rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto p-1.5 divide-y divide-outline-variant/30"
+                             class="absolute left-0 right-0 top-full mt-1 bg-surface border border-outline-variant rounded-lg shadow-none z-50 max-h-60 overflow-y-auto p-1.5 divide-y divide-outline-variant/30"
                              style="display: none;">
                             
                             <!-- Search status header -->
