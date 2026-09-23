@@ -322,6 +322,10 @@
     {{-- Top micro bar --}}
     <div class="site-header-topbar hidden md:flex max-w-[1280px] mx-auto px-6 items-center justify-between py-1.5 text-[12px] relative z-40">
         <div class="flex items-center gap-5 text-white/60">
+            <a href="{{ url('/?bypass=1') }}" class="hover:text-white/90 transition-colors">
+                <span class="material-symbols-outlined text-[13px] align-middle">home</span> Home
+            </a>
+            <span class="h-3 w-px bg-white/15 mx-0.5"></span>
             <a href="{{ route('tenant.dashboard') }}" class="hover:text-white/90 transition-colors">
                 <span class="material-symbols-outlined text-[13px] align-middle">storefront</span> Client Area
             </a>
