@@ -118,106 +118,108 @@ class ProductController extends Controller
             return view('products._list', compact('products'))->render();
         }
 
-        // Metadata hanya dimuat pada saat full page load dan di-cache 30 menit
-        $categories = \App\Models\ProductCategory::select(['id', 'store_id', 'name'])
-            ->whereHas('products', function ($q) {
-                $q->published();
-            })
-            ->withCount(['products' => function ($q) {
-                $q->published();
-            }])
-            ->with('store:id,name')
-            ->orderByDesc('products_count')
-            ->orderByRaw('store_id IS NULL DESC, name ASC')
-            ->get();
-
-        $types = \App\Models\ProductType::select(['id', 'store_id', 'name'])
-            ->whereHas('products', function ($q) {
-                $q->published();
-            })
-            ->withCount(['products' => function ($q) {
-                $q->published();
-            }])
-            ->with('store:id,name')
-            ->orderByRaw('store_id IS NULL DESC, name ASC')
-            ->get();
-
-        $stores = \App\Models\Store::select(['id', 'name', 'slug'])->get();
-
-        $banners = \App\Models\Banner::where('is_active', true)->get()->keyBy('position');
-
-        $topProducts = Product::with(['store:id,name,slug', 'images'])
-            ->published()
-            ->select(['id', 'store_id', 'name', 'slug', 'price', 'discount_price', 'views', 'sales_count'])
-            ->orderBy('views', 'desc')
-            ->orderBy('sales_count', 'desc')
-            ->limit(5)
-            ->get();
-
-        // Banner Toko Rekomendasi & Beriklan (Carousel Slide Bergantian)
-        $adStores = \App\Models\Store::where('ad_balance', '>', 0)
-            ->whereHas('ads', function ($q) {
-                $q->activeAndFunded()->whereNotNull('product_id', 'and');
-            })
-            ->with([
-                'ads' => function ($q) {
-                    $q->activeAndFunded()->whereNotNull('product_id')->with(['product.images', 'product.category:id,name'])->orderBy('bid_price', 'desc');
-                },
-                'products' => function ($q) {
-                    $q->published()->select(['products.id', 'products.store_id', 'products.name', 'products.slug', 'products.price', 'products.discount_price'])->with('images')->latest('products.created_at')->take(6);
-                },
-                'showcaseProducts' => function ($q) {
-                    $q->published()->select(['products.id', 'products.store_id', 'products.name', 'products.slug', 'products.price', 'products.discount_price'])->with('images')->latest('products.created_at')->take(6);
-                }
-            ])
-            ->get(['id', 'name', 'slug', 'logo', 'description', 'ad_balance', 'views']);
-
-        $adStores->each(function ($store) {
-            $store->is_sponsored_ad = true;
+        // Metadata hanya dimuat pada saat full page load — di-cache 10 menit
+        $categories = Cache::remember('public:product_categories', 600, function () {
+            return \App\Models\ProductCategory::select(['id', 'store_id', 'name'])
+                ->whereHas('products', fn ($q) => $q->published())
+                ->withCount(['products' => fn ($q) => $q->published()])
+                ->with('store:id,name')
+                ->orderByDesc('products_count')
+                ->orderByRaw('store_id IS NULL DESC, name ASC')
+                ->get();
         });
 
-        $adStoreIds = $adStores->pluck('id');
-        $popularStores = \App\Models\Store::whereNotIn('id', $adStoreIds)
-            ->where(function ($q) {
-                $q->whereHas('products', fn($p) => $p->published())
-                  ->orWhereHas('showcaseProducts', fn($p) => $p->published());
-            })
-            ->with([
-                'ads' => fn($q) => $q->whereRaw('0 = 1'),
-                'products' => function ($q) {
-                    $q->published()->select(['products.id', 'products.store_id', 'products.name', 'products.slug', 'products.price', 'products.discount_price'])->with('images')->latest('products.created_at')->take(6);
-                },
-                'showcaseProducts' => function ($q) {
-                    $q->published()->select(['products.id', 'products.store_id', 'products.name', 'products.slug', 'products.price', 'products.discount_price'])->with('images')->latest('products.created_at')->take(6);
-                }
-            ])
-            ->orderBy('views', 'desc')
-            ->orderBy('id', 'desc')
-            ->take(6)
-            ->get(['id', 'name', 'slug', 'logo', 'description', 'ad_balance', 'views']);
-
-        $popularStores->each(function ($store) {
-            $store->is_sponsored_ad = false;
+        $types = Cache::remember('public:product_types', 600, function () {
+            return \App\Models\ProductType::select(['id', 'store_id', 'name'])
+                ->whereHas('products', fn ($q) => $q->published())
+                ->withCount(['products' => fn ($q) => $q->published()])
+                ->with('store:id,name')
+                ->orderByRaw('store_id IS NULL DESC, name ASC')
+                ->get();
         });
 
-        $sponsoredStores = $adStores->concat($popularStores);
+        $stores = Cache::remember('public:store_list_slim', 300, function () {
+            return \App\Models\Store::select(['id', 'name', 'slug'])->get();
+        });
 
-        // Prioritas Produk Beriklan Aktif (Diurutkan berdasarkan bid_price tertinggi, lalu iklan terbaru)
-        $sponsoredAds = \App\Models\SellerAd::activeAndFunded()
-            ->whereNotNull('product_id')
-            ->with([
-                'product' => function ($q) {
-                    $q->published()->with('images');
-                },
-                'store:id,name,slug'
-            ])
-            ->orderBy('bid_price', 'desc')
-            ->orderBy('id', 'desc')
-            ->get()
-            ->filter(fn($ad) => !is_null($ad->product))
-            ->unique('product_id');
+        $banners = Cache::remember('public:active_banners', 600, function () {
+            return \App\Models\Banner::where('is_active', true)->get()->keyBy('position');
+        });
 
-        // Rekam impresi iklan untuk produk beriklan di banner strip
+        $topProducts = Cache::remember('public:top_products', 600, function () {
+            return Product::with(['store:id,name,slug', 'images'])
+                ->published()
+                ->select(['id', 'store_id', 'name', 'slug', 'price', 'discount_price', 'views', 'sales_count'])
+                ->orderBy('views', 'desc')
+                ->orderBy('sales_count', 'desc')
+                ->limit(5)
+                ->get();
+        });
+
+        // Banner Toko Rekomendasi & Beriklan — cache 5 menit (lebih sering update)
+        $sponsoredStores = Cache::remember('public:sponsored_stores', 300, function () {
+            $adStores = \App\Models\Store::where('ad_balance', '>', 0)
+                ->whereHas('ads', function ($q) {
+                    $q->activeAndFunded()->whereNotNull('product_id', 'and');
+                })
+                ->with([
+                    'ads' => function ($q) {
+                        $q->activeAndFunded()->whereNotNull('product_id')->with(['product.images', 'product.category:id,name'])->orderBy('bid_price', 'desc');
+                    },
+                    'products' => function ($q) {
+                        $q->published()->select(['products.id', 'products.store_id', 'products.name', 'products.slug', 'products.price', 'products.discount_price'])->with('images')->latest('products.created_at')->take(6);
+                    },
+                    'showcaseProducts' => function ($q) {
+                        $q->published()->select(['products.id', 'products.store_id', 'products.name', 'products.slug', 'products.price', 'products.discount_price'])->with('images')->latest('products.created_at')->take(6);
+                    }
+                ])
+                ->get(['id', 'name', 'slug', 'logo', 'description', 'ad_balance', 'views']);
+
+            $adStores->each(fn ($store) => $store->is_sponsored_ad = true);
+
+            $adStoreIds = $adStores->pluck('id');
+            $popularStores = \App\Models\Store::whereNotIn('id', $adStoreIds)
+                ->where(function ($q) {
+                    $q->whereHas('products', fn ($p) => $p->published())
+                      ->orWhereHas('showcaseProducts', fn ($p) => $p->published());
+                })
+                ->with([
+                    'ads' => fn ($q) => $q->whereRaw('0 = 1'),
+                    'products' => function ($q) {
+                        $q->published()->select(['products.id', 'products.store_id', 'products.name', 'products.slug', 'products.price', 'products.discount_price'])->with('images')->latest('products.created_at')->take(6);
+                    },
+                    'showcaseProducts' => function ($q) {
+                        $q->published()->select(['products.id', 'products.store_id', 'products.name', 'products.slug', 'products.price', 'products.discount_price'])->with('images')->latest('products.created_at')->take(6);
+                    }
+                ])
+                ->orderBy('views', 'desc')
+                ->orderBy('id', 'desc')
+                ->take(6)
+                ->get(['id', 'name', 'slug', 'logo', 'description', 'ad_balance', 'views']);
+
+            $popularStores->each(fn ($store) => $store->is_sponsored_ad = false);
+
+            return $adStores->concat($popularStores);
+        });
+
+        // Produk beriklan aktif — cache 3 menit
+        $sponsoredAds = Cache::remember('public:sponsored_ads', 180, function () {
+            return \App\Models\SellerAd::activeAndFunded()
+                ->whereNotNull('product_id')
+                ->with([
+                    'product' => function ($q) {
+                        $q->published()->with('images');
+                    },
+                    'store:id,name,slug'
+                ])
+                ->orderBy('bid_price', 'desc')
+                ->orderBy('id', 'desc')
+                ->get()
+                ->filter(fn ($ad) => !is_null($ad->product))
+                ->unique('product_id');
+        });
+
+        // Rekam impresi iklan untuk produk beriklan di banner strip — non-blocking via dispatch
         if ($sponsoredAds->isNotEmpty()) {
             \App\Models\SellerAd::whereIn('id', $sponsoredAds->pluck('id'))
                 ->increment('views_count');

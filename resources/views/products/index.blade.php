@@ -249,11 +249,11 @@
                         {{-- Image thumbnail --}}
                         <div class="w-full aspect-[4/3] rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700 relative mb-2">
                             @if($topImg)
-                                <img src="{{ asset('storage/' . $topImg->image_path) }}" 
+                                <img src="{{ \App\Support\ImageThumb::url($topImg->image_path, 400) }}" 
                                      alt="Produk Unggulan: {{ $top->name }} - {{ $top->category ? $top->category->name : 'Source Code Aplikasi' }}" 
                                      title="{{ $top->name }}"
                                      loading="lazy"
-                                     class="w-full h-full object-cover group-hover/card:scale-105 transition-transform duration-300">
+                                     class="w-full h-full object-cover group-hover/card:scale-105 transition-transform duration-300" decoding="async">
                             @else
                                 <div class="w-full h-full flex items-center justify-center text-gray-400">
                                     <span class="material-symbols-outlined text-2xl">image</span>
@@ -310,7 +310,7 @@
                 <span class="w-2 h-2 rounded-full bg-[#0284c7] shadow-[0_0_8px_#38bdf8] animate-pulse"></span>
                 <span class="text-[11px] font-bold text-slate-800 dark:text-slate-200">Produk Bersponsor</span>
             </div>
-            <span class="text-[9px] font-extrabold text-[#0284c7] dark:text-sky-400 bg-sky-50 dark:bg-sky-950/60 px-1.5 py-0.5 rounded border border-sky-200/80 dark:border-sky-800/60 uppercase tracking-wider">Iklan</span>
+            <span class="text-[9px] font-extrabold text-sky-800 dark:text-sky-200 bg-sky-50 dark:bg-sky-950/60 px-1.5 py-0.5 rounded border border-sky-200/80 dark:border-sky-800/60 uppercase tracking-wider">Iklan</span>
         </div>
 
         {{-- Daftar Produk Beriklan Terurut (Horizontal Scroll) --}}
@@ -330,22 +330,22 @@
                         <!-- Thumbnail -->
                         <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-800 shrink-0 relative">
                             @if($pImg)
-                                <img src="{{ asset('storage/' . $pImg->image_path) }}" alt="{{ $p->name }}" class="w-full h-full object-cover group-hover/pmini:scale-105 transition-transform duration-200">
+                                <img src="{{ \App\Support\ImageThumb::url($pImg->image_path, 120) }}" alt="{{ $p->name }}" class="w-full h-full object-cover group-hover/pmini:scale-105 transition-transform duration-200" loading="lazy" decoding="async">
                             @else
                                 <div class="w-full h-full flex items-center justify-center text-slate-400">
                                     <span class="material-symbols-outlined text-sm">inventory_2</span>
                                 </div>
                             @endif
-                            <span class="absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-[#0284c7] ring-1 ring-white dark:ring-slate-900" title="Produk Bersponsor"></span>
+                            <span class="absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-sky-600 ring-1 ring-white dark:ring-slate-900" title="Produk Bersponsor"></span>
                         </div>
 
                         <!-- Info Produk (Nama & Harga Saja, Tanpa Nama Toko) -->
                         <div class="min-w-0 flex-1 flex flex-col justify-center">
-                            <h4 class="text-[11px] font-bold text-slate-800 dark:text-slate-100 truncate group-hover/pmini:text-[#0284c7] transition-colors leading-tight mb-0.5" title="{{ $p->name }}">
+                            <h4 class="text-[11px] font-bold text-slate-800 dark:text-slate-100 truncate group-hover/pmini:text-sky-700 dark:group-hover/pmini:text-sky-300 transition-colors leading-tight mb-0.5" title="{{ $p->name }}">
                                 {{ $p->name }}
                             </h4>
                             <div class="flex items-baseline gap-1 flex-wrap min-w-0">
-                                <span class="text-[10.5px] sm:text-[11px] font-black text-[#0284c7] shrink-0 leading-none">
+                                <span class="text-[10.5px] sm:text-[11px] font-black text-sky-700 dark:text-sky-300 shrink-0 leading-none">
                                     Rp{{ number_format($pPrice, 0, ',', '.') }}
                                 </span>
                                 @if($hasDisc)
@@ -455,9 +455,9 @@
                         <div class="flex items-center gap-2.5 shrink-0 max-w-full lg:max-w-[220px] xl:max-w-[250px] pr-20 lg:pr-0">
                             <div class="w-9 h-9 md:w-10 md:h-10 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shrink-0 shadow-2xs flex items-center justify-center">
                                 @if($spStore->logo)
-                                    <img src="{{ asset('storage/' . $spStore->logo) }}" alt="{{ $spStore->name }}" class="w-full h-full object-cover">
+                                    <img src="{{ \App\Support\ImageThumb::url($spStore->logo, 96) }}" alt="{{ $spStore->name }}" class="w-full h-full object-cover" loading="lazy" decoding="async">
                                 @else
-                                    <img src="https://ui-avatars.com/api/?name={{ urlencode($spStore->name) }}&background=0284c7&color=fff" alt="{{ $spStore->name }}" class="w-full h-full object-cover">
+                                    <img src="https://ui-avatars.com/api/?name={{ urlencode($spStore->name) }}&background=0284c7&color=fff" alt="{{ $spStore->name }}" class="w-full h-full object-cover" loading="lazy" decoding="async">
                                 @endif
                             </div>
 
@@ -467,7 +467,7 @@
                                         {{ $spStore->name }}
                                     </a>
                                     @if($spStore->is_sponsored_ad ?? false)
-                                        <span class="px-1.5 py-0.5 rounded-full bg-sky-50 dark:bg-sky-950/60 text-[#0284c7] dark:text-sky-400 text-[9px] font-bold border border-sky-200/80 dark:border-sky-800/60 flex items-center gap-0.5" title="Toko Rekomendasi (Iklan Aktif)">
+                                        <span class="px-1.5 py-0.5 rounded-full bg-sky-50 dark:bg-sky-950/60 text-sky-800 dark:text-sky-200 text-[9px] font-bold border border-sky-200/80 dark:border-sky-800/60 flex items-center gap-0.5" title="Toko Rekomendasi (Iklan Aktif)">
                                             <span class="material-symbols-outlined text-[11px]">verified</span>
                                             Toko Rekomendasi
                                         </span>
@@ -504,7 +504,7 @@
                                         <!-- Thumbnail -->
                                         <div class="w-9 h-9 md:w-10 md:h-10 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-800 shrink-0 relative">
                                             @if($pImg)
-                                                <img src="{{ asset('storage/' . $pImg->image_path) }}" alt="{{ $p->name }}" class="w-full h-full object-cover group-hover/pmini:scale-105 transition-transform duration-200">
+                                                <img src="{{ \App\Support\ImageThumb::url($pImg->image_path, 120) }}" alt="{{ $p->name }}" class="w-full h-full object-cover group-hover/pmini:scale-105 transition-transform duration-200" loading="lazy" decoding="async">
                                             @else
                                                 <div class="w-full h-full flex items-center justify-center text-slate-400">
                                                     <span class="material-symbols-outlined text-sm">inventory_2</span>
@@ -521,7 +521,7 @@
                                                 {{ $p->name }}
                                             </h4>
                                             <div class="flex items-baseline gap-1 flex-wrap min-w-0">
-                                                <span class="text-[10px] sm:text-[11px] font-black text-[#0284c7] shrink-0 leading-none">
+                                                <span class="text-[10px] sm:text-[11px] font-black text-sky-700 dark:text-sky-300 shrink-0 leading-none">
                                                     Rp{{ number_format($pPrice, 0, ',', '.') }}
                                                 </span>
                                                 @if($hasDisc)
@@ -585,7 +585,7 @@
         @if($hasMain)
             @php $mainBanner = $banners->get('main'); @endphp
             <a href="{{ $mainBanner->link ?? '#' }}" class="{{ ($hasSide1 || $hasSide2) ? 'flex-[2] h-[160px] md:h-full' : 'w-full h-[180px] md:h-[260px]' }} overflow-hidden rounded-xl shadow-sm relative group cursor-pointer block">
-                <img src="{{ asset('storage/' . $mainBanner->image_path) }}" alt="{{ $mainBanner->title ?? 'Banner Utama' }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                <img src="{{ \App\Support\ImageThumb::url($mainBanner->image_path, 1200) }}" alt="{{ $mainBanner->title ?? 'Banner Utama' }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" fetchpriority="high" decoding="async">
                 <div class="absolute inset-0 bg-black/20"></div>
             </a>
         @endif
@@ -595,14 +595,14 @@
             @if($hasSide1)
                 @php $side1 = $banners->get('side_1'); @endphp
                 <a href="{{ $side1->link ?? '#' }}" class="flex-1 h-[115px] md:h-full overflow-hidden rounded-xl shadow-sm cursor-pointer group block">
-                    <img src="{{ asset('storage/' . $side1->image_path) }}" alt="{{ $side1->title ?? 'Banner Samping Atas' }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <img src="{{ \App\Support\ImageThumb::url($side1->image_path, 640) }}" alt="{{ $side1->title ?? 'Banner Samping Atas' }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" decoding="async">
                 </a>
             @endif
 
             @if($hasSide2)
                 @php $side2 = $banners->get('side_2'); @endphp
                 <a href="{{ $side2->link ?? '#' }}" class="flex-1 h-[115px] md:h-full overflow-hidden rounded-xl shadow-sm cursor-pointer group block">
-                    <img src="{{ asset('storage/' . $side2->image_path) }}" alt="{{ $side2->title ?? 'Banner Samping Bawah' }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <img src="{{ \App\Support\ImageThumb::url($side2->image_path, 640) }}" alt="{{ $side2->title ?? 'Banner Samping Bawah' }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" decoding="async">
                 </a>
             @endif
         </div>
@@ -888,9 +888,9 @@
                     <div class="flex items-center gap-2.5 min-w-0">
                         <div class="w-10 h-10 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shrink-0 flex items-center justify-center">
                             @if($mStore->logo)
-                                <img src="{{ asset('storage/' . $mStore->logo) }}" alt="{{ $mStore->name }}" class="w-full h-full object-cover">
+                                <img src="{{ \App\Support\ImageThumb::url($mStore->logo, 96) }}" alt="{{ $mStore->name }}" class="w-full h-full object-cover" loading="lazy" decoding="async">
                             @else
-                                <img src="https://ui-avatars.com/api/?name={{ urlencode($mStore->name) }}&background=0284c7&color=fff" alt="{{ $mStore->name }}" class="w-full h-full object-cover">
+                                <img src="https://ui-avatars.com/api/?name={{ urlencode($mStore->name) }}&background=0284c7&color=fff" alt="{{ $mStore->name }}" class="w-full h-full object-cover" loading="lazy" decoding="async">
                             @endif
                         </div>
                         <div class="min-w-0">

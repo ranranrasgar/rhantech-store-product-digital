@@ -682,8 +682,8 @@
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-bold text-on-surface border-l-4 border-primary pl-3">Semua Produk</h2>
                     <div class="flex items-center gap-2">
-                        <span class="text-sm text-on-surface-variant">Urutkan:</span>
-                        <select class="text-sm border border-outline-variant rounded px-3 py-1.5 focus:outline-none focus:border-primary">
+                        <label for="sort-products" class="text-sm text-on-surface-variant">Urutkan:</label>
+                        <select id="sort-products" aria-label="Urutkan produk" class="text-sm border border-outline-variant rounded px-3 py-1.5 focus:outline-none focus:border-primary">
                             <option>Terbaru</option>
                             <option>Terlaris</option>
                             <option>Harga Termurah</option>
@@ -705,7 +705,7 @@
                         <div class="aspect-square w-full bg-surface-container-high relative overflow-hidden">
                             @if($product->images->count() > 0)
                                 @php $mainImg = $product->images->where('is_main', true)->first() ?? $product->images->first(); @endphp
-                                <img src="{{ asset('storage/' . $mainImg->image_path) }}" alt="{{ $product->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                <img src="{{ asset('storage/' . $mainImg->image_path) }}" alt="{{ $product->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" decoding="async">
                             @else
                                 <div class="w-full h-full flex items-center justify-center text-on-surface-variant">
                                     <span class="material-symbols-outlined text-4xl">inventory_2</span>

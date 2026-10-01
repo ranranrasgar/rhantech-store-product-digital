@@ -16,32 +16,10 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet"/>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        primary: "rgb(var(--theme-primary, 14 165 233) / <alpha-value>)",
-                        secondary: "rgb(var(--theme-secondary, 2 132 199) / <alpha-value>)",
-                        surface: "rgb(var(--theme-surface, 255 255 255) / <alpha-value>)",
-                        "on-surface": "rgb(var(--theme-on-surface, 27 28 30) / <alpha-value>)",
-                        "on-surface-variant": "rgb(var(--theme-on-surface-variant, 90 95 102) / <alpha-value>)",
-                        "surface-container": "rgb(var(--theme-surface-container, 243 244 246) / <alpha-value>)",
-                        "surface-container-high": "rgb(var(--theme-surface-high, 230 234 238) / <alpha-value>)",
-                        "surface-container-low": "rgb(var(--theme-surface-low, 248 249 250) / <alpha-value>)",
-                        "surface-container-lowest": "rgb(var(--theme-surface-lowest, 255 255 255) / <alpha-value>)",
-                        "outline-variant": "rgb(var(--theme-outline-variant, 226 232 240) / <alpha-value>)",
-                        background: "rgb(var(--theme-background, 248 250 252) / <alpha-value>)",
-                        "on-background": "rgb(var(--theme-on-background, 15 23 42) / <alpha-value>)",
-                        error: "#ba1a1a",
-                    }
-                }
-            }
-        };
-    </script>
+    {{-- Material Symbols: non-blocking preload --}}
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" onload="this.rel='stylesheet'" />
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet" /></noscript>
+    {{-- CDN Tailwind dihapus: sudah di-build oleh Vite (lihat @vite di bawah) --}}
     @include('components.theme-styles')
     @vite(['resources/css/app.css'])
     <style>

@@ -59,104 +59,14 @@
     <link rel="shortcut icon" type="image/png" href="{{ isset($company) && $company->favicon ? '/storage/'.$company->favicon : '/favicon.ico' }}" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "secondary-container": "#57dffe",
-                        "on-tertiary-container": "#7073ff",
-                        "surface-container-low": "rgb(var(--theme-surface-low) / <alpha-value>)",
-                        "tertiary-fixed-dim": "#c0c1ff",
-                        "secondary-fixed-dim": "#fb923c",
-                        "surface-variant": "rgb(var(--theme-surface-variant) / <alpha-value>)",
-                        "background": "rgb(var(--theme-background) / <alpha-value>)",
-                        "on-secondary-container": "#0369a1",
-                        "error-container": "#ffdad6",
-                        "surface-dim": "#cbdbf5",
-                        "on-secondary-fixed-variant": "#075985",
-                        "surface-container-lowest": "rgb(var(--theme-surface-lowest) / <alpha-value>)",
-                        "secondary": "#ea580c",
-                        "surface-container-highest": "rgb(var(--theme-surface-highest) / <alpha-value>)",
-                        "tertiary-container": "#07006c",
-                        "on-primary": "#ffffff",
-                        "inverse-surface": "#213145",
-                        "on-secondary": "#ffffff",
-                        "on-error-container": "#93000a",
-                        "inverse-on-surface": "#eaf1ff",
-                        "on-primary-fixed-variant": "#3f465c",
-                        "on-error": "#ffffff",
-                        "inverse-primary": "#bec6e0",
-                        "outline": "rgb(var(--theme-outline) / <alpha-value>)",
-                        "outline-variant": "rgb(var(--theme-outline-variant) / <alpha-value>)",
-                        "surface": "rgb(var(--theme-surface) / <alpha-value>)",
-                        "surface-tint": "#565e74",
-                        "surface-container-high": "rgb(var(--theme-surface-high) / <alpha-value>)",
-                        "on-background": "rgb(var(--theme-on-background) / <alpha-value>)",
-                        "on-surface": "rgb(var(--theme-on-surface) / <alpha-value>)",
-                        "on-primary-container": "rgb(var(--theme-on-primary-container) / <alpha-value>)",
-                        "tertiary": "#000000",
-                        "primary": "rgb(var(--theme-primary) / <alpha-value>)",
-                        "on-secondary-fixed": "#001f26",
-                        "tertiary-fixed": "#e1e0ff",
-                        "error": "#ba1a1a",
-                        "secondary-fixed": "#acedff",
-                        "on-tertiary": "#ffffff",
-                        "on-primary-fixed": "#131b2e",
-                        "primary-fixed-dim": "#bec6e0",
-                        "on-tertiary-fixed-variant": "#2f2ebe",
-                        "on-tertiary-fixed": "#07006c",
-                        "on-surface-variant": "rgb(var(--theme-on-surface-variant) / <alpha-value>)",
-                        "primary-fixed": "#dae2fd",
-                        "surface-bright": "#f8f9ff",
-                        "primary-container": "#131b2e",
-                        "surface-container": "rgb(var(--theme-surface-container) / <alpha-value>)"
-                    },
-                    "borderRadius": {
-                        "DEFAULT": "0.25rem",
-                        "lg": "0.5rem",
-                        "xl": "0.75rem",
-                        "full": "9999px"
-                    },
-                    "spacing": {
-                        "2xl": "80px",
-                        "xl": "48px",
-                        "md": "16px",
-                        "container-max": "1280px",
-                        "sm": "8px",
-                        "xs": "4px",
-                        "unit": "4px",
-                        "lg": "24px",
-                        "gutter": "24px"
-                    },
-                    "fontFamily": {
-                        "sans": ["'Plus Jakarta Sans'", "-apple-system", "BlinkMacSystemFont", "'Segoe UI'", "sans-serif"],
-                        "headline-xl": ["'Plus Jakarta Sans'", "-apple-system", "BlinkMacSystemFont", "'Segoe UI'", "sans-serif"],
-                        "body-md": ["'Plus Jakarta Sans'", "-apple-system", "BlinkMacSystemFont", "'Segoe UI'", "sans-serif"],
-                        "headline-lg": ["'Plus Jakarta Sans'", "-apple-system", "BlinkMacSystemFont", "'Segoe UI'", "sans-serif"],
-                        "display-lg-mobile": ["'Plus Jakarta Sans'", "-apple-system", "BlinkMacSystemFont", "'Segoe UI'", "sans-serif"],
-                        "body-lg": ["'Plus Jakarta Sans'", "-apple-system", "BlinkMacSystemFont", "'Segoe UI'", "sans-serif"],
-                        "code-sm": ["ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace"],
-                        "label-md": ["'Plus Jakarta Sans'", "-apple-system", "BlinkMacSystemFont", "'Segoe UI'", "sans-serif"],
-                        "display-lg": ["'Plus Jakarta Sans'", "-apple-system", "BlinkMacSystemFont", "'Segoe UI'", "sans-serif"]
-                    },
-                    "fontSize": {
-                        "headline-xl": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
-                        "body-md": ["14px", { "lineHeight": "21px", "fontWeight": "400" }],
-                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
-                        "display-lg-mobile": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
-                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
-                        "code-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
-                        "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
-                        "display-lg": ["72px", { "lineHeight": "80px", "letterSpacing": "-0.04em", "fontWeight": "700" }]
-                    }
-                }
-            }
-        }
-    </script>
+    {{-- Font non-blocking: tidak menahan render pertama --}}
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" /></noscript>
+    {{-- Material Symbols: hanya axis yang dipakai (opsz 24, wght 400, FILL 0..1) agar file font jauh lebih kecil --}}
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0..1,0&display=block" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0..1,0&display=block" /></noscript>
+    {{-- Tailwind CDN dihapus (render-blocking 127KB + compile di browser). Token tema ada di resources/css/app.css --}}
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     @include('components.theme-styles')
     <style>
         .material-symbols-outlined {
@@ -677,8 +587,8 @@
             <div>
                 <h4 class="font-label-md text-label-md text-on-background dark:text-white font-bold mb-4 uppercase tracking-wider">Company</h4>
                 <ul class="flex flex-col gap-3">
-                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/#about') }}">About Us</a></li>
-                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/#services') }}">Services</a></li>
+                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/?bypass=1#about') }}">About Us</a></li>
+                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/?bypass=1#services') }}">Services</a></li>
                     <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/projects') }}">Projects</a></li>
                 </ul>
             </div>
@@ -691,85 +601,6 @@
             </div>
         </div>
     </footer>
-
-    <!-- Global Testimonial Toast -->
-    @php
-        $toastTestimonials = \App\Models\Testimonial::with('client')
-            ->where('is_active', true)
-            ->inRandomOrder()
-            ->take(5)
-            ->get()
-            ->map(function($t) {
-                return [
-                    'name' => $t->company_name,
-                    'content' => $t->content,
-                    'position' => $t->position . ($t->client ? ' at ' . $t->client->company_name : ''),
-                    'avatar' => $t->photo ? asset('storage/' . $t->photo) : ($t->client && $t->client->logo ? asset('storage/' . $t->client->logo) : null)
-                ];
-            });
-    @endphp
-    @if($toastTestimonials->count() > 0)
-    <div id="testimonial-toast" class="fixed bottom-4 left-4 max-w-sm w-full bg-surface-container-high rounded-md shadow-[0px_20px_25px_-5px_rgba(15,23,42,0.1)] border border-outline-variant p-md transform translate-y-12 opacity-0 pointer-events-none transition-all duration-500 z-50 hidden md:flex gap-md items-start">
-        <div id="toast-avatar" class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center bg-surface text-on-surface-variant flex-shrink-0 overflow-hidden">
-            <span class="material-symbols-outlined">person</span>
-        </div>
-        <div class="flex-1 min-w-0">
-            <p id="toast-content" class="font-body-sm text-on-surface line-clamp-2 italic mb-1 text-sm"></p>
-            <div class="font-label-sm text-primary font-bold truncate text-sm" id="toast-name"></div>
-            <div class="font-code-sm text-on-surface-variant truncate text-xs" id="toast-position"></div>
-        </div>
-        <button onclick="hideToast()" class="text-on-surface-variant hover:text-error transition-colors flex-shrink-0 pointer-events-auto">
-            <span class="material-symbols-outlined text-sm">close</span>
-        </button>
-    </div>
-
-    <script>
-        const toastData = @json($toastTestimonials);
-
-        let toastIndex = 0;
-        const toastEl = document.getElementById('testimonial-toast');
-        
-        function showNextToast() {
-            if (toastData.length === 0) return;
-            
-            const t = toastData[toastIndex];
-            document.getElementById('toast-content').innerText = `"${t.content}"`;
-            document.getElementById('toast-name').innerText = t.name;
-            document.getElementById('toast-position').innerText = t.position;
-            
-            const avatarContainer = document.getElementById('toast-avatar');
-            if (t.avatar) {
-                avatarContainer.innerHTML = `<img src="${t.avatar}" class="w-full h-full object-cover">`;
-            } else {
-                avatarContainer.innerHTML = `<span class="material-symbols-outlined">person</span>`;
-            }
-
-            // Show
-            toastEl.classList.remove('translate-y-12', 'opacity-0', 'pointer-events-none');
-            toastEl.classList.add('translate-y-0', 'opacity-100', 'pointer-events-auto');
-
-            // Hide after 6 seconds
-            setTimeout(() => {
-                hideToast();
-            }, 6000);
-
-            toastIndex = (toastIndex + 1) % toastData.length;
-        }
-
-        function hideToast() {
-            toastEl.classList.add('translate-y-12', 'opacity-0', 'pointer-events-none');
-            toastEl.classList.remove('translate-y-0', 'opacity-100', 'pointer-events-auto');
-        }
-
-        // Show a single testimonial toast shortly after page load
-        if (toastData.length > 0) {
-            toastIndex = Math.floor(Math.random() * toastData.length);
-            setTimeout(() => {
-                showNextToast();
-            }, 3000); // initial delay
-        }
-    </script>
-    @endif
 
     <!-- Navigation Active State Script -->
     <script>
