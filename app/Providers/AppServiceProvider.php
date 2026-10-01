@@ -69,20 +69,32 @@ class AppServiceProvider extends ServiceProvider
         RateLimiter::for('checkout', function (Request $request) {
             return Limit::perMinute(10)->by($request->user()?->id ?: $request->ip());
         });
+        // Composer di bawah dipanggil untuk SETIAP view/partial/komponen yang dirender (bisa ratusan
+        // per halaman). Hasilnya di-memo per request agar query/cache lookup hanya terjadi sekali.
         View::composer('*', function ($view) {
+            static $loaded = false;
             static $cachedCompany = null;
-            if ($cachedCompany === null) {
+            if (! $loaded) {
                 $cachedCompany = CompanyProfile::first(['*']);
+                $loaded = true; // tetap true walau hasilnya null, supaya tidak query ulang
             }
             $view->with('company', $cachedCompany);
         });
 
         View::composer(['layouts.shopee', 'products.*'], function ($view) {
-            $view->with('popularSearches', \App\Models\ProductSearch::getPopular(7));
+            static $popular = null;
+            $popular ??= \App\Models\ProductSearch::getPopular(7);
+            $view->with('popularSearches', $popular);
         });
 
         View::composer(['layouts.public', 'welcome', 'layouts.tenant', 'tenant.*'], function ($view) {
-            $view->with('popupAd', \App\Models\PopupAd::getActiveForCurrentUser());
+            static $loaded = false;
+            static $popupAd = null;
+            if (! $loaded) {
+                $popupAd = \App\Models\PopupAd::getActiveForCurrentUser();
+                $loaded = true;
+            }
+            $view->with('popupAd', $popupAd);
         });
 
         View::composer(['layouts.admin', 'admin.*'], function ($view) {

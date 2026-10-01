@@ -110,4 +110,14 @@ class Project extends Model
     {
         return $this->thumbnail ? media_url($this->thumbnail) : '';
     }
+
+    protected static function booted(): void
+    {
+        $flush = function () {
+            \Illuminate\Support\Facades\Cache::forget('public:project_categories');
+            \Illuminate\Support\Facades\Cache::forget('public:project_types');
+        };
+        static::saved($flush);
+        static::deleted($flush);
+    }
 }

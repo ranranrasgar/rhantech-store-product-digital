@@ -15,10 +15,13 @@
     {{-- Image --}}
     <div class="img-wrap">
         @if($mainImg)
-            <img src="{{ asset('storage/' . $mainImg->image_path) }}" 
+            @php $isAboveFold = $loop->index < 4 && (! method_exists($products, 'currentPage') || $products->currentPage() === 1); @endphp
+            <img src="{{ \App\Support\ImageThumb::url($mainImg->image_path, 480) }}" 
                  alt="{{ $imgAlt }}" 
                  title="{{ $product->name }}" 
-                 loading="lazy">
+                 loading="{{ $isAboveFold ? 'eager' : 'lazy' }}"
+                 @if($loop->index < 2 && $isAboveFold) fetchpriority="high" @endif
+                 decoding="async">
         @else
             <div class="no-img flex items-center justify-center text-gray-300 bg-gray-50 dark:bg-gray-800">
                 <span class="material-symbols-outlined text-5xl">inventory_2</span>

@@ -402,6 +402,19 @@ class CompanyProfileController extends Controller
                 ->with('error', 'File SQL kosong atau tidak valid setelah pembersihan.');
         }
 
+        // Debugbar merekam & memformat SELURUH isi SQL restore (bisa puluhan MB) sebagai satu query.
+        // preg_replace di QueryFormatter gagal (batas PCRE) -> null -> TypeError 500 setelah restore.
+        // Matikan debugbar khusus request ini (hanya aktif di lokal/APP_DEBUG).
+        if (app()->bound('debugbar')) {
+            try {
+                app('debugbar')->disable();
+            } catch (\Throwable) {
+                // abaikan
+            }
+        }
+        @set_time_limit(600);
+        @ini_set('memory_limit', '1024M');
+
         try {
             DB::unprepared($sql);
             // Hapus session backup_download agar script auto-download tidak terpicu setelah restore

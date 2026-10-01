@@ -303,39 +303,6 @@
                 </div>
             </div>
 
-            <!-- 5. Native Mini Sales Trend Chart -->
-            <div class="bg-white dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-4 shadow-xs">
-                <div class="flex items-center justify-between gap-2 pb-3 border-b border-zinc-100 dark:border-zinc-800">
-                    <div class="flex items-center gap-2">
-                        <span class="w-7 h-7 rounded-lg bg-zinc-100 dark:bg-zinc-900 text-slate-700 dark:text-slate-200 flex items-center justify-center">
-                            <span class="material-symbols-outlined text-[18px]">monitoring</span>
-                        </span>
-                        <h3 class="text-sm font-bold text-zinc-900 dark:text-zinc-100">Tren Penjualan</h3>
-                    </div>
-
-                    <!-- Segmented Control Switcher -->
-                    <div class="flex items-center gap-1 bg-zinc-100 dark:bg-zinc-900/80 p-0.5 rounded-xl border border-slate-200/60 dark:border-slate-700/60">
-                        <button type="button" id="btnTenantPeriodMonthlyMobile" onclick="switchTenantTrendPeriod('monthly')" class="px-2.5 py-1 text-[11px] font-bold rounded-lg transition-all bg-orange-500 text-white dark:bg-orange-600 dark:text-white shadow-2xs cursor-pointer">
-                            6 Bulan
-                        </button>
-                        <button type="button" id="btnTenantPeriodDailyMobile" onclick="switchTenantTrendPeriod('daily')" class="px-2.5 py-1 text-[11px] font-bold rounded-lg transition-all text-zinc-600 dark:text-zinc-300 hover:bg-white dark:hover:bg-slate-700 cursor-pointer">
-                            Harian
-                        </button>
-                    </div>
-                </div>
-
-                <div class="mt-3 relative h-48 w-full">
-                    <canvas id="tenantSalesChartMobile"></canvas>
-                </div>
-
-                <div class="mt-3 pt-2.5 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between text-xs">
-                    <span class="text-zinc-500 dark:text-zinc-400 text-[11px]">Total Pendapatan:</span>
-                    <span id="tenantPeriodTotalMobile" class="font-extrabold text-zinc-900 dark:text-zinc-100 text-sm">
-                        Rp {{ number_format(array_sum($monthlySales ?? []), 0, ',', '.') }}
-                    </span>
-                </div>
-            </div>
-
             <!-- 5b. Native Activity Chart Mobile (View, Klik, Order 7 Hari) -->
             <div class="bg-white dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-4 shadow-xs">
                 <div class="flex items-center justify-between gap-2 pb-3 border-b border-zinc-100 dark:border-zinc-800">
@@ -889,62 +856,6 @@
             </div>
         </div>
 
-        <!-- Sales Trend Chart: Bulanan & Harian -->
-        <div class="bg-white dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-5 md:p-6 mb-8 shadow-xs">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-zinc-100 dark:border-zinc-800">
-                <div>
-                    <div class="flex items-center gap-2.5">
-                        <div class="w-9 h-9 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 shadow-sm flex items-center justify-center">
-                            <span class="material-symbols-outlined text-[22px]">monitoring</span>
-                        </div>
-                        <div>
-                            <h2 class="text-base md:text-lg font-bold text-zinc-900 dark:text-zinc-100">Tren Penjualan Toko</h2>
-                            <p id="tenantTrendSubtitle" class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
-                                Grafik pendapatan riil 6 bulan terakhir
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Period Controls -->
-                <div class="flex items-center self-start sm:self-auto gap-1 bg-zinc-100 dark:bg-zinc-900/80 p-1 rounded-xl border border-slate-200/60 dark:border-slate-700/60">
-                    <button type="button" 
-                            id="btnTenantPeriodMonthly" 
-                            onclick="switchTenantTrendPeriod('monthly')"
-                            class="px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all bg-orange-500 text-white dark:bg-orange-600 dark:text-white shadow-2xs cursor-pointer">
-                        Bulanan (6 Bln)
-                    </button>
-                    <button type="button" 
-                            id="btnTenantPeriodDaily" 
-                            onclick="switchTenantTrendPeriod('daily')"
-                            class="px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all text-zinc-600 dark:text-zinc-300 hover:bg-white dark:hover:bg-slate-700 cursor-pointer">
-                        Harian ({{ $currentMonthName ?? 'Bulan Ini' }})
-                    </button>
-                </div>
-            </div>
-
-            <!-- Chart Canvas Container -->
-            <div class="mt-4 relative h-72 w-full">
-                <canvas id="tenantSalesChart"></canvas>
-            </div>
-
-            <!-- Footer Stats Insight -->
-            <div class="mt-4 pt-3 border-t border-zinc-100 dark:border-zinc-800 flex flex-wrap items-center justify-between gap-3 text-xs">
-                <div class="flex items-center gap-4">
-                    <div class="flex items-center gap-1.5 text-zinc-500 dark:text-zinc-400">
-                        <span class="w-2.5 h-2.5 rounded-full bg-orange-500"></span>
-                        <span id="tenantChartLegendLabel">Pendapatan Bersih Penjualan</span>
-                    </div>
-                    <div class="text-zinc-700 dark:text-zinc-300 font-medium">
-                        Total Periode Ini: <span id="tenantPeriodTotal" class="font-bold text-orange-600 dark:text-orange-400">Rp {{ number_format(array_sum($monthlySales ?? []), 0, ',', '.') }}</span>
-                    </div>
-                </div>
-                <div class="text-slate-400 text-[11px]">
-                    *Dihitung otomatis berdasarkan transaksi lunas (Paid &amp; Downloaded)
-                </div>
-            </div>
-        </div>
-
         <!-- Main Content Area: 2 Columns (7:5) -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             
@@ -1262,15 +1173,7 @@
 
 <script>
     (function() {
-        let tenantSalesChartInstance = null;
-        let tenantSalesChartMobileInstance = null;
-        let currentTrendPeriod = 'monthly';
 
-        const revMonthlyLabels = @json($monthLabels ?? []);
-        const revMonthlyData = @json($monthlySales ?? []);
-        const revDailyLabels = @json($dailyLabels ?? []);
-        const revDailyData = @json($dailySales ?? []);
-        const currentMonthName = @json($currentMonthName ?? 'Bulan Ini');
 
         // Activity Chart Data (7-day: Views, Clicks, Orders)
         const activityLabels = @json($activityChartLabels ?? []);
@@ -1400,255 +1303,16 @@
         }
 
 
-        function initTenantSalesChart() {
-            if (typeof Chart === 'undefined') return;
-
-            const isDark = document.documentElement.classList.contains('dark') || document.body.classList.contains('dark');
-            const isDaily = currentTrendPeriod === 'daily';
-            const labels = isDaily ? revDailyLabels : revMonthlyLabels;
-            const data = isDaily ? revDailyData : revMonthlyData;
-            const barPct = isDaily ? 0.75 : 0.55;
-
-            // --- 1. Desktop Chart ---
-            const canvas = document.getElementById('tenantSalesChart');
-            if (canvas) {
-                const existing = Chart.getChart(canvas);
-                if (existing) existing.destroy();
-                if (tenantSalesChartInstance) {
-                    try { tenantSalesChartInstance.destroy(); } catch(e) {}
-                    tenantSalesChartInstance = null;
-                }
-
-                const ctx = canvas.getContext('2d');
-                let gradient = ctx.createLinearGradient(0, 0, 0, 240);
-                if (isDaily) {
-                    gradient.addColorStop(0, 'rgba(14, 165, 233, 0.9)'); // sky-500
-                    gradient.addColorStop(1, 'rgba(14, 165, 233, 0.25)');
-                } else {
-                    gradient.addColorStop(0, 'rgba(2, 132, 199, 0.95)'); // sky-600
-                    gradient.addColorStop(1, 'rgba(2, 132, 199, 0.3)');
-                }
-
-                tenantSalesChartInstance = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Penjualan (Rp)',
-                            data: data,
-                            backgroundColor: gradient,
-                            hoverBackgroundColor: isDaily ? '#ea580c' : '#0369a1',
-                            borderRadius: isDaily ? 3 : 6,
-                            borderSkipped: false,
-                            barPercentage: barPct,
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        interaction: {
-                            mode: 'index',
-                            intersect: false,
-                        },
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                backgroundColor: isDark ? '#0F172A' : '#1E293B',
-                                padding: 12,
-                                cornerRadius: 8,
-                                titleFont: { family: 'Geist', size: 13, weight: 'bold' },
-                                bodyFont: { family: 'Geist', size: 14, weight: '600' },
-                                callbacks: {
-                                    title: function(items) {
-                                        if (!items.length) return '';
-                                        if (currentTrendPeriod === 'daily') {
-                                            return 'Tanggal ' + items[0].label + ' ' + currentMonthName;
-                                        }
-                                        return 'Bulan ' + items[0].label;
-                                    },
-                                    label: function(context) {
-                                        return 'Penjualan: Rp ' + Number(context.parsed.y).toLocaleString('id-ID');
-                                    }
-                                }
-                            }
-                        },
-                        scales: {
-                            x: {
-                                grid: { display: false, drawBorder: false },
-                                ticks: {
-                                    autoSkip: true,
-                                    maxTicksLimit: isDaily ? 16 : 12,
-                                    font: { family: 'Geist', size: 11 },
-                                    color: isDark ? '#94A3B8' : '#64748B'
-                                }
-                            },
-                            y: {
-                                grid: {
-                                    color: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)',
-                                    drawBorder: false
-                                },
-                                ticks: {
-                                    font: { family: 'Geist', size: 11 },
-                                    color: isDark ? '#94A3B8' : '#64748B',
-                                    callback: function(v) {
-                                        if (v >= 1000000) return (v / 1000000) + 'M';
-                                        if (v >= 1000) return (v / 1000) + 'K';
-                                        return v;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-
-            // --- 2. Mobile Mini Chart ---
-            const canvasMobile = document.getElementById('tenantSalesChartMobile');
-            if (canvasMobile) {
-                const existingM = Chart.getChart(canvasMobile);
-                if (existingM) existingM.destroy();
-                if (tenantSalesChartMobileInstance) {
-                    try { tenantSalesChartMobileInstance.destroy(); } catch(e) {}
-                    tenantSalesChartMobileInstance = null;
-                }
-
-                const ctxM = canvasMobile.getContext('2d');
-                let gradientM = ctxM.createLinearGradient(0, 0, 0, 180);
-                if (isDaily) {
-                    gradientM.addColorStop(0, 'rgba(14, 165, 233, 0.9)');
-                    gradientM.addColorStop(1, 'rgba(14, 165, 233, 0.2)');
-                } else {
-                    gradientM.addColorStop(0, 'rgba(2, 132, 199, 0.95)');
-                    gradientM.addColorStop(1, 'rgba(2, 132, 199, 0.25)');
-                }
-
-                tenantSalesChartMobileInstance = new Chart(ctxM, {
-                    type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Penjualan (Rp)',
-                            data: data,
-                            backgroundColor: gradientM,
-                            hoverBackgroundColor: isDaily ? '#ea580c' : '#0369a1',
-                            borderRadius: 4,
-                            borderSkipped: false,
-                            barPercentage: isDaily ? 0.7 : 0.5,
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        interaction: {
-                            mode: 'index',
-                            intersect: false,
-                        },
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                backgroundColor: isDark ? '#0F172A' : '#1E293B',
-                                padding: 8,
-                                cornerRadius: 6,
-                                titleFont: { family: 'Geist', size: 11, weight: 'bold' },
-                                bodyFont: { family: 'Geist', size: 12, weight: '600' },
-                                callbacks: {
-                                    title: function(items) {
-                                        if (!items.length) return '';
-                                        return (currentTrendPeriod === 'daily' ? 'Tgl ' : 'Bln ') + items[0].label;
-                                    },
-                                    label: function(context) {
-                                        return 'Rp ' + Number(context.parsed.y).toLocaleString('id-ID');
-                                    }
-                                }
-                            }
-                        },
-                        scales: {
-                            x: {
-                                grid: { display: false, drawBorder: false },
-                                ticks: {
-                                    autoSkip: true,
-                                    maxTicksLimit: isDaily ? 8 : 6,
-                                    font: { family: 'Geist', size: 10 },
-                                    color: isDark ? '#94A3B8' : '#64748B'
-                                }
-                            },
-                            y: {
-                                grid: {
-                                    color: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)',
-                                    drawBorder: false
-                                },
-                                ticks: {
-                                    font: { family: 'Geist', size: 10 },
-                                    color: isDark ? '#94A3B8' : '#64748B',
-                                    callback: function(v) {
-                                        if (v >= 1000000) return (v / 1000000) + 'M';
-                                        if (v >= 1000) return (v / 1000) + 'K';
-                                        return v;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-
-            // Update Total Periode Ini text for Desktop & Mobile
-            const totalSum = data.reduce((acc, val) => acc + (Number(val) || 0), 0);
-            const totalElem = document.getElementById('tenantPeriodTotal');
-            if (totalElem) {
-                totalElem.textContent = 'Rp ' + Number(totalSum).toLocaleString('id-ID');
-            }
-            const totalElemMobile = document.getElementById('tenantPeriodTotalMobile');
-            if (totalElemMobile) {
-                totalElemMobile.textContent = 'Rp ' + Number(totalSum).toLocaleString('id-ID');
-            }
-        }
-
-        window.switchTenantTrendPeriod = function(period) {
-            currentTrendPeriod = period;
-            const btnMonthly = document.getElementById('btnTenantPeriodMonthly');
-            const btnDaily = document.getElementById('btnTenantPeriodDaily');
-            const subtitle = document.getElementById('tenantTrendSubtitle');
-
-            const btnMonthlyM = document.getElementById('btnTenantPeriodMonthlyMobile');
-            const btnDailyM = document.getElementById('btnTenantPeriodDailyMobile');
-
-            const activeClass = "px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all bg-orange-500 text-white dark:bg-orange-600 dark:text-white shadow-2xs cursor-pointer";
-            const inactiveClass = "px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all text-zinc-600 dark:text-zinc-300 hover:bg-white dark:hover:bg-slate-700 cursor-pointer";
-
-            const activeClassM = "px-2.5 py-1 text-[11px] font-bold rounded-lg transition-all bg-orange-500 text-white dark:bg-orange-600 dark:text-white shadow-2xs cursor-pointer";
-            const inactiveClassM = "px-2.5 py-1 text-[11px] font-bold rounded-lg transition-all text-zinc-600 dark:text-zinc-300 hover:bg-white dark:hover:bg-slate-700 cursor-pointer";
-
-            if (period === 'daily') {
-                if (btnDaily) btnDaily.className = activeClass;
-                if (btnMonthly) btnMonthly.className = inactiveClass;
-                if (btnDailyM) btnDailyM.className = activeClassM;
-                if (btnMonthlyM) btnMonthlyM.className = inactiveClassM;
-                if (subtitle) subtitle.textContent = "Grafik penjualan harian per tanggal di bulan " + currentMonthName;
-            } else {
-                if (btnMonthly) btnMonthly.className = activeClass;
-                if (btnDaily) btnDaily.className = inactiveClass;
-                if (btnMonthlyM) btnMonthlyM.className = activeClassM;
-                if (btnDailyM) btnDailyM.className = inactiveClassM;
-                if (subtitle) subtitle.textContent = "Grafik pendapatan riil 6 bulan terakhir";
-            }
-
-            initTenantSalesChart();
-        };
-
         if (document.readyState !== 'loading') {
-            initTenantSalesChart();
             initTenantActivityChart();
         } else {
             document.addEventListener('DOMContentLoaded', function() {
-                initTenantSalesChart();
                 initTenantActivityChart();
             });
         }
 
         document.addEventListener('livewire:navigated', function() {
             setTimeout(function() {
-                initTenantSalesChart();
                 initTenantActivityChart();
             }, 50);
         });

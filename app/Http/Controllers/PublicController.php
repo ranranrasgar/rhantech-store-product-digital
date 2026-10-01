@@ -203,7 +203,8 @@ class PublicController extends Controller
             return view('projects._list', compact('projects'))->render();
         }
 
-        $categories = \App\Models\ProjectCategory::select(['id', 'name', 'slug'])
+        // Metadata filter jarang berubah: cache 10 menit (di-reset otomatis saat Project disimpan/dihapus)
+        $categories = \Illuminate\Support\Facades\Cache::remember('public:project_categories', 600, fn () => \App\Models\ProjectCategory::select(['id', 'name', 'slug'])
             ->whereHas('projects', function ($q) {
                 $q->where('status', 'published');
             })
@@ -211,9 +212,10 @@ class PublicController extends Controller
                 $q->where('status', 'published');
             }])
             ->orderBy('name', 'asc')
-            ->get();
+            ->get());
 
-        $types = \App\Models\ProjectType::select(['id', 'name', 'slug'])
+        // Metadata filter jarang berubah: cache 10 menit (di-reset otomatis saat Project disimpan/dihapus)
+        $types = \Illuminate\Support\Facades\Cache::remember('public:project_types', 600, fn () => \App\Models\ProjectType::select(['id', 'name', 'slug'])
             ->whereHas('projects', function ($q) {
                 $q->where('status', 'published');
             })
@@ -221,7 +223,7 @@ class PublicController extends Controller
                 $q->where('status', 'published');
             }])
             ->orderBy('name', 'asc')
-            ->get();
+            ->get());
 
         return view('projects.index', compact('projects', 'categories', 'types'));
     }

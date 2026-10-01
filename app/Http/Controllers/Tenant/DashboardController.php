@@ -31,12 +31,11 @@ class DashboardController extends Controller
         $productViews = (int) ($productStats->total_views ?? 0);
 
         // Pesanan terkait produk toko
-        $ordersQuery = \App\Models\Order::where(function ($q) use ($store) {
-            $q->whereHas('orderItems.product', function ($sub) use ($store) {
-                $sub->where('products.store_id', $store->id);
-            })->orWhereHas('product', function ($sub) use ($store) {
-                $sub->where('products.store_id', $store->id);
-            });
+        // Optimasi: whereHas bersarang (EXISTS berkorelasi per baris) diganti subquery IN — hasil sama.
+        $storeProductIds = \App\Models\Product::where('store_id', $store->id)->select('id');
+        $ordersQuery = \App\Models\Order::where(function ($q) use ($storeProductIds) {
+            $q->whereIn('orders.id', \App\Models\OrderItem::whereIn('product_id', clone $storeProductIds)->select('order_id'))
+              ->orWhereIn('orders.product_id', clone $storeProductIds);
         });
 
         // Hitung status pesanan dalam 1 kueri agregasi
@@ -73,11 +72,6 @@ class DashboardController extends Controller
         $maxProductViews = max(1, (int) ($topClickedProducts->first()->views ?? 1));
 
         // Kata Kunci & Tags Paling Banyak Dicari Pembeli di Platform (Insight Pasar)
-        $trendingSearches = \App\Models\ProductSearch::orderByDesc('hits')
-            ->orderByDesc('last_searched_at')
-            ->take(12)
-            ->get();
-
         $topMarketSearches = \App\Models\ProductSearch::orderByDesc('hits')
             ->take(6)
             ->get();
@@ -172,49 +166,6 @@ class DashboardController extends Controller
             ->where('payment_method', 'promo_voucher')
             ->exists();
 
-        // 1 & 2. Grafik Penjualan Bulanan & Harian (Optimasi: 1 kueri tunggal untuk 6 bulan terakhir)
-        $sixMonthsAgo = now()->subMonths(5)->startOfMonth();
-        $recentPaidOrders = (clone $ordersQuery)
-            ->whereIn('orders.status', ['paid', 'downloaded'])
-            ->where('orders.created_at', '>=', $sixMonthsAgo)
-            ->with(['product:id,store_id', 'orderItems.product:id,store_id'])
-            ->get(['orders.id', 'orders.amount', 'orders.created_at']);
-
-        // Kelompokkan per bulan (Y-m) dan per hari di bulan berjalan di memori tanpa kueri tambahan
-        $currentMonthKey = now()->format('Y-m');
-        $monthlyTotals = [];
-        $dailyTotals = [];
-
-        foreach ($recentPaidOrders as $o) {
-            $ym = $o->created_at->format('Y-m');
-            $tenantItems = $o->orderItems->filter(fn($item) => $item->product && $item->product->store_id == $store->id);
-            $amount = $tenantItems->isNotEmpty() ? $tenantItems->sum(fn($it) => $it->price * $it->quantity) : (float) $o->amount;
-
-            $monthlyTotals[$ym] = ($monthlyTotals[$ym] ?? 0) + $amount;
-
-            if ($ym === $currentMonthKey) {
-                $day = (int) $o->created_at->format('j');
-                $dailyTotals[$day] = ($dailyTotals[$day] ?? 0) + $amount;
-            }
-        }
-
-        $monthlySales = [];
-        $monthLabels = [];
-        for ($i = 5; $i >= 0; $i--) {
-            $date = now()->subMonths($i);
-            $monthLabels[] = $date->format('M');
-            $monthlySales[] = (float) ($monthlyTotals[$date->format('Y-m')] ?? 0);
-        }
-
-        $daysInCurrentMonth = now()->daysInMonth;
-        $currentMonthName = now()->locale('id')->translatedFormat('F Y');
-        $dailySales = [];
-        $dailyLabels = [];
-        for ($d = 1; $d <= $daysInCurrentMonth; $d++) {
-            $dailyLabels[] = (string) $d;
-            $dailySales[] = (float) ($dailyTotals[$d] ?? 0);
-        }
-
         // Pengikut Toko (Followers)
         $followersCount = $store->followers()->count();
         $recentFollowers = $store->followers()
@@ -236,15 +187,9 @@ class DashboardController extends Controller
             'completedOrdersCount',
             'recentOrders',
             'topProducts',
-            'trendingSearches',
             'adBalance',
             'activeAdsCount',
             'hasClaimedWelcomeVoucher',
-            'monthlySales',
-            'monthLabels',
-            'dailySales',
-            'dailyLabels',
-            'currentMonthName',
             'followersCount',
             'recentFollowers',
             'topClickedProducts',

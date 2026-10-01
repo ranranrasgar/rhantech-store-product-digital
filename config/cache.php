@@ -131,6 +131,10 @@ return [
     |
     */
 
-    'serializable_classes' => false,
+    // Aplikasi ini menyimpan Eloquent Collection/Model langsung di cache (Cache::remember).
+    // Dengan `false`, hasil unserialize jadi __PHP_Incomplete_Class dan memicu error 500.
+    // Aman selama APP_KEY/cache store tidak bocor; alternatif lebih ketat: daftar class eksplisit
+    // atau cache berupa array (->toArray()).
+    'serializable_classes' => true,
 
 ];

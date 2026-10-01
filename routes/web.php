@@ -218,7 +218,12 @@ Route::middleware(['auth', 'is_admin'])->prefix('admin')->name('admin.')->group(
     Route::get('company/backup-media/download/{filename}', [CompanyProfileController::class, 'downloadMediaBackup'])->name('company.backup_media.download')->where('filename', '.*');
     Route::delete('company/backup-media/{filename}', [CompanyProfileController::class, 'deleteMediaBackup'])->name('company.backup_media.delete')->where('filename', '.*');
     Route::post('company/restore-media', [CompanyProfileController::class, 'restoreMedia'])->name('company.restore_media');
-    Route::resource('company', CompanyProfileController::class);
+    // URL aksi backup/restore hanya menerima POST. Kalau dibuka via GET (refresh halaman error,
+    // ketik di address bar) arahkan kembali ke tab Backup, jangan jatuh ke resource show().
+    Route::get('company/{action}', fn () => redirect()->route('admin.company.index', ['tab' => 'backup']))
+        ->whereIn('action', ['restore', 'restore-media', 'backup', 'backup-media', 'optimize-database']);
+    // Controller hanya punya index & store; route resource lain (show/edit/update/destroy) memicu 'undefined method'.
+    Route::resource('company', CompanyProfileController::class)->only(['index', 'store']);
     Route::resource('services', ServiceController::class);
     Route::resource('clients', ClientController::class);
     Route::resource('product_categories', ProductCategoryController::class)->except(['create', 'edit', 'show']);
