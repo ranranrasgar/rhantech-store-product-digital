@@ -4,10 +4,39 @@
 @section('meta_description', $store->description ?? 'Kunjungi toko ' . $store->name)
 
 @section('content')
-<div class="min-h-screen bg-[#f8fafc] dark:bg-[#0d1117]"
+@php
+    $banner = $store->banner;
+    if (!$banner) {
+        $coverStyle = 'background: linear-gradient(120deg, var(--brand), color-mix(in srgb, var(--brand) 55%, #0f172a));';
+    } elseif (preg_match('/^(linear-gradient|radial-gradient|#|rgb)/', $banner)) {
+        $coverStyle = "background: {$banner};";
+    } else {
+        $coverStyle = "background-image: url('{$banner}');";
+    }
+
+    $socialLinks = is_array($store->social_links) ? $store->social_links : [];
+    $catalogShown = false;
+
+    $hasVoucherBlock = collect($appearance)->contains(fn ($block) => ($block['type'] ?? '') === 'voucher');
+    $voucherPlacement = is_array($store->appearance_data ?? null) ? ($store->appearance_data['voucher_placement'] ?? []) : [];
+    $vpHeader = $voucherPlacement['header'] ?? '';
+    $headerCampaigns = $campaigns ?? collect();
+    if ($vpHeader !== '' && $vpHeader !== 'none') {
+        $filtered = $campaigns->where('id', (int) $vpHeader);
+        if ($filtered->isNotEmpty()) {
+            $headerCampaigns = $filtered;
+        }
+    }
+@endphp
+
+@include('store._partials._brand_styles')
+
+<div class="bp"
+     style="--brand: {{ $store->brandColor() }}; --brand-ink: {{ $store->brandInk() }}; --color-primary: {{ $store->brandColor() }};"
      x-data="{
          isFollowing: {{ $isFollowing ? 'true' : 'false' }},
          followersCount: {{ $store->followers()->count() }},
+         copied: false,
          toggleFollow() {
              @auth
              fetch('{{ route('store.follow', $store->id) }}', {
@@ -16,140 +45,140 @@
              }).then(r => r.json()).then(data => {
                  if (!data) return;
                  this.isFollowing = data.following;
-                 if (data.followers_count !== undefined) {
-                     this.followersCount = data.followers_count;
-                 } else {
-                     this.followersCount = this.isFollowing ? this.followersCount + 1 : Math.max(0, this.followersCount - 1);
-                 }
+                 this.followersCount = data.followers_count !== undefined
+                     ? data.followers_count
+                     : (this.isFollowing ? this.followersCount + 1 : Math.max(0, this.followersCount - 1));
              });
-             @else window.location.href = '{{ route('login') }}?redirect=' + encodeURIComponent(window.location.href); @endauth
-         }
+             @else
+             window.location.href = '{{ route('login') }}';
+             @endauth
+         },
+         share() {
+             const url = @js(route('store.show', $store->slug));
+             if (navigator.share) {
+                 navigator.share({ title: @js($store->name), url }).catch(() => {});
+                 return;
+             }
+             navigator.clipboard.writeText(url).then(() => {
+                 this.copied = true;
+                 setTimeout(() => this.copied = false, 2000);
+             });
+         },
      }">
 
-    <div class="max-w-6xl mx-auto px-3 sm:px-6 lg:px-8 py-5 sm:py-8 space-y-6 sm:space-y-8">
+    <div class="bp-cover" style="{{ $coverStyle }}" role="img" aria-label="Sampul {{ $store->name }}"></div>
 
-        {{-- 1. BAGIAN PROFIL TOKO & BIO LINKS (Full Width Card) --}}
-        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-3xl shadow-xs overflow-hidden">
-            {{-- Header Profile (Banner, Logo, Nama, Sosmed, Chat/Follow) --}}
-            @include('store._partials._profile_header')
-
-            {{-- Bio Links / Portofolio Showcase (ala Lynk.id) --}}
-            @if(isset($profileLinks) && $profileLinks->isNotEmpty())
-                <div class="p-4 sm:p-6 border-t border-slate-100 dark:border-slate-800/80">
-                    <div class="flex items-center justify-between mb-4 px-1">
-                        <span class="text-xs sm:text-sm font-black uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-                            <span class="material-symbols-outlined text-[18px] text-primary">widgets</span>
-                            Portofolio &amp; Layanan Pilihan
-                        </span>
-                        <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500">
-                            {{ $profileLinks->count() }} Link
-                        </span>
-                    </div>
-                    @include('store._partials._profile_links')
+    <div class="bp-shell">
+        {{-- Identitas brand: kolom menempel di desktop --}}
+        <aside class="bp-side">
+            <div class="bp-card">
+                <div class="bp-avatar {{ $store->isPro() ? 'is-pro' : '' }}">
+                    @if($store->logo)
+                        <img src="{{ asset('storage/' . $store->logo) }}" alt="{{ $store->name }}" width="96" height="96">
+                    @else
+                        <span>{{ strtoupper(mb_substr($store->name, 0, 2)) }}</span>
+                    @endif
                 </div>
-            @endif
-        </div>
 
-        {{-- 2. PEMISAH ETALASE TOKO --}}
-        <div class="flex items-center gap-4 my-6">
-            <div class="flex-1 h-px bg-slate-200 dark:bg-slate-800"></div>
-            <div class="flex items-center gap-2 text-xs font-bold text-slate-500 dark:text-slate-400 bg-white dark:bg-[#111726] px-4 py-1.5 rounded-full border border-slate-200 dark:border-[#222f49] shadow-xs">
-                <span class="material-symbols-outlined text-[16px] text-primary">storefront</span>
-                Katalog &amp; Etalase Produk
-            </div>
-            <div class="flex-1 h-px bg-slate-200 dark:bg-slate-800"></div>
-        </div>
+                <h1 class="bp-name">
+                    {{ $store->name }}
+                    <i class="ph-fill ph-seal-check" title="Terverifikasi"></i>
+                    @if($store->isPro())
+                        <span class="bp-pro">PRO</span>
+                    @endif
+                </h1>
 
-        {{-- 3. BAGIAN ETALASE TOKO (Full Width) --}}
-        <div class="space-y-6">
+                @if(!empty($store->description))
+                    <p class="bp-bio">{{ $store->description }}</p>
+                @endif
 
-            {{-- Voucher Header Otomatis (Hanya tampil jika belum ada blok widget voucher di kanvas) --}}
-            @php
-                $hasVoucherBlock = collect($appearance)->contains(fn($b) => ($b['type'] ?? '') === 'voucher');
-                $voucherPlacement = is_array($appearance['voucher_placement'] ?? null) 
-                    ? $appearance['voucher_placement'] 
-                    : (is_array($store->appearance_data ?? null) ? ($store->appearance_data['voucher_placement'] ?? []) : []);
-                $vpHeader = $voucherPlacement['header'] ?? '';
-                $headerCampaigns = $campaigns ?? collect();
-                if ($vpHeader !== '' && $vpHeader !== 'none') {
-                    $filtered = $campaigns->where('id', (int)$vpHeader);
-                    if ($filtered->isNotEmpty()) {
-                        $headerCampaigns = $filtered;
-                    }
-                }
-            @endphp
-            @if(!$hasVoucherBlock && $vpHeader !== 'none' && $headerCampaigns->isNotEmpty())
-            <div class="p-4 sm:p-5 rounded-2xl bg-surface-container border border-outline-variant/60">
-                <div class="flex items-center gap-2 mb-3 text-sm font-black text-on-surface">
-                    <span class="material-symbols-outlined text-[18px]">confirmation_number</span>
-                    Kupon &amp; Voucher Toko
-                    <span class="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-extrabold">{{ $headerCampaigns->count() }} Tersedia</span>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-                    @foreach($headerCampaigns as $campaign)
-                        <x-voucher-card :campaign="$campaign" mode="browse" />
-                    @endforeach
-                </div>
-            </div>
-            @endif
+                <ul class="bp-meta">
+                    @if($storeReviewCount > 0)
+                        <li><i class="ph ph-star"></i> <b>{{ number_format($storeRating, 1) }}</b> ({{ $storeReviewCount }})</li>
+                    @endif
+                    <li><b>{{ $products->total() }}</b> produk</li>
+                    <li><b x-text="followersCount">{{ $store->followers()->count() }}</b> pengikut</li>
+                </ul>
 
-            {{-- Appearance Blocks --}}
-            @if(!empty($appearance))
-                @foreach($appearance as $block)
-                    @php $data = $block['data'] ?? []; @endphp
-                    @include('store._partials._appearance_block', ['block' => $block, 'data' => $data])
-                @endforeach
-            @else
-                {{-- Fallback: grid produk --}}
-                <div>
-                    <div class="flex items-center justify-between mb-4">
-                        <h2 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white border-l-4 border-primary pl-3">Semua Produk</h2>
-                    </div>
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                        @forelse($products as $product)
-                        @php
-                            $hasDiscount = $product->discount_price && $product->discount_price > 0 && $product->discount_price < $product->price;
-                        @endphp
-                        <a href="{{ route('products.show', $product->slug) }}" class="group bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] hover:border-primary rounded-xl overflow-hidden hover:shadow-xl transition-all flex flex-col">
-                            <div class="aspect-square w-full bg-slate-50 dark:bg-[#0d1117] relative overflow-hidden">
-                                @if($product->images->count() > 0)
-                                    @php $mainImg = $product->images->where('is_main', true)->first() ?? $product->images->first(); @endphp
-                                    <img src="{{ asset('storage/' . $mainImg->image_path) }}" alt="{{ $product->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                                @else
-                                    <div class="w-full h-full flex items-center justify-center text-slate-300"><span class="material-symbols-outlined text-4xl">inventory_2</span></div>
-                                @endif
-                                @if($hasDiscount)
-                                    <div class="absolute top-2 right-2 bg-rose-500 text-white font-black text-[10px] px-2 py-0.5 rounded-md shadow-sm">
-                                        -{{ round((($product->price - $product->discount_price) / $product->price) * 100) }}%
-                                    </div>
-                                @endif
-                            </div>
-                            <div class="p-3.5 flex flex-col flex-1">
-                                <h3 class="font-bold text-slate-800 dark:text-slate-200 text-xs sm:text-sm line-clamp-2 mb-1.5 group-hover:text-primary transition-colors">{{ $product->name }}</h3>
-                                <div class="mt-auto">
-                                    @if($hasDiscount)
-                                        <div class="text-[10px] text-slate-400 line-through">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
-                                        <div class="font-black text-primary text-sm sm:text-base">Rp {{ number_format($product->discount_price, 0, ',', '.') }}</div>
-                                    @else
-                                        <div class="font-black text-primary text-sm sm:text-base">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
-                                    @endif
-                                </div>
-                            </div>
+                <div class="bp-actions">
+                    @if(auth()->id() === $store->user_id)
+                        <a href="{{ route('tenant.appearance.index') }}" class="bp-btn bp-btn-primary">
+                            <i class="ph ph-paint-brush"></i> Atur tampilan
                         </a>
-                        @empty
-                        <div class="col-span-full text-center py-10 text-slate-400">Belum ada produk aktif.</div>
-                        @endforelse
-                    </div>
-                    <div class="mt-6">{{ $products->links() }}</div>
+                    @else
+                        <button type="button" @click="toggleFollow()" class="bp-btn" :class="isFollowing ? 'bp-btn-ghost' : 'bp-btn-primary'">
+                            <i class="ph" :class="isFollowing ? 'ph-check' : 'ph-user-plus'"></i>
+                            <span x-text="isFollowing ? 'Mengikuti' : 'Ikuti'">Ikuti</span>
+                        </button>
+                        <button type="button" class="bp-btn bp-btn-ghost"
+                                @click="@auth window.dispatchEvent(new CustomEvent('open-chat-with-store', { detail: { store_id: {{ $store->id }}, store_name: '{{ addslashes($store->name) }}', store_slug: '{{ $store->slug }}', store_logo: '{{ $store->logo ? asset('storage/' . $store->logo) : '' }}' } })) @else window.location.href = '{{ route('login') }}' @endauth">
+                            <i class="ph ph-chat-circle"></i> Chat
+                        </button>
+                    @endif
+                    <button type="button" @click="share()" class="bp-btn bp-btn-ghost bp-btn-icon" aria-label="Bagikan halaman ini">
+                        <i class="ph" :class="copied ? 'ph-check' : 'ph-share-network'"></i>
+                    </button>
                 </div>
+
+                @if(isset($myAffiliateLink))
+                    <div x-data="{ affiliateCopied: false }">
+                        <button type="button" class="bp-btn bp-btn-ghost bp-btn-block"
+                                @click="navigator.clipboard.writeText('{{ $myAffiliateLink }}'); affiliateCopied = true; setTimeout(() => affiliateCopied = false, 2500)">
+                            <i class="ph" :class="affiliateCopied ? 'ph-check' : 'ph-coins'"></i>
+                            <span x-text="affiliateCopied ? 'Link disalin' : 'Link afiliasi ({{ (float) ($store->default_affiliate_commission ?? 10) }}%)'">Link afiliasi</span>
+                        </button>
+                    </div>
+                @endif
+
+                @if(count($socialLinks) > 0)
+                    <div class="bp-socials">
+                        @foreach($socialLinks as $social)
+                            @php $platform = strtolower($social['platform'] ?? 'custom'); @endphp
+                            <a href="{{ $social['url'] ?? '#' }}" target="_blank" rel="noopener noreferrer" aria-label="{{ $social['name'] ?? ucfirst($platform) }}">
+                                <x-store-social-icon :platform="$platform" class="w-4 h-4" />
+                            </a>
+                        @endforeach
+                    </div>
+                @endif
+
+                @if(isset($profileLinks) && $profileLinks->isNotEmpty())
+                    @include('store._partials._brand_links')
+                @endif
+            </div>
+        </aside>
+
+        {{-- Etalase --}}
+        <div class="bp-main">
+            @if(!$hasVoucherBlock && $vpHeader !== 'none' && $headerCampaigns->isNotEmpty())
+                <section class="bp-section">
+                    <h2 class="bp-title">Voucher toko</h2>
+                    <div class="bp-vouchers">
+                        @foreach($headerCampaigns as $campaign)
+                            <x-voucher-card :campaign="$campaign" mode="browse" />
+                        @endforeach
+                    </div>
+                </section>
             @endif
+
+            @foreach($appearance as $block)
+                @if(($block['type'] ?? '') === 'products')
+                    @if(!$catalogShown)
+                        @php $catalogShown = true; @endphp
+                        @include('store._partials._brand_catalog')
+                    @endif
+                @else
+                    <section class="bp-section">
+                        @include('store._partials._appearance_block', ['block' => $block, 'data' => $block['data'] ?? []])
+                    </section>
+                @endif
+            @endforeach
+
+            @unless($catalogShown)
+                @include('store._partials._brand_catalog')
+            @endunless
+
+            <p class="bp-powered"><a href="{{ route('home') }}">Dibuat dengan Rhantech</a></p>
         </div>
-
-    </div>
-
-    {{-- Footer --}}
-    <div class="text-center py-8 text-[11px] text-slate-400 dark:text-slate-600">
-        <a href="{{ route('home') }}" class="hover:text-primary transition-colors font-semibold">⚡ Powered by Rhantech</a>
     </div>
 </div>
 @endsection

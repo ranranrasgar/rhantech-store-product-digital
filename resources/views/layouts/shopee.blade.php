@@ -44,17 +44,9 @@
       }
     }
     </script>
-    <script type="application/ld+json">
-    {
-      "@@context": "https://schema.org",
-      "@type": "OnlineStore",
-      "name": "{{ $company->company_name ?? 'R-Tech' }}",
-      "url": "{{ route('products.index') }}",
-      "logo": "{{ isset($company) && $company->logo ? asset('storage/'.$company->logo) : asset('favicon.ico') }}",
-      "description": "Marketplace dan toko resmi penyedia source code, aplikasi web, sistem kasir, dan produk digital berkualitas di Indonesia."
-    }
-    </script>
+    @include('components.seo-organization', ['organizationType' => 'OnlineStore', 'organizationDescription' => 'Marketplace dan toko resmi penyedia source code, aplikasi web, sistem kasir, dan produk digital berkualitas di Indonesia.'])
     @yield('schema_json_ld')
+    @include('components.seo-tags')
     <link rel="icon" type="image/png" href="{{ isset($company) && $company->favicon ? '/storage/'.$company->favicon : '/favicon.ico' }}" />
     <link rel="shortcut icon" type="image/png" href="{{ isset($company) && $company->favicon ? '/storage/'.$company->favicon : '/favicon.ico' }}" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -232,7 +224,7 @@
     {{-- Top micro bar --}}
     <div class="site-header-topbar hidden md:flex max-w-[1280px] mx-auto px-6 items-center justify-between py-1.5 text-[12px] relative z-40">
         <div class="flex items-center gap-5 text-white/60">
-            <a href="{{ url('/?bypass=1') }}" class="hover:text-white/90 transition-colors">
+            <a href="{{ url('/') }}" class="hover:text-white/90 transition-colors">
                 <span class="material-symbols-outlined text-[13px] align-middle">home</span> Home
             </a>
             <span class="h-3 w-px bg-white/15 mx-0.5"></span>
@@ -444,7 +436,7 @@
                             <template x-for="st in results.stores" :key="'store-'+st.id">
                                 <a :href="st.url" class="flex items-center justify-between gap-2 p-1.5 rounded-lg hover:bg-white dark:hover:bg-slate-800 transition-colors">
                                     <div class="flex items-center gap-2 min-w-0">
-                                        <img :src="st.logo" class="w-6 h-6 rounded-lg object-cover border border-zinc-200 dark:border-zinc-800 shrink-0">
+                                        <img :src="st.logo" :alt="st.name" width="24" height="24" class="w-6 h-6 rounded-lg object-cover border border-zinc-200 dark:border-zinc-800 shrink-0">
                                         <div class="min-w-0">
                                             <div class="font-bold text-zinc-800 dark:text-zinc-100 truncate text-[11px]" x-text="st.name"></div>
                                             <div class="text-[9px] text-slate-400 font-mono" x-text="'/@' + st.slug"></div>
@@ -472,7 +464,7 @@
                                 <a :href="pr.url" class="flex items-center justify-between gap-2 p-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
                                     <div class="flex items-center gap-2 min-w-0">
                                         <template x-if="pr.image">
-                                            <img :src="pr.image" class="w-6 h-6 rounded-md object-cover border border-zinc-200 dark:border-zinc-800 shrink-0">
+                                            <img :src="pr.image" :alt="pr.name" width="24" height="24" class="w-6 h-6 rounded-md object-cover border border-zinc-200 dark:border-zinc-800 shrink-0">
                                         </template>
                                         <div class="font-medium text-slate-700 dark:text-slate-200 truncate text-[11px]" x-text="pr.name"></div>
                                     </div>
@@ -587,8 +579,8 @@
             <div>
                 <h4 class="font-label-md text-label-md text-on-background dark:text-white font-bold mb-4 uppercase tracking-wider">Company</h4>
                 <ul class="flex flex-col gap-3">
-                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/?bypass=1#about') }}">About Us</a></li>
-                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/?bypass=1#services') }}">Services</a></li>
+                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/#about') }}">About Us</a></li>
+                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/#services') }}">Services</a></li>
                     <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/projects') }}">Projects</a></li>
                 </ul>
             </div>

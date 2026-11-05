@@ -1,4 +1,4 @@
-﻿@extends('layouts.tenant')
+@extends('layouts.tenant')
 
 @section('title', 'Hubungkan Akun Affiliate')
 
@@ -81,7 +81,7 @@
                         </label>
                         <div class="px-4 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-slate-100/70 dark:bg-[#0c1220]/70 text-sm font-mono font-bold text-zinc-900 dark:text-zinc-100 flex items-center justify-between">
                             <span id="previewRefCode">Pilih akun di atas...</span>
-                            <span class="material-symbols-outlined text-[16px] text-slate-400">auto_awesome</span>
+                            <span class="material-symbols-outlined text-[16px] text-slate-400">percent</span>
                         </div>
                         <span class="text-[11px] text-slate-400 mt-1 block">Kode dibuat otomatis dari nama akun saat disimpan.</span>
                     </div>

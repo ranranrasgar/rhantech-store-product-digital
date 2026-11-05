@@ -241,9 +241,9 @@ class FirebaseService
     {
         try {
             $statusTitles = [
-                'banned' => "🚫 Toko Anda Diblokir Platform: {$store->name}",
-                'suspended' => "⚠️ Toko Anda Ditangguhkan Sementara: {$store->name}",
-                'active' => "✅ Toko Anda Telah Dipulihkan: {$store->name}",
+                'banned' => "Toko Anda Diblokir Platform: {$store->name}",
+                'suspended' => "Toko Anda Ditangguhkan Sementara: {$store->name}",
+                'active' => "Toko Anda Telah Dipulihkan: {$store->name}",
             ];
 
             $statusBodies = [
@@ -308,7 +308,7 @@ class FirebaseService
             $order->loadMissing(['orderItems.product', 'product']);
             $firstItem = $order->orderItems->first();
             $productTitle = $firstItem->product->name ?? ($order->product->name ?? 'Produk Digital');
-            $title = "📥 Link Akses Produk: #{$order->invoice_number}";
+            $title = "Link Akses Produk: #{$order->invoice_number}";
             $body = "Link unduhan untuk '{$productTitle}' telah dikirim ulang. Klik di sini untuk mengunduh sekarang.";
             $buyerUrl = !empty($order->download_token) ? route('products.download', $order->download_token) : url('/tenant/purchases');
             $buyer = User::where('email', $order->customer_email)->first();
@@ -363,7 +363,7 @@ class FirebaseService
     public function notifyNewStoreCreated(Store $store): void
     {
         $ownerName = $store->user->name ?? 'Mitra Baru';
-        $title = "🏪 Toko Baru Terdaftar: {$store->name}";
+        $title = "Toko Baru Terdaftar: {$store->name}";
         $body = "Mitra {$ownerName} baru saja mendaftarkan toko '{$store->name}'. Tinjau toko di admin panel.";
         $clickUrl = route('admin.stores.index');
 
@@ -395,7 +395,7 @@ class FirebaseService
             $store = $item->product->store ?? null;
             if ($store && !in_array($store->id, $notifiedStores)) {
                 $notifiedStores[] = $store->id;
-                $tenantTitle = "🛒 Pesanan Baru Masuk: #{$order->invoice_number}";
+                $tenantTitle = "Pesanan Baru Masuk: #{$order->invoice_number}";
                 $tenantBody = "Ada pesanan baru untuk '{$item->product->title}' sebesar {$amountFormatted} (Menunggu Pembayaran).";
                 $tenantUrl = route('tenant.orders.index');
 
@@ -414,7 +414,7 @@ class FirebaseService
         }
 
         // 2. Notifikasi ke Admin Platform
-        $adminTitle = "🛍️ Pesanan Baru di Platform: #{$order->invoice_number}";
+        $adminTitle = "Pesanan Baru di Platform: #{$order->invoice_number}";
         $adminBody = "Pesanan senilai {$amountFormatted} dibuat oleh {$order->customer_name}.";
         $adminUrl = route('admin.orders.index');
 
@@ -431,7 +431,7 @@ class FirebaseService
         ]);
 
         // 3. Notifikasi ke Pembeli
-        $buyerTitle = "⏳ Menunggu Pembayaran: #{$order->invoice_number}";
+        $buyerTitle = "Menunggu Pembayaran: #{$order->invoice_number}";
         $buyerBody = "Pesanan Anda sebesar {$amountFormatted} berhasil dibuat. Segera selesaikan pembayaran sebelum kedaluwarsa.";
         $buyerUrl = url('/tenant/purchases');
         $buyer = User::where('email', $order->customer_email)->first();
@@ -463,7 +463,7 @@ class FirebaseService
             // A. PEMBAYARAN SUKSES / LUNAS
 
             // 1. Notifikasi ke Pembeli (Beri link unduh langsung)
-            $buyerTitle = "🎉 Pembayaran Berhasil: #{$order->invoice_number}";
+            $buyerTitle = "Pembayaran Berhasil: #{$order->invoice_number}";
             $buyerBody = "Pembayaran {$amountFormatted} telah lunas! File produk digital Anda siap langsung diunduh.";
             $buyerUrl = url('/tenant/purchases');
             $buyer = User::where('email', $order->customer_email)->first();
@@ -488,7 +488,7 @@ class FirebaseService
                 if ($store && !in_array($store->id, $notifiedStores)) {
                     $notifiedStores[] = $store->id;
                     $itemTotalFormatted = 'Rp ' . number_format($item->price * $item->quantity, 0, ',', '.');
-                    $tenantTitle = "💰 Penjualan Sukses: #{$order->invoice_number}";
+                    $tenantTitle = "Penjualan Sukses: #{$order->invoice_number}";
                     $tenantBody = "Pembayaran untuk '{$item->product->title}' sebesar {$itemTotalFormatted} berhasil! Saldo toko Anda bertambah.";
                     $tenantUrl = route('tenant.orders.index');
 
@@ -507,7 +507,7 @@ class FirebaseService
             }
 
             // 3. Notifikasi ke Admin Platform
-            $adminTitle = "💵 Pembayaran Dikonfirmasi: #{$order->invoice_number}";
+            $adminTitle = "Pembayaran Dikonfirmasi: #{$order->invoice_number}";
             $adminBody = "Transaksi #{$order->invoice_number} senilai {$amountFormatted} berhasil lunas dibayar via Midtrans.";
             $adminUrl = route('admin.orders.index');
 
@@ -527,7 +527,7 @@ class FirebaseService
             // B. PEMBAYARAN DIBATALKAN / EXPIRED
 
             // 1. Notifikasi ke Pembeli
-            $buyerTitle = "❌ Pesanan Dibatalkan: #{$order->invoice_number}";
+            $buyerTitle = "Pesanan Dibatalkan: #{$order->invoice_number}";
             $buyerBody = "Batas waktu pembayaran pesanan #{$order->invoice_number} telah kedaluwarsa atau dibatalkan.";
             $buyerUrl = url('/tenant/purchases');
             $buyer = User::where('email', $order->customer_email)->first();
@@ -551,7 +551,7 @@ class FirebaseService
                 $store = $item->product->store ?? null;
                 if ($store && !in_array($store->id, $notifiedStores)) {
                     $notifiedStores[] = $store->id;
-                    $tenantTitle = "⚠️ Pesanan Dibatalkan: #{$order->invoice_number}";
+                    $tenantTitle = "Pesanan Dibatalkan: #{$order->invoice_number}";
                     $tenantBody = "Pesanan #{$order->invoice_number} senilai {$amountFormatted} kedaluwarsa atau dibatalkan.";
                     $tenantUrl = route('tenant.orders.index');
 

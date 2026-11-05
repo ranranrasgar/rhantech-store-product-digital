@@ -23,8 +23,55 @@
     $activePrice = ($product->discount_price && $product->discount_price > 0 && $product->discount_price < $product->price) 
         ? $product->discount_price 
         : $product->price;
-    $ratingVal = number_format($product->effective_rating ?? 5.0, 1);
-    $reviewCountVal = max(1, (int)($product->effective_reviews_count ?? 1));
+    $storeOrCompanyName = $product->store ? $product->store->name : ($company->company_name ?? 'R-Tech');
+    $productSchema = [
+        '@context' => 'https://schema.org/',
+        '@type' => 'Product',
+        'name' => $product->name,
+        'image' => array_values(array_filter([$mainImgUrl])),
+        'description' => $cleanDesc,
+        'sku' => 'PROD-' . $product->id,
+        'mpn' => 'RTECH-' . $product->id,
+        'brand' => ['@type' => 'Brand', 'name' => $storeOrCompanyName],
+        'category' => $categoryName,
+        'keywords' => !empty($product->tags) ? $product->tags : $metaKeywords,
+        'offers' => [
+            '@type' => 'Offer',
+            'url' => route('products.show', $product->slug),
+            'priceCurrency' => 'IDR',
+            'price' => (string) $activePrice,
+            'priceValidUntil' => date('Y-12-31', strtotime('+1 year')),
+            'itemCondition' => 'https://schema.org/NewCondition',
+            'availability' => 'https://schema.org/InStock',
+            'seller' => ['@type' => 'Organization', 'name' => $storeOrCompanyName],
+        ],
+    ];
+    // Rating hanya dikirim jika benar-benar ada ulasan: nilai 0 atau jumlah 0 ditolak Google.
+    if ($product->effective_rating > 0 && $product->effective_reviews_count > 0) {
+        $productSchema['aggregateRating'] = [
+            '@type' => 'AggregateRating',
+            'ratingValue' => $product->effective_rating,
+            'bestRating' => 5,
+            'worstRating' => 1,
+            'ratingCount' => $product->effective_reviews_count,
+        ];
+    }
+    $breadcrumbs = array_values(array_filter([
+        ['Beranda', url('/')],
+        ['Katalog Produk', route('products.index')],
+        $product->category ? [$product->category->name, route('products.index', ['category' => $product->category->id])] : null,
+        [$product->name, route('products.show', $product->slug)],
+    ]));
+    $breadcrumbSchema = [
+        '@context' => 'https://schema.org',
+        '@type' => 'BreadcrumbList',
+        'itemListElement' => collect($breadcrumbs)->map(fn ($crumb, $index) => [
+            '@type' => 'ListItem',
+            'position' => $index + 1,
+            'name' => $crumb[0],
+            'item' => $crumb[1],
+        ])->all(),
+    ];
 @endphp
 
 @section('title', $metaTitle)
@@ -35,86 +82,8 @@
 @section('canonical_url', route('products.show', $product->slug))
 
 @section('schema_json_ld')
-<script type="application/ld+json">
-{
-  "@@context": "https://schema.org/",
-  "@type": "Product",
-  "name": "{{ addslashes($product->name) }}",
-  "image": [
-    "{{ $mainImgUrl }}"
-  ],
-  "description": "{{ addslashes($cleanDesc) }}",
-  "sku": "PROD-{{ $product->id }}",
-  "mpn": "RTECH-{{ $product->id }}",
-  "brand": {
-    "@type": "Brand",
-    "name": "{{ addslashes($product->store ? $product->store->name : ($company->company_name ?? 'R-Tech')) }}"
-  },
-  "category": "{{ addslashes($categoryName) }}",
-  "keywords": "{{ addslashes(!empty($product->tags) ? $product->tags : $metaKeywords) }}",
-  "offers": {
-    "@type": "Offer",
-    "url": "{{ route('products.show', $product->slug) }}",
-    "priceCurrency": "IDR",
-    "price": "{{ $activePrice }}",
-    "priceValidUntil": "{{ date('Y-12-31', strtotime('+1 year')) }}",
-    "itemCondition": "https://schema.org/NewCondition",
-    "availability": "https://schema.org/InStock",
-    "seller": {
-      "@type": "Organization",
-      "name": "{{ addslashes($product->store ? $product->store->name : ($company->company_name ?? 'R-Tech')) }}"
-    }
-  },
-  "aggregateRating": {
-    "@type": "AggregateRating",
-    "ratingValue": "{{ $ratingVal }}",
-    "bestRating": "5",
-    "worstRating": "1",
-    "ratingCount": "{{ $reviewCountVal }}"
-  }
-}
-</script>
-<script type="application/ld+json">
-{
-  "@@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    {
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Beranda",
-      "item": "{{ url('/') }}"
-    },
-    {
-      "@type": "ListItem",
-      "position": 2,
-      "name": "Katalog Produk",
-      "item": "{{ route('products.index') }}"
-    },
-    @if($product->category)
-    {
-      "@type": "ListItem",
-      "position": 3,
-      "name": "{{ addslashes($product->category->name) }}",
-      "item": "{{ route('products.index', ['category' => $product->category->id]) }}"
-    },
-    {
-      "@type": "ListItem",
-      "position": 4,
-      "name": "{{ addslashes($product->name) }}",
-      "item": "{{ route('products.show', $product->slug) }}"
-    }
-    @else
-    {
-      "@type": "ListItem",
-      "position": 3,
-      "name": "{{ addslashes($product->name) }}",
-      "item": "{{ route('products.show', $product->slug) }}"
-    }
-    @endif
-  ]
-}
-</script>
+<script type="application/ld+json">{!! json_encode($productSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) !!}</script>
+<script type="application/ld+json">{!! json_encode($breadcrumbSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) !!}</script>
 @endsection
 
 @section('content')
@@ -196,6 +165,7 @@
                                      src="{{ asset('storage/' . $mainImg->image_path) }}" 
                                      alt="{{ $mainImgAlt }}" 
                                      title="{{ $product->name }}" 
+                                     width="800" height="800" fetchpriority="high" decoding="async"
                                      class="w-full h-full object-cover origin-center transition-transform duration-100 ease-out group-hover:scale-[1.75]">
                                 <div class="absolute bottom-2 right-2 bg-surface/80 dark:bg-black/60 backdrop-blur-md px-2 py-0.5 rounded-sm text-xs font-semibold text-on-surface flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                     <span class="material-symbols-outlined text-[14px]">zoom_in</span> Perbesar
@@ -218,7 +188,7 @@
                                 <img src="{{ asset('storage/' . $img->image_path) }}" 
                                      alt="Screenshot {{ $product->name }} ke-{{ $loop->iteration }} - {{ $product->category ? $product->category->name : 'Aplikasi' }}" 
                                      title="{{ $product->name }} preview {{ $loop->iteration }}" 
-                                     loading="lazy"
+                                     width="64" height="64" loading="lazy"
                                      class="w-full h-full object-cover rounded-sm">
                             </button>
                             @endforeach
@@ -358,7 +328,7 @@
                         <div class="mb-4 p-3 rounded-sm bg-surface-container-low border border-outline-variant flex items-center justify-between gap-3">
                             <div class="flex items-center gap-2.5 min-w-0">
                                 <div class="w-9 h-9 rounded-sm bg-surface border border-outline-variant p-0.5 overflow-hidden shrink-0">
-                                    <img src="{{ $product->store->logo ? asset('storage/' . $product->store->logo) : 'https://ui-avatars.com/api/?name='.urlencode($product->store->name).'&background=random&color=fff' }}" class="w-full h-full object-cover rounded-sm">
+                                    <img src="{{ $product->store->logo ? asset('storage/' . $product->store->logo) : 'https://ui-avatars.com/api/?name='.urlencode($product->store->name).'&background=random&color=fff' }}" alt="Logo {{ $product->store->name }}" width="36" height="36" loading="lazy" class="w-full h-full object-cover rounded-sm">
                                 </div>
                                 <div class="min-w-0">
                                     <div class="flex items-center gap-1">

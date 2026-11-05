@@ -538,7 +538,7 @@
                                             </span>
                                             @if($product->rejection_reason)
                                                 <span class="text-[11px] text-rose-600 dark:text-rose-400 font-medium max-w-[170px] truncate mt-1 cursor-help" title="{{ $product->rejection_reason }}">
-                                                    ⚠️ {{ $product->rejection_reason }}
+                                                    {{ $product->rejection_reason }}
                                                 </span>
                                             @endif
                                         </div>

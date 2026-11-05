@@ -24,7 +24,9 @@
     <meta name="twitter:title" content="@yield('title', ($company->company_name ?? 'rhantech') . ' - We Build Digital Experiences')"/>
     <meta name="twitter:description" content="@yield('meta_description', $company->about_text ?? 'We build scalable, modern, and impactful digital solutions for businesses worldwide.')"/>
     <meta name="twitter:image" content="@yield('meta_image', isset($company) && $company->logo ? asset('storage/'.$company->logo) : '')"/>
+    @include('components.seo-organization')
     @yield('schema_json_ld')
+    @include('components.seo-tags')
     <link rel="icon" type="image/png" href="{{ isset($company) && $company->favicon ? '/storage/'.$company->favicon : '/favicon.ico' }}" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -192,9 +194,9 @@
                 {{ $company->company_name ?? 'rhantech' }}
             </a>
             <div class="hidden md:flex items-center gap-lg nav-links">
-                <a class="nav-link {{ request()->is('/') ? 'active text-sky-600 dark:text-sky-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ url('/?bypass=1#home') }}">Home</a>
+                <a class="nav-link {{ request()->is('/') ? 'active text-sky-600 dark:text-sky-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ url('/#home') }}">Home</a>
                 {{-- <a class="nav-link {{ request()->routeIs('about') ? 'active text-sky-600 dark:text-sky-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ route('about') }}" wire:navigate>About</a> --}}
-                <a class="nav-link text-on-surface-variant dark:text-on-surface-variant/80 hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ url('/?bypass=1#services') }}">Services</a>
+                <a class="nav-link text-on-surface-variant dark:text-on-surface-variant/80 hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ url('/#services') }}">Services</a>
                 <a class="nav-link {{ request()->routeIs('projects.*') ? 'active text-sky-600 dark:text-sky-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ route('projects.index') }}" wire:navigate>Portfolio</a>
                 <a class="nav-link {{ request()->routeIs('products.*') || request()->routeIs('checkout.*') ? 'active text-sky-600 dark:text-sky-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ route('products.index') }}">Store</a>
                 {{-- <a class="nav-link {{ request()->routeIs('clients.*') ? 'active text-sky-600 dark:text-sky-400 font-bold' : 'text-on-surface-variant dark:text-on-surface-variant/80' }} hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200" href="{{ route('clients.index') }}" wire:navigate>Clients</a> --}}
@@ -207,7 +209,7 @@
                         <span>Login</span>
                     </a>
                     <a class="hidden md:inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-sky-500 hover:bg-sky-600 text-white rounded-xl font-bold text-xs sm:text-sm active:scale-95 transition-all duration-150 shadow-none" href="{{ route('register') }}">
-                        <span class="material-symbols-outlined text-[17px]">rocket_launch</span>
+                        <span class="material-symbols-outlined text-[17px]">storefront</span>
                         <span>Buat Website / Project</span>
                     </a>
                 @else
@@ -320,7 +322,7 @@
                                 <template x-for="st in results.stores" :key="'store-'+st.id">
                                     <a :href="st.url" class="flex items-center justify-between gap-2 p-1.5 rounded-lg hover:bg-white dark:hover:bg-slate-800 transition-colors">
                                         <div class="flex items-center gap-2 min-w-0">
-                                            <img :src="st.logo" class="w-6 h-6 rounded-lg object-cover border border-zinc-200 dark:border-zinc-800 shrink-0">
+                                            <img :src="st.logo" :alt="st.name" width="24" height="24" class="w-6 h-6 rounded-lg object-cover border border-zinc-200 dark:border-zinc-800 shrink-0">
                                             <div class="min-w-0">
                                                 <div class="font-bold text-zinc-800 dark:text-zinc-100 truncate text-[11px]" x-text="st.name"></div>
                                                 <div class="text-[9px] text-slate-400 font-mono" x-text="'/@' + st.slug"></div>
@@ -348,7 +350,7 @@
                                     <a :href="pr.url" class="flex items-center justify-between gap-2 p-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
                                         <div class="flex items-center gap-2 min-w-0">
                                             <template x-if="pr.image">
-                                                <img :src="pr.image" class="w-6 h-6 rounded-md object-cover border border-zinc-200 dark:border-zinc-800 shrink-0">
+                                                <img :src="pr.image" :alt="pr.name" width="24" height="24" class="w-6 h-6 rounded-md object-cover border border-zinc-200 dark:border-zinc-800 shrink-0">
                                             </template>
                                             <div class="font-medium text-slate-700 dark:text-slate-200 truncate text-[11px]" x-text="pr.name"></div>
                                         </div>
@@ -503,7 +505,7 @@
                 <h4 class="font-label-md text-label-md text-on-background dark:text-white font-bold mb-4 uppercase tracking-wider text-xs">Perusahaan</h4>
                 <ul class="flex flex-col gap-2.5 text-xs">
                     {{-- <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ route('about') }}" wire:navigate>Tentang Kami</a></li> --}}
-                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/?bypass=1#services') }}">Layanan</a></li>
+                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/#services') }}">Layanan</a></li>
                     <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ route('projects.index') }}" wire:navigate>Portofolio</a></li>
                     <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/products') }}">Katalog Produk</a></li>
                 </ul>

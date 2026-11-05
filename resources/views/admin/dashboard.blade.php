@@ -1167,11 +1167,11 @@
                     popupContent = `
                         <div style="padding: 12px; min-width: 220px; max-width: 260px; font-family: inherit;">
                             <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
-                                <span style="background: #ccfbf1; color: #0f766e; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 9999px;">🏪 MITRA TOKO</span>
+                                <span style="background: #ccfbf1; color: #0f766e; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 9999px;">MITRA TOKO</span>
                                 <span style="font-size: 11px; color: #64748b;">• ${item.products_count} Produk</span>
                             </div>
                             <h4 style="margin: 0; font-size: 14px; font-weight: 700; color: #0f172a;">${item.name}</h4>
-                            <p style="margin: 4px 0 0; font-size: 11px; color: #64748b; line-height: 1.3;">📍 ${item.address}</p>
+                            <p style="margin: 4px 0 0; font-size: 11px; color: #64748b; line-height: 1.3;">${item.address}</p>
                             <div style="margin-top: 6px; font-size: 11px; color: #475569;">
                                 Pemilik: <b>${item.owner}</b>
                             </div>
@@ -1185,11 +1185,11 @@
                     popupContent = `
                         <div style="padding: 12px; min-width: 220px; max-width: 260px; font-family: inherit;">
                             <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
-                                <span style="background: #dbeafe; color: #1d4ed8; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 9999px;">👤 PELANGGAN</span>
+                                <span style="background: #dbeafe; color: #1d4ed8; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 9999px;">PELANGGAN</span>
                                 <span style="font-size: 11px; color: #64748b;">• ${item.orders_count} Order</span>
                             </div>
                             <h4 style="margin: 0; font-size: 14px; font-weight: 700; color: #0f172a;">${item.name}</h4>
-                            <p style="margin: 4px 0 0; font-size: 11px; color: #64748b; line-height: 1.3;">📍 ${item.address}</p>
+                            <p style="margin: 4px 0 0; font-size: 11px; color: #64748b; line-height: 1.3;">${item.address}</p>
                             <div style="margin-top: 6px; font-size: 11px; color: #166534;">
                                 Total Belanja: <b>Rp ${Number(item.total_spent).toLocaleString('id-ID')}</b>
                             </div>

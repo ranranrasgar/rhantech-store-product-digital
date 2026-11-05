@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pusat Bantuan - {{ env('APP_NAME', 'rhantech') }}</title>
+    <title>Pusat Bantuan - {{ $company->company_name ?? 'Rhantech' }}</title>
+    <meta name="description" content="Pusat Bantuan {{ $company->company_name ?? 'Rhantech' }}: panduan membeli, membayar, dan mengunduh aplikasi, serta mengelola toko Anda."/>
+    <link rel="canonical" href="{{ route('help.index') }}"/>
+    @include('components.seo-tags')
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@300..700,0..1&display=swap" rel="stylesheet">
@@ -45,22 +48,22 @@
         <div class="flex flex-wrap items-center justify-center gap-2 mt-4 max-w-2xl mx-auto">
             <span class="text-xs text-gray-500 font-medium">Topik Populer:</span>
             <a href="{{ route('help.index', ['q' => 'Saldo Iklan 500rb']) }}" class="px-3 py-1 rounded-full bg-white text-xs font-semibold text-sky-700 border border-sky-200 hover:bg-sky-50 shadow-xs transition-colors">
-                💰 Saldo Iklan 500rb
+                Saldo Iklan 500rb
             </a>
             <a href="{{ route('help.index', ['q' => 'Kunjungan 30%']) }}" class="px-3 py-1 rounded-full bg-white text-xs font-semibold text-sky-700 border border-sky-200 hover:bg-sky-50 shadow-xs transition-colors">
-                📈 Kunjungan +30%
+                Kunjungan +30%
             </a>
             <a href="{{ route('help.index', ['q' => 'Buka Toko']) }}" class="px-3 py-1 rounded-full bg-white text-xs font-semibold text-sky-700 border border-sky-200 hover:bg-sky-50 shadow-xs transition-colors">
-                🏪 Buka Toko Gratis
+                Buka Toko Gratis
             </a>
             <a href="{{ route('help.index', ['q' => 'Bidding']) }}" class="px-3 py-1 rounded-full bg-white text-xs font-semibold text-sky-700 border border-sky-200 hover:bg-sky-50 shadow-xs transition-colors">
-                🎯 Mode Bidding
+                Mode Bidding
             </a>
             <a href="{{ route('help.index', ['q' => 'Upload Source Code']) }}" class="px-3 py-1 rounded-full bg-white text-xs font-semibold text-sky-700 border border-sky-200 hover:bg-sky-50 shadow-xs transition-colors">
-                📦 Upload File .ZIP
+                Upload File .ZIP
             </a>
             <a href="{{ route('help.index', ['q' => 'Tarik Saldo']) }}" class="px-3 py-1 rounded-full bg-white text-xs font-semibold text-sky-700 border border-sky-200 hover:bg-sky-50 shadow-xs transition-colors">
-                💳 Penarikan Dana Payout
+                Penarikan Dana Payout
             </a>
         </div>
     </section>

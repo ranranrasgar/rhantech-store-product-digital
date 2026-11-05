@@ -1,2 +1,19 @@
 User-agent: *
-Disallow:
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /tenant
+Disallow: /onboarding
+Disallow: /cart
+Disallow: /checkout
+Disallow: /payment/
+Disallow: /download/
+Disallow: /api/
+Disallow: /auth/
+Disallow: /chat/
+Disallow: /notifications/
+Disallow: /email/
+Disallow: /test-fcm-push
+Disallow: /products/*/brochure
+Disallow: /projects/*/brochure
+
+Sitemap: https://rhantech.com/sitemap.xml

@@ -15,106 +15,115 @@
          x-transition:leave-end="opacity-0 translate-y-[-12px] scale-95"
          class="fixed top-5 right-5 z-50 flex items-center gap-2.5 px-4 py-3 rounded-2xl bg-orange-600/95 text-white border border-orange-500/80 shadow-none backdrop-blur-md text-xs font-bold"
          style="display: none;">
-        <span class="material-symbols-outlined text-[20px] text-emerald-400">check_circle</span>
+        <i class="ph ph-check-circle text-[20px] text-emerald-400"></i>
         <span x-text="toast.message"></span>
     </div>
 
     <!-- Top Action Header -->
-    <div class="sticky top-0 bg-white/95 dark:bg-[#000000]/95 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800 px-4 sm:px-6 py-3 sm:py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 shadow-none z-40 shrink-0">
+    <div class="sticky top-0 bg-white/95 dark:bg-[#000000]/95 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800 px-4 sm:px-6 py-2.5 sm:py-4 flex items-center justify-between gap-2 sm:gap-4 shadow-none z-40 shrink-0">
         <div class="min-w-0">
-            <h1 class="text-lg sm:text-xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-                Desain Tampilan Halaman
-                <span x-show="hasUnsavedChanges" x-cloak class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
+            <h1 class="text-base sm:text-xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+                <span class="truncate"><span class="lg:hidden">Desain Halaman</span><span class="hidden lg:inline">Desain Tampilan Halaman</span></span>
+                <span x-show="hasUnsavedChanges" x-cloak class="hidden lg:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
                     Belum Disimpan
                 </span>
             </h1>
-            <p class="text-[11px] sm:text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+            <p class="hidden lg:block text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
                 Kustomisasi tampilan profil Bio Link, susunan widget, tema warna, dan etalase digital Anda.
             </p>
         </div>
 
-        <div class="flex items-center gap-2 sm:gap-3 flex-wrap sm:flex-nowrap shrink-0">
-            <button type="button" @click="resetLayout()" class="px-3 sm:px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-zinc-600 dark:text-zinc-300 text-xs font-bold transition-all flex items-center gap-1.5 shadow-none cursor-pointer" title="Kembalikan susunan widget etalase ke tata letak awal default">
-                <span class="material-symbols-outlined text-[16px]">restart_alt</span>
+        <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+            <button type="button" @click="resetLayout()" class="max-lg:!hidden px-3 sm:px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-zinc-600 dark:text-zinc-300 text-xs font-bold transition-all flex items-center gap-1.5 shadow-none cursor-pointer" title="Kembalikan susunan widget etalase ke tata letak awal default">
+                <i class="ph ph-arrow-counter-clockwise text-[16px]"></i>
                 <span class="hidden sm:inline">Reset Tata Letak</span>
                 <span class="sm:hidden">Reset</span>
             </button>
             @if($store && $store->slug)
-            <button type="button" @click="openPreviewModal()" class="flex-1 sm:flex-initial justify-center px-3 sm:px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer" title="Buka live preview interaktif (Mobile & Desktop)">
-                <span class="material-symbols-outlined text-[16px] text-zinc-500 dark:text-zinc-400">visibility</span> <span>Preview Web</span>
+            <button type="button" @click="openPreviewModal()" aria-label="Lihat halaman publik" class="justify-center px-3 sm:px-4 py-2.5 sm:py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer" title="Buka live preview interaktif (Mobile & Desktop)">
+                <i class="ph ph-eye text-[16px] text-zinc-500 dark:text-zinc-400"></i> <span class="hidden sm:inline">Preview Web</span>
             </button>
             @endif
-            <button @click="save()" :disabled="isSaving" :class="hasUnsavedChanges ? 'ring-2 ring-amber-400 dark:ring-amber-500' : ''" class="flex-1 sm:flex-initial justify-center px-4 sm:px-5 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white dark:bg-orange-600 dark:hover:bg-orange-500 dark:text-white text-xs font-bold transition-all flex items-center gap-1.5 disabled:opacity-60 cursor-pointer whitespace-nowrap active:scale-95">
-                <span class="material-symbols-outlined text-[16px]" x-text="isSaving ? 'hourglass_empty' : 'save'">save</span>
-                <span x-text="isSaving ? 'Menyimpan...' : (hasUnsavedChanges ? 'Simpan Perubahan *' : 'Simpan Perubahan')">Simpan Perubahan</span>
+            <button @click="save()" :disabled="isSaving" :class="hasUnsavedChanges ? 'ring-2 ring-amber-400 dark:ring-amber-500' : ''" class="justify-center px-4 sm:px-5 py-2.5 sm:py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white dark:bg-orange-600 dark:hover:bg-orange-500 dark:text-white text-xs font-bold transition-all flex items-center gap-1.5 disabled:opacity-60 cursor-pointer whitespace-nowrap active:scale-95">
+                <i class="ph text-[16px]" :class="isSaving ? 'ph-spinner-gap animate-spin' : 'ph-floppy-disk'"></i>
+                <span x-text="isSaving ? 'Menyimpan...' : 'Simpan'">Simpan</span>
             </button>
         </div>
     </div>
 
     <!-- Global Mode Switcher Bar (Tampil di semua perangkat: Mobile, Tablet & Desktop) -->
-    <div class="bg-slate-50/95 dark:bg-[#0c1220]/95 backdrop-blur-sm border-b border-zinc-200 dark:border-zinc-800 px-4 sm:px-6 py-2 sm:py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 shrink-0 z-30 shadow-2xs">
+    <div x-data="{ modeOpen: false }" class="bg-slate-50/95 dark:bg-[#0c1220]/95 backdrop-blur-sm border-b border-zinc-200 dark:border-zinc-800 px-4 sm:px-6 py-2 sm:py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 shrink-0 z-30">
         <div class="flex items-center justify-between sm:justify-start gap-2">
-            <div class="flex items-center gap-1.5">
-                <span class="w-2 h-2 rounded-full animate-pulse"
-                      :class="storeMode === 'profile' ? 'bg-purple-500' : (storeMode === 'hybrid' ? 'bg-emerald-500' : 'bg-orange-500')"></span>
-                <span class="text-xs font-bold text-slate-700 dark:text-slate-200 flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[16px] text-slate-400">tune</span>
-                    <span>Pilihan Mode Halaman:</span>
-                </span>
-            </div>
-            <span class="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider"
-                  :class="storeMode === 'profile' ? 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20' : (storeMode === 'hybrid' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20' : 'bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-500/20')">
-                <span x-text="storeMode === 'profile' ? 'Bio Link' : (storeMode === 'hybrid' ? 'Hybrid' : 'Toko Digital')"></span>
+            <span class="text-xs font-semibold text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
+                <i class="ph ph-sliders-horizontal text-[16px] text-slate-400"></i>
+                Mode: <b class="text-slate-900 dark:text-white" x-text="storeMode === 'profile' ? 'Bio Link' : (storeMode === 'hybrid' ? 'Hybrid' : 'Toko Digital')"></b>
             </span>
+            <button type="button" @click="modeOpen = !modeOpen" :aria-expanded="modeOpen" class="sm:hidden py-1 pl-3 text-xs font-bold text-orange-600 dark:text-orange-400 flex items-center gap-1">
+                Ubah <i class="ph ph-caret-down text-[13px] transition-transform" :class="modeOpen ? 'rotate-180' : ''"></i>
+            </button>
         </div>
 
-        <div class="grid grid-cols-3 gap-1 p-1 bg-white dark:bg-[#000000] rounded-xl border border-zinc-200 dark:border-zinc-800 w-full sm:w-auto">
+        <div :class="modeOpen ? 'grid' : 'hidden sm:grid'" class="grid-cols-3 gap-1 p-1 bg-white dark:bg-[#000000] rounded-xl border border-zinc-200 dark:border-zinc-800 w-full sm:w-auto">
             <!-- 1. Toko Digital -->
-            <button type="button" @click="setStoreMode('store')" 
+            <button type="button" @click="setStoreMode('store'); modeOpen = false" 
                     :class="storeMode === 'store' ? 'bg-orange-500 text-white dark:bg-orange-600 dark:text-white font-bold' : 'text-zinc-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" 
                     class="px-2.5 py-1.5 rounded-lg text-xs transition-all flex items-center justify-center gap-1 cursor-pointer" 
                     title="Mode Toko Digital (E-Commerce Katalog Penuh)">
-                <span class="material-symbols-outlined text-[15px]">storefront</span>
+                <i class="ph ph-storefront text-[15px]"></i>
                 <span class="truncate">Toko Digital</span>
             </button>
 
             <!-- 2. Bio Link -->
-            <button type="button" @click="setStoreMode('profile')" 
+            <button type="button" @click="setStoreMode('profile'); modeOpen = false" 
                     :class="storeMode === 'profile' ? 'bg-orange-500 text-white dark:bg-orange-600 dark:text-white font-bold' : 'text-zinc-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" 
                     class="px-2.5 py-1.5 rounded-lg text-xs transition-all flex items-center justify-center gap-1 cursor-pointer" 
                     title="Mode Bio Link (Profil Personal ala Linktree / Lynk.id)">
-                <span class="material-symbols-outlined text-[15px]">contact_page</span>
+                <i class="ph ph-identification-card text-[15px]"></i>
                 <span class="truncate">Bio Link</span>
             </button>
 
             <!-- 3. Hybrid -->
-            <button type="button" @click="setStoreMode('hybrid')" 
+            <button type="button" @click="setStoreMode('hybrid'); modeOpen = false" 
                     :class="storeMode === 'hybrid' ? 'bg-orange-500 text-white dark:bg-orange-600 dark:text-white font-bold' : 'text-zinc-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" 
                     class="px-2.5 py-1.5 rounded-lg text-xs transition-all flex items-center justify-center gap-1 cursor-pointer" 
                     title="Mode Hybrid (Kombinasi Bio Link + Toko Digital)">
-                <span class="material-symbols-outlined text-[15px]">layers</span>
+                <i class="ph ph-stack text-[15px]"></i>
                 <span class="truncate">Hybrid</span>
             </button>
         </div>
     </div>
 
+    <!-- Warna Brand (dipakai halaman Hybrid) -->
+    <div x-show="storeMode === 'hybrid'" x-cloak class="bg-white dark:bg-[#000000] border-b border-zinc-200 dark:border-zinc-800 px-4 sm:px-6 py-2 flex items-center gap-3 shrink-0">
+        <span class="text-xs font-semibold text-slate-600 dark:text-slate-300 shrink-0">Warna brand</span>
+        <div class="flex items-center gap-1.5 overflow-x-auto py-1 px-0.5 flex-1 min-w-0" style="scrollbar-width: none;">
+            <template x-for="color in brandPresets" :key="color">
+                <button type="button" @click="setBrandColor(color)" :style="'background:' + color" :aria-label="'Pilih warna ' + color" :class="brandColor === color ? 'ring-2 ring-offset-2 ring-zinc-900 dark:ring-white dark:ring-offset-black' : ''" class="w-7 h-7 rounded-full shrink-0 border border-black/10"></button>
+            </template>
+            <label class="w-7 h-7 rounded-full shrink-0 border border-dashed border-zinc-400 flex items-center justify-center cursor-pointer relative overflow-hidden" title="Warna lain">
+                <i class="ph ph-eyedropper text-[14px] text-zinc-500"></i>
+                <input type="color" :value="brandColor" @input="setBrandColor($event.target.value)" aria-label="Warna lain" class="absolute inset-0 opacity-0 cursor-pointer">
+            </label>
+        </div>
+    </div>
+
     <!-- Mobile Tab Switcher (Visible only on screens < lg) -->
-    <div class="lg:hidden bg-white dark:bg-[#000000] border-b border-zinc-200 dark:border-zinc-800 px-4 py-2 flex items-center justify-center gap-1.5 shrink-0 z-20 overflow-x-auto">
-        <button type="button" @click="mobileTab = 'palette'; sidebarTab = 'widgets'" :class="mobileTab === 'palette' ? 'bg-orange-500 text-white dark:bg-orange-600 dark:text-white font-bold' : 'bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 font-semibold'" class="flex-1 py-2 px-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap">
-            <span class="material-symbols-outlined text-[16px]">widgets</span>
+    <div class="lg:hidden bg-white dark:bg-[#000000] border-b border-zinc-200 dark:border-zinc-800 px-4 py-2 flex items-center gap-1.5 shrink-0 z-20">
+        <button type="button" x-show="storeMode !== 'profile'" @click="mobileTab = 'palette'; sidebarTab = 'widgets'" :class="mobileTab === 'palette' ? 'bg-orange-500 text-white dark:bg-orange-600 dark:text-white font-bold' : 'bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 font-semibold'" class="flex-1 py-2 px-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap">
+            <i class="ph ph-squares-four text-[16px] max-sm:hidden"></i>
             <span>Widget</span>
         </button>
-        <button type="button" @click="mobileTab = 'voucher'; sidebarTab = 'voucher'" :class="mobileTab === 'voucher' ? 'bg-orange-500 text-white dark:bg-orange-600 dark:text-white font-bold' : 'bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 font-semibold'" class="flex-1 py-2 px-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap">
-            <span class="material-symbols-outlined text-[16px]">confirmation_number</span>
+        <button type="button" x-show="storeMode !== 'profile'" @click="mobileTab = 'voucher'; sidebarTab = 'voucher'" :class="mobileTab === 'voucher' ? 'bg-orange-500 text-white dark:bg-orange-600 dark:text-white font-bold' : 'bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 font-semibold'" class="flex-1 py-2 px-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap">
+            <i class="ph ph-ticket text-[16px] max-sm:hidden"></i>
             <span>Voucher</span>
         </button>
-        <button type="button" @click="mobileTab = 'biolink'; sidebarTab = 'biolink'" :class="mobileTab === 'biolink' ? 'bg-orange-500 text-white dark:bg-orange-600 dark:text-white font-bold' : 'bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 font-semibold'" class="flex-1 py-2 px-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap">
-            <span class="material-symbols-outlined text-[16px]">link</span>
-            <span>Bio Link</span>
+        <button type="button" x-show="storeMode !== 'store'" @click="mobileTab = 'biolink'; sidebarTab = 'biolink'" :class="mobileTab === 'biolink' ? 'bg-orange-500 text-white dark:bg-orange-600 dark:text-white font-bold' : 'bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 font-semibold'" class="flex-1 py-2 px-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap">
+            <i class="ph ph-link text-[16px] max-sm:hidden"></i>
+            <span>Tautan</span>
         </button>
         <button type="button" @click="mobileTab = 'canvas'" :class="mobileTab === 'canvas' ? 'bg-orange-500 text-white dark:bg-orange-600 dark:text-white font-bold' : 'bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 font-semibold'" class="flex-1 py-2 px-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap">
-            <span class="material-symbols-outlined text-[16px]">devices</span>
-            <span>Kanvas</span>
+            <i class="ph ph-eye text-[16px] max-sm:hidden"></i>
+            <span>Pratinjau</span>
         </button>
     </div>
 
@@ -127,13 +136,13 @@
             <!-- Sidebar Tab Toggle (Desktop) -->
             <div class="hidden lg:flex border-b border-zinc-100 dark:border-zinc-800">
                 <button type="button" @click="sidebarTab = 'widgets'; mobileTab = 'palette'" :class="sidebarTab === 'widgets' ? 'border-b-2 border-orange-500 text-orange-600 dark:border-orange-400 dark:text-orange-400 font-black' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'" class="flex-1 py-2.5 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer">
-                    <span class="material-symbols-outlined text-[15px]">widgets</span> Widget
+                    <i class="ph ph-squares-four text-[15px]"></i> Widget
                 </button>
                 <button type="button" @click="sidebarTab = 'voucher'; mobileTab = 'voucher'" :class="sidebarTab === 'voucher' ? 'border-b-2 border-orange-500 text-orange-600 dark:border-orange-400 dark:text-orange-400 font-black' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'" class="flex-1 py-2.5 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer">
-                    <span class="material-symbols-outlined text-[15px]">confirmation_number</span> Kupon
+                    <i class="ph ph-ticket text-[15px]"></i> Kupon
                 </button>
                 <button type="button" @click="sidebarTab = 'biolink'; mobileTab = 'biolink'" :class="sidebarTab === 'biolink' ? 'border-b-2 border-orange-500 text-orange-600 dark:border-orange-400 dark:text-orange-400 font-black' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'" class="flex-1 py-2.5 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer" title="Kelola Tombol Bio Link (Linktree / Lynk.id)">
-                    <span class="material-symbols-outlined text-[15px]">link</span> Bio Link
+                    <i class="ph ph-link text-[15px]"></i> Bio Link
                 </button>
             </div>
 
@@ -151,31 +160,35 @@
                 
                 <!-- Notice if Store Mode is currently 'profile' -->
                 <div x-show="storeMode === 'profile'" class="p-3 rounded-xl bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800/50 text-xs text-purple-800 dark:text-purple-300 flex items-start gap-2">
-                    <span class="material-symbols-outlined text-[18px] text-purple-500 shrink-0 mt-0.5">info</span>
+                    <i class="ph ph-info text-[18px] text-purple-500 shrink-0 mt-0.5"></i>
                     <div class="flex-1 min-w-0">
                         <p class="font-bold">Mode aktif: Bio Link</p>
                         <p class="text-[11px] text-purple-700/90 dark:text-purple-400/90 mt-0.5">Halaman publik saat ini difokuskan pada tautan profil personal. Agar widget katalog produk ini tampil, ganti mode ke <strong>Toko Digital</strong> atau <strong>Hybrid</strong>.</p>
                         <div class="flex items-center gap-1.5 mt-2">
                             <button type="button" @click="setStoreMode('store')" class="px-2.5 py-1 rounded-lg bg-orange-500 hover:bg-orange-400 text-white text-[10px] font-bold transition-all shadow-xs flex items-center gap-1 cursor-pointer">
-                                <span class="material-symbols-outlined text-[13px]">storefront</span> Aktifkan Toko
+                                <i class="ph ph-storefront text-[13px]"></i> Aktifkan Toko
                             </button>
                             <button type="button" @click="setStoreMode('hybrid')" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-bold transition-all shadow-xs flex items-center gap-1 cursor-pointer">
-                                <span class="material-symbols-outlined text-[13px]">layers</span> Aktifkan Hybrid
+                                <i class="ph ph-stack text-[13px]"></i> Aktifkan Hybrid
                             </button>
                         </div>
                     </div>
                 </div>
 
+                <button type="button" x-show="storeMode !== 'profile'" @click="resetLayout()" class="lg:hidden w-full py-2 text-xs font-semibold text-zinc-500 dark:text-zinc-400 flex items-center justify-center gap-1.5">
+                    <i class="ph ph-arrow-counter-clockwise text-[15px]"></i> Reset tata letak
+                </button>
+
                 <!-- Group 1: Media & Konten -->
                 <div>
                     <h3 class="text-xs font-bold text-zinc-900 dark:text-zinc-100 mb-2.5 flex items-center gap-1.5">
-                        <span class="material-symbols-outlined text-[16px] text-orange-500">photo_library</span> Media & Tampilan
+                        <i class="ph ph-images text-[16px] text-orange-500"></i> Media & Tampilan
                     </h3>
                     <div class="grid grid-cols-2 gap-2.5">
                         <!-- Banner Carousel -->
                         <div @click="addComponent('banner')" class="p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 hover:border-orange-500 dark:hover:border-orange-500 hover:bg-orange-50/50 dark:hover:bg-orange-950/20 cursor-pointer transition-all text-center group">
                             <div class="w-8 h-8 rounded-lg bg-orange-500/10 text-orange-500 flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
-                                <span class="material-symbols-outlined text-[18px]">view_carousel</span>
+                                <i class="ph ph-slideshow text-[18px]"></i>
                             </div>
                             <span class="text-xs font-bold text-zinc-800 dark:text-zinc-200 block">Banner Hero</span>
                             <span class="text-[10px] text-slate-400">Slide Gambar</span>
@@ -184,7 +197,7 @@
                         <!-- Single Highlight Image -->
                         <div @click="addComponent('single_image')" class="p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 hover:border-orange-500 dark:hover:border-orange-500 hover:bg-orange-50/50 dark:hover:bg-orange-950/20 cursor-pointer transition-all text-center group">
                             <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
-                                <span class="material-symbols-outlined text-[18px]">image</span>
+                                <i class="ph ph-image text-[18px]"></i>
                             </div>
                             <span class="text-xs font-bold text-zinc-800 dark:text-zinc-200 block">Banner Tunggal</span>
                             <span class="text-[10px] text-slate-400">Gambar Penuh</span>
@@ -193,7 +206,7 @@
                         <!-- Text Block -->
                         <div @click="addComponent('text')" class="p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 hover:border-orange-500 dark:hover:border-orange-500 hover:bg-orange-50/50 dark:hover:bg-orange-950/20 cursor-pointer transition-all text-center group col-span-2">
                             <div class="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-500 flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
-                                <span class="material-symbols-outlined text-[18px]">format_quote</span>
+                                <i class="ph ph-quotes text-[18px]"></i>
                             </div>
                             <span class="text-xs font-bold text-zinc-800 dark:text-zinc-200 block">Teks / Pengumuman</span>
                             <span class="text-[10px] text-slate-400">Blok deskripsi & informasi toko</span>
@@ -204,13 +217,13 @@
                 <!-- Group 2: Produk & Penjualan -->
                 <div>
                     <h3 class="text-xs font-bold text-zinc-900 dark:text-zinc-100 mb-2.5 flex items-center gap-1.5">
-                        <span class="material-symbols-outlined text-[16px] text-amber-500">storefront</span> Produk & Promosi
+                        <i class="ph ph-storefront text-[16px] text-amber-500"></i> Produk & Promosi
                     </h3>
                     <div class="grid grid-cols-2 gap-2.5">
                         <!-- Featured Products -->
                         <div @click="addComponent('products')" class="p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 hover:border-orange-500 dark:hover:border-orange-500 hover:bg-orange-50/50 dark:hover:bg-orange-950/20 cursor-pointer transition-all text-center group">
                             <div class="w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-500 flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
-                                <span class="material-symbols-outlined text-[18px]">grid_view</span>
+                                <i class="ph ph-squares-four text-[18px]"></i>
                             </div>
                             <span class="text-xs font-bold text-zinc-800 dark:text-zinc-200 block">Produk Pilihan</span>
                             <span class="text-[10px] text-slate-400">Grid Katalog</span>
@@ -219,7 +232,7 @@
                         <!-- Flash Sale -->
                         <div @click="addComponent('flash_sale')" class="p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 hover:border-orange-500 dark:hover:border-orange-500 hover:bg-orange-50/50 dark:hover:bg-orange-950/20 cursor-pointer transition-all text-center group">
                             <div class="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-500 flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
-                                <span class="material-symbols-outlined text-[18px]">bolt</span>
+                                <i class="ph ph-lightning text-[18px]"></i>
                             </div>
                             <span class="text-xs font-bold text-zinc-800 dark:text-zinc-200 block">Flash Sale</span>
                             <span class="text-[10px] text-slate-400">Promo Terbatas</span>
@@ -228,7 +241,7 @@
                         <!-- Voucher -->
                         <div @click="addComponent('voucher')" class="p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 hover:border-orange-500 dark:hover:border-orange-500 hover:bg-orange-50/50 dark:hover:bg-orange-950/20 cursor-pointer transition-all text-center group col-span-2">
                             <div class="w-8 h-8 rounded-lg bg-rose-500/10 text-rose-500 flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
-                                <span class="material-symbols-outlined text-[18px]">confirmation_number</span>
+                                <i class="ph ph-ticket text-[18px]"></i>
                             </div>
                             <span class="text-xs font-bold text-zinc-800 dark:text-zinc-200 block">Kupon Voucher</span>
                             <span class="text-[10px] text-slate-400">Daftar kode kupon potongan belanja</span>
@@ -243,7 +256,7 @@
             <div x-show="sidebarTab === 'voucher'" class="flex flex-col flex-1 overflow-hidden">
                 <div class="p-3.5 sm:p-4 border-b border-zinc-100 dark:border-zinc-800">
                     <h2 class="text-xs font-bold uppercase tracking-wider text-rose-500 flex items-center gap-1.5">
-                        <span class="material-symbols-outlined text-[15px]">confirmation_number</span>
+                        <i class="ph ph-ticket text-[15px]"></i>
                         Penempatan Kupon & Voucher
                     </h2>
                     <p class="text-[11px] text-slate-400 mt-1">Pilih voucher/diskon yang sudah dibuat untuk ditampilkan di setiap lokasi toko. Jika tidak dipilih, sistem akan menampilkan otomatis.</p>
@@ -263,36 +276,36 @@
 
                     @if($activeCampaigns->isEmpty())
                         <div class="text-center py-8">
-                            <span class="material-symbols-outlined text-3xl text-slate-300 dark:text-slate-600">confirmation_number</span>
+                            <i class="ph ph-ticket text-3xl text-slate-300 dark:text-slate-600"></i>
                             <p class="text-xs text-slate-400 mt-2">Belum ada diskon/voucher aktif.</p>
                             <a href="{{ route('tenant.campaigns.create') }}" class="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-rose-500 hover:text-rose-600">
-                                <span class="material-symbols-outlined text-[15px]">add_circle</span>
+                                <i class="ph ph-plus-circle text-[15px]"></i>
                                 Buat Diskon / Voucher
                             </a>
                         </div>
                     @else
                         <!-- Info posisi -->
                         <div class="bg-slate-50 dark:bg-[#0c1220] rounded-xl p-3 text-[11px] text-zinc-500 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-800 space-y-2">
-                            <p class="font-bold text-zinc-700 dark:text-zinc-300">📍 3 Lokasi Penempatan Otomatis (Global):</p>
+                            <p class="font-bold text-zinc-700 dark:text-zinc-300">3 Lokasi Penempatan Otomatis (Global):</p>
                             <ul class="space-y-1 pl-2">
                                 <li>• <b>Header Toko</b> — tampil sebagai banner promo di atas katalog etalase</li>
                                 <li>• <b>Pop-up Halaman Produk</b> — muncul saat pembeli buka produk</li>
                                 <li>• <b>Halaman Checkout</b> — tampil saat pembeli selesai beli</li>
                             </ul>
                             <div class="pt-2 border-t border-zinc-200 dark:border-zinc-800 text-[10.5px] text-amber-600 dark:text-amber-400 bg-amber-500/10 p-2 rounded-lg leading-relaxed">
-                                💡 <b>Tips:</b> Jika Anda memasang <b>"Blok Kupon Voucher"</b> manual di susunan <b>Widget</b>, sistem otomatis memakai blok widget tersebut agar kupon tidak tampil dobel di etalase toko.
+                                <b>Tips:</b> Jika Anda memasang <b>"Blok Kupon Voucher"</b> manual di susunan <b>Widget</b>, sistem otomatis memakai blok widget tersebut agar kupon tidak tampil dobel di etalase toko.
                             </div>
                         </div>
 
                         <!-- Slot 1: Header Toko -->
                         <div class="space-y-1.5">
                             <label class="flex items-center gap-1.5 text-xs font-bold text-zinc-700 dark:text-zinc-300">
-                                <span class="material-symbols-outlined text-[15px] text-rose-500">store</span>
+                                <i class="ph ph-storefront text-[15px] text-rose-500"></i>
                                 Header Toko
                             </label>
                             <select id="vp_header" x-model="voucherPlacement.header" class="w-full px-3 py-2 rounded-xl text-xs bg-white dark:bg-[#0c1220] border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 outline-none focus:border-rose-500 font-medium">
                                 <option value="">— Otomatis (sistem) —</option>
-                                <option value="none">🚫 Nonaktifkan / Sembunyikan</option>
+                                <option value="none">Nonaktifkan / Sembunyikan</option>
                                 @foreach($activeCampaigns as $c)
                                     <option value="{{ $c->id }}" {{ ($voucherPlacement['header'] ?? '') == (string)$c->id ? 'selected' : '' }}>
                                         {{ $c->name }}
@@ -306,12 +319,12 @@
                         <!-- Slot 2: Pop-up Produk -->
                         <div class="space-y-1.5">
                             <label class="flex items-center gap-1.5 text-xs font-bold text-zinc-700 dark:text-zinc-300">
-                                <span class="material-symbols-outlined text-[15px] text-amber-500">inventory_2</span>
+                                <i class="ph ph-package text-[15px] text-amber-500"></i>
                                 Pop-up Halaman Produk
                             </label>
                             <select id="vp_product" x-model="voucherPlacement.product_page" class="w-full px-3 py-2 rounded-xl text-xs bg-white dark:bg-[#0c1220] border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 outline-none focus:border-rose-500 font-medium">
                                 <option value="">— Otomatis (sistem) —</option>
-                                <option value="none">🚫 Nonaktifkan / Sembunyikan</option>
+                                <option value="none">Nonaktifkan / Sembunyikan</option>
                                 @foreach($activeCampaigns as $c)
                                     <option value="{{ $c->id }}" {{ ($voucherPlacement['product_page'] ?? '') == (string)$c->id ? 'selected' : '' }}>
                                         {{ $c->name }}
@@ -325,12 +338,12 @@
                         <!-- Slot 3: Checkout -->
                         <div class="space-y-1.5">
                             <label class="flex items-center gap-1.5 text-xs font-bold text-zinc-700 dark:text-zinc-300">
-                                <span class="material-symbols-outlined text-[15px] text-emerald-500">shopping_cart_checkout</span>
+                                <i class="ph ph-shopping-cart text-[15px] text-emerald-500"></i>
                                 Halaman Checkout
                             </label>
                             <select id="vp_checkout" x-model="voucherPlacement.checkout" class="w-full px-3 py-2 rounded-xl text-xs bg-white dark:bg-[#0c1220] border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 outline-none focus:border-rose-500 font-medium">
                                 <option value="">— Otomatis (sistem) —</option>
-                                <option value="none">🚫 Nonaktifkan / Sembunyikan</option>
+                                <option value="none">Nonaktifkan / Sembunyikan</option>
                                 @foreach($activeCampaigns as $c)
                                     <option value="{{ $c->id }}" {{ ($voucherPlacement['checkout'] ?? '') == (string)$c->id ? 'selected' : '' }}>
                                         {{ $c->name }}
@@ -344,7 +357,7 @@
                         <!-- Save Button -->
                         <div class="pt-2">
                             <button type="button" @click="saveVoucherPlacement()" :disabled="isSavingVoucher" class="w-full py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white dark:bg-orange-600 dark:hover:bg-orange-500 dark:text-white text-xs font-bold transition-all active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-60">
-                                <span class="material-symbols-outlined text-[15px]" x-text="isSavingVoucher ? 'hourglass_empty' : 'save'">save</span>
+                                <i class="ph text-[15px]" :class="isSavingVoucher ? 'ph-spinner-gap animate-spin' : 'ph-floppy-disk'"></i>
                                 <span x-text="isSavingVoucher ? 'Menyimpan...' : 'Simpan Penempatan'">Simpan Penempatan</span>
                             </button>
                             <p x-show="voucherSaveMsg" x-text="voucherSaveMsg" class="text-center text-[11px] mt-2 text-emerald-600 dark:text-emerald-400 font-bold"></p>
@@ -353,7 +366,7 @@
                         <!-- Link ke modul diskon -->
                         <div class="pt-1">
                             <a href="{{ route('tenant.campaigns.index') }}" class="flex items-center justify-center gap-1.5 text-[11px] text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 transition-colors">
-                                <span class="material-symbols-outlined text-[14px]">open_in_new</span>
+                                <i class="ph ph-arrow-square-out text-[14px]"></i>
                                 Kelola Diskon & Voucher
                             </a>
                         </div>
@@ -363,32 +376,69 @@
 
             <!-- PANEL: Bio Link Editor -->
             <div x-show="sidebarTab === 'biolink'" class="flex flex-col flex-1 overflow-hidden" style="display: none;">
-                <div class="p-3.5 sm:p-4 border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between gap-2">
+                <div class="hidden lg:flex p-4 border-b border-zinc-100 dark:border-zinc-800 items-center justify-between gap-2">
                     <div>
                         <h2 class="text-xs font-bold uppercase tracking-wider text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5">
-                            <span class="material-symbols-outlined text-[16px]">link</span> Tombol Tautan Bio Link
+                            <i class="ph ph-link text-[16px]"></i> Tombol Tautan Bio Link
                         </h2>
                         <p class="text-[11px] text-slate-400 mt-0.5">Tampil di mode <b>Bio Link</b> dan <b>Hybrid</b>.</p>
                     </div>
                     <button type="button" @click="saveProfileLinks()" :disabled="isSavingLinks" class="px-3 py-1.5 rounded-lg bg-orange-500 hover:bg-orange-600 text-white dark:bg-orange-600 dark:hover:bg-orange-500 dark:text-white text-[11px] font-bold transition-all active:scale-95 flex items-center gap-1 cursor-pointer">
-                        <span class="material-symbols-outlined text-[14px]">save</span>
+                        <i class="ph ph-floppy-disk text-[14px]"></i>
                         <span x-text="isSavingLinks ? '...' : 'Simpan'">Simpan</span>
                     </button>
                 </div>
 
                 <div class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+                    <!-- Panduan awal untuk pengguna baru -->
+                    <div x-show="showWelcome" x-cloak class="p-3.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/50">
+                        <div class="flex items-start justify-between gap-2">
+                            <div>
+                                <p class="text-sm font-extrabold text-emerald-900 dark:text-emerald-200">Profilmu sudah jadi</p>
+                                <p class="text-xs text-emerald-800/90 dark:text-emerald-300/90 mt-0.5">Tinggal 3 langkah sampai siap dibagikan.</p>
+                            </div>
+                            <button type="button" @click="showWelcome = false" aria-label="Tutup panduan" class="w-8 h-8 -mt-1 -mr-1 rounded-full flex items-center justify-center text-emerald-700 dark:text-emerald-300 shrink-0">
+                                <i class="ph ph-x text-[16px]"></i>
+                            </button>
+                        </div>
+                        <ol class="mt-2.5 space-y-1.5 text-xs font-semibold">
+                            <template x-for="(step, stepIndex) in [{ label: 'Tambah tautan pertama', done: profileLinks.length > 0 }, { label: 'Simpan tautan', done: linksSaved }, { label: 'Salin dan pasang di bio', done: urlCopied }]" :key="stepIndex">
+                                <li class="flex items-center gap-2" :class="step.done ? 'text-emerald-700 dark:text-emerald-300' : 'text-zinc-700 dark:text-zinc-300'">
+                                    <span class="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0" :class="step.done ? 'bg-emerald-600 text-white' : 'bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-600'">
+                                        <i x-show="step.done" class="ph ph-check text-[12px]"></i>
+                                        <span x-show="!step.done" x-text="stepIndex + 1"></span>
+                                    </span>
+                                    <span x-text="step.label"></span>
+                                </li>
+                            </template>
+                        </ol>
+                    </div>
+
+                    <!-- Bagikan URL profil -->
+                    <div class="flex items-center gap-2 p-2 pl-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-slate-50 dark:bg-[#0e1526]">
+                        <i class="ph ph-link text-[16px] text-slate-400 shrink-0"></i>
+                        <span class="flex-1 min-w-0 truncate text-xs font-mono font-semibold text-zinc-700 dark:text-zinc-300" x-text="previewUrl.replace(/^https?:\/\//, '')"></span>
+                        <button type="button" @click="copyProfileUrl()" class="px-3 py-2 rounded-lg bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 text-xs font-bold flex items-center gap-1 shrink-0">
+                            <i class="ph text-[14px]" :class="urlCopied ? 'ph-check' : 'ph-copy'"></i>
+                            <span x-text="urlCopied ? 'Tersalin' : 'Salin'">Salin</span>
+                        </button>
+                        <a :href="previewUrl" target="_blank" rel="noopener" aria-label="Buka halaman publik" class="w-9 h-9 rounded-lg border border-zinc-200 dark:border-zinc-700 flex items-center justify-center text-zinc-600 dark:text-zinc-300 shrink-0">
+                            <i class="ph ph-arrow-square-out text-[15px]"></i>
+                        </a>
+                    </div>
+
                     <!-- Status Notice if currently in Toko Digital Mode -->
                     <div x-show="storeMode === 'store'" class="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 text-xs text-amber-800 dark:text-amber-300 flex items-start gap-2">
-                        <span class="material-symbols-outlined text-[18px] text-amber-500 shrink-0 mt-0.5">info</span>
+                        <i class="ph ph-info text-[18px] text-amber-500 shrink-0 mt-0.5"></i>
                         <div class="flex-1 min-w-0">
                             <p class="font-bold">Mode aktif: Toko Digital</p>
                             <p class="text-[11px] text-amber-700/90 dark:text-amber-400/90 mt-0.5">Tombol Bio Link ini hanya akan tampil di halaman publik jika mode diubah ke <strong>Bio Link</strong> atau <strong>Hybrid</strong>.</p>
                             <div class="flex items-center gap-1.5 mt-2">
                                 <button type="button" @click="setStoreMode('profile')" class="px-2.5 py-1 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-[10px] font-bold transition-all shadow-xs flex items-center gap-1 cursor-pointer">
-                                    <span class="material-symbols-outlined text-[13px]">contact_page</span> Aktifkan Bio Link
+                                    <i class="ph ph-identification-card text-[13px]"></i> Aktifkan Bio Link
                                 </button>
                                 <button type="button" @click="setStoreMode('hybrid')" class="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-bold transition-all shadow-xs flex items-center gap-1 cursor-pointer">
-                                    <span class="material-symbols-outlined text-[13px]">layers</span> Aktifkan Hybrid
+                                    <i class="ph ph-stack text-[13px]"></i> Aktifkan Hybrid
                                 </button>
                             </div>
                         </div>
@@ -396,19 +446,19 @@
 
                     <!-- Quick Presets -->
                     <div>
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-2">Tambah Cepat:</span>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-2">Tambah tautan</span>
                         <div class="grid grid-cols-2 gap-1.5">
-                            <button type="button" @click="addProfileLink({ title: 'Chat WhatsApp', url: 'https://wa.me/', icon: 'chat', color: '#059669' })" class="px-2 py-1.5 rounded-lg text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 hover:bg-emerald-100 transition-colors flex items-center gap-1.5 text-left cursor-pointer">
-                                <span class="material-symbols-outlined text-[14px]">chat</span> WhatsApp
+                            <button type="button" @click="addProfileLink({ title: 'Chat WhatsApp', url: 'https://wa.me/', icon: 'chat', color: '#059669' })" class="px-2 py-3 rounded-xl text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 hover:bg-emerald-100 transition-colors flex items-center gap-1.5 text-left cursor-pointer">
+                                <i class="ph ph-chat-circle text-[14px]"></i> WhatsApp
                             </button>
-                            <button type="button" @click="addProfileLink({ title: 'Channel Telegram', url: 'https://t.me/', icon: 'send', color: '#ea580c' })" class="px-2 py-1.5 rounded-lg text-xs font-semibold bg-orange-50 dark:bg-orange-950/30 text-orange-600 dark:text-orange-400 border border-orange-200 dark:border-orange-800 hover:bg-orange-100 transition-colors flex items-center gap-1.5 text-left cursor-pointer">
-                                <span class="material-symbols-outlined text-[14px]">send</span> Telegram
+                            <button type="button" @click="addProfileLink({ title: 'Channel Telegram', url: 'https://t.me/', icon: 'send', color: '#ea580c' })" class="px-2 py-3 rounded-xl text-xs font-semibold bg-orange-50 dark:bg-orange-950/30 text-orange-600 dark:text-orange-400 border border-orange-200 dark:border-orange-800 hover:bg-orange-100 transition-colors flex items-center gap-1.5 text-left cursor-pointer">
+                                <i class="ph ph-paper-plane-tilt text-[14px]"></i> Telegram
                             </button>
-                            <button type="button" @click="addProfileLink({ title: 'Website Portofolio', url: 'https://', icon: 'language', color: '#7c3aed' })" class="px-2 py-1.5 rounded-lg text-xs font-semibold bg-violet-50 dark:bg-violet-950/30 text-violet-600 dark:text-violet-400 border border-violet-200 dark:border-violet-800 hover:bg-violet-100 transition-colors flex items-center gap-1.5 text-left cursor-pointer">
-                                <span class="material-symbols-outlined text-[14px]">language</span> Portofolio
+                            <button type="button" @click="addProfileLink({ title: 'Website Portofolio', url: 'https://', icon: 'language', color: '#7c3aed' })" class="px-2 py-3 rounded-xl text-xs font-semibold bg-violet-50 dark:bg-violet-950/30 text-violet-600 dark:text-violet-400 border border-violet-200 dark:border-violet-800 hover:bg-violet-100 transition-colors flex items-center gap-1.5 text-left cursor-pointer">
+                                <i class="ph ph-globe text-[14px]"></i> Portofolio
                             </button>
-                            <button type="button" @click="addProfileLink({ title: 'YouTube Channel', url: 'https://youtube.com/', icon: 'smart_display', color: '#e11d48' })" class="px-2 py-1.5 rounded-lg text-xs font-semibold bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800 hover:bg-rose-100 transition-colors flex items-center gap-1.5 text-left cursor-pointer">
-                                <span class="material-symbols-outlined text-[14px]">smart_display</span> YouTube
+                            <button type="button" @click="addProfileLink({ title: 'YouTube Channel', url: 'https://youtube.com/', icon: 'smart_display', color: '#e11d48' })" class="px-2 py-3 rounded-xl text-xs font-semibold bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800 hover:bg-rose-100 transition-colors flex items-center gap-1.5 text-left cursor-pointer">
+                                <i class="ph ph-youtube-logo text-[14px]"></i> YouTube
                             </button>
                         </div>
                     </div>
@@ -443,16 +493,16 @@
                                     <!-- Right: Action Buttons & Expand Icon -->
                                     <div class="flex items-center gap-0.5 shrink-0">
                                         <button type="button" @click.stop="moveProfileLinkUp(lIdx)" :disabled="lIdx === 0" :class="lIdx === 0 ? 'opacity-30' : 'hover:bg-slate-200 dark:hover:bg-slate-700'" class="p-1 rounded text-slate-400 hover:text-slate-600 cursor-pointer" title="Naikkan urutan">
-                                            <span class="material-symbols-outlined text-[15px]">arrow_upward</span>
+                                            <i class="ph ph-arrow-up text-[15px]"></i>
                                         </button>
                                         <button type="button" @click.stop="moveProfileLinkDown(lIdx)" :disabled="lIdx === profileLinks.length - 1" :class="lIdx === profileLinks.length - 1 ? 'opacity-30' : 'hover:bg-slate-200 dark:hover:bg-slate-700'" class="p-1 rounded text-slate-400 hover:text-slate-600 cursor-pointer" title="Turunkan urutan">
-                                            <span class="material-symbols-outlined text-[15px]">arrow_downward</span>
+                                            <i class="ph ph-arrow-down text-[15px]"></i>
                                         </button>
                                         <button type="button" @click.stop="removeProfileLink(lIdx)" class="p-1 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded ml-0.5 cursor-pointer" title="Hapus tombol ini">
-                                            <span class="material-symbols-outlined text-[15px]">delete</span>
+                                            <i class="ph ph-trash text-[15px]"></i>
                                         </button>
                                         <div class="w-px h-3.5 bg-slate-200 dark:bg-slate-700 mx-1"></div>
-                                        <span class="material-symbols-outlined text-[18px] text-slate-400 transition-transform duration-200" :class="expandedLinkIndex === lIdx ? 'rotate-180 text-teal-500 font-bold' : ''">expand_more</span>
+                                        <i class="ph ph-caret-down text-[18px] text-slate-400 transition-transform duration-200" :class="expandedLinkIndex === lIdx ? 'rotate-180 text-teal-500 font-bold' : ''"></i>
                                     </div>
                                 </div>
 
@@ -465,19 +515,19 @@
                                             <button type="button" @click="link.layout = 'list'; hasUnsavedChanges = true" 
                                                     :class="(!link.layout || link.layout === 'list') ? 'bg-white dark:bg-slate-800 text-orange-600 dark:text-orange-400 shadow-xs font-black' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-semibold'" 
                                                     class="py-1.5 px-1 rounded-lg text-[10px] transition-all flex flex-col items-center justify-center gap-0.5 cursor-pointer">
-                                                <span class="material-symbols-outlined text-[15px]">view_stream</span>
+                                                <i class="ph ph-rows text-[15px]"></i>
                                                 <span>1 Baris</span>
                                             </button>
                                             <button type="button" @click="link.layout = 'grid'; hasUnsavedChanges = true" 
                                                     :class="link.layout === 'grid' ? 'bg-white dark:bg-slate-800 text-orange-600 dark:text-orange-400 shadow-xs font-black' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-semibold'" 
                                                     class="py-1.5 px-1 rounded-lg text-[10px] transition-all flex flex-col items-center justify-center gap-0.5 cursor-pointer">
-                                                <span class="material-symbols-outlined text-[15px]">grid_view</span>
+                                                <i class="ph ph-squares-four text-[15px]"></i>
                                                 <span>2 Kolom</span>
                                             </button>
                                             <button type="button" @click="link.layout = 'card'; hasUnsavedChanges = true" 
                                                     :class="link.layout === 'card' ? 'bg-white dark:bg-slate-800 text-orange-600 dark:text-orange-400 shadow-xs font-black' : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-semibold'" 
                                                     class="py-1.5 px-1 rounded-lg text-[10px] transition-all flex flex-col items-center justify-center gap-0.5 cursor-pointer">
-                                                <span class="material-symbols-outlined text-[15px]">featured_play_list</span>
+                                                <i class="ph ph-list-dashes text-[15px]"></i>
                                                 <span>Gambar Besar</span>
                                             </button>
                                         </div>
@@ -524,14 +574,14 @@
                                                 <img :src="link.image" class="w-10 h-10 object-cover rounded-lg border border-zinc-200 dark:border-zinc-800 shrink-0">
                                                 <span class="text-[10px] text-slate-500 truncate flex-1 font-mono" x-text="link.image"></span>
                                                 <button type="button" @click="link.image = null; hasUnsavedChanges = true" class="text-rose-500 hover:text-rose-700 p-1 cursor-pointer" title="Hapus Gambar">
-                                                    <span class="material-symbols-outlined text-[16px]">close</span>
+                                                    <i class="ph ph-x text-[16px]"></i>
                                                 </button>
                                             </div>
                                         </template>
                                         <template x-if="!link.image">
                                             <div class="flex items-center gap-1.5 w-full">
                                                 <label class="cursor-pointer px-2.5 py-1.5 rounded-lg bg-orange-50 dark:bg-orange-950/30 text-orange-600 dark:text-orange-400 border border-orange-200 dark:border-orange-800 hover:bg-orange-100 transition-colors text-[11px] font-bold flex items-center gap-1 shrink-0">
-                                                    <span class="material-symbols-outlined text-[14px]">add_photo_alternate</span>
+                                                    <i class="ph ph-image-square text-[14px]"></i>
                                                     <span>Upload Foto</span>
                                                     <input type="file" class="hidden" accept="image/*" @change="openCropper($event, link, 'image', false, (link.layout === 'card' ? 16/9 : 1/1))">
                                                 </label>
@@ -566,18 +616,18 @@
 
                                     <!-- Button Selesai Tutup -->
                                     <button type="button" @click="expandedLinkIndex = null" class="w-full py-1.5 text-center text-[11px] font-bold text-teal-600 dark:text-teal-400 bg-teal-50/60 dark:bg-teal-950/20 hover:bg-teal-100/60 rounded-lg flex items-center justify-center gap-1 transition-colors cursor-pointer mt-2">
-                                        <span class="material-symbols-outlined text-[13px]">check</span> Selesai Edit (Tutup)
+                                        <i class="ph ph-check text-[13px]"></i> Selesai Edit (Tutup)
                                     </button>
                                 </div>
                             </div>
                         </template>
 
                         <div x-show="profileLinks.length === 0" class="p-6 text-center text-slate-400 text-xs border-2 border-dashed border-zinc-200 dark:border-zinc-800 rounded-xl">
-                            Belum ada tombol link. Klik tombol tambah di bawah atau gunakan template di atas.
+                            Belum ada tautan. Pilih salah satu di atas untuk memulai.
                         </div>
 
-                        <button type="button" @click="addProfileLink()" class="w-full py-2 rounded-xl text-xs font-bold text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-950/30 border border-teal-200 dark:border-teal-800 hover:bg-teal-100 transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
-                            <span class="material-symbols-outlined text-[16px]">add_circle</span> Tambah Tombol Link Baru
+                        <button type="button" @click="addProfileLink()" class="w-full py-3 rounded-xl text-xs font-bold text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-950/30 border border-teal-200 dark:border-teal-800 hover:bg-teal-100 transition-colors flex items-center justify-center gap-1.5 cursor-pointer">
+                            <i class="ph ph-plus-circle text-[16px]"></i> Tautan lainnya
                         </button>
                     </div>
                 </div>
@@ -586,31 +636,31 @@
         </div>
 
         <!-- CENTER CANVAS: LIVE INTERACTIVE STORE BUILDER -->
-        <div :class="mobileTab === 'canvas' ? 'flex' : 'hidden lg:flex'" class="flex-1 bg-slate-100/60 dark:bg-[#070a12] flex-col items-center py-4 sm:py-6 px-2 sm:px-4 overflow-auto relative custom-scrollbar w-full min-w-0">
+        <div :class="mobileTab === 'canvas' ? 'flex' : 'hidden lg:flex'" class="flex-1 bg-slate-100/60 dark:bg-[#070a12] flex-col items-center p-0 lg:py-6 lg:px-4 overflow-auto relative custom-scrollbar w-full min-w-0">
             
             <!-- Control Bar: Mode Tampilan Switcher & Viewport (Desktop/Mobile) -->
-            <div class="w-full max-w-[960px] flex flex-col sm:flex-row items-center justify-between gap-3 mb-4 sm:mb-6 shrink-0">
+            <div class="hidden lg:flex w-full max-w-[960px] flex-row items-center justify-between gap-3 mb-6 shrink-0">
                 <!-- Mode Tampilan Switcher -->
                 <div class="flex items-center gap-1 bg-white dark:bg-[#000000] p-1.5 rounded-2xl border border-zinc-200 dark:border-zinc-800 overflow-x-auto max-w-full">
                     <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 pl-2 pr-1 shrink-0 flex items-center gap-1">
-                        <span class="material-symbols-outlined text-[14px]">tune</span> Mode:
+                        <i class="ph ph-sliders-horizontal text-[14px]"></i> Mode:
                     </span>
                     <button type="button" @click="setStoreMode('store')" 
                             :class="storeMode === 'store' ? 'bg-orange-500 text-white dark:bg-orange-600 dark:text-white font-bold' : 'text-zinc-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" 
                             class="px-3 py-1.5 rounded-xl text-xs transition-all flex items-center gap-1.5 cursor-pointer shrink-0" title="Mode Toko Digital (E-Commerce Katalog)">
-                        <span class="material-symbols-outlined text-[16px]">storefront</span>
+                        <i class="ph ph-storefront text-[16px]"></i>
                         <span>Toko Digital</span>
                     </button>
                     <button type="button" @click="setStoreMode('profile')" 
                             :class="storeMode === 'profile' ? 'bg-orange-500 text-white dark:bg-orange-600 dark:text-white font-bold' : 'text-zinc-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" 
                             class="px-3 py-1.5 rounded-xl text-xs transition-all flex items-center gap-1.5 cursor-pointer shrink-0" title="Mode Bio Link (Linktree / Lynk.id)">
-                        <span class="material-symbols-outlined text-[16px]">contact_page</span>
+                        <i class="ph ph-identification-card text-[16px]"></i>
                         <span>Bio Link</span>
                     </button>
                     <button type="button" @click="setStoreMode('hybrid')" 
                             :class="storeMode === 'hybrid' ? 'bg-orange-500 text-white dark:bg-orange-600 dark:text-white font-bold' : 'text-zinc-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" 
                             class="px-3 py-1.5 rounded-xl text-xs transition-all flex items-center gap-1.5 cursor-pointer shrink-0" title="Mode Hybrid (Bio Link + Toko Digital)">
-                        <span class="material-symbols-outlined text-[16px]">layers</span>
+                        <i class="ph ph-stack text-[16px]"></i>
                         <span>Hybrid</span>
                     </button>
                 </div>
@@ -618,10 +668,10 @@
                 <!-- Viewport Switcher (Desktop / Mobile) -->
                 <div class="flex items-center gap-1 bg-white dark:bg-[#000000] p-1.5 rounded-2xl border border-zinc-200 dark:border-zinc-800 shrink-0">
                     <button @click="device = 'desktop'" :class="device === 'desktop' ? 'bg-orange-500 text-white dark:bg-orange-600 dark:text-white font-bold' : 'text-zinc-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="px-3.5 sm:px-4 py-1.5 rounded-xl text-xs transition-all flex items-center gap-1.5 cursor-pointer">
-                        <span class="material-symbols-outlined text-[16px]">desktop_windows</span> Desktop
+                        <i class="ph ph-desktop text-[16px]"></i> Desktop
                     </button>
                     <button @click="device = 'mobile'" :class="device === 'mobile' ? 'bg-orange-500 text-white dark:bg-orange-600 dark:text-white font-bold' : 'text-zinc-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold'" class="px-3.5 sm:px-4 py-1.5 rounded-xl text-xs transition-all flex items-center gap-1.5 cursor-pointer">
-                        <span class="material-symbols-outlined text-[16px]">smartphone</span> Mobile
+                        <i class="ph ph-device-mobile text-[16px]"></i> Mobile
                     </button>
                 </div>
             </div>
@@ -638,7 +688,7 @@
                     </div>
                     <div class="flex-1 flex justify-center">
                         <div class="bg-white dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 text-[11px] px-4 py-1 rounded-lg text-slate-500 w-[50%] flex items-center justify-center gap-1.5 font-mono truncate">
-                            <span class="material-symbols-outlined text-[13px] text-emerald-500">lock</span>
+                            <i class="ph ph-lock text-[13px] text-emerald-500"></i>
                             <span>rhantech.com/{{ $store->slug ?? 'toko-anda' }}</span>
                         </div>
                     </div>
@@ -652,11 +702,11 @@
                     <!-- Header Banner Action Buttons -->
                     <div class="absolute top-4 right-4 z-20 flex items-center gap-2">
                         <button type="button" @click="openBannerModal()" class="cursor-pointer bg-orange-600/80 hover:bg-orange-500 backdrop-blur-md text-white px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 border border-orange-400/40 transition-all shadow-none hover:scale-105" title="Atur Tampilan Banner (Gradien, Warna Biasa, Gambar)">
-                            <span class="material-symbols-outlined text-[16px] text-white">palette</span>
+                            <i class="ph ph-palette text-[16px] text-white"></i>
                             <span x-text="headerBanner ? 'Atur / Ganti Banner' : 'Pasang Banner Toko'"></span>
                         </button>
                         <button type="button" x-show="headerBanner" @click="clearHeaderBanner()" class="bg-rose-500/80 hover:bg-rose-600 text-white p-1.5 rounded-xl text-xs font-bold flex items-center justify-center border border-white/20 transition-all shadow-none hover:scale-105" title="Hapus Settingan Banner (Reset ke Default)">
-                            <span class="material-symbols-outlined text-[16px]">delete</span>
+                            <i class="ph ph-trash text-[16px]"></i>
                         </button>
                     </div>
 
@@ -684,10 +734,10 @@
                     <div class="w-full max-w-md mx-auto space-y-2.5 bg-slate-50/70 dark:bg-[#000000]/70 p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800">
                         <div class="flex items-center justify-between px-1 mb-1">
                             <span class="text-[11px] font-bold text-teal-600 dark:text-teal-400 flex items-center gap-1">
-                                <span class="material-symbols-outlined text-[15px]">link</span> Tombol Tautan Bio Link
+                                <i class="ph ph-link text-[15px]"></i> Tombol Tautan Bio Link
                             </span>
                             <button type="button" @click="sidebarTab = 'biolink'; mobileTab = 'biolink'" class="text-[11px] font-semibold text-slate-500 hover:text-teal-600 flex items-center gap-0.5 cursor-pointer">
-                                <span class="material-symbols-outlined text-[14px]">edit</span> Edit Tombol
+                                <i class="ph ph-pencil-simple text-[14px]"></i> Edit Tombol
                             </button>
                         </div>
                         
@@ -719,7 +769,7 @@
                                                 </div>
                                                 <div class="mt-2 pt-1.5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[9px] font-bold text-slate-400">
                                                     <span>Buka Link</span>
-                                                    <span class="material-symbols-outlined text-[12px]">arrow_forward</span>
+                                                    <i class="ph ph-arrow-right text-[12px]"></i>
                                                 </div>
                                             </div>
                                         </div>
@@ -749,7 +799,7 @@
                                                 <div class="mt-2.5 w-full py-1.5 px-3 rounded-xl text-white font-bold text-[10px] text-center flex items-center justify-center gap-1 shadow-xs"
                                                      :style="`background: ${link.color || '#ea580c'};`">
                                                     <span>Buka Tautan</span>
-                                                    <span class="material-symbols-outlined text-[13px]">arrow_forward</span>
+                                                    <i class="ph ph-arrow-right text-[13px]"></i>
                                                 </div>
                                             </div>
                                         </div>
@@ -776,7 +826,7 @@
                                                 <span x-show="link.subtitle" class="block text-[10px] opacity-80 truncate font-normal mt-0.5" x-text="link.subtitle"></span>
                                                 <span x-show="link.description" class="block text-[9px] opacity-75 truncate font-normal mt-0.5" x-text="link.description"></span>
                                             </div>
-                                            <span class="material-symbols-outlined text-[15px] opacity-70 shrink-0">arrow_forward</span>
+                                            <i class="ph ph-arrow-right text-[15px] opacity-70 shrink-0"></i>
                                         </div>
                                     </template>
                                 </div>
@@ -786,7 +836,7 @@
                         <div x-show="profileLinks.length === 0" 
                              @click="sidebarTab = 'biolink'; mobileTab = 'biolink'"
                              class="p-4 rounded-xl border-2 border-dashed border-teal-300 dark:border-teal-800/60 bg-teal-50/40 dark:bg-teal-950/20 text-center cursor-pointer hover:bg-teal-50 transition-colors">
-                            <span class="material-symbols-outlined text-teal-500 text-[22px] mb-1">add_link</span>
+                            <i class="ph ph-link-simple text-teal-500 text-[22px] mb-1"></i>
                             <p class="text-xs font-bold text-teal-700 dark:text-teal-300">Belum ada tombol link</p>
                             <p class="text-[11px] text-teal-600/70 dark:text-teal-400/70 mt-0.5">Klik di sini untuk menambahkan tombol ke Bio Link Anda.</p>
                         </div>
@@ -794,7 +844,7 @@
 
                     <!-- Pure Profile Mode Notice -->
                     <div x-show="storeMode === 'profile'" class="p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 text-amber-800 dark:text-amber-300 text-xs flex items-center gap-3 max-w-md mx-auto mt-3">
-                        <span class="material-symbols-outlined text-[20px] text-amber-500 shrink-0">info</span>
+                        <i class="ph ph-info text-[20px] text-amber-500 shrink-0"></i>
                         <div class="leading-tight">
                             <p class="font-bold">Mode Bio Link Aktif</p>
                             <p class="text-[11px] opacity-80 mt-0.5">Halaman publik hanya menampilkan bio &amp; tombol tautan. Ubah ke mode <b>Hybrid</b> jika ingin menampilkan widget etalase produk.</p>
@@ -809,20 +859,20 @@
                             <!-- Action Buttons / Toolbar (Always visible) -->
                             <div class="absolute top-3 right-3 z-30 flex items-center gap-1 bg-white/95 dark:bg-slate-800/95 backdrop-blur-md border border-zinc-200 dark:border-zinc-800 rounded-xl px-1.5 py-1 shadow-none">
                                 <button type="button" @click.stop="moveUp(index)" :disabled="index === 0" :class="index === 0 ? 'opacity-30 cursor-not-allowed text-slate-400' : 'text-zinc-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-orange-500'" class="w-7 h-7 rounded-lg flex items-center justify-center transition-colors" title="Pindah ke Atas">
-                                    <span class="material-symbols-outlined text-[16px]">arrow_upward</span>
+                                    <i class="ph ph-arrow-up text-[16px]"></i>
                                 </button>
                                 <button type="button" @click.stop="moveDown(index)" :disabled="index === activeComponents.length - 1" :class="index === activeComponents.length - 1 ? 'opacity-30 cursor-not-allowed text-slate-400' : 'text-zinc-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-orange-500'" class="w-7 h-7 rounded-lg flex items-center justify-center transition-colors" title="Pindah ke Bawah">
-                                    <span class="material-symbols-outlined text-[16px]">arrow_downward</span>
+                                    <i class="ph ph-arrow-down text-[16px]"></i>
                                 </button>
                                 <div class="drag-handle w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-grab active:cursor-grabbing transition-colors" title="Geser Urutan (Tahan & Tarik)">
-                                    <span class="material-symbols-outlined text-[18px]">drag_indicator</span>
+                                    <i class="ph ph-dots-six-vertical text-[18px]"></i>
                                 </div>
                                 <div class="w-px h-4 bg-slate-200 dark:bg-slate-700 mx-0.5"></div>
                                 <button type="button" @click.stop="openSettings(index)" class="w-7 h-7 rounded-lg flex items-center justify-center text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-950/50 hover:text-orange-700 transition-colors" title="Pengaturan Blok (Gir)">
-                                    <span class="material-symbols-outlined text-[17px]">settings</span>
+                                    <i class="ph ph-gear text-[17px]"></i>
                                 </button>
                                 <button type="button" @click.stop="removeComponent(index)" class="w-7 h-7 rounded-lg flex items-center justify-center text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/50 hover:text-rose-600 transition-colors" title="Hapus Blok">
-                                    <span class="material-symbols-outlined text-[17px]">delete</span>
+                                    <i class="ph ph-trash text-[17px]"></i>
                                 </button>
                             </div>
 
@@ -833,19 +883,19 @@
                                         <div class="absolute inset-0 w-full h-full">
                                             <img :src="comp.data.images[0].image_url" class="w-full h-full object-cover opacity-90 group-hover/banner:opacity-40 transition-opacity">
                                             <div class="absolute inset-0 flex flex-col items-center justify-center bg-black/40 text-white opacity-0 group-hover/banner:opacity-100 transition-opacity">
-                                                <span class="material-symbols-outlined text-3xl mb-1">edit</span>
+                                                <i class="ph ph-pencil-simple text-3xl mb-1"></i>
                                                 <span class="text-sm font-bold" x-text="comp.data.images.length + ' Slide Gambar (Klik untuk Edit)'"></span>
                                             </div>
                                             <!-- Badge Link Info -->
                                             <div class="absolute bottom-2 left-2 z-10 flex items-center gap-1.5 bg-black/60 backdrop-blur-md text-white px-2.5 py-1 rounded-lg text-[11px]">
-                                                <span class="material-symbols-outlined text-[14px] text-orange-400">link</span>
+                                                <i class="ph ph-link text-[14px] text-orange-400"></i>
                                                 <span class="font-mono truncate max-w-[200px]" x-text="comp.data.images[0].link ? comp.data.images[0].link : 'Belum ada link'"></span>
                                             </div>
                                         </div>
                                     </template>
                                     <template x-if="!comp.data?.images || comp.data.images.length === 0 || !comp.data.images[0].image_url">
                                         <div class="p-8 flex flex-col items-center justify-center w-full h-full">
-                                            <span class="material-symbols-outlined text-3xl text-orange-500 mb-1">view_carousel</span>
+                                            <i class="ph ph-slideshow text-3xl text-orange-500 mb-1"></i>
                                             <span class="text-sm font-bold text-zinc-800 dark:text-zinc-100">Blok Banner Slide Utama</span>
                                             <span class="text-xs text-slate-400 mt-0.5">Klik untuk upload gambar dan atur link tujuan banner</span>
                                         </div>
@@ -860,19 +910,19 @@
                                         <div class="absolute inset-0 w-full h-full">
                                             <img :src="comp.data.image_url" class="w-full h-full object-cover opacity-90 group-hover/single:opacity-40 transition-opacity">
                                             <div class="absolute inset-0 flex flex-col items-center justify-center bg-black/40 text-white opacity-0 group-hover/single:opacity-100 transition-opacity">
-                                                <span class="material-symbols-outlined text-3xl mb-1">edit</span>
+                                                <i class="ph ph-pencil-simple text-3xl mb-1"></i>
                                                 <span class="text-sm font-bold">Klik untuk Edit Gambar & Link</span>
                                             </div>
                                             <!-- Badge Link Info -->
                                             <div class="absolute bottom-2 left-2 z-10 flex items-center gap-1.5 bg-black/60 backdrop-blur-md text-white px-2.5 py-1 rounded-lg text-[11px]">
-                                                <span class="material-symbols-outlined text-[14px] text-emerald-400">link</span>
+                                                <i class="ph ph-link text-[14px] text-emerald-400"></i>
                                                 <span class="font-mono truncate max-w-[200px]" x-text="comp.data.link ? comp.data.link : 'Belum ada link'"></span>
                                             </div>
                                         </div>
                                     </template>
                                     <template x-if="!comp.data?.image_url">
                                         <div class="p-8 flex flex-col items-center justify-center w-full h-full">
-                                            <span class="material-symbols-outlined text-3xl text-emerald-500 mb-1">image</span>
+                                            <i class="ph ph-image text-3xl text-emerald-500 mb-1"></i>
                                             <span class="text-sm font-bold text-zinc-800 dark:text-zinc-100">Blok Banner Gambar Penuh</span>
                                             <span class="text-xs text-slate-400 mt-0.5">Klik untuk upload gambar dan atur link tujuan banner</span>
                                         </div>
@@ -884,7 +934,7 @@
                             <template x-if="comp.type === 'voucher'">
                                 <div @click="openSettings(index)" class="bg-slate-50 dark:bg-[#000000] border-2 border-dashed border-zinc-200 dark:border-zinc-800 hover:border-orange-500 dark:hover:border-orange-500 rounded-2xl p-6 flex items-center gap-4 shadow-xs transition-colors cursor-pointer group">
                                     <div class="w-12 h-12 rounded-xl bg-rose-500/10 text-rose-500 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                                        <span class="material-symbols-outlined text-2xl">confirmation_number</span>
+                                        <i class="ph ph-ticket text-2xl"></i>
                                     </div>
                                     <div class="flex-1">
                                         <div class="flex items-center gap-2 flex-wrap">
@@ -902,7 +952,7 @@
                             <template x-if="comp.type === 'flash_sale'">
                                 <div class="bg-slate-50 dark:bg-[#000000] border-2 border-dashed border-zinc-200 dark:border-zinc-800 hover:border-orange-500 dark:hover:border-orange-500 rounded-2xl p-6 flex items-center gap-4 shadow-xs transition-colors">
                                     <div class="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center shrink-0">
-                                        <span class="material-symbols-outlined text-2xl">bolt</span>
+                                        <i class="ph ph-lightning text-2xl"></i>
                                     </div>
                                     <div>
                                         <h4 class="text-sm font-bold text-zinc-900 dark:text-zinc-100">Blok Flash Sale Terbatas</h4>
@@ -943,15 +993,15 @@
             </div>
 
             <!-- MOBILE CANVAS VIEWPORT -->
-            <div x-show="device === 'mobile'" style="display: none;" class="w-full max-w-[375px] bg-white dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 shadow-none rounded-3xl sm:rounded-[2.5rem] overflow-hidden flex flex-col relative min-h-[650px] sm:min-h-[750px] shrink-0 mb-12 outline sm:outline-8 outline-slate-200/60 dark:outline-slate-800">
+            <div x-show="device === 'mobile'" style="display: none;" class="w-full lg:max-w-[375px] bg-white dark:bg-[#000000] lg:border border-zinc-200 dark:border-zinc-800 shadow-none lg:rounded-[2.5rem] overflow-hidden flex flex-col relative min-h-full lg:min-h-[750px] shrink-0 lg:mb-12 lg:outline lg:outline-8 outline-slate-200/60 dark:outline-slate-800">
                 
                 <!-- Mobile Status Bar -->
-                <div class="h-7 bg-slate-900 text-white text-[10px] flex justify-between items-center px-5 shrink-0">
+                <div class="hidden lg:flex h-7 bg-slate-900 text-white text-[10px] justify-between items-center px-5 shrink-0">
                     <span>09:41</span>
                     <div class="flex items-center gap-1.5">
-                        <span class="material-symbols-outlined text-[12px]">signal_cellular_alt</span>
-                        <span class="material-symbols-outlined text-[12px]">wifi</span>
-                        <span class="material-symbols-outlined text-[12px]">battery_full</span>
+                        <i class="ph ph-cell-signal-full text-[12px]"></i>
+                        <i class="ph ph-wifi-high text-[12px]"></i>
+                        <i class="ph ph-battery-full text-[12px]"></i>
                     </div>
                 </div>
 
@@ -963,11 +1013,11 @@
                     <!-- Mobile Header Banner Action Buttons -->
                     <div class="absolute top-3 right-3 z-20 flex items-center gap-1.5">
                         <button type="button" @click="openBannerModal()" class="cursor-pointer bg-orange-600/80 hover:bg-orange-500 backdrop-blur-md text-white px-2.5 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1 border border-orange-400/40 transition-all shadow-none" title="Atur Banner Toko">
-                            <span class="material-symbols-outlined text-[14px] text-white">palette</span>
+                            <i class="ph ph-palette text-[14px] text-white"></i>
                             <span>Banner</span>
                         </button>
                         <button type="button" x-show="headerBanner" @click="clearHeaderBanner()" class="bg-rose-500/80 hover:bg-rose-600 text-white p-1 rounded-lg text-xs font-bold flex items-center justify-center border border-white/20 transition-all shadow-none" title="Hapus Settingan Banner">
-                            <span class="material-symbols-outlined text-[14px]">delete</span>
+                            <i class="ph ph-trash text-[14px]"></i>
                         </button>
                     </div>
 
@@ -993,10 +1043,10 @@
                     <div class="w-full space-y-2 bg-slate-50/70 dark:bg-[#000000]/70 p-3 rounded-2xl border border-zinc-200 dark:border-zinc-800">
                         <div class="flex items-center justify-between px-1 mb-0.5">
                             <span class="text-[10px] font-bold text-teal-600 dark:text-teal-400 flex items-center gap-1">
-                                <span class="material-symbols-outlined text-[14px]">link</span> Tombol Bio Link
+                                <i class="ph ph-link text-[14px]"></i> Tombol Bio Link
                             </span>
                             <button type="button" @click="sidebarTab = 'biolink'; mobileTab = 'biolink'" class="text-[10px] font-semibold text-slate-500 hover:text-teal-600 flex items-center gap-0.5 cursor-pointer">
-                                <span class="material-symbols-outlined text-[13px]">edit</span> Edit
+                                <i class="ph ph-pencil-simple text-[13px]"></i> Edit
                             </button>
                         </div>
 
@@ -1028,7 +1078,7 @@
                                                 </div>
                                                 <div class="mt-1.5 pt-1 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[8px] font-bold text-slate-400">
                                                     <span>Buka</span>
-                                                    <span class="material-symbols-outlined text-[10px]">arrow_forward</span>
+                                                    <i class="ph ph-arrow-right text-[10px]"></i>
                                                 </div>
                                             </div>
                                         </div>
@@ -1058,7 +1108,7 @@
                                                 <div class="mt-2 w-full py-1 px-2.5 rounded-lg text-white font-bold text-[9px] text-center flex items-center justify-center gap-1 shadow-xs"
                                                      :style="`background: ${link.color || '#ea580c'};`">
                                                     <span>Buka Tautan</span>
-                                                    <span class="material-symbols-outlined text-[11px]">arrow_forward</span>
+                                                    <i class="ph ph-arrow-right text-[11px]"></i>
                                                 </div>
                                             </div>
                                         </div>
@@ -1085,7 +1135,7 @@
                                                 <span x-show="link.subtitle" class="block text-[9px] opacity-80 truncate font-normal mt-0.5" x-text="link.subtitle"></span>
                                                 <span x-show="link.description" class="block text-[8px] opacity-75 truncate font-normal mt-0.5" x-text="link.description"></span>
                                             </div>
-                                            <span class="material-symbols-outlined text-[13px] opacity-60 shrink-0">arrow_forward</span>
+                                            <i class="ph ph-arrow-right text-[13px] opacity-60 shrink-0"></i>
                                         </div>
                                     </template>
                                 </div>
@@ -1095,7 +1145,7 @@
                         <div x-show="profileLinks.length === 0" 
                              @click="sidebarTab = 'biolink'; mobileTab = 'biolink'"
                              class="p-3 rounded-xl border border-dashed border-teal-300 dark:border-teal-800/60 bg-teal-50/40 dark:bg-teal-950/20 text-center cursor-pointer">
-                            <span class="material-symbols-outlined text-teal-500 text-[18px] mb-0.5">add_link</span>
+                            <i class="ph ph-link-simple text-teal-500 text-[18px] mb-0.5"></i>
                             <p class="text-[11px] font-bold text-teal-700 dark:text-teal-300">Belum ada tombol link</p>
                             <p class="text-[10px] text-teal-600/70 dark:text-teal-400/70 mt-0.5">Ketuk untuk menambah link</p>
                         </div>
@@ -1103,7 +1153,7 @@
 
                     <!-- Pure Profile Mode Notice -->
                     <div x-show="storeMode === 'profile'" class="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 text-amber-800 dark:text-amber-300 text-[11px] flex items-center gap-2 mt-2">
-                        <span class="material-symbols-outlined text-[16px] text-amber-500 shrink-0">info</span>
+                        <i class="ph ph-info text-[16px] text-amber-500 shrink-0"></i>
                         <p class="leading-tight">Mode Bio Link: Widget etalase toko di bawah tidak tampil di publik.</p>
                     </div>
                 </div>
@@ -1115,20 +1165,20 @@
                             <!-- Action Buttons Mobile (Always visible) -->
                             <div class="absolute top-2 right-2 z-30 flex items-center gap-0.5 bg-white/95 dark:bg-slate-800/95 backdrop-blur-md border border-zinc-200 dark:border-zinc-800 rounded-lg px-1 py-0.5 shadow-none">
                                 <button type="button" @click.stop="moveUp(index)" :disabled="index === 0" :class="index === 0 ? 'opacity-30 cursor-not-allowed text-slate-400' : 'text-zinc-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-slate-700'" class="w-5 h-5 rounded flex items-center justify-center transition-colors" title="Naik">
-                                    <span class="material-symbols-outlined text-[13px]">arrow_upward</span>
+                                    <i class="ph ph-arrow-up text-[13px]"></i>
                                 </button>
                                 <button type="button" @click.stop="moveDown(index)" :disabled="index === activeComponents.length - 1" :class="index === activeComponents.length - 1 ? 'opacity-30 cursor-not-allowed text-slate-400' : 'text-zinc-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-slate-700'" class="w-5 h-5 rounded flex items-center justify-center transition-colors" title="Turun">
-                                    <span class="material-symbols-outlined text-[13px]">arrow_downward</span>
+                                    <i class="ph ph-arrow-down text-[13px]"></i>
                                 </button>
                                 <div class="drag-handle w-5 h-5 rounded flex items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 cursor-grab active:cursor-grabbing transition-colors" title="Geser Urutan (Tahan & Tarik)">
-                                    <span class="material-symbols-outlined text-[14px]">drag_indicator</span>
+                                    <i class="ph ph-dots-six-vertical text-[14px]"></i>
                                 </div>
                                 <div class="w-px h-3 bg-slate-200 dark:bg-slate-700 mx-0.5"></div>
                                 <button type="button" @click.stop="openSettings(index)" class="w-5 h-5 rounded flex items-center justify-center text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-950/50" title="Pengaturan Blok (Gir)">
-                                    <span class="material-symbols-outlined text-[13px]">settings</span>
+                                    <i class="ph ph-gear text-[13px]"></i>
                                 </button>
                                 <button type="button" @click.stop="removeComponent(index)" class="w-5 h-5 rounded flex items-center justify-center text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/50" title="Hapus Blok">
-                                    <span class="material-symbols-outlined text-[13px]">delete</span>
+                                    <i class="ph ph-trash text-[13px]"></i>
                                 </button>
                             </div>
 
@@ -1139,7 +1189,7 @@
                                             <img :src="comp.data.images[0].image_url" class="w-full h-full object-cover">
                                             <div class="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover/mbanner:opacity-100 transition-opacity">
                                                 <span class="text-[11px] font-bold text-white flex items-center gap-1">
-                                                    <span class="material-symbols-outlined text-[14px]">edit</span> Edit Slide
+                                                    <i class="ph ph-pencil-simple text-[14px]"></i> Edit Slide
                                                 </span>
                                             </div>
                                             <div class="absolute bottom-1 left-1 bg-black/60 text-[9px] text-white px-1.5 py-0.5 rounded font-mono truncate max-w-[140px]" x-text="comp.data.images[0].link ? comp.data.images[0].link : 'Belum ada link'"></div>
@@ -1147,7 +1197,7 @@
                                     </template>
                                     <template x-if="!comp.data?.images || comp.data.images.length === 0 || !comp.data.images[0].image_url">
                                         <div class="p-2">
-                                            <span class="material-symbols-outlined text-orange-500 text-[20px] mb-0.5">view_carousel</span>
+                                            <i class="ph ph-slideshow text-orange-500 text-[20px] mb-0.5"></i>
                                             <span class="text-xs font-bold text-zinc-800 dark:text-zinc-100 block">Banner Slide</span>
                                             <span class="text-[9px] text-slate-400">Klik untuk upload & atur link</span>
                                         </div>
@@ -1162,7 +1212,7 @@
                                             <img :src="comp.data.image_url" class="w-full h-full object-cover">
                                             <div class="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover/msingle:opacity-100 transition-opacity">
                                                 <span class="text-[11px] font-bold text-white flex items-center gap-1">
-                                                    <span class="material-symbols-outlined text-[14px]">edit</span> Edit Banner
+                                                    <i class="ph ph-pencil-simple text-[14px]"></i> Edit Banner
                                                 </span>
                                             </div>
                                             <div class="absolute bottom-1 left-1 bg-black/60 text-[9px] text-white px-1.5 py-0.5 rounded font-mono truncate max-w-[140px]" x-text="comp.data.link ? comp.data.link : 'Belum ada link'"></div>
@@ -1170,7 +1220,7 @@
                                     </template>
                                     <template x-if="!comp.data?.image_url">
                                         <div class="p-2">
-                                            <span class="material-symbols-outlined text-emerald-500 text-[20px] mb-0.5">image</span>
+                                            <i class="ph ph-image text-emerald-500 text-[20px] mb-0.5"></i>
                                             <span class="text-xs font-bold text-zinc-800 dark:text-zinc-100 block">Banner Gambar</span>
                                             <span class="text-[9px] text-slate-400">Klik untuk upload & atur link</span>
                                         </div>
@@ -1180,14 +1230,14 @@
 
                             <template x-if="comp.type === 'voucher'">
                                 <div class="bg-slate-50 dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-xl p-3 flex items-center gap-2.5">
-                                    <span class="material-symbols-outlined text-rose-500 text-[18px]">confirmation_number</span>
+                                    <i class="ph ph-ticket text-rose-500 text-[18px]"></i>
                                     <span class="text-xs font-bold text-zinc-800 dark:text-zinc-100">Kupon Voucher</span>
                                 </div>
                             </template>
 
                             <template x-if="comp.type === 'flash_sale'">
                                 <div class="bg-slate-50 dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-xl p-3 flex items-center gap-2.5">
-                                    <span class="material-symbols-outlined text-amber-500 text-[18px]">bolt</span>
+                                    <i class="ph ph-lightning text-amber-500 text-[18px]"></i>
                                     <span class="text-xs font-bold text-zinc-800 dark:text-zinc-100">Flash Sale</span>
                                 </div>
                             </template>
@@ -1227,11 +1277,11 @@
         <div x-show="isCropperModalOpen" x-transition.scale.95 class="bg-white dark:bg-[#000000] rounded-3xl shadow-none w-full max-w-4xl relative z-10 overflow-hidden flex flex-col border border-zinc-200 dark:border-zinc-800">
             <div class="px-6 py-4 border-b border-zinc-100 dark:border-zinc-800 flex justify-between items-center bg-slate-50/50 dark:bg-[#000000]">
                 <h3 class="font-bold text-lg text-zinc-800 dark:text-zinc-100 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-orange-500">crop</span>
+                    <i class="ph ph-crop text-orange-500"></i>
                     Potong Gambar (<span x-text="cropperTarget?.isHeader ? 'Banner Kepala Toko' : (cropperAspectRatio === 0 ? 'Bebas' : 'Banner Slide')"></span>)
                 </h3>
                 <button @click="closeCropper()" class="text-slate-400 hover:text-rose-500 transition-colors">
-                    <span class="material-symbols-outlined">close</span>
+                    <i class="ph ph-x"></i>
                 </button>
             </div>
             
@@ -1243,14 +1293,14 @@
             
             <div class="px-6 py-4 border-t border-zinc-100 dark:border-zinc-800 flex justify-between items-center bg-slate-50/50 dark:bg-[#000000]">
                 <div class="text-xs text-slate-500 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-[16px]">info</span>
+                    <i class="ph ph-info text-[16px]"></i>
                     Geser atau perbesar gambar agar sesuai dengan area kotak.
                 </div>
                 <div class="flex gap-3">
                     <button @click="closeCropper()" type="button" class="px-5 py-2.5 rounded-xl text-sm font-bold text-zinc-600 dark:text-zinc-300 hover:bg-slate-200 dark:hover:bg-[#222f49] transition-colors">Batal</button>
                     <button @click="applyCrop()" type="button" class="px-5 py-2.5 bg-orange-500 hover:bg-orange-600 text-white dark:bg-orange-600 dark:hover:bg-orange-500 dark:text-white rounded-xl text-sm font-bold transition-all active:scale-95 flex items-center gap-2 cursor-pointer" :class="{'opacity-50 cursor-not-allowed': isCropping}" :disabled="isCropping">
-                        <span x-show="!isCropping" class="material-symbols-outlined text-[18px]">check</span>
-                        <span x-show="isCropping" class="material-symbols-outlined text-[18px] animate-spin">refresh</span>
+                        <i x-show="!isCropping" class="ph ph-check text-[18px]"></i>
+                        <i x-show="isCropping" class="ph ph-arrow-clockwise text-[18px] animate-spin"></i>
                         <span x-text="isCropping ? 'Memproses...' : 'Potong & Simpan'"></span>
                     </button>
                 </div>
@@ -1268,11 +1318,11 @@
             <!-- Modal Header -->
             <div class="px-6 py-4 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between shrink-0">
                 <h3 class="font-bold text-zinc-800 dark:text-zinc-100 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-orange-500 text-[20px]">settings</span>
+                    <i class="ph ph-gear text-orange-500 text-[20px]"></i>
                     Pengaturan Blok
                 </h3>
                 <button @click="closeSettings()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
-                    <span class="material-symbols-outlined text-[20px]">close</span>
+                    <i class="ph ph-x text-[20px]"></i>
                 </button>
             </div>
             
@@ -1312,7 +1362,7 @@
                         <div class="flex gap-2">
                             <input type="text" x-model="editingData?.data?.image_url" class="flex-1 bg-slate-50 dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-2.5 text-sm text-zinc-800 dark:text-zinc-200 focus:outline-none focus:border-orange-500" placeholder="https://contoh.com/gambar.jpg">
                             <label class="cursor-pointer bg-orange-100 hover:bg-orange-200 text-orange-600 px-4 py-2.5 rounded-xl text-sm font-bold flex items-center justify-center transition-colors" title="Upload Gambar dari Komputer">
-                                <span class="material-symbols-outlined text-[18px]">upload</span>
+                                <i class="ph ph-upload-simple text-[18px]"></i>
                                 <input type="file" class="hidden" accept="image/*" @change="openCropper($event, editingData.data, 'image_url', false, 0)">
                             </label>
                         </div>
@@ -1325,7 +1375,7 @@
                         </label>
                         <div class="relative">
                             <input type="text" x-model="editingData?.data?.link" class="w-full bg-slate-50 dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-xl pl-9 pr-4 py-2.5 text-sm text-zinc-800 dark:text-zinc-200 focus:outline-none focus:border-orange-500" placeholder="https://... atau /products/nama-produk">
-                            <span class="material-symbols-outlined absolute left-2.5 top-3 text-[18px] text-slate-400">link</span>
+                            <i class="ph ph-link absolute left-2.5 top-3 text-[18px] text-slate-400"></i>
                         </div>
                         <p class="text-[10px] text-slate-500 mt-1">
                             Bisa berupa link eksternal (misal: <code class="text-orange-600 font-mono">https://wa.me/...</code>) atau link halaman produk toko.
@@ -1393,7 +1443,7 @@
 
                         @if($flashProducts->isEmpty())
                             <div class="p-4 bg-slate-50 dark:bg-[#000000] rounded-xl border border-dashed border-zinc-200 dark:border-zinc-800 text-center">
-                                <span class="material-symbols-outlined text-2xl text-slate-300">inventory_2</span>
+                                <i class="ph ph-package text-2xl text-slate-300"></i>
                                 <p class="text-xs text-slate-400 mt-1">Belum ada produk aktif.</p>
                             </div>
                         @else
@@ -1411,13 +1461,13 @@
                                         ">
                                     <div class="w-4 h-4 rounded border-2 flex-shrink-0 flex items-center justify-center transition-colors"
                                         :class="(editingData.data.product_ids || []).includes({{ $fp->id }}) ? 'bg-amber-500 border-amber-500 text-white' : 'border-slate-300 dark:border-slate-600'">
-                                        <span class="material-symbols-outlined text-[11px]" x-show="(editingData.data.product_ids || []).includes({{ $fp->id }})">check</span>
+                                        <i class="ph ph-check text-[11px]" x-show="(editingData.data.product_ids || []).includes({{ $fp->id }})"></i>
                                     </div>
                                     @if($fp->images->first())
                                         <img src="{{ asset('storage/'.$fp->images->first()->image_path) }}" class="w-8 h-8 rounded-lg object-cover flex-shrink-0 border border-zinc-200 dark:border-zinc-800">
                                     @else
                                         <div class="w-8 h-8 rounded-lg bg-slate-200 dark:bg-slate-700 flex items-center justify-center flex-shrink-0">
-                                            <span class="material-symbols-outlined text-[14px] text-slate-400">image</span>
+                                            <i class="ph ph-image text-[14px] text-slate-400"></i>
                                         </div>
                                     @endif
                                     <div class="flex-1 min-w-0">
@@ -1442,13 +1492,13 @@
                             <p class="text-[10px] text-slate-500">Tambahkan gambar slide dan link tujuannya</p>
                         </div>
                         <button type="button" @click="if(!editingData.data.images) editingData.data.images = []; editingData.data.images.push({image_url: '', link: ''})" class="text-[11px] bg-orange-100 text-orange-600 hover:bg-orange-200 px-2.5 py-1.5 rounded-lg font-bold flex items-center gap-1 transition-colors">
-                            <span class="material-symbols-outlined text-[14px]">add</span> Tambah Slide
+                            <i class="ph ph-plus text-[14px]"></i> Tambah Slide
                         </button>
                     </div>
                     
                     <template x-if="!editingData?.data?.images || editingData.data.images.length === 0">
                         <div class="p-6 bg-slate-50 dark:bg-[#000000] rounded-xl border border-dashed border-zinc-200 dark:border-zinc-800 text-center text-xs text-slate-400">
-                            <span class="material-symbols-outlined text-2xl text-slate-300 block mb-1">collections</span>
+                            <i class="ph ph-images text-2xl text-slate-300 block mb-1"></i>
                             Belum ada slide gambar. Klik tombol <b>Tambah Slide</b> di atas.
                         </div>
                     </template>
@@ -1457,7 +1507,7 @@
                         <template x-for="(img, imgIdx) in editingData?.data?.images" :key="imgIdx">
                             <div class="p-3 bg-slate-50 dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-xl relative group">
                                 <button type="button" @click="editingData.data.images.splice(imgIdx, 1)" class="absolute top-2 right-2 text-rose-500 hover:bg-rose-100 dark:hover:bg-rose-900/30 p-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity" title="Hapus Slide">
-                                    <span class="material-symbols-outlined text-[16px]">delete</span>
+                                    <i class="ph ph-trash text-[16px]"></i>
                                 </button>
                                 <div class="space-y-2.5 pr-6">
                                     <div>
@@ -1465,7 +1515,7 @@
                                         <div class="flex gap-2">
                                             <input type="text" x-model="img.image_url" class="flex-1 bg-white dark:bg-[#161f33] border border-zinc-200 dark:border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-zinc-800 dark:text-zinc-200 focus:border-orange-500 focus:outline-none" placeholder="https://contoh.com/gambar.jpg">
                                             <label class="cursor-pointer bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-zinc-600 dark:text-zinc-300 px-2.5 rounded-lg flex items-center justify-center transition-colors" title="Upload Gambar Slide">
-                                                <span class="material-symbols-outlined text-[15px]">upload</span>
+                                                <i class="ph ph-upload-simple text-[15px]"></i>
                                                 <input type="file" class="hidden" accept="image/*" @change="openCropper($event, img, 'image_url', false, 2.5/1)">
                                             </label>
                                         </div>
@@ -1474,7 +1524,7 @@
                                         <label class="block text-[10px] font-bold text-slate-500 mb-1">Link Tujuan Ketika Slide Ini Diklik (Opsional)</label>
                                         <div class="relative">
                                             <input type="text" x-model="img.link" class="w-full bg-white dark:bg-[#161f33] border border-zinc-200 dark:border-zinc-800 rounded-lg pl-7 pr-3 py-1.5 text-xs text-zinc-800 dark:text-zinc-200 focus:border-orange-500 focus:outline-none" placeholder="https://... atau /products/nama-produk">
-                                            <span class="material-symbols-outlined absolute left-2 top-2 text-[14px] text-slate-400">link</span>
+                                            <i class="ph ph-link absolute left-2 top-2 text-[14px] text-slate-400"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -1489,7 +1539,7 @@
                     <!-- Info box -->
                     <div class="bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800/50 rounded-xl p-3 text-[11px] text-rose-700 dark:text-rose-300">
                         <p class="font-bold mb-1 flex items-center gap-1.5">
-                            <span class="material-symbols-outlined text-[14px]">link</span>
+                            <i class="ph ph-link text-[14px]"></i>
                             Terhubung ke Modul Diskon &amp; Voucher
                         </p>
                         <p>Centang diskon/voucher dari daftar yang sudah Anda buat. Kode dan detail otomatis ditampilkan dari data tersebut.</p>
@@ -1498,7 +1548,7 @@
                     <div class="flex items-center justify-between mb-1">
                         <label class="block text-xs font-bold text-zinc-700 dark:text-zinc-300">Pilih Voucher yang Ditampilkan</label>
                         <a href="{{ route('tenant.campaigns.create') }}" target="_blank" class="text-[10px] bg-rose-100 text-rose-600 hover:bg-rose-200 px-2 py-1 rounded font-bold flex items-center gap-1 transition-colors">
-                            <span class="material-symbols-outlined text-[12px]">add</span> Buat Baru
+                            <i class="ph ph-plus text-[12px]"></i> Buat Baru
                         </a>
                     </div>
 
@@ -1510,10 +1560,10 @@
 
                     @if($widgetCampaigns->isEmpty())
                         <div class="p-4 bg-slate-50 dark:bg-[#000000] rounded-xl border border-dashed border-zinc-200 dark:border-zinc-800 text-center">
-                            <span class="material-symbols-outlined text-2xl text-slate-300 dark:text-slate-600">confirmation_number</span>
+                            <i class="ph ph-ticket text-2xl text-slate-300 dark:text-slate-600"></i>
                             <p class="text-xs text-slate-400 mt-1">Belum ada voucher/diskon aktif.</p>
                             <a href="{{ route('tenant.campaigns.create') }}" target="_blank" class="mt-2 inline-flex items-center gap-1 text-xs font-bold text-rose-500">
-                                <span class="material-symbols-outlined text-[14px]">add_circle</span> Buat Diskon / Voucher
+                                <i class="ph ph-plus-circle text-[14px]"></i> Buat Diskon / Voucher
                             </a>
                         </div>
                     @else
@@ -1531,7 +1581,7 @@
                                     ">
                                 <div class="mt-0.5 w-4 h-4 rounded border-2 flex-shrink-0 flex items-center justify-center transition-colors"
                                     :class="(editingData.data.campaign_ids || []).includes({{ $wc->id }}) ? 'bg-rose-500 border-rose-500 text-white' : 'border-slate-300 dark:border-slate-600'">
-                                    <span class="material-symbols-outlined text-[11px]" x-show="(editingData.data.campaign_ids || []).includes({{ $wc->id }})">check</span>
+                                    <i class="ph ph-check text-[11px]" x-show="(editingData.data.campaign_ids || []).includes({{ $wc->id }})"></i>
                                 </div>
                                 <div class="flex-1 min-w-0">
                                     <div class="flex items-center gap-1.5 flex-wrap">
@@ -1579,7 +1629,7 @@
             <div class="px-6 py-4 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between shrink-0 bg-slate-50/50 dark:bg-[#161f33]">
                 <div class="flex items-center gap-2.5">
                     <div class="w-8 h-8 rounded-xl bg-slate-900 text-white flex items-center justify-center">
-                        <span class="material-symbols-outlined text-[18px]">palette</span>
+                        <i class="ph ph-palette text-[18px]"></i>
                     </div>
                     <div>
                         <h3 class="font-bold text-sm text-zinc-900 dark:text-zinc-100">Pengaturan Banner Header Toko</h3>
@@ -1587,20 +1637,20 @@
                     </div>
                 </div>
                 <button type="button" @click="closeBannerModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1.5 rounded-lg">
-                    <span class="material-symbols-outlined text-[20px]">close</span>
+                    <i class="ph ph-x text-[20px]"></i>
                 </button>
             </div>
 
             <!-- Tab Switcher -->
             <div class="flex border-b border-zinc-200 dark:border-zinc-800 px-6 bg-slate-50/30 dark:bg-[#131b2e] shrink-0">
                 <button type="button" @click="bannerTab = 'gradient'" :class="bannerTab === 'gradient' ? 'border-orange-500 text-orange-600 dark:border-orange-400 dark:text-orange-400 font-bold' : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-medium'" class="px-4 py-3 border-b-2 text-xs flex items-center gap-1.5 transition-all">
-                    <span class="material-symbols-outlined text-[16px]">gradient</span> Warna Gradien
+                    <i class="ph ph-gradient text-[16px]"></i> Warna Gradien
                 </button>
                 <button type="button" @click="bannerTab = 'solid'" :class="bannerTab === 'solid' ? 'border-orange-500 text-orange-600 dark:border-orange-400 dark:text-orange-400 font-bold' : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-medium'" class="px-4 py-3 border-b-2 text-xs flex items-center gap-1.5 transition-all">
-                    <span class="material-symbols-outlined text-[16px]">format_color_fill</span> Warna Biasa
+                    <i class="ph ph-paint-bucket text-[16px]"></i> Warna Biasa
                 </button>
                 <button type="button" @click="bannerTab = 'image'" :class="bannerTab === 'image' ? 'border-orange-500 text-orange-600 dark:border-orange-400 dark:text-orange-400 font-bold' : 'border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 font-medium'" class="px-4 py-3 border-b-2 text-xs flex items-center gap-1.5 transition-all">
-                    <span class="material-symbols-outlined text-[16px]">image</span> Gambar Foto
+                    <i class="ph ph-image text-[16px]"></i> Gambar Foto
                 </button>
             </div>
 
@@ -1628,7 +1678,7 @@
                 <div x-show="bannerTab === 'gradient'" class="space-y-4 relative">
                     @if(!$store->isPro())
                     <div class="absolute inset-0 z-20 bg-white/70 dark:bg-[#000000]/80 backdrop-blur-[2px] flex flex-col items-center justify-center rounded-2xl p-4 text-center border border-zinc-200 dark:border-zinc-800">
-                        <span class="material-symbols-outlined text-4xl text-amber-500 mb-2">stars</span>
+                        <i class="ph ph-star text-4xl text-amber-500 mb-2"></i>
                         <h4 class="font-bold text-zinc-800 dark:text-zinc-100 mb-1">Fitur Toko PRO</h4>
                         <p class="text-[11px] text-zinc-600 dark:text-zinc-400 mb-4 max-w-xs">Gunakan dekorasi banner gradien eksklusif untuk tampilan toko yang lebih premium.</p>
                         <a href="{{ route('tenant.pro.index') }}" class="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-xs font-bold transition-all active:scale-95">Upgrade ke PRO</a>
@@ -1645,7 +1695,7 @@
                                 <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
                                 <span class="relative z-10 text-[11px] font-bold text-white drop-shadow-none truncate" x-text="grad.name"></span>
                                 <span x-show="previewBanner === grad.value" class="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-white text-orange-600 flex items-center justify-center shadow-none">
-                                    <span class="material-symbols-outlined text-[13px] font-black">check</span>
+                                    <i class="ph ph-check text-[13px] font-black"></i>
                                 </span>
                             </button>
                         </template>
@@ -1694,7 +1744,7 @@
                             <button type="button" @click="selectPreset(col.value)" :class="previewBanner === col.value ? 'ring-2 ring-orange-500 ring-offset-2 dark:ring-offset-[#111726]' : 'border border-slate-200/60 dark:border-zinc-800'" class="h-14 rounded-xl relative overflow-hidden flex flex-col justify-end p-2 text-left group transition-all hover:scale-[1.02]" :style="`background-color: ${col.value};`">
                                 <span class="relative z-10 text-[10px] font-bold text-white drop-shadow-none truncate" x-text="col.name"></span>
                                 <span x-show="previewBanner === col.value" class="absolute top-1 right-1 w-4 h-4 rounded-full bg-white text-orange-600 flex items-center justify-center shadow-none">
-                                    <span class="material-symbols-outlined text-[12px] font-black">check</span>
+                                    <i class="ph ph-check text-[12px] font-black"></i>
                                 </span>
                             </button>
                         </template>
@@ -1717,7 +1767,7 @@
                     <div>
                         <label class="block text-xs font-bold text-zinc-700 dark:text-zinc-300 mb-2">Upload Gambar dari Perangkat</label>
                         <label class="cursor-pointer bg-orange-50 dark:bg-orange-950/30 hover:bg-orange-100 dark:hover:bg-orange-900/40 text-orange-600 dark:text-orange-300 border-2 border-dashed border-orange-300 dark:border-orange-800 rounded-xl p-5 flex flex-col items-center justify-center gap-1.5 transition-all text-center">
-                            <span class="material-symbols-outlined text-3xl text-orange-500">cloud_upload</span>
+                            <i class="ph ph-cloud-arrow-up text-3xl text-orange-500"></i>
                             <span class="text-xs font-bold">Pilih File Foto Banner (Maks 5MB)</span>
                             <span class="text-[10px] text-slate-400">Rasio rekomendasi 3:1 (misal 1200x400 px) dengan fitur crop & potong rapi</span>
                             <input type="file" class="hidden" accept="image/*" @change="uploadHeaderBannerFromModal($event)">
@@ -1746,7 +1796,7 @@
             <div class="px-6 py-3.5 border-t border-zinc-200 dark:border-zinc-800 bg-slate-50 dark:bg-[#161f33] flex items-center justify-between gap-3 shrink-0">
                 <!-- Tombol Hapus Settingan Banner -->
                 <button type="button" @click="clearHeaderBanner()" class="px-3.5 py-2 rounded-xl text-rose-500 hover:bg-rose-100/70 dark:hover:bg-rose-950/40 text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer" title="Hapus settingan banner dan kembali ke default">
-                    <span class="material-symbols-outlined text-[16px]">delete</span>
+                    <i class="ph ph-trash text-[16px]"></i>
                     <span>Hapus Settingan Banner</span>
                 </button>
 
@@ -1778,7 +1828,7 @@
             <!-- Left: Info & Mode Badge -->
             <div class="flex items-center gap-2.5 min-w-0">
                 <div class="w-8 h-8 rounded-xl bg-slate-800 text-slate-300 flex items-center justify-center shrink-0">
-                    <span class="material-symbols-outlined text-[18px]">visibility</span>
+                    <i class="ph ph-eye text-[18px]"></i>
                 </div>
                 <div class="min-w-0">
                     <h3 class="text-xs sm:text-sm font-bold text-white flex items-center gap-2 truncate">
@@ -1795,24 +1845,24 @@
             </div>
 
             <!-- Center: Device Switcher & Refresh Button -->
-            <div class="flex items-center gap-1 p-1 bg-slate-800/90 rounded-xl border border-slate-700">
+            <div class="hidden sm:flex items-center gap-1 p-1 bg-slate-800/90 rounded-xl border border-slate-700">
                 <button type="button" @click="previewDevice = 'mobile'" 
                         :class="previewDevice === 'mobile' ? 'bg-white text-slate-900 font-bold' : 'text-slate-400 hover:text-white font-medium'" 
                         class="px-2.5 sm:px-3 py-1 rounded-lg text-xs transition-all flex items-center gap-1 cursor-pointer">
-                    <span class="material-symbols-outlined text-[15px]">smartphone</span>
+                    <i class="ph ph-device-mobile text-[15px]"></i>
                     <span class="hidden sm:inline">Mobile</span>
                 </button>
                 <button type="button" @click="previewDevice = 'desktop'" 
                         :class="previewDevice === 'desktop' ? 'bg-white text-slate-900 font-bold' : 'text-slate-400 hover:text-white font-medium'" 
                         class="px-2.5 sm:px-3 py-1 rounded-lg text-xs transition-all flex items-center gap-1 cursor-pointer">
-                    <span class="material-symbols-outlined text-[15px]">desktop_windows</span>
+                    <i class="ph ph-desktop text-[15px]"></i>
                     <span class="hidden sm:inline">Desktop</span>
                 </button>
                 <div class="h-4 w-px bg-slate-700 mx-0.5"></div>
                 <button type="button" @click="refreshPreview()" 
                         class="p-1 rounded-lg text-slate-400 hover:text-white transition-colors cursor-pointer" 
                         title="Muat Ulang / Refresh Preview">
-                    <span class="material-symbols-outlined text-[16px]">refresh</span>
+                    <i class="ph ph-arrow-clockwise text-[16px]"></i>
                 </button>
             </div>
 
@@ -1823,13 +1873,13 @@
                    class="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-semibold border border-slate-700 transition-all"
                    title="Buka di tab browser baru">
                     <span>Tab Baru</span>
-                    <span class="material-symbols-outlined text-[14px]">open_in_new</span>
+                    <i class="ph ph-arrow-square-out text-[14px]"></i>
                 </a>
                 @endif
                 <button type="button" @click="closePreviewModal()" 
                         class="px-3 py-1.5 rounded-xl bg-rose-500/20 hover:bg-rose-500 text-rose-300 hover:text-white text-xs font-bold transition-all flex items-center gap-1 border border-rose-500/30 cursor-pointer"
                         title="Tutup Preview (Tekan ESC)">
-                    <span class="material-symbols-outlined text-[16px]">close</span>
+                    <i class="ph ph-x text-[16px]"></i>
                     <span class="hidden sm:inline">Tutup</span>
                 </button>
             </div>
@@ -1837,21 +1887,21 @@
         </div>
 
         <!-- Modal Body (Simulation Canvas) -->
-        <div class="flex-1 overflow-auto p-3 sm:p-6 flex items-center justify-center relative custom-scrollbar">
+        <div class="flex-1 overflow-auto p-0 sm:p-6 flex items-center justify-center relative custom-scrollbar">
             
             <!-- Mobile Frame Viewport (390px iPhone Frame) -->
             <div x-show="previewDevice === 'mobile'" 
-                 class="w-full max-w-[390px] h-[820px] max-h-[88vh] bg-slate-950 rounded-[44px] p-3 shadow-none ring-1 ring-white/15 flex flex-col relative shrink-0 transition-all duration-300">
+                 class="w-full h-full sm:max-w-[390px] sm:h-[820px] sm:max-h-[88vh] bg-slate-950 sm:rounded-[44px] sm:p-3 shadow-none sm:ring-1 ring-white/15 flex flex-col relative shrink-0 transition-all duration-300">
                 <!-- Dynamic Island / Speaker Notch -->
-                <div class="w-28 h-4 bg-black rounded-full mx-auto mb-2 shrink-0 flex items-center justify-center">
+                <div class="hidden sm:flex w-28 h-4 bg-black rounded-full mx-auto mb-2 shrink-0 items-center justify-center">
                     <div class="w-2.5 h-2.5 rounded-full bg-slate-900 border border-slate-800"></div>
                 </div>
                 <!-- Iframe Container -->
-                <div class="flex-1 w-full bg-white dark:bg-[#000000] rounded-[32px] overflow-hidden relative shadow-inner">
+                <div class="flex-1 w-full bg-white dark:bg-[#000000] sm:rounded-[32px] overflow-hidden relative shadow-inner">
                     <iframe id="preview-iframe-mobile" :src="isPreviewModalOpen ? previewUrl : 'about:blank'" class="w-full h-full border-0"></iframe>
                 </div>
                 <!-- Bottom Bar Indicator -->
-                <div class="w-32 h-1 bg-slate-700 rounded-full mx-auto mt-2 shrink-0"></div>
+                <div class="hidden sm:block w-32 h-1 bg-slate-700 rounded-full mx-auto mt-2 shrink-0"></div>
             </div>
 
             <!-- Desktop Frame Viewport (Browser Frame) -->
@@ -1866,7 +1916,7 @@
                     </div>
                     <div class="flex-1 flex justify-center">
                         <div class="bg-slate-950/80 border border-slate-700 text-[11px] px-4 py-1 rounded-lg text-slate-400 w-[60%] flex items-center justify-center gap-1.5 font-mono truncate">
-                            <span class="material-symbols-outlined text-[13px] text-emerald-400">lock</span>
+                            <i class="ph ph-lock text-[13px] text-emerald-400"></i>
                             <span x-text="previewUrl"></span>
                         </div>
                     </div>
@@ -1891,6 +1941,9 @@
             mobileTab: 'biolink',
             sidebarTab: 'biolink',
             expandedLinkIndex: null,
+            showWelcome: false,
+            linksSaved: false,
+            urlCopied: false,
             activeComponents: {!! json_encode(
                 is_array($store->appearance_data)
                     ? array_values(array_filter($store->appearance_data, fn($v, $k) => is_numeric($k) && is_array($v) && !empty($v['type']), ARRAY_FILTER_USE_BOTH))
@@ -1898,6 +1951,8 @@
             ) !!},
             hasSavedAppearance: {{ $store->appearance_data !== null ? 'true' : 'false' }},
             headerBanner: {!! json_encode($store->banner ?? '') !!},
+            brandColor: @js($store->brandColor()),
+            brandPresets: ['#0f172a', '#0284c7', '#0f766e', '#16a34a', '#d97706', '#ea580c', '#e11d48', '#7c3aed'],
             isSaving: false,
             hasUnsavedChanges: false,
             draggedItem: null,
@@ -1971,8 +2026,15 @@
             ],
             
             init() {
-                if (window.innerWidth < 768) {
+                if (window.innerWidth < 1024) {
                     this.device = 'mobile';
+                }
+
+                const params = new URLSearchParams(window.location.search);
+                this.showWelcome = params.has('welcome');
+                if (this.storeMode === 'store' && params.get('tab') !== 'biolink') {
+                    this.sidebarTab = 'widgets';
+                    this.mobileTab = 'palette';
                 }
                 
                 if (!this.hasSavedAppearance && (!Array.isArray(this.activeComponents) || this.activeComponents.length === 0)) {
@@ -2215,6 +2277,11 @@
                     this.sidebarTab = 'biolink';
                     this.mobileTab = 'biolink';
                 }
+                // Tab Tautan tidak tersedia di mode Toko Digital
+                if (mode === 'store' && this.mobileTab === 'biolink') {
+                    this.sidebarTab = 'widgets';
+                    this.mobileTab = 'palette';
+                }
                 
                 // Instantly save mode to backend
                 fetch('{{ route('tenant.appearance.mode') }}', {
@@ -2305,6 +2372,32 @@
                 }
             },
 
+            setBrandColor(color) {
+                this.brandColor = color;
+                this.hasUnsavedChanges = true;
+            },
+
+            copyProfileUrl() {
+                const markCopied = () => {
+                    this.urlCopied = true;
+                    this.showToast('Tautan profil disalin');
+                };
+                const fallback = () => {
+                    const input = document.createElement('textarea');
+                    input.value = this.previewUrl;
+                    document.body.appendChild(input);
+                    input.select();
+                    document.execCommand('copy');
+                    input.remove();
+                    markCopied();
+                };
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(this.previewUrl).then(markCopied).catch(fallback);
+                } else {
+                    fallback();
+                }
+            },
+
             saveProfileLinks() {
                 this.isSavingLinks = true;
                 fetch('{{ route('tenant.appearance.links') }}', {
@@ -2320,6 +2413,7 @@
                     this.isSavingLinks = false;
                     if (data.success) {
                         this.hasUnsavedChanges = false;
+                        this.linksSaved = true;
                         this.showToast('✓ Tombol Bio Link berhasil disimpan!');
                     } else {
                         alert(data.message || 'Gagal menyimpan bio link.');
@@ -2353,6 +2447,7 @@
                         components: cleanComponents,
                         header_banner: this.headerBanner,
                         store_mode: this.storeMode,
+                        brand_color: this.brandColor,
                         profile_links: this.profileLinks,
                         voucher_placement: this.voucherPlacement
                     })
@@ -2368,6 +2463,7 @@
                     if (data.success) {
                         this.hasUnsavedChanges = false;
                         this.hasSavedAppearance = true;
+                        this.linksSaved = true;
                         this.showToast(data.message || '✓ Pengaturan toko berhasil disimpan!');
                     } else {
                         alert('Gagal menyimpan: ' + (data.message || 'Terjadi kesalahan'));

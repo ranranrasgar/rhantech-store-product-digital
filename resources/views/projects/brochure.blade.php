@@ -692,7 +692,7 @@
     <!-- Bar Aksi (Hanya muncul di Layar Monitor) -->
     <div class="no-print-bar">
         <div class="title-bar">
-            <span class="material-symbols-outlined" style="color: #38bdf8; font-size: 20px;">auto_awesome</span>
+            <span class="material-symbols-outlined" style="color: #38bdf8; font-size: 20px;">verified</span>
             <span>Brosur Resmi: <strong>{{ $project->title }}</strong></span>
         </div>
         <div class="actions">

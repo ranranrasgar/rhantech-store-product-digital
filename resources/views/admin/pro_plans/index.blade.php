@@ -340,7 +340,7 @@
                                         </span>
                                     @elseif($sub->payment_status === 'pending')
                                         <span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 dark:bg-amber-950/80 dark:text-amber-300 text-[11px] font-bold border border-amber-300 dark:border-amber-800">
-                                            ⏳ Menunggu (Pending)
+                                            Menunggu (Pending)
                                         </span>
                                     @else
                                         <span class="px-2.5 py-1 rounded-full bg-rose-100 text-rose-800 dark:bg-rose-950/80 dark:text-rose-300 text-[11px] font-bold border border-rose-300 dark:border-rose-800">

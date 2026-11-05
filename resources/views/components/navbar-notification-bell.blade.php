@@ -202,7 +202,7 @@ if (typeof navbarNotificationBell === 'undefined') {
                     if (permission === 'granted') {
                         // Tampilkan notifikasi pop-up uji coba langsung di Windows
                         this.triggerNativePopup(
-                            "🔔 Pop-up Windows Berhasil Aktif!",
+                            "Pop-up Windows Berhasil Aktif!",
                             "Notifikasi desktop Anda kini telah aktif. Setiap pesanan baru atau konfirmasi sukses akan memunculkan pop-up ini."
                         );
                     } else if (permission === 'denied') {
@@ -218,7 +218,7 @@ if (typeof navbarNotificationBell === 'undefined') {
 
                 if (Notification.permission === 'granted') {
                     this.triggerNativePopup(
-                        "🎉 Uji Coba Pop-up Windows Sukses!",
+                        "Uji Coba Pop-up Windows Sukses!",
                         "Push notification desktop berjalan normal di layar komputer Anda."
                     );
                 } else {

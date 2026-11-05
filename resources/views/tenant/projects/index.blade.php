@@ -1,4 +1,4 @@
-﻿@extends('layouts.tenant')
+@extends('layouts.tenant')
 
 @section('title', 'Portofolio & Proyek Toko')
 

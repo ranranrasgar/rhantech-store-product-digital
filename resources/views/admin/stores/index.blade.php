@@ -139,10 +139,10 @@
                 <label class="block text-xs font-bold text-on-surface-variant mb-1.5 uppercase">Status</label>
                 <select name="status" class="w-full py-2 px-3 text-sm rounded-xl bg-surface-container-low border border-outline-variant text-on-surface focus:ring-2 focus:ring-primary transition">
                     <option value="all" {{ request('status') == 'all' || !request('status') ? 'selected' : '' }}>Semua Status</option>
-                    <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>🟢 Aktif Normal</option>
-                    <option value="pro" {{ request('status') == 'pro' ? 'selected' : '' }}>⭐ Toko PRO</option>
-                    <option value="suspended" {{ request('status') == 'suspended' ? 'selected' : '' }}>🟡 Ditangguhkan</option>
-                    <option value="banned" {{ request('status') == 'banned' ? 'selected' : '' }}>🔴 Diblokir (Banned)</option>
+                    <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Aktif Normal</option>
+                    <option value="pro" {{ request('status') == 'pro' ? 'selected' : '' }}>Toko PRO</option>
+                    <option value="suspended" {{ request('status') == 'suspended' ? 'selected' : '' }}>Ditangguhkan</option>
+                    <option value="banned" {{ request('status') == 'banned' ? 'selected' : '' }}>Diblokir (Banned)</option>
                 </select>
             </div>
 

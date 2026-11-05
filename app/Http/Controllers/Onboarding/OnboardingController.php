@@ -3,12 +3,22 @@
 namespace App\Http\Controllers\Onboarding;
 
 use App\Http\Controllers\Controller;
+use App\Models\Store;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class OnboardingController extends Controller
 {
+    private const RESERVED_SLUGS = [
+        'admin','tenant','dashboard','about','projects','products','clients','cart','checkout',
+        'payment','download','contact','help','terms','privacy','copyright','refund-policy',
+        'login','register','logout','forgot-password','reset-password','email','storage','chat','toko',
+        'onboarding','api','auth','notifications','up',
+    ];
+
     public function index()
     {
         $user = Auth::user();
@@ -35,6 +45,38 @@ class OnboardingController extends Controller
         return view('onboarding.setup', compact('user', 'mode'));
     }
 
+    /**
+     * Cek ketersediaan URL profil saat pengguna mengetik.
+     */
+    public function checkSlug(Request $request): JsonResponse
+    {
+        $slug = Str::slug((string) $request->query('slug'));
+
+        if ($slug === '') {
+            return response()->json(['available' => false, 'slug' => '', 'message' => 'Isi URL dengan huruf atau angka.']);
+        }
+
+        if (in_array($slug, self::RESERVED_SLUGS, true)) {
+            return response()->json(['available' => false, 'slug' => $slug, 'message' => 'URL ini tidak bisa digunakan. Coba nama lain.']);
+        }
+
+        if (! Store::where('slug', $slug)->exists()) {
+            return response()->json(['available' => true, 'slug' => $slug, 'message' => 'URL tersedia.']);
+        }
+
+        $number = 2;
+        while (Store::where('slug', "{$slug}-{$number}")->exists()) {
+            $number++;
+        }
+
+        return response()->json([
+            'available' => false,
+            'slug' => $slug,
+            'message' => 'URL ini sudah dipakai toko lain.',
+            'suggestion' => "{$slug}-{$number}",
+        ]);
+    }
+
     public function saveStore(Request $request)
     {
         $user = Auth::user();
@@ -43,35 +85,40 @@ class OnboardingController extends Controller
         }
         $mode = session('onboarding_mode', 'store');
 
-        $reservedSlugs = [
-            'admin','tenant','dashboard','projects','products','clients','cart','checkout',
-            'payment','download','contact','help','terms','privacy','copyright','refund-policy',
-            'login','register','logout','forgot-password','reset-password','email','storage','chat','toko','onboarding',
-        ];
+        // Foto disimpan lebih dulu agar tidak perlu dipilih ulang jika URL ternyata ditolak.
+        $request->validate([
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+        ], [
+            'logo.image' => 'File harus berupa gambar.',
+            'logo.mimes' => 'Format gambar harus JPG, PNG, GIF, atau WebP.',
+            'logo.max'   => 'Ukuran gambar maksimal 2 MB.',
+        ]);
 
-        $rawSlug = $request->filled('slug') ? $request->slug : $request->name;
-        $slug = Str::slug($rawSlug);
+        if ($request->hasFile('logo')) {
+            if ($previousLogo = session('onboarding_logo')) {
+                Storage::disk('public')->delete($previousLogo);
+            }
+            session(['onboarding_logo' => $request->file('logo')->store('logos', 'public')]);
+        }
+
+        // Slug dinormalkan dulu supaya slug yang dibuat dari nama ikut dicek keunikannya.
+        $slug = Str::slug($request->filled('slug') ? $request->slug : $request->name);
+        $request->merge(['slug' => $slug]);
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'slug' => ['nullable','string','max:100','regex:/^[a-zA-Z0-9\-_]+$/',
-                \Illuminate\Validation\Rule::notIn($reservedSlugs),
+            'slug' => ['nullable','string','max:100',
+                \Illuminate\Validation\Rule::notIn(self::RESERVED_SLUGS),
                 \Illuminate\Validation\Rule::unique('stores','slug'),
             ],
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
         ], [
             'name.required'  => 'Nama toko wajib diisi.',
             'slug.unique'    => 'URL ini sudah dipakai toko lain. Coba nama lain.',
             'slug.not_in'    => 'URL ini tidak bisa digunakan. Coba nama lain.',
-            'slug.regex'     => 'URL hanya boleh huruf, angka, dan tanda hubung.',
         ]);
 
-        $logoPath = null;
-        if ($request->hasFile('logo')) {
-            $logoPath = $request->file('logo')->store('logos', 'public');
-        }
-
-        $finalSlug = $slug ?: Str::slug($request->name) . '-' . Str::random(4);
+        $logoPath = session()->pull('onboarding_logo');
+        $finalSlug = $slug ?: 'toko-' . Str::lower(Str::random(6));
 
         $store = $user->store()->create([
             'name'               => $request->name,
@@ -96,7 +143,8 @@ class OnboardingController extends Controller
     public function product()
     {
         $user = Auth::user();
-        if ($user->hasCompletedOnboarding()) {
+        // Toko baru saja dibuat di langkah sebelumnya: hasCompletedOnboarding() sudah bernilai true.
+        if ($user->hasCompletedOnboarding() && !session('onboarding_store_id')) {
             return redirect()->route('tenant.dashboard');
         }
         $store = $user->store;
@@ -149,10 +197,10 @@ class OnboardingController extends Controller
 
         if (!$user->hasVerifiedEmail()) {
             return redirect()->route('verification.notice')
-                ->with('success', '🎉 Profilmu sudah siap! Silakan cek email untuk verifikasi agar bisa mengakses dashboard penuh.');
+                ->with('success', 'Profilmu sudah siap! Silakan cek email untuk verifikasi agar bisa mengakses dashboard penuh.');
         }
 
-        return redirect()->route('tenant.dashboard')
-            ->with('success', '🎉 Selamat datang di Rhantech! Profilmu sudah siap.');
+        return redirect($user->startPageUrl())
+            ->with('success', 'Selamat datang di Rhantech! Profilmu sudah siap.');
     }
 }

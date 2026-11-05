@@ -104,7 +104,7 @@
     </div>
 
     <!-- 2. Floating Launcher Button (Minimized bottom-right position) -->
-    <div class="fixed bottom-5 right-4 sm:right-6 sm:bottom-6 z-40">
+    <div class="hidden md:block fixed bottom-5 right-4 sm:right-6 sm:bottom-6 z-40">
         <button type="button"
                 x-show="showBubbleBtn"
                 @click="expand()"

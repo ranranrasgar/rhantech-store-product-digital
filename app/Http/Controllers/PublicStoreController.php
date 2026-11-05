@@ -200,7 +200,12 @@ class PublicStoreController extends Controller
             ? collect($store->profile_links)->filter(fn($l) => !isset($l['is_active']) || !empty($l['is_active']))->values()
             : collect();
 
-        $sharedData = compact('store', 'products', 'appearance', 'isFollowing', 'categories', 'campaigns', 'profileLinks', 'myAffiliateLink', 'myAffiliateCode', 'flashProducts');
+        // Rating hanya dari ulasan yang tampil; tidak ada ulasan berarti tidak ada rating.
+        $storeReviews = \App\Models\ProductReview::where('is_visible', true)->whereIn('product_id', $allProductIds);
+        $storeReviewCount = (clone $storeReviews)->count();
+        $storeRating = $storeReviewCount > 0 ? (float) (clone $storeReviews)->avg('rating') : 0.0;
+
+        $sharedData = compact('store', 'products', 'appearance', 'isFollowing', 'categories', 'campaigns', 'profileLinks', 'myAffiliateLink', 'myAffiliateCode', 'flashProducts', 'storeRating', 'storeReviewCount');
 
         if ($mode === 'profile') {
             return view('store.profile', $sharedData);

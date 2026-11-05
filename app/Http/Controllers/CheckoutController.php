@@ -243,7 +243,7 @@ class CheckoutController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => $isFree ? '🎉 Selamat! Diskon 100% diterapkan, pesanan Anda GRATIS!' : '✅ Voucher berhasil digunakan!',
+            'message' => $isFree ? 'Selamat! Diskon 100% diterapkan, pesanan Anda GRATIS!' : 'Voucher berhasil digunakan!',
             'voucher' => session('applied_voucher'),
             'subtotal' => $subtotal,
             'subtotal_formatted' => 'Rp ' . number_format($subtotal, 0, ',', '.'),
@@ -529,7 +529,7 @@ class CheckoutController extends Controller
             }
 
             return redirect()->route('tenant.purchases.index')
-                ->with('success', '🎉 Selamat! Kupon voucher 100% diterapkan! Pesanan Anda GRATIS dan file siap langsung diunduh!');
+                ->with('success', 'Selamat! Kupon voucher 100% diterapkan! Pesanan Anda GRATIS dan file siap langsung diunduh!');
         }
 
         // Kasus 2: Pesanan Berbayar (Midtrans)

@@ -1,4 +1,4 @@
-﻿@extends('layouts.tenant')
+@extends('layouts.tenant')
 
 @section('title', 'Dashboard Kreator & Toko Digital')
 
@@ -33,7 +33,7 @@
                     Hub Kreator &amp; Bisnis Digital 2026
                 </div>
                 <h1 class="text-2xl md:text-3xl font-black tracking-tight text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-                    Halo, {{ explode(' ', auth()->user()->name)[0] ?? 'Kreator' }}! 👋
+                    Halo, {{ explode(' ', auth()->user()->name)[0] ?? 'Kreator' }}!
                 </h1>
                 <p class="text-xs md:text-sm text-zinc-500 dark:text-zinc-400 mt-1 max-w-xl">
                     Kelola akun dan pembelian Anda, atau aktifkan halaman publik Anda (Toko Digital, Bio Link ala Lynk.id, &amp; Portofolio) dalam 1 link.

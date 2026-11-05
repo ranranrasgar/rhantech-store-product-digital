@@ -1,4 +1,4 @@
-﻿@extends('layouts.tenant')
+@extends('layouts.tenant')
 
 @section('title', 'Iklan & Promosi Toko - Rhantech Seller Center')
 

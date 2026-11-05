@@ -156,7 +156,7 @@ class WebhookController extends Controller
                             if ($adTransaction->store && $adTransaction->store->user_id) {
                                 app(\App\Services\FirebaseService::class)->sendToUser(
                                     $adTransaction->store->user_id,
-                                    'Top Up Saldo Iklan Berhasil! 📢',
+                                    'Top Up Saldo Iklan Berhasil!',
                                     "Saldo iklan sebesar Rp " . number_format($adTransaction->amount, 0, ',', '.') . " berhasil ditambahkan ke toko Anda.",
                                     url('/tenant/ads')
                                 );
@@ -196,7 +196,7 @@ class WebhookController extends Controller
                             if ($proSubscription->store && $proSubscription->store->user_id) {
                                 app(\App\Services\FirebaseService::class)->sendToUser(
                                     $proSubscription->store->user_id,
-                                    'Selamat! Toko Anda Resmi PRO ⭐',
+                                    'Selamat! Toko Anda Resmi PRO',
                                     "Paket {$proSubscription->plan} berhasil diaktifkan. Nikmati fitur eksklusif toko PRO Anda!",
                                     url('/tenant/pro-dashboard')
                                 );

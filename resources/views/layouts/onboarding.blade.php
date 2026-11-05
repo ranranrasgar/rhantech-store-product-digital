@@ -1,14 +1,15 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id" class="h-full">
 <head>
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
 <meta name="csrf-token" content="{{ csrf_token() }}">
+<meta name="robots" content="noindex"/>
 <title>@yield("title", "Mulai Setup") — Rhantech</title>
 <link rel="icon" type="image/png" href="{{ isset($company) && $company->favicon ? "/storage/".$company->favicon : "/favicon.ico" }}" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet"/>
+@include("components.phosphor-icons")
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <script>
@@ -17,46 +18,71 @@ tailwind.config = {
   theme: {
     extend: {
       fontFamily: { sans: ["Geist", "ui-sans-serif", "system-ui"] },
+      colors: { brand: { DEFAULT: "#00838f", dark: "#006d77" } },
     }
   }
 };
 </script>
 <style>
   body { font-family: "Geist", ui-sans-serif, system-ui; }
-  .material-symbols-outlined { font-size: inherit; line-height: inherit; display: inline-flex; align-items: center; vertical-align: middle; }
-  @keyframes fade-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-  .animate-fade-up { animation: fade-up 0.5s ease forwards; }
-  .animate-fade-up-delay-1 { animation: fade-up 0.5s ease 0.1s forwards; opacity: 0; }
-  .animate-fade-up-delay-2 { animation: fade-up 0.5s ease 0.2s forwards; opacity: 0; }
-  .animate-fade-up-delay-3 { animation: fade-up 0.5s ease 0.3s forwards; opacity: 0; }
+  [x-cloak] { display: none !important; }
+  @keyframes fade-up { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  .animate-fade-up { animation: fade-up 0.35s ease both; }
+  .animate-fade-up-delay-1 { animation: fade-up 0.35s ease 0.08s both; }
+  /* Saat keyboard ponsel terbuka, tombol ikut mengalir di akhir form agar tidak menutupi isian */
+  @media (max-width: 767px) {
+    body.is-typing .sticky-cta { position: static; margin-top: 12px; padding: 0; background: transparent; border: 0; backdrop-filter: none; }
+    body.is-typing main { padding-bottom: 1.5rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .animate-fade-up, .animate-fade-up-delay-1 { animation: none; }
+  }
 </style>
 @include("components.theme-init")
 </head>
-<body class="h-full bg-gradient-to-br from-slate-50 via-white to-teal-50/30 dark:from-[#060b14] dark:via-[#090d16] dark:to-[#060b14] text-zinc-900 dark:text-zinc-100 antialiased">
+<body class="min-h-full bg-slate-50 dark:bg-[#090d16] text-zinc-900 dark:text-zinc-100 antialiased">
 
 {{-- Top Bar --}}
-<header class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 sm:px-8 py-4">
-    <a href="{{ url("/") }}" class="flex items-center gap-2 text-zinc-800 dark:text-zinc-100 hover:opacity-80 transition">
+<header class="sticky top-0 z-40 flex items-center justify-between gap-3 px-4 sm:px-8 py-3 bg-white/90 dark:bg-[#090d16]/90 backdrop-blur border-b border-slate-200/70 dark:border-slate-800">
+    <a href="{{ url("/") }}" class="flex items-center gap-2 shrink-0 text-zinc-800 dark:text-zinc-100 hover:opacity-80 transition">
         @if(isset($company) && $company->logo)
             <img src="{{ asset("storage/".$company->logo) }}" alt="{{ $company->company_name }}" class="h-7 w-auto object-contain">
         @else
-            <span class="font-black text-xl tracking-tight text-[#00838f]">Rhantech</span>
+            <span class="font-black text-xl tracking-tight text-brand">Rhantech</span>
         @endif
     </a>
-    <div class="flex items-center gap-3 text-xs text-zinc-500 dark:text-zinc-400">
-        <span>Masuk sebagai <span class="font-bold text-slate-700 dark:text-slate-200">{{ auth()->user()->name }}</span></span>
-        <form method="POST" action="{{ route("logout") }}">
+    <div class="flex items-center gap-3 min-w-0 text-xs text-zinc-500 dark:text-zinc-400">
+        <span class="truncate font-semibold text-slate-700 dark:text-slate-200">{{ auth()->user()->name }}</span>
+        <form method="POST" action="{{ route("logout") }}" class="shrink-0">
             @csrf
-            <button type="submit" class="text-rose-500 hover:text-rose-600 font-semibold transition-colors">Keluar</button>
+            <button type="submit" class="flex items-center gap-1 py-1.5 text-rose-600 hover:text-rose-700 font-semibold transition-colors">
+                <i class="ph ph-sign-out text-[15px]"></i> Keluar
+            </button>
         </form>
     </div>
 </header>
 
 {{-- Main Content --}}
-<main class="min-h-screen pt-20 pb-12 px-4">
+<main class="px-4 pt-5 sm:pt-10 pb-32 md:pb-12">
     @yield("content")
 </main>
 
-<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+<script>
+  (() => {
+    const fields = 'input:not([type=file]):not([type=hidden]):not([type=checkbox]):not([type=radio]), textarea, select';
+    let timer;
+    document.addEventListener('focusin', (event) => {
+      if (event.target.matches(fields)) {
+        clearTimeout(timer);
+        document.body.classList.add('is-typing');
+      }
+    });
+    // Ditunda agar ketukan tombol tidak meleset karena tombolnya berpindah saat fokus lepas.
+    document.addEventListener('focusout', () => {
+      timer = setTimeout(() => document.body.classList.remove('is-typing'), 200);
+    });
+  })();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js" defer></script>
 </body>
 </html>

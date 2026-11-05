@@ -7,13 +7,17 @@
     @include('components.pwa-head')
     <title>@yield('title', $store->name ?? 'Toko Digital')</title>
     <meta name="description" content="@yield('meta_description', $store->description ?? 'Toko digital resmi penyedia produk dan template terpercaya.')"/>
+    <link rel="canonical" href="@yield('canonical_url', url()->current())"/>
     <meta property="og:title" content="@yield('title', $store->name ?? 'Toko Digital')"/>
     <meta property="og:description" content="@yield('meta_description', $store->description ?? 'Toko digital resmi penyedia produk dan template terpercaya.')"/>
     <meta property="og:image" content="@yield('meta_image', $store->logo ? asset('storage/'.$store->logo) : '')"/>
     <meta property="og:type" content="website"/>
+    @include('components.seo-tags')
     <link rel="icon" type="image/png" href="{{ $store->logo ? asset('storage/'.$store->logo) : (isset($company) && $company->favicon ? '/storage/'.$company->favicon : '/favicon.ico') }}" />
     <link rel="shortcut icon" type="image/png" href="{{ $store->logo ? asset('storage/'.$store->logo) : (isset($company) && $company->favicon ? '/storage/'.$company->favicon : '/favicon.ico') }}" />
 
+    @include('components.phosphor-icons')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css"/>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     {{-- Material Symbols: non-blocking preload --}}

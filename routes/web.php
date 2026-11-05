@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\ContactMessageController;
 
 // Public Routes
 Route::get('/', [PublicController::class, 'home'])->name('home');
+Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
 Route::get('/about', [PublicController::class, 'about'])->name('about');
 Route::get('/projects', [PublicController::class, 'projects'])->name('projects.index');
 Route::get('/projects/{slug}', [PublicController::class, 'projectDetail'])->name('projects.show');
@@ -90,7 +91,7 @@ Route::get("/email/verify/{id}/{hash}", function (\Illuminate\Foundation\Auth\Em
     if (!$user->hasCompletedOnboarding()) {
         return redirect()->route('onboarding.index');
     }
-    return redirect()->route('tenant.dashboard');
+    return redirect($user->startPageUrl());
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
 Route::post('/email/verification-notification', function (\Illuminate\Http\Request $request) {
@@ -106,6 +107,7 @@ Route::any('/tenant/{any?}', function ($any = null) {
 // Onboarding Wizard Routes (post-registration)
 Route::middleware(['auth'])->group(function () {
     Route::get('/onboarding', [\App\Http\Controllers\Onboarding\OnboardingController::class, 'index'])->name('onboarding.index');
+    Route::get('/onboarding/check-slug', [\App\Http\Controllers\Onboarding\OnboardingController::class, 'checkSlug'])->name('onboarding.check_slug')->middleware('throttle:60,1');
     Route::post('/onboarding/mode', [\App\Http\Controllers\Onboarding\OnboardingController::class, 'saveMode'])->name('onboarding.mode');
     Route::get('/onboarding/setup', [\App\Http\Controllers\Onboarding\OnboardingController::class, 'setup'])->name('onboarding.setup');
     Route::post('/onboarding/store', [\App\Http\Controllers\Onboarding\OnboardingController::class, 'saveStore'])->name('onboarding.store');
@@ -127,7 +129,7 @@ Route::middleware(['auth', 'verified', 'is_tenant'])->prefix('dashboard')->name(
     Route::get('/purchases', [\App\Http\Controllers\Tenant\PurchaseController::class, 'index'])->name('purchases.index');
     Route::get('/following', [\App\Http\Controllers\Tenant\DashboardController::class, 'followingStores'])->name('following');
     
-    Route::resource('products', \App\Http\Controllers\Tenant\ProductController::class);
+    Route::resource('products', \App\Http\Controllers\Tenant\ProductController::class)->except(['show']);
     Route::delete('products/{product}/images/delete-all', [\App\Http\Controllers\Tenant\ProductController::class, 'destroyAllImages'])->name('products.images.destroy_all');
     Route::delete('products/image/{image}', [\App\Http\Controllers\Tenant\ProductController::class, 'destroyImage'])->name('products.image.destroy');
     Route::patch('products/{product}/toggle-active', [\App\Http\Controllers\Tenant\ProductController::class, 'toggleActive'])->name('products.toggle_active');
@@ -137,7 +139,7 @@ Route::middleware(['auth', 'verified', 'is_tenant'])->prefix('dashboard')->name(
     Route::patch('orders/{order}/mark-paid', [\App\Http\Controllers\Tenant\OrderController::class, 'markPaid'])->name('orders.mark_paid');
     Route::post('orders/{order}/resend-email', [\App\Http\Controllers\Tenant\OrderController::class, 'resendEmail'])->name('orders.resend_email');
     
-    Route::resource('payouts', \App\Http\Controllers\Tenant\PayoutController::class);
+    Route::resource('payouts', \App\Http\Controllers\Tenant\PayoutController::class)->only(['index', 'store']);
     Route::get('balance', [\App\Http\Controllers\Tenant\BalanceController::class, 'index'])->name('balance.index');
     Route::get('bank', [\App\Http\Controllers\Tenant\BankController::class, 'index'])->name('bank.index');
     Route::post('bank', [\App\Http\Controllers\Tenant\BankController::class, 'update'])->name('bank.update');
@@ -151,7 +153,7 @@ Route::middleware(['auth', 'verified', 'is_tenant'])->prefix('dashboard')->name(
 
     // kerja sama
     Route::post('affiliates/default-commission', [\App\Http\Controllers\Tenant\AffiliateController::class, 'updateDefaultCommission'])->name('affiliates.default_commission');
-    Route::resource('affiliates', \App\Http\Controllers\Tenant\AffiliateController::class);
+    Route::resource('affiliates', \App\Http\Controllers\Tenant\AffiliateController::class)->except(['show']);
     Route::get('showcase', [\App\Http\Controllers\Tenant\ShowcaseController::class, 'index'])->name('showcase.index');
     Route::post('showcase/{product}/toggle', [\App\Http\Controllers\Tenant\ShowcaseController::class, 'toggle'])->name('showcase.toggle');
     
@@ -163,14 +165,14 @@ Route::middleware(['auth', 'verified', 'is_tenant'])->prefix('dashboard')->name(
     Route::get('broadcast', [\App\Http\Controllers\Tenant\BroadcastController::class, 'index'])->name('broadcast.index');
     Route::post('broadcast/send', [\App\Http\Controllers\Tenant\BroadcastController::class, 'send'])->name('broadcast.send');
 
-    Route::resource('projects', \App\Http\Controllers\Tenant\TenantProjectController::class);
+    Route::resource('projects', \App\Http\Controllers\Tenant\TenantProjectController::class)->except(['show']);
 
     // Kategori & Tipe Custom Toko Tenant
     Route::post('categories/quick-store', [\App\Http\Controllers\Tenant\ProductController::class, 'quickStoreCategory'])->name('categories.quick-store');
     Route::post('types/quick-store', [\App\Http\Controllers\Tenant\ProductController::class, 'quickStoreType'])->name('types.quick-store');
 
     // Iklan Diskon & Voucher Toko
-    Route::resource('campaigns', \App\Http\Controllers\Tenant\CampaignController::class);
+    Route::resource('campaigns', \App\Http\Controllers\Tenant\CampaignController::class)->except(['show']);
 
     // Pusat Iklan Toko & Promosi (Rhantech Seller Ads)
     Route::get('ads', [\App\Http\Controllers\Tenant\AdController::class, 'index'])->name('ads.index');
@@ -224,13 +226,13 @@ Route::middleware(['auth', 'is_admin'])->prefix('admin')->name('admin.')->group(
         ->whereIn('action', ['restore', 'restore-media', 'backup', 'backup-media', 'optimize-database']);
     // Controller hanya punya index & store; route resource lain (show/edit/update/destroy) memicu 'undefined method'.
     Route::resource('company', CompanyProfileController::class)->only(['index', 'store']);
-    Route::resource('services', ServiceController::class);
-    Route::resource('clients', ClientController::class);
+    Route::resource('services', ServiceController::class)->except(['show']);
+    Route::resource('clients', ClientController::class)->except(['show']);
     Route::resource('product_categories', ProductCategoryController::class)->except(['create', 'edit', 'show']);
     Route::resource('product_types', ProductTypeController::class)->except(['create', 'edit', 'show']);
     Route::resource('project_categories', ProjectCategoryController::class)->except(['create', 'edit', 'show']);
     Route::resource('project_types', ProjectTypeController::class)->except(['create', 'edit', 'show']);
-    Route::resource('products', ProductController::class);
+    Route::resource('products', ProductController::class)->except(['show']);
     Route::patch('products/{product}/approve', [ProductController::class, 'approve'])->name('products.approve');
     Route::patch('products/{product}/reject', [ProductController::class, 'reject'])->name('products.reject');
     Route::delete('products/{product}/images/delete-all', [ProductController::class, 'destroyAllImages'])->name('products.images.destroy_all');
@@ -244,23 +246,23 @@ Route::middleware(['auth', 'is_admin'])->prefix('admin')->name('admin.')->group(
     Route::delete('orders/{order}', [OrderController::class, 'destroy'])->name('orders.destroy');
     Route::get('projects/check-slug', [ProjectController::class, 'checkSlug'])->name('projects.check_slug');
     Route::delete('projects/image/{image}', [ProjectController::class, 'destroyImage'])->name('projects.image.destroy');
-    Route::resource('projects', ProjectController::class);
-    Route::resource('testimonials', TestimonialController::class);
+    Route::resource('projects', ProjectController::class)->except(['show']);
+    Route::resource('testimonials', TestimonialController::class)->except(['show']);
     Route::post('messages/bulk-action', [ContactMessageController::class, 'bulkAction'])->name('messages.bulk-action');
     Route::delete('messages/bulk-destroy', [ContactMessageController::class, 'bulkDestroy'])->name('messages.bulk-destroy');
     Route::patch('messages/{message}/toggle-read', [ContactMessageController::class, 'toggleRead'])->name('messages.toggle-read');
     Route::post('messages/{message}/reply', [ContactMessageController::class, 'reply'])->name('messages.reply');
     Route::resource('messages', ContactMessageController::class)->only(['index', 'show', 'destroy']);
-    Route::resource('gateway_apps', \App\Http\Controllers\Admin\GatewayAppController::class);
-    Route::resource('popup_ads', \App\Http\Controllers\Admin\PopupAdController::class);
+    Route::resource('gateway_apps', \App\Http\Controllers\Admin\GatewayAppController::class)->except(['show']);
+    Route::resource('popup_ads', \App\Http\Controllers\Admin\PopupAdController::class)->except(['show']);
     
     // Banners
     Route::get('banners', [\App\Http\Controllers\Admin\BannerController::class, 'index'])->name('banners.index');
     Route::post('banners/update', [\App\Http\Controllers\Admin\BannerController::class, 'update'])->name('banners.update');
     
     // Help Center
-    Route::resource('help_categories', \App\Http\Controllers\Admin\HelpCategoryController::class);
-    Route::resource('help_articles', \App\Http\Controllers\Admin\HelpArticleController::class);
+    Route::resource('help_categories', \App\Http\Controllers\Admin\HelpCategoryController::class)->except(['show']);
+    Route::resource('help_articles', \App\Http\Controllers\Admin\HelpArticleController::class)->except(['show']);
     
     // Multi-tenant features
     Route::get('stores', [\App\Http\Controllers\Admin\StoreController::class, 'index'])->name('stores.index');
@@ -275,7 +277,7 @@ Route::middleware(['auth', 'is_admin'])->prefix('admin')->name('admin.')->group(
 
     // Manajemen Paket Toko PRO
     Route::patch('pro_plans/{pro_plan}/toggle-active', [\App\Http\Controllers\Admin\ProPlanController::class, 'toggleActive'])->name('pro_plans.toggle-active');
-    Route::resource('pro_plans', \App\Http\Controllers\Admin\ProPlanController::class);
+    Route::resource('pro_plans', \App\Http\Controllers\Admin\ProPlanController::class)->except(['show']);
 
     // Buyer Search Analytics
     Route::get('searches', [\App\Http\Controllers\Admin\SearchAnalyticsController::class, 'index'])->name('searches.index');
@@ -342,17 +344,17 @@ Route::get('/test-fcm-push', function (\Illuminate\Http\Request $request, \App\S
     }
 
     return view('test-fcm', compact('tokenCount'));
-});
+})->middleware(['auth', 'is_admin']);
 
 // Direct Store Profile Link Detail: http://127.0.0.1:8000/<nama-toko>/<link-id> (e.g., http://127.0.0.1:8000/ranranrasgar/kwenorgxerve)
 Route::get('/{slug}/{linkId}', [\App\Http\Controllers\PublicStoreController::class, 'showLinkDetail'])
-    ->where('slug', '(?!admin|tenant|dashboard|about|projects|products|clients|cart|checkout|payment|download|contact|help|terms|privacy|copyright|refund-policy|login|register|logout|forgot-password|reset-password|email|storage|chat|toko)[a-zA-Z0-9_\-]+')
+    ->where('slug', '(?!(?:admin|tenant|dashboard|about|projects|products|clients|cart|checkout|payment|download|contact|help|terms|privacy|copyright|refund-policy|login|register|logout|forgot-password|reset-password|email|storage|chat|toko)(?:/|$))[a-zA-Z0-9_\-]+')
     ->where('linkId', '[a-zA-Z0-9_\-]+')
     ->name('store.link_detail');
 
 // Direct Store URL: http://127.0.0.1:8000/<nama-toko> (e.g., http://127.0.0.1:8000/ranranrasgar)
 Route::get('/{slug}', [\App\Http\Controllers\PublicStoreController::class, 'show'])
-    ->where('slug', '^(?!admin|tenant|dashboard|about|projects|products|clients|cart|checkout|payment|download|contact|help|terms|privacy|copyright|refund-policy|login|register|logout|forgot-password|reset-password|email|storage|chat|toko)[a-zA-Z0-9_\-]+$')
+    ->where('slug', '^(?!(?:admin|tenant|dashboard|about|projects|products|clients|cart|checkout|payment|download|contact|help|terms|privacy|copyright|refund-policy|login|register|logout|forgot-password|reset-password|email|storage|chat|toko)(?:/|$))[a-zA-Z0-9_\-]+$')
     ->name('store.show');
 
 

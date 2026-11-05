@@ -93,7 +93,7 @@
                     <!-- Public Store Link Pill -->
                     @if($store && $store->slug)
                     <a href="{{ route('store.show', $store->slug) }}" target="_blank" class="px-3 py-1.5 rounded-xl bg-zinc-50 dark:bg-zinc-900 hover:bg-slate-100 dark:hover:bg-slate-700 border border-zinc-200 dark:border-zinc-800 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all flex items-center gap-1 shrink-0 active:scale-95 shadow-2xs">
-                        <span class="material-symbols-outlined text-[16px] text-slate-400">storefront</span>
+                        <i class="ph ph-storefront text-[16px] text-slate-400"></i>
                         <span>Toko</span>
                     </a>
                     @endif
@@ -105,7 +105,7 @@
                 <div class="relative z-10">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-1.5 text-zinc-500 dark:text-zinc-400 text-xs font-semibold">
-                            <span class="material-symbols-outlined text-[18px] text-zinc-700 dark:text-zinc-300">account_balance_wallet</span>
+                            <i class="ph ph-wallet text-[18px] text-zinc-700 dark:text-zinc-300"></i>
                             <span>Saldo Toko Siap Ditarik</span>
                         </div>
                         <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-900 text-[10px] font-bold text-zinc-600 dark:text-zinc-300">
@@ -120,12 +120,12 @@
                     <!-- Wallet Action Bar -->
                     <div class="mt-4 pt-3 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between gap-2.5">
                         <a href="{{ route('tenant.payouts.index') }}" class="flex-1 py-2.5 px-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white dark:bg-orange-600 dark:hover:bg-orange-500 dark:text-white text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-2xs active:scale-95 text-center">
-                            <span class="material-symbols-outlined text-[17px]">payments</span>
+                            <i class="ph ph-money text-[17px]"></i>
                             <span>Tarik Dana</span>
                         </a>
 
                         <a href="{{ route('tenant.ads.index') }}" class="flex-1 py-2.5 px-3 rounded-xl bg-zinc-100 dark:bg-zinc-900 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all flex items-center justify-center gap-1.5 border border-zinc-200 dark:border-zinc-800 active:scale-95 text-center">
-                            <span class="material-symbols-outlined text-[16px] text-slate-500">ads_click</span>
+                            <i class="ph ph-cursor-click text-[16px] text-slate-500"></i>
                             <span class="truncate">Iklan: Rp {{ number_format($adBalance ?? 0, 0, ',', '.') }}</span>
                         </a>
                     </div>
@@ -138,7 +138,7 @@
                     <!-- Action 1: Tambah Produk -->
                     <a href="{{ route('tenant.products.create') }}" class="flex flex-col items-center p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 active:scale-95 transition-all group">
                         <div class="w-11 h-11 rounded-2xl bg-zinc-100 dark:bg-zinc-900/80 text-slate-700 dark:text-slate-200 flex items-center justify-center mb-1.5 border border-slate-200/60 dark:border-slate-700/60 shadow-2xs group-hover:bg-orange-500 group-hover:text-white dark:group-hover:bg-orange-500 dark:group-hover:text-white transition-all">
-                            <span class="material-symbols-outlined text-[20px]">add</span>
+                            <i class="ph ph-plus text-[20px]"></i>
                         </div>
                         <span class="text-[11px] font-semibold text-zinc-700 dark:text-zinc-300 leading-tight">Tambah Produk</span>
                     </a>
@@ -146,7 +146,7 @@
                     <!-- Action 2: Pesanan Penjualan -->
                     <a href="{{ route('tenant.orders.index') }}" class="flex flex-col items-center p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 active:scale-95 transition-all group relative">
                         <div class="w-11 h-11 rounded-2xl bg-zinc-100 dark:bg-zinc-900/80 text-slate-700 dark:text-slate-200 flex items-center justify-center mb-1.5 border border-slate-200/60 dark:border-slate-700/60 shadow-2xs group-hover:bg-orange-500 group-hover:text-white dark:group-hover:bg-orange-500 dark:group-hover:text-white transition-all relative">
-                            <span class="material-symbols-outlined text-[20px]">receipt_long</span>
+                            <i class="ph ph-receipt text-[20px]"></i>
                             @if(($pendingOrdersCount ?? 0) > 0)
                                 <span class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-500 text-white text-[9px] font-black flex items-center justify-center ring-2 ring-white dark:ring-slate-900">
                                     {{ $pendingOrdersCount }}
@@ -159,7 +159,7 @@
                     <!-- Action 3: Pusat Iklan -->
                     <a href="{{ route('tenant.ads.index') }}" class="flex flex-col items-center p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 active:scale-95 transition-all group relative">
                         <div class="w-11 h-11 rounded-2xl bg-zinc-100 dark:bg-zinc-900/80 text-slate-700 dark:text-slate-200 flex items-center justify-center mb-1.5 border border-slate-200/60 dark:border-slate-700/60 shadow-2xs group-hover:bg-orange-500 group-hover:text-white dark:group-hover:bg-orange-500 dark:group-hover:text-white transition-all relative">
-                            <span class="material-symbols-outlined text-[20px]">campaign</span>
+                            <i class="ph ph-megaphone text-[20px]"></i>
                             @if(isset($hasClaimedWelcomeVoucher) && !$hasClaimedWelcomeVoucher)
                                 <span class="absolute -top-1 -right-1 px-1 rounded-full bg-rose-500 text-white text-[8px] font-black uppercase tracking-wider">
                                     Bonus
@@ -172,7 +172,7 @@
                     <!-- Action 4: Tampilan & Tema -->
                     <a href="{{ route('tenant.appearance.index') }}" class="flex flex-col items-center p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 active:scale-95 transition-all group">
                         <div class="w-11 h-11 rounded-2xl bg-zinc-100 dark:bg-zinc-900/80 text-slate-700 dark:text-slate-200 flex items-center justify-center mb-1.5 border border-slate-200/60 dark:border-slate-700/60 shadow-2xs group-hover:bg-orange-500 group-hover:text-white dark:group-hover:bg-orange-500 dark:group-hover:text-white transition-all">
-                            <span class="material-symbols-outlined text-[20px]">palette</span>
+                            <i class="ph ph-palette text-[20px]"></i>
                         </div>
                         <span class="text-[11px] font-semibold text-zinc-700 dark:text-zinc-300 leading-tight">Dekorasi</span>
                     </a>
@@ -180,7 +180,7 @@
                     <!-- Action 5: Rekening Bank -->
                     <a href="{{ route('tenant.bank.index') }}" class="flex flex-col items-center p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 active:scale-95 transition-all group">
                         <div class="w-11 h-11 rounded-2xl bg-zinc-100 dark:bg-zinc-900/80 text-slate-700 dark:text-slate-200 flex items-center justify-center mb-1.5 border border-slate-200/60 dark:border-slate-700/60 shadow-2xs group-hover:bg-orange-500 group-hover:text-white dark:group-hover:bg-orange-500 dark:group-hover:text-white transition-all">
-                            <span class="material-symbols-outlined text-[20px]">credit_card</span>
+                            <i class="ph ph-credit-card text-[20px]"></i>
                         </div>
                         <span class="text-[11px] font-semibold text-zinc-700 dark:text-zinc-300 leading-tight">Rekening</span>
                     </a>
@@ -188,7 +188,7 @@
                     <!-- Action 6: Bagikan Toko (Share) -->
                     <button type="button" @click="shareNative()" class="flex flex-col items-center p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 active:scale-95 transition-all group cursor-pointer">
                         <div class="w-11 h-11 rounded-2xl bg-zinc-100 dark:bg-zinc-900/80 text-slate-700 dark:text-slate-200 flex items-center justify-center mb-1.5 border border-slate-200/60 dark:border-slate-700/60 shadow-2xs group-hover:bg-orange-500 group-hover:text-white dark:group-hover:bg-orange-500 dark:group-hover:text-white transition-all">
-                            <span class="material-symbols-outlined text-[20px]">share</span>
+                            <i class="ph ph-share-network text-[20px]"></i>
                         </div>
                         <span class="text-[11px] font-semibold text-zinc-700 dark:text-zinc-300 leading-tight">Bagikan</span>
                     </button>
@@ -196,7 +196,7 @@
                     <!-- Action 7: Analitik Performa -->
                     <a href="{{ route('tenant.performance.index') }}" class="flex flex-col items-center p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 active:scale-95 transition-all group">
                         <div class="w-11 h-11 rounded-2xl bg-zinc-100 dark:bg-zinc-900/80 text-slate-700 dark:text-slate-200 flex items-center justify-center mb-1.5 border border-slate-200/60 dark:border-slate-700/60 shadow-2xs group-hover:bg-orange-500 group-hover:text-white dark:group-hover:bg-orange-500 dark:group-hover:text-white transition-all">
-                            <span class="material-symbols-outlined text-[20px]">monitoring</span>
+                            <i class="ph ph-chart-line-up text-[20px]"></i>
                         </div>
                         <span class="text-[11px] font-semibold text-zinc-700 dark:text-zinc-300 leading-tight">Analitik</span>
                     </a>
@@ -204,7 +204,7 @@
                     <!-- Action 8: Pusat Bantuan -->
                     <a href="{{ route('help.index') }}" target="_blank" class="flex flex-col items-center p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 active:scale-95 transition-all group">
                         <div class="w-11 h-11 rounded-2xl bg-zinc-100 dark:bg-zinc-900/80 text-slate-700 dark:text-slate-200 flex items-center justify-center mb-1.5 border border-slate-200/60 dark:border-slate-700/60 shadow-2xs group-hover:bg-orange-500 group-hover:text-white dark:group-hover:bg-orange-500 dark:group-hover:text-white transition-all">
-                            <span class="material-symbols-outlined text-[20px]">help</span>
+                            <i class="ph ph-question text-[20px]"></i>
                         </div>
                         <span class="text-[11px] font-semibold text-zinc-700 dark:text-zinc-300 leading-tight">Bantuan</span>
                     </a>
@@ -226,7 +226,7 @@
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-[11px] font-bold text-zinc-500 dark:text-zinc-400">Pengunjung</span>
                             <span class="w-6 h-6 rounded-lg bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 flex items-center justify-center">
-                                <span class="material-symbols-outlined text-[15px]">visibility</span>
+                                <i class="ph ph-eye text-[15px]"></i>
                             </span>
                         </div>
                         <div class="text-lg font-black text-zinc-900 dark:text-zinc-100">
@@ -242,7 +242,7 @@
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-[11px] font-bold text-zinc-500 dark:text-zinc-400">Order Sukses</span>
                             <span class="w-6 h-6 rounded-lg bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 flex items-center justify-center">
-                                <span class="material-symbols-outlined text-[15px]">verified</span>
+                                <i class="ph ph-seal-check text-[15px]"></i>
                             </span>
                         </div>
                         <div class="text-lg font-black text-zinc-900 dark:text-zinc-100">
@@ -258,7 +258,7 @@
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-[11px] font-bold text-zinc-500 dark:text-zinc-400">Tertunda</span>
                             <span class="w-6 h-6 rounded-lg bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 flex items-center justify-center">
-                                <span class="material-symbols-outlined text-[15px]">schedule</span>
+                                <i class="ph ph-clock text-[15px]"></i>
                             </span>
                         </div>
                         <div class="text-lg font-black text-zinc-900 dark:text-zinc-100">
@@ -274,7 +274,7 @@
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-[11px] font-bold text-zinc-500 dark:text-zinc-400">Produk Aktif</span>
                             <span class="w-6 h-6 rounded-lg bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 flex items-center justify-center">
-                                <span class="material-symbols-outlined text-[15px]">inventory_2</span>
+                                <i class="ph ph-package text-[15px]"></i>
                             </span>
                         </div>
                         <div class="text-lg font-black text-zinc-900 dark:text-zinc-100">
@@ -290,7 +290,7 @@
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-[11px] font-bold text-zinc-500 dark:text-zinc-400">Pengikut</span>
                             <span class="w-6 h-6 rounded-lg bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 flex items-center justify-center">
-                                <span class="material-symbols-outlined text-[15px]">group</span>
+                                <i class="ph ph-users text-[15px]"></i>
                             </span>
                         </div>
                         <div class="text-lg font-black text-zinc-900 dark:text-zinc-100">
@@ -308,7 +308,7 @@
                 <div class="flex items-center justify-between gap-2 pb-3 border-b border-zinc-100 dark:border-zinc-800">
                     <div class="flex items-center gap-2">
                         <span class="w-7 h-7 rounded-lg bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 shadow-sm flex items-center justify-center">
-                            <span class="material-symbols-outlined text-[18px]">show_chart</span>
+                            <i class="ph ph-chart-line text-[18px]"></i>
                         </span>
                         <h3 class="text-sm font-bold text-zinc-900 dark:text-zinc-100">Aktivitas 7 Hari</h3>
                     </div>
@@ -341,11 +341,11 @@
             <div class="bg-white dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-4 shadow-xs">
                 <div class="flex items-center justify-between mb-3">
                     <div class="flex items-center gap-2">
-                        <span class="material-symbols-outlined text-zinc-700 dark:text-zinc-300 text-[20px]">receipt_long</span>
+                        <i class="ph ph-receipt text-zinc-700 dark:text-zinc-300 text-[20px]"></i>
                         <h3 class="text-sm font-bold text-zinc-900 dark:text-zinc-100">Pesanan Terkini</h3>
                     </div>
                     <a href="{{ route('tenant.orders.index') }}" class="text-xs font-bold text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors flex items-center gap-0.5">
-                        Semua <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+                        Semua <i class="ph ph-caret-right text-[14px]"></i>
                     </a>
                 </div>
 
@@ -366,7 +366,7 @@
                                     @php $img = $firstProduct->images->where('is_main', true)->first() ?? $firstProduct->images->first(); @endphp
                                     <img src="{{ asset('storage/' . $img->image_path) }}" class="w-full h-full object-cover">
                                 @else
-                                    <span class="material-symbols-outlined text-[20px]">code</span>
+                                    <i class="ph ph-code text-[20px]"></i>
                                 @endif
                             </div>
                             <div class="min-w-0">
@@ -404,7 +404,7 @@
                     </div>
                     @empty
                     <div class="py-6 text-center text-slate-400">
-                        <span class="material-symbols-outlined text-3xl mb-1 opacity-40">shopping_bag</span>
+                        <i class="ph ph-shopping-bag text-3xl mb-1 opacity-40"></i>
                         <p class="text-xs">Belum ada transaksi penjualan baru.</p>
                     </div>
                     @endforelse
@@ -416,7 +416,7 @@
                 <div class="flex items-center justify-between gap-3">
                     <div class="flex items-center gap-2.5 min-w-0">
                         <div class="w-9 h-9 rounded-xl bg-zinc-100 dark:bg-zinc-900 text-slate-700 dark:text-slate-200 flex items-center justify-center shrink-0">
-                            <span class="material-symbols-outlined text-[20px]">qr_code_2</span>
+                            <i class="ph ph-qr-code text-[20px]"></i>
                         </div>
                         <div class="min-w-0">
                             <div class="text-xs font-bold text-zinc-900 dark:text-zinc-100 truncate">Bagikan Tautan Toko</div>
@@ -428,7 +428,7 @@
                             <span x-text="copied ? 'Tersalin!' : 'Salin'"></span>
                         </button>
                         <button type="button" @click="showQrModal = true" class="p-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all active:scale-95 cursor-pointer" title="QR Code">
-                            <span class="material-symbols-outlined text-[18px]">qr_code</span>
+                            <i class="ph ph-qr-code text-[18px]"></i>
                         </button>
                     </div>
                 </div>
@@ -438,7 +438,7 @@
             <div class="bg-white dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-4 shadow-xs">
                 <div class="flex items-center justify-between mb-3">
                     <h3 class="text-sm font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5">
-                        <span class="material-symbols-outlined text-[18px] text-amber-500">local_fire_department</span>
+                        <i class="ph ph-fire text-[18px] text-amber-500"></i>
                         Produk Terbanyak Diklik
                     </h3>
                     <a href="{{ route('tenant.products.index') }}" class="text-xs font-bold text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors">
@@ -454,7 +454,7 @@
                                 @php $prodImg = $prod->images->where('is_main', true)->first() ?? $prod->images->first(); @endphp
                                 <img src="{{ asset('storage/' . $prodImg->image_path) }}" class="w-full h-full object-cover">
                             @else
-                                <span class="material-symbols-outlined text-slate-400 text-[18px]">inventory_2</span>
+                                <i class="ph ph-package text-slate-400 text-[18px]"></i>
                             @endif
                         </div>
                         <div class="flex-1 min-w-0">
@@ -465,7 +465,7 @@
                             </div>
                         </div>
                         <a href="{{ route('tenant.products.edit', $prod) }}" class="p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-white transition-colors" title="Edit">
-                            <span class="material-symbols-outlined text-[18px]">edit</span>
+                            <i class="ph ph-pencil-simple text-[18px]"></i>
                         </a>
                     </div>
                     @empty
@@ -480,7 +480,7 @@
             <div class="bg-white dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-4 shadow-xs">
                 <div class="flex items-center justify-between mb-3">
                     <h3 class="text-sm font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5">
-                        <span class="material-symbols-outlined text-[18px] text-orange-500">search</span>
+                        <i class="ph ph-magnifying-glass text-[18px] text-orange-500"></i>
                         Paling Banyak Dicari Pembeli
                     </h3>
                     <span class="text-[10px] font-bold text-slate-400">Tren Pasar</span>
@@ -538,7 +538,7 @@
                             {{ $store->name ?? 'Toko Saya' }}
                         </h1>
                         <a href="{{ route('store.show', $store->slug ?? 'toko-'.$store->id) }}" target="_blank" class="text-xs text-orange-600 dark:text-orange-400 hover:underline flex items-center gap-1 mt-0.5 font-semibold">
-                            Lihat Toko Publik <span class="material-symbols-outlined text-[12px]">open_in_new</span>
+                            Lihat Toko Publik <i class="ph ph-arrow-square-out text-[12px]"></i>
                         </a>
                     </div>
                 </div>
@@ -562,7 +562,7 @@
                 }">
                     <!-- Compact Copy Link -->
                     <div class="flex items-center bg-slate-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-xl p-1 shrink-0">
-                        <span class="material-symbols-outlined text-[16px] text-zinc-400 ml-2">link</span>
+                        <i class="ph ph-link text-[16px] text-zinc-400 ml-2"></i>
                         <input type="text" readonly :value="storeUrl" class="bg-transparent border-none px-2 py-1 text-[11px] font-mono text-zinc-600 dark:text-zinc-400 focus:outline-none w-32 sm:w-48 truncate cursor-pointer" @click="copyLink()">
                         <button type="button" @click="copyLink()" class="px-3 py-1.5 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-[10px] font-bold rounded-lg hover:bg-slate-100 dark:hover:bg-zinc-700 transition-colors shadow-xs" :class="copied ? 'text-emerald-600' : 'text-zinc-700 dark:text-zinc-300'">
                             <span x-text="copied ? 'Tersalin!' : 'Salin'"></span>
@@ -570,7 +570,7 @@
                     </div>
 
                     <a href="{{ route('tenant.products.create') }}" class="px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs flex items-center gap-1.5 transition-colors shrink-0 shadow-xs">
-                        <span class="material-symbols-outlined text-[16px]">add</span>
+                        <i class="ph ph-plus text-[16px]"></i>
                         Tambah Produk
                     </a>
                 </div>
@@ -632,7 +632,7 @@
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-zinc-100 dark:border-zinc-800">
                 <div class="flex items-center gap-2.5">
                     <div class="w-9 h-9 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 shadow-sm flex items-center justify-center shrink-0">
-                        <span class="material-symbols-outlined text-[22px]">visibility</span>
+                        <i class="ph ph-eye text-[22px]"></i>
                     </div>
                     <div>
                         <h2 class="text-base md:text-lg font-bold text-zinc-900 dark:text-zinc-100">Analisis Pengunjung & Minat Pembeli</h2>
@@ -641,7 +641,7 @@
                 </div>
                 <div class="flex items-center gap-2">
                     <a href="{{ route('tenant.performance.index') }}" class="px-3 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 text-xs font-bold text-zinc-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition flex items-center gap-1.5">
-                        <span class="material-symbols-outlined text-[16px]">analytics</span>
+                        <i class="ph ph-chart-bar text-[16px]"></i>
                         <span>Statistik Lengkap</span>
                     </a>
                 </div>
@@ -652,7 +652,7 @@
                 <div class="p-4 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/60 dark:border-slate-800">
                     <div class="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 mb-1">
                         <span>Total Kunjungan Toko</span>
-                        <span class="material-symbols-outlined text-[18px] text-purple-500">storefront</span>
+                        <i class="ph ph-storefront text-[18px] text-purple-500"></i>
                     </div>
                     <div class="text-xl font-black text-zinc-900 dark:text-zinc-100">
                         {{ number_format($totalVisitors ?? 0) }}
@@ -665,7 +665,7 @@
                 <div class="p-4 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/60 dark:border-slate-800">
                     <div class="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 mb-1">
                         <span>Tayangan / Klik Produk</span>
-                        <span class="material-symbols-outlined text-[18px] text-indigo-500">ads_click</span>
+                        <i class="ph ph-cursor-click text-[18px] text-indigo-500"></i>
                     </div>
                     <div class="text-xl font-black text-indigo-600 dark:text-indigo-400">
                         {{ number_format($productViews ?? 0) }}
@@ -678,7 +678,7 @@
                 <div class="p-4 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/60 dark:border-slate-800">
                     <div class="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 mb-1">
                         <span>Kunjungan Profil Toko</span>
-                        <span class="material-symbols-outlined text-[18px] text-orange-500">visibility</span>
+                        <i class="ph ph-eye text-[18px] text-orange-500"></i>
                     </div>
                     <div class="text-xl font-black text-orange-600 dark:text-orange-400">
                         {{ number_format($storeViews ?? 0) }}
@@ -691,7 +691,7 @@
                 <div class="p-4 rounded-xl bg-slate-50/70 dark:bg-slate-900/40 border border-slate-200/60 dark:border-slate-800">
                     <div class="flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 mb-1">
                         <span>Peluang Pasar Baru</span>
-                        <span class="material-symbols-outlined text-[18px] text-amber-500">auto_awesome</span>
+                        <i class="ph ph-lightbulb text-[18px] text-amber-500"></i>
                     </div>
                     <div class="text-xl font-black text-amber-600 dark:text-amber-400">
                         {{ $unmetMarketDemandsCount ?? 0 }}
@@ -707,7 +707,7 @@
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
                     <div>
                         <h3 class="text-sm font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5">
-                            <span class="material-symbols-outlined text-[18px] text-orange-500">show_chart</span>
+                            <i class="ph ph-chart-line text-[18px] text-orange-500"></i>
                             Tren Aktivitas Toko (7 Hari Terakhir)
                         </h3>
                         <p class="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">View halaman toko, klik produk, dan order masuk per hari</p>
@@ -728,7 +728,7 @@
                         </span>
                         @if(($activityConversionRate ?? 0) > 0)
                         <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 shadow-sm border border-amber-500/20">
-                            <span class="material-symbols-outlined text-[13px]">trending_up</span>
+                            <i class="ph ph-trend-up text-[13px]"></i>
                             {{ $activityConversionRate ?? 0 }}% Konversi
                         </span>
                         @endif
@@ -753,7 +753,7 @@
                 <div class="lg:col-span-7">
                     <div class="flex items-center justify-between mb-3">
                         <h3 class="text-sm font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5">
-                            <span class="material-symbols-outlined text-[18px] text-amber-500">local_fire_department</span>
+                            <i class="ph ph-fire text-[18px] text-amber-500"></i>
                             Produk Toko Terbanyak Diklik / Dilihat
                         </h3>
                         <a href="{{ route('tenant.products.index') }}" class="text-xs font-bold text-orange-600 dark:text-orange-400 hover:underline">
@@ -776,7 +776,7 @@
                                     @if($pImg)
                                         <img src="{{ asset('storage/' . $pImg->image_path) }}" class="w-full h-full object-cover">
                                     @else
-                                        <span class="material-symbols-outlined text-[18px] text-slate-400">code</span>
+                                        <i class="ph ph-code text-[18px] text-slate-400"></i>
                                     @endif
                                 </div>
                                 <div class="min-w-0 max-w-[200px] sm:max-w-xs">
@@ -812,7 +812,7 @@
                 <div class="lg:col-span-5">
                     <div class="flex items-center justify-between mb-3">
                         <h3 class="text-sm font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5">
-                            <span class="material-symbols-outlined text-[18px] text-orange-500">search</span>
+                            <i class="ph ph-magnifying-glass text-[18px] text-orange-500"></i>
                             Kata Kunci Terbanyak Dicari
                         </h3>
                         <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Pasar Pembeli</span>
@@ -842,7 +842,7 @@
                                     {{ number_format($search->hits) }}x
                                 </span>
                                 <a href="{{ route('tenant.products.create') }}" class="p-1 rounded-lg text-slate-400 hover:text-orange-600 dark:hover:text-orange-400 hover:bg-white dark:hover:bg-slate-800 transition-colors" title="Buat Produk Kategori Ini">
-                                    <span class="material-symbols-outlined text-[16px]">add_circle</span>
+                                    <i class="ph ph-plus-circle text-[16px]"></i>
                                 </a>
                             </div>
                         </div>
@@ -868,7 +868,7 @@
                             <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">Pesanan produk digital terkini dari pelanggan Anda.</p>
                         </div>
                         <a href="{{ route('tenant.orders.index') }}" class="text-xs font-bold text-orange-600 dark:text-orange-400 hover:underline flex items-center gap-1">
-                            Semua Pesanan <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                            Semua Pesanan <i class="ph ph-arrow-right text-[14px]"></i>
                         </a>
                     </div>
 
@@ -889,7 +889,7 @@
                                         @php $img = $firstProduct->images->where('is_main', true)->first() ?? $firstProduct->images->first(); @endphp
                                         <img src="{{ asset('storage/' . $img->image_path) }}" class="w-full h-full object-cover">
                                     @else
-                                        <span class="material-symbols-outlined text-[20px]">code</span>
+                                        <i class="ph ph-code text-[20px]"></i>
                                     @endif
                                 </div>
                                 <div class="min-w-0">
@@ -927,7 +927,7 @@
                         </div>
                         @empty
                         <div class="p-12 text-center text-slate-400">
-                            <span class="material-symbols-outlined text-4xl mb-2 opacity-50">shopping_bag</span>
+                            <i class="ph ph-shopping-bag text-4xl mb-2 opacity-50"></i>
                             <p class="text-sm">Belum ada transaksi penjualan baru.</p>
                         </div>
                         @endforelse
@@ -938,20 +938,20 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <a href="{{ route('tenant.appearance.index') }}" class="group bg-slate-50 hover:bg-slate-100/80 dark:bg-[#131b2e] border border-slate-200 dark:border-[#263553] rounded-2xl p-5 hover:border-indigo-400 dark:hover:border-indigo-500 transition-colors">
                         <div class="w-10 h-10 rounded-xl bg-indigo-500 text-white flex items-center justify-center mb-3">
-                            <span class="material-symbols-outlined text-[20px]">palette</span>
+                            <i class="ph ph-palette text-[20px]"></i>
                         </div>
                         <h3 class="text-sm font-bold text-zinc-900 dark:text-zinc-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors flex items-center gap-1">
-                            Dekorasi Toko <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+                            Dekorasi Toko <i class="ph ph-arrow-right text-[16px]"></i>
                         </h3>
                         <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Kustomisasi banner, tampilan beranda, dan tema etalase toko Anda.</p>
                     </a>
 
                     <a href="{{ route('tenant.bank.index') }}" class="group bg-slate-50 hover:bg-slate-100/80 dark:bg-[#101e33] border border-slate-200 dark:border-[#1d3559] rounded-2xl p-5 hover:border-orange-400 dark:hover:border-orange-500 transition-colors">
                         <div class="w-10 h-10 rounded-xl bg-orange-500 text-white flex items-center justify-center mb-3">
-                            <span class="material-symbols-outlined text-[20px]">credit_card</span>
+                            <i class="ph ph-credit-card text-[20px]"></i>
                         </div>
                         <h3 class="text-sm font-bold text-zinc-900 dark:text-zinc-100 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors flex items-center gap-1">
-                            Rekening Bank <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+                            Rekening Bank <i class="ph ph-arrow-right text-[16px]"></i>
                         </h3>
                         <p class="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Atur data rekening bank tujuan untuk pencairan dana otomatis.</p>
                     </a>
@@ -966,7 +966,7 @@
                     <div class="flex items-center justify-between mb-3">
                         <div class="flex items-center gap-2.5">
                             <div class="w-9 h-9 rounded-xl bg-zinc-100 dark:bg-zinc-900 text-[#00838f] dark:text-teal-400 flex items-center justify-center shrink-0">
-                                <span class="material-symbols-outlined text-[20px]">ads_click</span>
+                                <i class="ph ph-cursor-click text-[20px]"></i>
                             </div>
                             <div>
                                 <h3 class="font-extrabold text-sm text-zinc-900 dark:text-zinc-100">Iklan Toko & Promosi</h3>
@@ -979,7 +979,7 @@
                     @if(isset($hasClaimedWelcomeVoucher) && !$hasClaimedWelcomeVoucher)
                     <div class="my-3 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-900/60 border border-zinc-200 dark:border-zinc-800 flex items-center justify-between gap-2">
                         <div class="flex items-center gap-2">
-                            <span class="material-symbols-outlined text-[#00838f] text-[20px]">redeem</span>
+                            <i class="ph ph-gift text-[#00838f] text-[20px]"></i>
                             <div>
                                 <div class="text-xs font-black text-zinc-900 dark:text-zinc-100">Bonus Saldo Rp500.000</div>
                                 <div class="text-[10px] text-zinc-500 dark:text-zinc-400">Tingkatkan kunjungan toko hingga +30%</div>
@@ -994,7 +994,7 @@
                     </div>
                     @else
                     <div class="my-2 px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 flex items-center gap-1.5 text-[11px] font-bold text-emerald-700 dark:text-emerald-300">
-                        <span class="material-symbols-outlined text-[14px]">verified</span>
+                        <i class="ph ph-seal-check text-[14px]"></i>
                         <span>Bonus Saldo Rp500.000 Aktif (+30% Kunjungan)</span>
                     </div>
                     @endif
@@ -1041,7 +1041,7 @@
                                     @php $prodImg = $prod->images->where('is_main', true)->first() ?? $prod->images->first(); @endphp
                                     <img src="{{ asset('storage/' . $prodImg->image_path) }}" class="w-full h-full object-cover">
                                 @else
-                                    <span class="material-symbols-outlined text-slate-400">inventory_2</span>
+                                    <i class="ph ph-package text-slate-400"></i>
                                 @endif
                             </div>
                             <div class="flex-1 min-w-0">
@@ -1051,7 +1051,7 @@
                                 </div>
                             </div>
                             <a href="{{ route('tenant.products.edit', $prod) }}" class="p-1.5 text-slate-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors" title="Edit Produk">
-                                <span class="material-symbols-outlined text-[18px]">edit</span>
+                                <i class="ph ph-pencil-simple text-[18px]"></i>
                             </a>
                         </div>
                         @empty
@@ -1069,7 +1069,7 @@
                 <div class="bg-white dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6">
                     <div class="flex items-center justify-between mb-4">
                         <div class="flex items-center gap-2">
-                            <span class="material-symbols-outlined text-pink-500 text-[20px]">group</span>
+                            <i class="ph ph-users text-pink-500 text-[20px]"></i>
                             <h2 class="text-base font-bold text-zinc-900 dark:text-zinc-100">Pengikut Toko</h2>
                         </div>
                         <span class="text-xs font-bold text-pink-600 dark:text-pink-400 bg-pink-500/10 px-2.5 py-0.5 rounded-full">
@@ -1098,7 +1098,7 @@
                         </div>
                     @else
                         <div class="py-6 text-center text-slate-400">
-                            <span class="material-symbols-outlined text-3xl text-slate-300 dark:text-slate-600 mb-1">person_add</span>
+                            <i class="ph ph-user-plus text-3xl text-slate-300 dark:text-slate-600 mb-1"></i>
                             <p class="text-xs">Belum ada pengikut toko baru.</p>
                             <p class="text-[11px] text-slate-500 mt-1">Bagikan tautan tokomu ke media sosial untuk menarik pengikut setia.</p>
                         </div>
@@ -1109,7 +1109,7 @@
                 <div class="bg-gradient-to-br from-sky-900 to-slate-900 text-white rounded-2xl p-6 border border-orange-700/50 shadow-none">
                     <div class="flex items-center gap-3 mb-3">
                         <div class="w-8 h-8 rounded-lg bg-orange-500/20 text-orange-400 flex items-center justify-center">
-                            <span class="material-symbols-outlined text-[18px]">lightbulb</span>
+                            <i class="ph ph-lightbulb text-[18px]"></i>
                         </div>
                         <h3 class="font-bold text-sm text-white">Tips Penjualan Optimal</h3>
                     </div>
@@ -1119,7 +1119,7 @@
                     <div class="mt-4 pt-4 border-t border-slate-800 flex items-center justify-between">
                         <span class="text-[11px] text-slate-400">Pusat Bantuan Mitra</span>
                         <a href="{{ route('contact') }}" class="text-xs font-bold text-orange-400 hover:text-orange-300 transition-colors flex items-center gap-0.5">
-                            Hubungi Tim Support <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+                            Hubungi Tim Support <i class="ph ph-caret-right text-[14px]"></i>
                         </a>
                     </div>
                 </div>
@@ -1135,11 +1135,11 @@
                  class="bg-white dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 max-w-sm w-full text-center relative">
                 <button type="button" @click="showQrModal = false" 
                         class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-white p-1 rounded-full">
-                    <span class="material-symbols-outlined text-[20px]">close</span>
+                    <i class="ph ph-x text-[20px]"></i>
                 </button>
 
                 <div class="w-12 h-12 rounded-2xl bg-teal-500/10 text-[#00838f] dark:text-teal-400 flex items-center justify-center mx-auto mb-3">
-                    <span class="material-symbols-outlined text-2xl">qr_code_2</span>
+                    <i class="ph ph-qr-code text-2xl"></i>
                 </div>
 
                 <h3 class="text-base font-black text-zinc-900 dark:text-zinc-100 mb-1">QR Code Toko Anda</h3>
@@ -1157,7 +1157,7 @@
                     <a href="https://api.qrserver.com/v1/create-qr-code/?size=500x500&data={{ $encodedUrl }}&download=1"
                        target="_blank" download="qr-toko-{{ $storeSlug }}.png"
                        class="w-full py-2.5 px-4 bg-[#00838f] hover:bg-[#00727d] text-white font-bold text-xs rounded-xl transition-colors flex items-center justify-center gap-1.5">
-                        <span class="material-symbols-outlined text-[16px]">download</span>
+                        <i class="ph ph-download-simple text-[16px]"></i>
                         <span>Download Gambar QR Code</span>
                     </a>
                     <button type="button" @click="copyToClipboard(); showQrModal = false;"
@@ -1202,7 +1202,6 @@
                         bodyFont: { size: 12 },
                         callbacks: {
                             label: function(ctx) {
-                                const icons = ['👁', '🖱', '🛒'];
                                 return ' ' + ctx.dataset.label + ': ' + ctx.parsed.y;
                             }
                         }

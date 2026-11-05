@@ -22,7 +22,7 @@ class StoreController extends Controller
         $store = $user->store;
 
         $reservedSlugs = [
-            'admin', 'tenant', 'dashboard', 'projects', 'products', 'clients', 'cart', 'checkout', 
+            'admin', 'tenant', 'dashboard', 'about', 'api', 'auth', 'notifications', 'onboarding', 'up', 'projects', 'products', 'clients', 'cart', 'checkout', 
             'payment', 'download', 'contact', 'help', 'terms', 'privacy', 'copyright', 'refund-policy',
             'login', 'register', 'logout', 'forgot-password', 'reset-password', 'email', 'storage', 'chat', 'toko'
         ];
@@ -179,7 +179,7 @@ class StoreController extends Controller
                 \Illuminate\Support\Facades\Log::warning('FCM notifyNewStoreCreated error: ' . $fcmEx->getMessage());
             }
 
-            $message = '🎉 Selamat! Toko "' . $newStore->name . '" berhasil dibuka! Buka menu Iklan Toko & Promosi untuk mengklaim Bonus Saldo Iklan Rp500.000!';
+            $message = 'Selamat! Toko "' . $newStore->name . '" berhasil dibuka! Buka menu Iklan Toko & Promosi untuk mengklaim Bonus Saldo Iklan Rp500.000!';
             return redirect()->route('tenant.dashboard')->with('success', $message);
         }
     }
