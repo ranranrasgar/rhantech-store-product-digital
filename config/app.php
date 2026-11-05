@@ -14,7 +14,6 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
-    'home_redirect' => env('HOME_REDIRECT_URL'),
 
     /*
     |--------------------------------------------------------------------------

@@ -62,7 +62,6 @@ class SeoTest extends TestCase
 
     public function test_sitemap_lists_only_public_urls(): void
     {
-        config(['app.home_redirect' => null]);
         Cache::flush();
         $published = $this->makeProduct();
         $hidden = $this->makeProduct(['name' => 'Produk Nonaktif', 'is_active' => false]);
@@ -78,12 +77,22 @@ class SeoTest extends TestCase
         $response->assertDontSee($hidden->slug, false);
     }
 
-    public function test_sitemap_omits_homepage_while_it_redirects(): void
+    public function test_homepage_is_served_at_root_without_redirect(): void
     {
-        config(['app.home_redirect' => url('/products')]);
-        Cache::flush();
+        CompanyProfile::forceCreate(['company_name' => 'R-Tech']);
 
-        $this->get('/sitemap.xml')->assertDontSee('<loc>' . url('/') . '</loc>', false);
+        $response = $this->get('/');
+
+        $response->assertOk();
+        $response->assertViewIs('welcome');
+        $response->assertSee('<link rel="canonical" href="' . url('/') . '"', false);
+    }
+
+    public function test_bonus_launcher_is_hidden_on_mobile(): void
+    {
+        $this->get('/products')
+            ->assertSee('Bonus Rp 500rb')
+            ->assertSee('class="hidden md:block fixed bottom-5', false);
     }
 
     public function test_catalog_page_two_has_self_canonical_and_stays_indexable(): void

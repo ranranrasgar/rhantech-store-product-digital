@@ -24,6 +24,7 @@ class SitemapController extends Controller
     private function urls(): array
     {
         $staticPages = [
+            url('/'),
             route('products.index'),
             route('about'),
             route('projects.index'),
@@ -35,11 +36,6 @@ class SitemapController extends Controller
             route('legal.copyright'),
             route('legal.refund'),
         ];
-
-        // Selama "/" dialihkan lewat HOME_REDIRECT_URL, URL itu bukan halaman yang bisa diindeks.
-        if (! config('app.home_redirect')) {
-            array_unshift($staticPages, url('/'));
-        }
 
         $dynamicPages = collect()
             ->concat(Product::query()->published()->get(['slug', 'updated_at'])

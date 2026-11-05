@@ -224,7 +224,7 @@
     {{-- Top micro bar --}}
     <div class="site-header-topbar hidden md:flex max-w-[1280px] mx-auto px-6 items-center justify-between py-1.5 text-[12px] relative z-40">
         <div class="flex items-center gap-5 text-white/60">
-            <a href="{{ url('/?bypass=1') }}" class="hover:text-white/90 transition-colors">
+            <a href="{{ url('/') }}" class="hover:text-white/90 transition-colors">
                 <span class="material-symbols-outlined text-[13px] align-middle">home</span> Home
             </a>
             <span class="h-3 w-px bg-white/15 mx-0.5"></span>
@@ -579,8 +579,8 @@
             <div>
                 <h4 class="font-label-md text-label-md text-on-background dark:text-white font-bold mb-4 uppercase tracking-wider">Company</h4>
                 <ul class="flex flex-col gap-3">
-                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/?bypass=1#about') }}">About Us</a></li>
-                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/?bypass=1#services') }}">Services</a></li>
+                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/#about') }}">About Us</a></li>
+                    <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/#services') }}">Services</a></li>
                     <li><a class="text-on-surface-variant dark:text-on-surface-variant/60 hover:underline hover:text-primary transition-colors" href="{{ url('/projects') }}">Projects</a></li>
                 </ul>
             </div>
