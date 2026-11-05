@@ -121,7 +121,7 @@
             </div>
 
             {{-- Actions: menempel di bawah layar pada mobile --}}
-            <div class="fixed md:static bottom-0 inset-x-0 z-30 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:p-0 bg-white/95 dark:bg-[#090d16]/95 md:bg-transparent backdrop-blur md:backdrop-blur-none border-t md:border-0 border-slate-200 dark:border-slate-800 flex gap-2">
+            <div class="sticky-cta fixed md:static bottom-0 inset-x-0 z-30 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:p-0 bg-white/95 dark:bg-[#090d16]/95 md:bg-transparent backdrop-blur md:backdrop-blur-none border-t md:border-0 border-slate-200 dark:border-slate-800 flex gap-2">
                 <a href="{{ route("onboarding.complete") }}"
                    class="flex-1 py-3.5 px-3 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-semibold text-sm text-center">
                     Lewati dulu

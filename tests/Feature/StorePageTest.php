@@ -80,4 +80,50 @@ class StorePageTest extends TestCase
 
         $this->assertSame([], $missing);
     }
+
+    public function test_hybrid_page_uses_store_brand_color_and_no_fake_rating(): void
+    {
+        $store = $this->storeWith([['id' => 'a', 'type' => 'products', 'data' => []], 'brand_color' => '#7c3aed']);
+        $store->update(['store_mode' => 'hybrid', 'appearance_data' => [['id' => 'a', 'type' => 'products', 'data' => []], 'brand_color' => '#7c3aed']]);
+
+        $this->get('/gudang-uji')
+            ->assertOk()
+            ->assertSee('--brand: #7c3aed', false)
+            ->assertDontSee('4.8')
+            ->assertSee('Produk Toko');
+    }
+
+    public function test_hybrid_catalog_can_be_searched(): void
+    {
+        $store = $this->storeWith([]);
+        $store->update(['store_mode' => 'hybrid']);
+
+        $this->get('/gudang-uji?q=tidak-ada-produk')->assertOk()->assertSee('Tidak ada produk yang cocok.');
+    }
+
+    public function test_brand_color_is_saved_and_invalid_value_rejected(): void
+    {
+        $user = User::factory()->create(['onboarding_completed_at' => now(), 'email_verified_at' => now()]);
+        $store = Store::forceCreate(['user_id' => $user->id, 'name' => 'Brand', 'slug' => 'brand-uji', 'store_mode' => 'hybrid']);
+
+        $this->actingAs($user)
+            ->postJson(route('tenant.appearance.update'), ['components' => [], 'brand_color' => '#16a34a'])
+            ->assertOk();
+        $this->assertSame('#16a34a', $store->fresh()->brandColor());
+
+        $this->actingAs($user)
+            ->postJson(route('tenant.appearance.update'), ['components' => []])
+            ->assertOk();
+        $this->assertSame('#16a34a', $store->fresh()->brandColor());
+
+        $this->actingAs($user)
+            ->postJson(route('tenant.appearance.update'), ['components' => [], 'brand_color' => 'red;}'])
+            ->assertUnprocessable();
+    }
+
+    public function test_brand_ink_stays_readable(): void
+    {
+        $this->assertSame('#ffffff', (new Store(['appearance_data' => ['brand_color' => '#0f172a']]))->brandInk());
+        $this->assertSame('#0f172a', (new Store(['appearance_data' => ['brand_color' => '#fde047']]))->brandInk());
+    }
 }

@@ -130,6 +130,35 @@ class Store extends Model
     /**
      * Check if store has active Pro status
      */
+    /**
+     * Warna brand pilihan pemilik; jika belum dipilih, ambil dari warna sampul.
+     */
+    public function brandColor(): string
+    {
+        $chosen = is_array($this->appearance_data) ? ($this->appearance_data['brand_color'] ?? null) : null;
+
+        if (is_string($chosen) && preg_match('/^#[0-9a-fA-F]{6}$/', $chosen)) {
+            return $chosen;
+        }
+
+        if (preg_match('/#[0-9a-fA-F]{6}/', (string) $this->banner, $match) && ! str_starts_with((string) $this->banner, 'http')) {
+            return $match[0];
+        }
+
+        return '#0284c7';
+    }
+
+    /**
+     * Warna teks yang terbaca di atas warna brand.
+     */
+    public function brandInk(): string
+    {
+        [$red, $green, $blue] = sscanf($this->brandColor(), '#%02x%02x%02x');
+        $luminance = (0.299 * $red + 0.587 * $green + 0.114 * $blue) / 255;
+
+        return $luminance > 0.62 ? '#0f172a' : '#ffffff';
+    }
+
     public function isPro(): bool
     {
         if (!$this->is_pro) {

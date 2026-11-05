@@ -35,6 +35,7 @@ class AppearanceController extends Controller
             'store_mode'        => 'nullable|in:store,profile,hybrid',
             'profile_links'     => 'nullable|array',
             'voucher_placement' => 'nullable|array',
+            'brand_color'       => ['nullable', 'regex:/^#[0-9a-fA-F]{6}$/'],
         ]);
 
         $rawComponents = $request->input('components', []);
@@ -57,6 +58,12 @@ class AppearanceController extends Controller
             $cleanComponents['voucher_placement'] = $request->input('voucher_placement');
         } elseif (isset($currentAppearance['voucher_placement'])) {
             $cleanComponents['voucher_placement'] = $currentAppearance['voucher_placement'];
+        }
+
+        if ($request->filled('brand_color')) {
+            $cleanComponents['brand_color'] = $request->input('brand_color');
+        } elseif (isset($currentAppearance['brand_color'])) {
+            $cleanComponents['brand_color'] = $currentAppearance['brand_color'];
         }
 
         $store->appearance_data = $cleanComponents;

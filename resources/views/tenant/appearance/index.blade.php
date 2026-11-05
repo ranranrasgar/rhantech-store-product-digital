@@ -93,22 +93,36 @@
         </div>
     </div>
 
+    <!-- Warna Brand (dipakai halaman Hybrid) -->
+    <div x-show="storeMode === 'hybrid'" x-cloak class="bg-white dark:bg-[#000000] border-b border-zinc-200 dark:border-zinc-800 px-4 sm:px-6 py-2 flex items-center gap-3 shrink-0">
+        <span class="text-xs font-semibold text-slate-600 dark:text-slate-300 shrink-0">Warna brand</span>
+        <div class="flex items-center gap-1.5 overflow-x-auto py-1 px-0.5 flex-1 min-w-0" style="scrollbar-width: none;">
+            <template x-for="color in brandPresets" :key="color">
+                <button type="button" @click="setBrandColor(color)" :style="'background:' + color" :aria-label="'Pilih warna ' + color" :class="brandColor === color ? 'ring-2 ring-offset-2 ring-zinc-900 dark:ring-white dark:ring-offset-black' : ''" class="w-7 h-7 rounded-full shrink-0 border border-black/10"></button>
+            </template>
+            <label class="w-7 h-7 rounded-full shrink-0 border border-dashed border-zinc-400 flex items-center justify-center cursor-pointer relative overflow-hidden" title="Warna lain">
+                <i class="ph ph-eyedropper text-[14px] text-zinc-500"></i>
+                <input type="color" :value="brandColor" @input="setBrandColor($event.target.value)" aria-label="Warna lain" class="absolute inset-0 opacity-0 cursor-pointer">
+            </label>
+        </div>
+    </div>
+
     <!-- Mobile Tab Switcher (Visible only on screens < lg) -->
     <div class="lg:hidden bg-white dark:bg-[#000000] border-b border-zinc-200 dark:border-zinc-800 px-4 py-2 flex items-center gap-1.5 shrink-0 z-20">
         <button type="button" x-show="storeMode !== 'profile'" @click="mobileTab = 'palette'; sidebarTab = 'widgets'" :class="mobileTab === 'palette' ? 'bg-orange-500 text-white dark:bg-orange-600 dark:text-white font-bold' : 'bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 font-semibold'" class="flex-1 py-2 px-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap">
-            <i class="ph ph-squares-four text-[16px]"></i>
+            <i class="ph ph-squares-four text-[16px] max-sm:hidden"></i>
             <span>Widget</span>
         </button>
         <button type="button" x-show="storeMode !== 'profile'" @click="mobileTab = 'voucher'; sidebarTab = 'voucher'" :class="mobileTab === 'voucher' ? 'bg-orange-500 text-white dark:bg-orange-600 dark:text-white font-bold' : 'bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 font-semibold'" class="flex-1 py-2 px-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap">
-            <i class="ph ph-ticket text-[16px]"></i>
+            <i class="ph ph-ticket text-[16px] max-sm:hidden"></i>
             <span>Voucher</span>
         </button>
         <button type="button" x-show="storeMode !== 'store'" @click="mobileTab = 'biolink'; sidebarTab = 'biolink'" :class="mobileTab === 'biolink' ? 'bg-orange-500 text-white dark:bg-orange-600 dark:text-white font-bold' : 'bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 font-semibold'" class="flex-1 py-2 px-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap">
-            <i class="ph ph-link text-[16px]"></i>
+            <i class="ph ph-link text-[16px] max-sm:hidden"></i>
             <span>Tautan</span>
         </button>
         <button type="button" @click="mobileTab = 'canvas'" :class="mobileTab === 'canvas' ? 'bg-orange-500 text-white dark:bg-orange-600 dark:text-white font-bold' : 'bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 font-semibold'" class="flex-1 py-2 px-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-1 cursor-pointer whitespace-nowrap">
-            <i class="ph ph-eye text-[16px]"></i>
+            <i class="ph ph-eye text-[16px] max-sm:hidden"></i>
             <span>Pratinjau</span>
         </button>
     </div>
@@ -1937,6 +1951,8 @@
             ) !!},
             hasSavedAppearance: {{ $store->appearance_data !== null ? 'true' : 'false' }},
             headerBanner: {!! json_encode($store->banner ?? '') !!},
+            brandColor: @js($store->brandColor()),
+            brandPresets: ['#0f172a', '#0284c7', '#0f766e', '#16a34a', '#d97706', '#ea580c', '#e11d48', '#7c3aed'],
             isSaving: false,
             hasUnsavedChanges: false,
             draggedItem: null,
@@ -2356,6 +2372,11 @@
                 }
             },
 
+            setBrandColor(color) {
+                this.brandColor = color;
+                this.hasUnsavedChanges = true;
+            },
+
             copyProfileUrl() {
                 const markCopied = () => {
                     this.urlCopied = true;
@@ -2426,6 +2447,7 @@
                         components: cleanComponents,
                         header_banner: this.headerBanner,
                         store_mode: this.storeMode,
+                        brand_color: this.brandColor,
                         profile_links: this.profileLinks,
                         voucher_placement: this.voucherPlacement
                     })

@@ -29,6 +29,11 @@ tailwind.config = {
   @keyframes fade-up { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
   .animate-fade-up { animation: fade-up 0.35s ease both; }
   .animate-fade-up-delay-1 { animation: fade-up 0.35s ease 0.08s both; }
+  /* Saat keyboard ponsel terbuka, tombol ikut mengalir di akhir form agar tidak menutupi isian */
+  @media (max-width: 767px) {
+    body.is-typing .sticky-cta { position: static; margin-top: 12px; padding: 0; background: transparent; border: 0; backdrop-filter: none; }
+    body.is-typing main { padding-bottom: 1.5rem; }
+  }
   @media (prefers-reduced-motion: reduce) {
     .animate-fade-up, .animate-fade-up-delay-1 { animation: none; }
   }
@@ -62,6 +67,22 @@ tailwind.config = {
     @yield("content")
 </main>
 
+<script>
+  (() => {
+    const fields = 'input:not([type=file]):not([type=hidden]):not([type=checkbox]):not([type=radio]), textarea, select';
+    let timer;
+    document.addEventListener('focusin', (event) => {
+      if (event.target.matches(fields)) {
+        clearTimeout(timer);
+        document.body.classList.add('is-typing');
+      }
+    });
+    // Ditunda agar ketukan tombol tidak meleset karena tombolnya berpindah saat fokus lepas.
+    document.addEventListener('focusout', () => {
+      timer = setTimeout(() => document.body.classList.remove('is-typing'), 200);
+    });
+  })();
+</script>
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js" defer></script>
 </body>
 </html>

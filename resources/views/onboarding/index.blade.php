@@ -108,7 +108,7 @@
         </div>
 
         {{-- CTA: menempel di bawah layar pada mobile --}}
-        <div class="fixed md:static bottom-0 inset-x-0 z-30 md:mt-8 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:p-0 bg-white/95 dark:bg-[#090d16]/95 md:bg-transparent backdrop-blur md:backdrop-blur-none border-t md:border-0 border-slate-200 dark:border-slate-800">
+        <div class="sticky-cta fixed md:static bottom-0 inset-x-0 z-30 md:mt-8 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:p-0 bg-white/95 dark:bg-[#090d16]/95 md:bg-transparent backdrop-blur md:backdrop-blur-none border-t md:border-0 border-slate-200 dark:border-slate-800">
             <button type="submit" :disabled="!selected || submitting"
                     :class="selected ? 'bg-slate-900 hover:bg-slate-800 dark:bg-white dark:text-slate-900 text-white' : 'bg-slate-200 dark:bg-slate-800 text-slate-400 cursor-not-allowed'"
                     class="w-full md:w-auto md:min-w-72 md:mx-auto py-3.5 px-8 rounded-2xl font-bold text-sm transition-colors flex items-center justify-center gap-2">
