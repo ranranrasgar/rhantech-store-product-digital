@@ -1,8 +1,15 @@
 @extends('layouts.shopee')
-@section('title', 'Jual Source Code & Aplikasi Digital Siap Pakai - ' . ($company->company_name ?? 'R-Tech'))
+@php
+    $isFilteredListing = request()->anyFilled(['search', 'category', 'type', 'store', 'min_price', 'max_price', 'sort']);
+    $catalogPage = $products->currentPage();
+@endphp
+@section('title', 'Jual Source Code & Aplikasi Digital Siap Pakai' . ($catalogPage > 1 ? ' - Halaman ' . $catalogPage : '') . ' - ' . ($company->company_name ?? 'R-Tech'))
 @section('meta_description', 'Katalog terlengkap jual beli source code aplikasi web, aplikasi kasir (POS), sistem informasi sekolah, toko online, Android/iOS & script PHP siap pakai bergaransi.')
 @section('meta_keywords', 'aplikasi kasir pos, source code web, jual source code laravel, script php indonesia, sistem informasi sekolah, template website, download source code murah')
-@section('canonical_url', route('products.index'))
+@section('canonical_url', $isFilteredListing ? url()->full() : route('products.index', $catalogPage > 1 ? ['page' => $catalogPage] : []))
+@if($isFilteredListing)
+@section('meta_robots', 'noindex, follow')
+@endif
 
 @section('schema_json_ld')
 <script type="application/ld+json">
@@ -249,7 +256,7 @@
                         {{-- Image thumbnail --}}
                         <div class="w-full aspect-[4/3] rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700 relative mb-2">
                             @if($topImg)
-                                <img src="{{ \App\Support\ImageThumb::url($topImg->image_path, 400) }}" 
+                                <img src="{{ \App\Support\ImageThumb::url($topImg->image_path, 400) }}" width="400" height="300" 
                                      alt="Produk Unggulan: {{ $top->name }} - {{ $top->category ? $top->category->name : 'Source Code Aplikasi' }}" 
                                      title="{{ $top->name }}"
                                      loading="lazy"
@@ -330,7 +337,7 @@
                         <!-- Thumbnail -->
                         <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-800 shrink-0 relative">
                             @if($pImg)
-                                <img src="{{ \App\Support\ImageThumb::url($pImg->image_path, 120) }}" alt="{{ $p->name }}" class="w-full h-full object-cover group-hover/pmini:scale-105 transition-transform duration-200" loading="lazy" decoding="async">
+                                <img src="{{ \App\Support\ImageThumb::url($pImg->image_path, 120) }}" width="120" height="120" alt="{{ $p->name }}" class="w-full h-full object-cover group-hover/pmini:scale-105 transition-transform duration-200" loading="lazy" decoding="async">
                             @else
                                 <div class="w-full h-full flex items-center justify-center text-slate-400">
                                     <span class="material-symbols-outlined text-sm">inventory_2</span>
@@ -455,7 +462,7 @@
                         <div class="flex items-center gap-2.5 shrink-0 max-w-full lg:max-w-[220px] xl:max-w-[250px] pr-20 lg:pr-0">
                             <div class="w-9 h-9 md:w-10 md:h-10 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shrink-0 shadow-2xs flex items-center justify-center">
                                 @if($spStore->logo)
-                                    <img src="{{ \App\Support\ImageThumb::url($spStore->logo, 96) }}" alt="{{ $spStore->name }}" class="w-full h-full object-cover" loading="lazy" decoding="async">
+                                    <img src="{{ \App\Support\ImageThumb::url($spStore->logo, 96) }}" width="96" height="96" alt="{{ $spStore->name }}" class="w-full h-full object-cover" loading="lazy" decoding="async">
                                 @else
                                     <img src="https://ui-avatars.com/api/?name={{ urlencode($spStore->name) }}&background=0284c7&color=fff" alt="{{ $spStore->name }}" class="w-full h-full object-cover" loading="lazy" decoding="async">
                                 @endif
@@ -504,7 +511,7 @@
                                         <!-- Thumbnail -->
                                         <div class="w-9 h-9 md:w-10 md:h-10 rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-800 shrink-0 relative">
                                             @if($pImg)
-                                                <img src="{{ \App\Support\ImageThumb::url($pImg->image_path, 120) }}" alt="{{ $p->name }}" class="w-full h-full object-cover group-hover/pmini:scale-105 transition-transform duration-200" loading="lazy" decoding="async">
+                                                <img src="{{ \App\Support\ImageThumb::url($pImg->image_path, 120) }}" width="120" height="120" alt="{{ $p->name }}" class="w-full h-full object-cover group-hover/pmini:scale-105 transition-transform duration-200" loading="lazy" decoding="async">
                                             @else
                                                 <div class="w-full h-full flex items-center justify-center text-slate-400">
                                                     <span class="material-symbols-outlined text-sm">inventory_2</span>
@@ -888,7 +895,7 @@
                     <div class="flex items-center gap-2.5 min-w-0">
                         <div class="w-10 h-10 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shrink-0 flex items-center justify-center">
                             @if($mStore->logo)
-                                <img src="{{ \App\Support\ImageThumb::url($mStore->logo, 96) }}" alt="{{ $mStore->name }}" class="w-full h-full object-cover" loading="lazy" decoding="async">
+                                <img src="{{ \App\Support\ImageThumb::url($mStore->logo, 96) }}" width="96" height="96" alt="{{ $mStore->name }}" class="w-full h-full object-cover" loading="lazy" decoding="async">
                             @else
                                 <img src="https://ui-avatars.com/api/?name={{ urlencode($mStore->name) }}&background=0284c7&color=fff" alt="{{ $mStore->name }}" class="w-full h-full object-cover" loading="lazy" decoding="async">
                             @endif

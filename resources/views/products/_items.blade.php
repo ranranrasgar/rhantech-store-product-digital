@@ -21,6 +21,7 @@
                  title="{{ $product->name }}" 
                  loading="{{ $isAboveFold ? 'eager' : 'lazy' }}"
                  @if($loop->index < 2 && $isAboveFold) fetchpriority="high" @endif
+                 width="480" height="480"
                  decoding="async">
         @else
             <div class="no-img flex items-center justify-center text-gray-300 bg-gray-50 dark:bg-gray-800">

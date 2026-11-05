@@ -433,7 +433,7 @@
                                      class="space-y-4">
                                     <div class="flex items-center gap-3">
                                         @if($tStore->logo)
-                                            <img src="{{ asset('storage/' . $tStore->logo) }}" class="w-12 h-12 md:w-14 md:h-14 rounded-xl object-cover border border-outline-variant">
+                                            <img src="{{ asset('storage/' . $tStore->logo) }}" alt="Logo {{ $tStore->name }}" class="w-12 h-12 md:w-14 md:h-14 rounded-xl object-cover border border-outline-variant">
                                         @else
                                             <div class="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-primary text-white flex items-center justify-center font-black text-lg md:text-xl">
                                                 {{ strtoupper(substr($tStore->name, 0, 1)) }}

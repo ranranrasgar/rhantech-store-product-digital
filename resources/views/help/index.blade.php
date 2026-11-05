@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pusat Bantuan - {{ env('APP_NAME', 'rhantech') }}</title>
+    <title>Pusat Bantuan - {{ $company->company_name ?? 'Rhantech' }}</title>
+    <meta name="description" content="Pusat Bantuan {{ $company->company_name ?? 'Rhantech' }}: panduan membeli, membayar, dan mengunduh aplikasi, serta mengelola toko Anda."/>
+    <link rel="canonical" href="{{ route('help.index') }}"/>
+    @include('components.seo-tags')
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@300..700,0..1&display=swap" rel="stylesheet">

@@ -44,17 +44,9 @@
       }
     }
     </script>
-    <script type="application/ld+json">
-    {
-      "@@context": "https://schema.org",
-      "@type": "OnlineStore",
-      "name": "{{ $company->company_name ?? 'R-Tech' }}",
-      "url": "{{ route('products.index') }}",
-      "logo": "{{ isset($company) && $company->logo ? asset('storage/'.$company->logo) : asset('favicon.ico') }}",
-      "description": "Marketplace dan toko resmi penyedia source code, aplikasi web, sistem kasir, dan produk digital berkualitas di Indonesia."
-    }
-    </script>
+    @include('components.seo-organization', ['organizationType' => 'OnlineStore', 'organizationDescription' => 'Marketplace dan toko resmi penyedia source code, aplikasi web, sistem kasir, dan produk digital berkualitas di Indonesia.'])
     @yield('schema_json_ld')
+    @include('components.seo-tags')
     <link rel="icon" type="image/png" href="{{ isset($company) && $company->favicon ? '/storage/'.$company->favicon : '/favicon.ico' }}" />
     <link rel="shortcut icon" type="image/png" href="{{ isset($company) && $company->favicon ? '/storage/'.$company->favicon : '/favicon.ico' }}" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -444,7 +436,7 @@
                             <template x-for="st in results.stores" :key="'store-'+st.id">
                                 <a :href="st.url" class="flex items-center justify-between gap-2 p-1.5 rounded-lg hover:bg-white dark:hover:bg-slate-800 transition-colors">
                                     <div class="flex items-center gap-2 min-w-0">
-                                        <img :src="st.logo" class="w-6 h-6 rounded-lg object-cover border border-zinc-200 dark:border-zinc-800 shrink-0">
+                                        <img :src="st.logo" :alt="st.name" width="24" height="24" class="w-6 h-6 rounded-lg object-cover border border-zinc-200 dark:border-zinc-800 shrink-0">
                                         <div class="min-w-0">
                                             <div class="font-bold text-zinc-800 dark:text-zinc-100 truncate text-[11px]" x-text="st.name"></div>
                                             <div class="text-[9px] text-slate-400 font-mono" x-text="'/@' + st.slug"></div>
@@ -472,7 +464,7 @@
                                 <a :href="pr.url" class="flex items-center justify-between gap-2 p-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
                                     <div class="flex items-center gap-2 min-w-0">
                                         <template x-if="pr.image">
-                                            <img :src="pr.image" class="w-6 h-6 rounded-md object-cover border border-zinc-200 dark:border-zinc-800 shrink-0">
+                                            <img :src="pr.image" :alt="pr.name" width="24" height="24" class="w-6 h-6 rounded-md object-cover border border-zinc-200 dark:border-zinc-800 shrink-0">
                                         </template>
                                         <div class="font-medium text-slate-700 dark:text-slate-200 truncate text-[11px]" x-text="pr.name"></div>
                                     </div>

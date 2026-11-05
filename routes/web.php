@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\ContactMessageController;
 
 // Public Routes
 Route::get('/', [PublicController::class, 'home'])->name('home');
+Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
 Route::get('/about', [PublicController::class, 'about'])->name('about');
 Route::get('/projects', [PublicController::class, 'projects'])->name('projects.index');
 Route::get('/projects/{slug}', [PublicController::class, 'projectDetail'])->name('projects.show');
@@ -342,7 +343,7 @@ Route::get('/test-fcm-push', function (\Illuminate\Http\Request $request, \App\S
     }
 
     return view('test-fcm', compact('tokenCount'));
-});
+})->middleware(['auth', 'is_admin']);
 
 // Direct Store Profile Link Detail: http://127.0.0.1:8000/<nama-toko>/<link-id> (e.g., http://127.0.0.1:8000/ranranrasgar/kwenorgxerve)
 Route::get('/{slug}/{linkId}', [\App\Http\Controllers\PublicStoreController::class, 'showLinkDetail'])
