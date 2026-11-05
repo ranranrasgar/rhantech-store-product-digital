@@ -212,7 +212,7 @@
                                     </span>
                                     <span class="block text-[11px] text-emerald-700 dark:text-emerald-400" id="voucherSuccessDesc">
                                         @if(!empty($appliedVoucher['is_free']))
-                                            🎉 Diskon 100% — Total Belanja Menjadi GRATIS (Rp 0)!
+                                            Diskon 100% — Total Belanja Menjadi GRATIS (Rp 0)!
                                         @elseif(!empty($appliedVoucher))
                                             Hemat Rp {{ number_format($discountAmount ?? 0, 0, ',', '.') }} untuk pesanan ini.
                                         @endif
@@ -401,7 +401,7 @@
                 document.getElementById('voucherSuccessTitle').innerHTML = `Kupon <span class="font-mono underline">${res.voucher.code}</span> Berhasil Digunakan!`;
                 
                 if (res.is_free) {
-                    document.getElementById('voucherSuccessDesc').innerText = '🎉 Diskon 100% — Total Belanja Menjadi GRATIS (Rp 0)!';
+                    document.getElementById('voucherSuccessDesc').innerText = 'Diskon 100% — Total Belanja Menjadi GRATIS (Rp 0)!';
                 } else {
                     document.getElementById('voucherSuccessDesc').innerText = `Hemat ${res.discount_amount_formatted} untuk pesanan ini.`;
                 }

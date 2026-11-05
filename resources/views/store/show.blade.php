@@ -940,7 +940,7 @@
                                 </div>
                             </div>
                             
-                            <a href="#" class="text-xs font-bold text-rose-500 hover:text-rose-600 hover:underline flex items-center gap-0.5">
+                            <a href="{{ route('products.index', ['store' => $store->id]) }}" class="text-xs font-bold text-rose-500 hover:text-rose-600 hover:underline flex items-center gap-0.5">
                                 Lihat Semua <span class="material-symbols-outlined text-[14px]">chevron_right</span>
                             </a>
                         </div>
@@ -957,14 +957,14 @@
                                                 <span class="material-symbols-outlined text-4xl">inventory_2</span>
                                             </div>
                                         @endif
-                                        @if($product->discount_price)
+                                        @if($product->discount_price && $product->price > 0)
                                         <div class="absolute top-0 right-0 bg-rose-100 text-rose-600 text-[10px] font-bold px-2 py-0.5 rounded-bl-lg border-b border-l border-rose-200">
                                             -{{ round((($product->price - $product->discount_price) / $product->price) * 100) }}%
                                         </div>
                                         @endif
                                         <div class="absolute bottom-0 left-0 right-0 bg-slate-900/5 backdrop-blur-sm">
                                             <div class="bg-rose-600 text-white text-center text-[10px] font-bold py-1">
-                                                🔥 STOK TERBATAS
+                                                STOK TERBATAS
                                             </div>
                                         </div>
                                     </div>
@@ -984,6 +984,7 @@
 
                 @elseif($block['type'] === 'voucher')
                     @php 
+                        $vouchers = is_array($data['vouchers'] ?? null) ? $data['vouchers'] : [];
                         $selectedCampaignIds = $data['campaign_ids'] ?? [];
                         $blockCampaigns = $campaigns ?? collect();
                         if (!empty($selectedCampaignIds) && is_array($selectedCampaignIds)) {
@@ -1070,7 +1071,7 @@
                             <h2 class="text-xl font-bold text-slate-800 border-l-4 border-sky-500 pl-3">
                                 {{ ($data['type'] ?? 'latest') === 'bestseller' ? 'Produk Terlaris' : 'Pilihan Produk' }}
                             </h2>
-                            <a href="#" class="text-sm text-sky-500 font-bold hover:underline">Lihat Semua</a>
+                            <a href="{{ route('products.index', ['store' => $store->id]) }}" class="text-sm text-sky-500 font-bold hover:underline">Lihat Semua</a>
                         </div>
                         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
                             @forelse($displayProducts as $product)

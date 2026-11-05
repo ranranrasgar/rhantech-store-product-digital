@@ -259,9 +259,9 @@
                             :disabled="generating"
                             class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-700 text-xs font-bold transition-all shrink-0">
                         <span class="material-symbols-outlined text-[16px] text-amber-600 dark:text-amber-400" :class="{ 'animate-spin': generating }">
-                            auto_awesome
+                            label
                         </span>
-                        <span x-text="generating ? 'Menganalisis Teks...' : '⚡ Generate Tags Otomatis'"></span>
+                        <span x-text="generating ? 'Menganalisis Teks...' : 'Generate Tags Otomatis'"></span>
                     </button>
                 </div>
 
@@ -286,7 +286,7 @@
                 </div>
 
                 <div class="mt-1.5 flex items-center justify-between text-[11px] text-on-surface-variant">
-                    <span>💡 <em>Tips: Klik tombol <strong>Generate Tags Otomatis</strong> setelah mengisi Nama atau Deskripsi untuk menghasilkan tags relevan secara instan.</em></span>
+                    <span><em>Tips: Klik tombol <strong>Generate Tags Otomatis</strong> setelah mengisi Nama atau Deskripsi untuk menghasilkan tags relevan secara instan.</em></span>
                 </div>
             </div>
 
@@ -381,7 +381,7 @@
                         </p>
                         <span class="text-[11px] font-bold px-2 py-0.5 rounded"
                               :class="hasOversized ? 'bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300' : 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300'"
-                              x-text="hasOversized ? '⚠️ Ada foto > 2 MB' : '✓ Semua foto aman (< 2 MB)'"></span>
+                              x-text="hasOversized ? 'Ada foto > 2 MB' : '✓ Semua foto aman (< 2 MB)'"></span>
                     </div>
                     <div class="flex flex-wrap gap-3">
                         <template x-for="(f, i) in files" :key="i">
@@ -393,7 +393,7 @@
                                 <div class="p-1 text-[10px] truncate text-center font-mono font-bold"
                                      :class="f.isOversized ? 'bg-rose-600 text-white' : 'bg-surface-container-low text-on-surface'"
                                      :title="f.name + ' (' + f.size + ')'">
-                                    <span x-text="f.isOversized ? '⚠️ ' + f.size : '✓ ' + f.size"></span>
+                                    <span x-text="f.isOversized ? '' + f.size : '✓ ' + f.size"></span>
                                 </div>
                             </div>
                         </template>

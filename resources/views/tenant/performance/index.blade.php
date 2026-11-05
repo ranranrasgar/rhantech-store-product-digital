@@ -337,7 +337,7 @@
                 <div class="bg-white dark:bg-[#000000] border border-zinc-200 dark:border-zinc-800 rounded-2xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-5">
                     <div class="flex items-start gap-4">
                         <div class="w-12 h-12 rounded-xl bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 flex items-center justify-center shrink-0">
-                            <span class="material-symbols-outlined text-[24px]">rocket_launch</span>
+                            <span class="material-symbols-outlined text-[24px]">trending_up</span>
                         </div>
                         <div>
                             <h4 class="text-sm font-bold text-zinc-900 dark:text-zinc-100">Tingkatkan Omset Toko dengan Dekorasi &amp; Promo</h4>

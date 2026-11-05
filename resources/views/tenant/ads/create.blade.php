@@ -1,4 +1,4 @@
-﻿@extends('layouts.tenant')
+@extends('layouts.tenant')
 
 @section('title', 'Buat Iklan Baru - Rhantech Seller Center')
 
@@ -150,7 +150,7 @@
         <div class="rounded-2xl bg-white dark:bg-[#000000] border border-slate-200/90 dark:border-slate-800 p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
                 <h2 class="text-base md:text-lg font-extrabold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-zinc-700 dark:text-zinc-300 text-[22px]">rocket_launch</span>
+                    <span class="material-symbols-outlined text-zinc-700 dark:text-zinc-300 text-[22px]">campaign</span>
                     Promosikan tokomu di halaman pencarian untuk menjangkau lebih banyak Pembeli
                 </h2>
                 <div class="flex flex-wrap items-center gap-4 text-xs font-semibold text-zinc-600 dark:text-zinc-300 mt-2">
@@ -690,15 +690,15 @@
                             </p>
                             <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-0.5 text-[11px]">
                                 <div class="p-2.5 rounded-lg bg-white dark:bg-slate-800 border border-zinc-200 dark:border-zinc-800">
-                                    <div class="font-bold text-amber-600 dark:text-amber-400">🥇 Bid Tinggi (&ge;Rp1.000)</div>
+                                    <div class="font-bold text-amber-600 dark:text-amber-400">Bid Tinggi (&ge;Rp1.000)</div>
                                     <div class="text-slate-500 text-[10px] mt-0.5">Posisi #1 Paling Depan, pengunjung datang sangat cepat & memenangkan lelang kata kunci.</div>
                                 </div>
                                 <div class="p-2.5 rounded-lg bg-white dark:bg-slate-800 border border-zinc-200 dark:border-zinc-800">
-                                    <div class="font-bold text-orange-600 dark:text-orange-400">🥈 Bid Standar (~Rp500)</div>
+                                    <div class="font-bold text-orange-600 dark:text-orange-400">Bid Standar (~Rp500)</div>
                                     <div class="text-slate-500 text-[10px] mt-0.5">Posisi strategis rekomendasi tepat di bawah bid teratas, trafik optimal & stabil.</div>
                                 </div>
                                 <div class="p-2.5 rounded-lg bg-white dark:bg-slate-800 border border-zinc-200 dark:border-zinc-800">
-                                    <div class="font-bold text-zinc-700 dark:text-zinc-300">🥉 Bid Hemat (Rp100-200)</div>
+                                    <div class="font-bold text-zinc-700 dark:text-zinc-300">Bid Hemat (Rp100-200)</div>
                                     <div class="text-slate-500 text-[10px] mt-0.5">Paling hemat saldo, namun berada di urutan bawah / mengantre setelah kompetitor.</div>
                                 </div>
                             </div>

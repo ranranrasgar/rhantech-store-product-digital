@@ -145,7 +145,7 @@ class OrderController extends Controller
 
         return back()->with('success', 'Status pesanan diubah menjadi Lunas dan email produk telah dikirim.')
             ->with('fcm_notification', [
-                'title' => "🎉 Pembayaran Berhasil: #{$order->invoice_number}",
+                'title' => "Pembayaran Berhasil: #{$order->invoice_number}",
                 'body' => "Pesanan senilai Rp " . number_format($order->amount, 0, ',', '.') . " telah lunas. Notifikasi & email terkirim ke pembeli."
             ]);
     }
@@ -192,7 +192,7 @@ class OrderController extends Controller
         return back()
             ->with($mailSent ? 'success' : 'warning', $msg)
             ->with('fcm_notification', [
-                'title' => "📥 Link Produk Terkirim: #{$order->invoice_number}",
+                'title' => "Link Produk Terkirim: #{$order->invoice_number}",
                 'body' => "Tautan akses produk telah dikirim ke {$order->customer_email} beserta push notifikasi ke pembeli."
             ]);
     }

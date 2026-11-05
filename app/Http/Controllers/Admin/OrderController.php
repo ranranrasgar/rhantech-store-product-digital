@@ -166,7 +166,7 @@ class OrderController extends Controller
 
             return back()->with('success', "Order {$order->invoice_number} berhasil disetujui (Paid) dan email terkirim.")
                 ->with('fcm_notification', [
-                    'title' => "💰 Penjualan Sukses: #{$order->invoice_number}",
+                    'title' => "Penjualan Sukses: #{$order->invoice_number}",
                     'body' => "Order senilai Rp " . number_format($order->amount, 0, ',', '.') . " berhasil disetujui lunas! Saldo toko telah bertambah."
                 ]);
         }

@@ -915,7 +915,7 @@
                                 <span>{{ $mStore->products_count }} Produk</span>
                                 @if($mStore->user && $mStore->user->name !== $mStore->name)
                                 <span>•</span>
-                                <span class="truncate max-w-[80px]" title="Pemilik akun: {{ $mStore->user->name }}">👤 {{ $mStore->user->name }}</span>
+                                <span class="truncate max-w-[80px]" title="Pemilik akun: {{ $mStore->user->name }}">{{ $mStore->user->name }}</span>
                                 @endif
                             </div>
                         </div>

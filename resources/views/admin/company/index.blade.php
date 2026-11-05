@@ -662,7 +662,7 @@
                             </div>
 
                             <p class="text-[11px] text-on-surface-variant mt-2 leading-relaxed">
-                                ⚡ <strong>Kompresi Otomatis Aktif:</strong> Foto resolusi tinggi dari kamera HP/laptop akan langsung dioptimasi seketika di browser agar upload berlangsung cepat (&lt; 1 detik) tanpa mengurangi ketajaman visual.
+                                <strong>Kompresi Otomatis Aktif:</strong> Foto resolusi tinggi dari kamera HP/laptop akan langsung dioptimasi seketika di browser agar upload berlangsung cepat (&lt; 1 detik) tanpa mengurangi ketajaman visual.
                             </p>
                             @error('hero_image')<span class="text-error text-xs mt-1 block">{{ $message }}</span>@enderror
                         </div>
@@ -1087,7 +1087,7 @@
                             <span class="material-symbols-outlined text-[17px] text-amber-500">restore</span>
                             <span>Restore Database (.sql)</span>
                             <input type="file" name="sql_file" accept=".sql,.txt" required class="hidden"
-                                   onchange="if(this.files[0] && confirm('⚠️ PERHATIAN: Restore akan menimpa database dengan file ' + this.files[0].name + '. Lanjutkan?')) { this.form.submit(); } else { this.value=''; }">
+                                   onchange="if(this.files[0] && confirm('PERHATIAN: Restore akan menimpa database dengan file ' + this.files[0].name + '. Lanjutkan?')) { this.form.submit(); } else { this.value=''; }">
                         </label>
                     </form>
                 </div>
@@ -1345,7 +1345,7 @@ function heroFormHandler() {
             const origKb = Math.round(file.size / 1024);
 
             this.heroPreview = URL.createObjectURL(file);
-            this.compressStatus = '⚡ Mengoptimasi gambar...';
+            this.compressStatus = 'Mengoptimasi gambar...';
             this.isCompressing = true;
 
             try {

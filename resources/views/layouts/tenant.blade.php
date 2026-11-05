@@ -11,6 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet"/>
+@include('components.phosphor-icons')
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 <style>
 /* Pastikan ukuran/line-height icon konsisten */
@@ -218,8 +219,8 @@ html.dark .nav-link:hover { background: rgba(249, 115, 22, 0.1); color: #f97316;
 html.dark .nav-link.active { background: rgba(249, 115, 22, 0.1); color: #f97316; font-weight: 600; }
 html.dark .nav-link.active::before { background: #f97316; }
 
-.nav-link .material-symbols-outlined { font-size: 18px; width: 20px; text-align: center; flex-shrink: 0; opacity: 0.7; }
-.nav-link.active .material-symbols-outlined { opacity: 1; color: inherit; }
+.nav-link .material-symbols-outlined, .nav-link .ph { font-size: 18px; width: 20px; text-align: center; flex-shrink: 0; opacity: 0.7; }
+.nav-link.active .material-symbols-outlined, .nav-link.active .ph { opacity: 1; color: inherit; }
 
 /* Sidebar user */
 .sidebar-user {
@@ -378,87 +379,87 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
     <!-- Nav -->
     <nav style="flex:1; padding:8px 0;">
         <a href="{{ route('tenant.dashboard') }}" class="nav-link {{ request()->routeIs('tenant.dashboard') ? 'active' : '' }}">
-            <span class="material-symbols-outlined">space_dashboard</span> Dashboard
+            <i class="ph ph-squares-four"></i> Dashboard
         </a>
 
         <div class="nav-section-label">Akun Saya</div>
         <a href="{{ route('tenant.purchases.index') }}" class="nav-link {{ request()->routeIs('tenant.purchases.*') ? 'active' : '' }}">
-            <span class="material-symbols-outlined">shopping_bag</span> Pembelian Saya
+            <i class="ph ph-shopping-bag"></i> Pembelian Saya
         </a>
         <a href="{{ route('tenant.following') }}" class="nav-link {{ request()->routeIs('tenant.following') ? 'active' : '' }}">
-            <span class="material-symbols-outlined">storefront</span> Toko yang Diikuti
+            <i class="ph ph-storefront"></i> Toko yang Diikuti
         </a>
 
         @if(auth()->user()->store)
         <div class="nav-section-label">Manajemen Toko</div>
         <a href="{{ route('tenant.products.index') }}" class="nav-link {{ request()->routeIs('tenant.products.*') ? 'active' : '' }}">
-            <span class="material-symbols-outlined">inventory_2</span> Katalog Produk
+            <i class="ph ph-package"></i> Katalog Produk
         </a>
         <a href="{{ route('tenant.orders.index') ?? '#' }}" class="nav-link {{ request()->routeIs('tenant.orders.*') ? 'active' : '' }}">
-            <span class="material-symbols-outlined">receipt_long</span> Penjualan
+            <i class="ph ph-receipt"></i> Penjualan
         </a>
         <a href="{{ route('tenant.chat.index') }}" class="nav-link {{ request()->routeIs('tenant.chat.*') ? 'active' : '' }}">
-            <span class="material-symbols-outlined">chat</span> Chat Pelanggan
+            <i class="ph ph-chat-circle"></i> Chat Pelanggan
         </a>
 
         <div class="nav-section-label">Marketing & Promosi</div>
         <a href="{{ route('tenant.broadcast.index') }}" class="nav-link {{ request()->routeIs('tenant.broadcast.*') ? 'active' : '' }}">
-            <span class="material-symbols-outlined">send_to_mobile</span> WA Broadcast
+            <i class="ph ph-device-mobile"></i> WA Broadcast
         </a>
         <a href="{{ route('tenant.ads.index') }}" class="nav-link {{ request()->routeIs('tenant.ads.*') ? 'active' : '' }}">
-            <span class="material-symbols-outlined">ads_click</span> Iklan & Promosi
+            <i class="ph ph-cursor-click"></i> Iklan & Promosi
         </a>
         <a href="{{ route('tenant.showcase.index') }}" class="nav-link {{ request()->routeIs('tenant.showcase.*') ? 'active' : '' }}">
-            <span class="material-symbols-outlined">shopping_basket</span> Etalase Afiliasi
+            <i class="ph ph-basket"></i> Etalase Afiliasi
         </a>
         <a href="{{ route('tenant.affiliates.index') }}" class="nav-link {{ request()->routeIs('tenant.affiliates.*') ? 'active' : '' }}">
-            <span class="material-symbols-outlined">handshake</span> Mitra Afiliasi
+            <i class="ph ph-handshake"></i> Mitra Afiliasi
         </a>
         <a href="{{ route('tenant.campaigns.index') }}" class="nav-link {{ request()->routeIs('tenant.campaigns.*') ? 'active' : '' }}">
-            <span class="material-symbols-outlined">campaign</span> Diskon & Voucher
+            <i class="ph ph-megaphone"></i> Diskon & Voucher
         </a>
 
         <div class="nav-section-label">Halaman & Profil</div>
         <a href="{{ route('tenant.appearance.index') ?? '#' }}" class="nav-link {{ request()->routeIs('tenant.appearance.*') ? 'active' : '' }}">
-            <span class="material-symbols-outlined">palette</span> Desain Tampilan
+            <i class="ph ph-palette"></i> Desain Tampilan
         </a>
         <a href="{{ route('tenant.store.index') }}" class="nav-link {{ request()->routeIs('tenant.store.*') ? 'active' : '' }}">
-            <span class="material-symbols-outlined">manage_accounts</span> Profil & Pengaturan
+            <i class="ph ph-user-gear"></i> Profil & Pengaturan
         </a>
         <a href="{{ route('tenant.projects.index') }}" class="nav-link {{ request()->routeIs('tenant.projects.*') ? 'active' : '' }}">
-            <span class="material-symbols-outlined">folder_special</span> Portofolio Karya
+            <i class="ph ph-folder-star"></i> Portofolio Karya
         </a>
         <a href="{{ route('tenant.pro.index') }}" class="nav-link {{ request()->routeIs('tenant.pro.*') ? 'active' : '' }}">
-            <span class="material-symbols-outlined text-amber-500">workspace_premium</span> Fitur & Akun PRO
+            <i class="ph ph-crown-simple text-amber-500"></i> Fitur & Akun PRO
         </a>
 
         <div class="nav-section-label">Keuangan</div>
         <a href="{{ route('tenant.payouts.index') ?? '#' }}" class="nav-link {{ request()->routeIs('tenant.payouts.*') ? 'active' : '' }}">
-            <span class="material-symbols-outlined">account_balance_wallet</span> Penghasilan
+            <i class="ph ph-wallet"></i> Penghasilan
         </a>
         <a href="{{ route('tenant.balance.index') ?? '#' }}" class="nav-link {{ request()->routeIs('tenant.balance.*') ? 'active' : '' }}">
-            <span class="material-symbols-outlined">account_balance</span> Saldo Penjual
+            <i class="ph ph-bank"></i> Saldo Penjual
         </a>
         <a href="{{ route('tenant.bank.index') ?? '#' }}" class="nav-link {{ request()->routeIs('tenant.bank.*') ? 'active' : '' }}">
-            <span class="material-symbols-outlined">credit_card</span> Rekening Bank
+            <i class="ph ph-credit-card"></i> Rekening Bank
         </a>
 
         <div class="nav-section-label">Analitik</div>
         <a href="{{ route('tenant.performance.index') ?? '#' }}" class="nav-link {{ request()->routeIs('tenant.performance.*') ? 'active' : '' }}">
-            <span class="material-symbols-outlined">monitoring</span> Analitik & Performa
+            <i class="ph ph-chart-line-up"></i> Analitik & Performa
         </a>
         <div class="nav-section-label">Pusat Bantuan</div>
         <a href="{{ route('help.index') }}" target="_blank" class="nav-link">
-            <span class="material-symbols-outlined">help</span> Panduan Aplikasi
+            <i class="ph ph-question"></i> Panduan Aplikasi
         </a>
         @else
         <div class="nav-section-label">Halaman Kreator</div>
         <a href="{{ route('tenant.store.index') }}" class="nav-link {{ request()->routeIs('tenant.store.*') ? 'active' : '' }}">
-            <span class="material-symbols-outlined">hub</span> Buat Toko &amp; Bio Link
+            <i class="ph ph-share-network"></i> Buat Toko &amp; Bio Link
         </a>
         <div class="nav-section-label">Pusat Bantuan</div>
         <a href="{{ route('help.index') }}" target="_blank" class="nav-link">
-            <span class="material-symbols-outlined">help</span> Panduan Aplikasi
+            <i class="ph ph-question"></i> Panduan Aplikasi
         </a>
         @endif
     </nav>
@@ -473,7 +474,7 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
         <form action="{{ route('logout') }}" method="POST" style="flex-shrink:0;">
             @csrf
             <button type="submit" title="Logout" class="sidebar-logout-btn">
-                <span class="material-symbols-outlined" style="font-size:18px;">logout</span>
+                <i class="ph ph-sign-out" style="font-size:18px;"></i>
             </button>
         </form>
     </div>
@@ -485,13 +486,13 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
     <header class="tenant-topbar">
         <div class="flex items-center gap-2 md:gap-3 flex-1 min-w-0 pr-1 md:pr-2">
             <button type="button" @click="toggleSidebar()" class="topbar-icon-btn active:scale-95 transition-transform" style="display:flex; width:36px; height:36px; shrink-0;" title="Toggle Sidebar">
-                <span class="material-symbols-outlined" style="font-size:22px;" x-text="sidebarCollapsed ? 'menu_open' : 'menu'">menu</span>
+                <i class="ph" :class="sidebarCollapsed ? 'ph-sidebar-simple' : 'ph-list'" style="font-size:22px;"></i>
             </button>
 
             <!-- Universal Live Search: Produk & Toko (Mendekati) -->
             <div class="relative flex-1 max-w-sm md:max-w-md lg:max-w-xl min-w-0" x-data="tenantGlobalSearch()">
                 <div class="relative flex items-center w-full">
-                    <span class="material-symbols-outlined absolute left-3 text-slate-400 dark:text-slate-500 pointer-events-none text-[18px]">search</span>
+                    <i class="ph ph-magnifying-glass absolute left-3 text-slate-400 dark:text-slate-500 pointer-events-none text-[18px]"></i>
                     <input 
                         type="text" 
                         x-model="query" 
@@ -510,7 +511,7 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
                         class="absolute right-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-0.5 rounded-full"
                         style="display: none;"
                     >
-                        <span class="material-symbols-outlined text-[16px]">close</span>
+                        <i class="ph ph-x text-[16px]"></i>
                     </button>
                     <div x-show="loading" class="absolute right-2.5" style="display: none;">
                         <span class="inline-block w-4 h-4 border-2 border-orange-500 border-t-transparent rounded-full animate-spin"></span>
@@ -552,7 +553,7 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
                                                 <div class="text-[11px] text-slate-400 truncate" x-text="'@' + st.slug + ' • ' + st.products_count + ' produk'"></div>
                                             </div>
                                         </div>
-                                        <span class="material-symbols-outlined text-slate-300 dark:text-slate-600 group-hover:text-[#00838f] text-[18px] shrink-0">chevron_right</span>
+                                        <i class="ph ph-caret-right text-slate-300 dark:text-slate-600 group-hover:text-[#00838f] text-[18px] shrink-0"></i>
                                     </a>
                                 </template>
                             </div>
@@ -575,7 +576,7 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
                                             </template>
                                             <template x-if="!prod.image">
                                                 <div class="w-9 h-9 rounded-lg bg-teal-50 dark:bg-teal-950/40 border border-teal-100 dark:border-teal-900/40 text-[#00838f] flex items-center justify-center shrink-0">
-                                                    <span class="material-symbols-outlined text-[20px]">package_2</span>
+                                                    <i class="ph ph-package text-[20px]"></i>
                                                 </div>
                                             </template>
                                             <div class="min-w-0 flex-1">
@@ -604,7 +605,7 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
 
                     <!-- No Results -->
                     <div x-show="noResults" class="p-6 text-center text-xs text-slate-400">
-                        <span class="material-symbols-outlined text-3xl mb-1 text-slate-300 dark:text-slate-600">search_off</span>
+                        <i class="ph ph-magnifying-glass-minus text-3xl mb-1 text-slate-300 dark:text-slate-600"></i>
                         <p>Tidak ada produk atau toko yang cocok dengan "<span class="font-bold text-slate-700 dark:text-slate-200" x-text="query"></span>"</p>
                     </div>
 
@@ -612,7 +613,7 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
                     <div class="p-2 bg-slate-50 dark:bg-slate-900/80 border-t border-zinc-100 dark:border-zinc-800 text-center">
                         <button type="button" @click="submitSearch()" class="text-xs font-bold text-[#00838f] hover:underline flex items-center justify-center gap-1 w-full py-1 cursor-pointer">
                             <span>Lihat semua hasil di katalog produk</span>
-                            <span class="material-symbols-outlined text-[14px]">open_in_new</span>
+                            <i class="ph ph-arrow-square-out text-[14px]"></i>
                         </button>
                     </div>
                 </div>
@@ -620,7 +621,7 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
         </div>
         <div style="display:flex; align-items:center; gap:8px; shrink-0;">
             <a href="{{ route('help.index') }}" target="_blank" class="topbar-icon-btn" title="Pusat Bantuan & Panduan">
-                <span class="material-symbols-outlined" style="font-size:20px;">help</span>
+                <i class="ph ph-question" style="font-size:20px;"></i>
             </a>
             @php
                 $bellRole = (auth()->check() && auth()->user()->store) ? 'tenant' : 'buyer';
@@ -635,7 +636,7 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
                         <div class="dropdown-user-name" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ auth()->user()->name ?? 'Admin' }}</div>
                         <div class="dropdown-user-email" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-bottom:4px;">{{ auth()->user()->email ?? '' }}</div>
                         <div style="font-size:11px; color:#ea580c; font-weight:600; display:flex; align-items:center; gap:2px;">
-                            <span class="material-symbols-outlined" style="font-size:12px;">edit</span> Edit Profil
+                            <i class="ph ph-pencil-simple" style="font-size:12px;"></i> Edit Profil
                         </div>
                     </a>
                     @php
@@ -643,15 +644,15 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
                         $storeUrl = $tenantStore ? route('store.show', $tenantStore->slug) : route('products.index');
                     @endphp
                     <a href="{{ $storeUrl }}" target="_blank" class="dropdown-item-link">
-                        <span class="material-symbols-outlined" style="font-size:16px;">storefront</span> Lihat Toko
+                        <i class="ph ph-storefront" style="font-size:16px;"></i> Lihat Toko
                     </a>
                     <a href="{{ route('tenant.store.index', ['tab' => 'sistem']) }}" class="dropdown-item-link">
-                        <span class="material-symbols-outlined" style="font-size:16px;">tune</span> Pengaturan Sistem
+                        <i class="ph ph-sliders-horizontal" style="font-size:16px;"></i> Pengaturan Sistem
                     </a>
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf
                         <button type="submit" class="dropdown-logout-btn">
-                            <span class="material-symbols-outlined" style="font-size:16px;">logout</span> Logout
+                            <i class="ph ph-sign-out" style="font-size:16px;"></i> Logout
                         </button>
                     </form>
                 </div>
@@ -668,7 +669,7 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
         <!-- Beranda -->
         <a href="{{ route('tenant.dashboard') }}" class="flex flex-col items-center justify-center py-1 select-none active:scale-90 transition-transform {{ request()->routeIs('tenant.dashboard') ? 'text-orange-600 dark:text-orange-400 font-bold' : 'text-zinc-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-slate-200' }}">
             <div class="relative">
-                <span class="material-symbols-outlined text-[24px] {{ request()->routeIs('tenant.dashboard') ? 'fill-1' : '' }}">space_dashboard</span>
+                <i class="ph ph-house-simple text-[24px]"></i>
                 @if(request()->routeIs('tenant.dashboard'))
                     <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-orange-500 dark:bg-orange-400"></span>
                 @endif
@@ -679,7 +680,7 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
         <!-- Katalog -->
         <a href="{{ route('tenant.products.index') }}" class="flex flex-col items-center justify-center py-1 select-none active:scale-90 transition-transform {{ request()->routeIs('tenant.products.*') ? 'text-orange-600 dark:text-orange-400 font-bold' : 'text-zinc-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-slate-200' }}">
             <div class="relative">
-                <span class="material-symbols-outlined text-[24px]">inventory_2</span>
+                <i class="ph ph-package text-[24px]"></i>
                 @if(request()->routeIs('tenant.products.*'))
                     <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-orange-500 dark:bg-orange-400"></span>
                 @endif
@@ -690,7 +691,7 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
         <!-- Pesanan -->
         <a href="{{ route('tenant.orders.index') }}" class="flex flex-col items-center justify-center py-1 select-none active:scale-90 transition-transform relative {{ request()->routeIs('tenant.orders.*') ? 'text-orange-600 dark:text-orange-400 font-bold' : 'text-zinc-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-slate-200' }}">
             <div class="relative">
-                <span class="material-symbols-outlined text-[24px]">receipt_long</span>
+                <i class="ph ph-receipt text-[24px]"></i>
                 @if(request()->routeIs('tenant.orders.*'))
                     <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-orange-500 dark:bg-orange-400"></span>
                 @endif
@@ -701,7 +702,7 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
         <!-- Keuangan -->
         <a href="{{ route('tenant.payouts.index') }}" class="flex flex-col items-center justify-center py-1 select-none active:scale-90 transition-transform {{ request()->routeIs('tenant.payouts.*') || request()->routeIs('tenant.balance.*') ? 'text-orange-600 dark:text-orange-400 font-bold' : 'text-zinc-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-slate-200' }}">
             <div class="relative">
-                <span class="material-symbols-outlined text-[24px]">account_balance_wallet</span>
+                <i class="ph ph-wallet text-[24px]"></i>
                 @if(request()->routeIs('tenant.payouts.*') || request()->routeIs('tenant.balance.*'))
                     <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-orange-500 dark:bg-orange-400"></span>
                 @endif
@@ -711,7 +712,7 @@ html.dark .html-dark-border { border-bottom-color: #30363d !important; }
 
         <!-- Menu Toko (Drawer Trigger) -->
         <button type="button" @click="sidebarOpen = true" class="flex flex-col items-center justify-center py-1 select-none active:scale-90 transition-transform text-zinc-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-slate-200 cursor-pointer">
-            <span class="material-symbols-outlined text-[24px]">grid_view</span>
+            <i class="ph ph-squares-four text-[24px]"></i>
             <span class="text-[10px] mt-0.5 tracking-tight">Menu Toko</span>
         </button>
     </div>

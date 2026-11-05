@@ -1,4 +1,4 @@
-﻿@extends('layouts.tenant')
+@extends('layouts.tenant')
 
 @section('title', 'Buat Promo Baru')
 
@@ -64,7 +64,7 @@
                     </div>
                     <input type="number" id="discountValueInput" name="discount_value" value="{{ old('discount_value') }}" placeholder="Misal: 20 atau 50000" class="w-full px-3 py-2 border border-gray-300 dark:border-zinc-800 rounded text-sm bg-white dark:bg-[#000000] focus:outline-none focus:border-[#00b3cc]" min="0" step="0.01" required>
                     <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-1">
-                        💡 <strong>Tips Voucher Gratis</strong>: Isi <strong>100</strong> dengan tipe <strong>Persentase (%)</strong> jika ingin pesanan menjadi <strong>GRATIS 100% (Rp 0)</strong>. Pembeli dapat langsung mendownload produk tanpa bayar.
+                        <strong>Tips Voucher Gratis</strong>: Isi <strong>100</strong> dengan tipe <strong>Persentase (%)</strong> jika ingin pesanan menjadi <strong>GRATIS 100% (Rp 0)</strong>. Pembeli dapat langsung mendownload produk tanpa bayar.
                     </p>
                     @error('discount_value') <span class="text-error text-xs">{{ $message }}</span> @enderror
                 </div>

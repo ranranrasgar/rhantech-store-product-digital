@@ -121,6 +121,16 @@ class User extends Authenticatable implements MustVerifyEmail
     /**
      * Check if the user has completed the onboarding wizard.
      */
+    /**
+     * Halaman pertama setelah akun baru selesai dibuat.
+     */
+    public function startPageUrl(): string
+    {
+        return $this->store?->store_mode === 'profile'
+            ? route('tenant.appearance.index', ['tab' => 'biolink', 'welcome' => 1])
+            : route('tenant.dashboard');
+    }
+
     public function hasCompletedOnboarding(): bool
     {
         if ($this->onboarding_completed_at !== null) {

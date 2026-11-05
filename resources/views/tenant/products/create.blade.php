@@ -1,4 +1,4 @@
-﻿@extends('layouts.tenant')
+@extends('layouts.tenant')
 @section('title', isset($sourceProduct) ? 'Salin Produk' : 'Tambah Produk Digital')
 @section('content')
 <div class="p-3 sm:p-4 md:p-8 flex-1 max-w-4xl mx-auto w-full pb-8 md:pb-12"
@@ -167,13 +167,13 @@
                     </div>
                     <select id="category-select" name="product_category_id" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#0c1220] border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs md:text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500">
                         <option value="">-- Tanpa Kategori --</option>
-                        <optgroup label="🌐 Kategori Platform">
+                        <optgroup label="Kategori Platform">
                             @foreach($categories->whereNull('store_id') as $cat)
                             <option value="{{ $cat->id }}" {{ old('product_category_id', $sourceProduct->product_category_id ?? '') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
                             @endforeach
                         </optgroup>
                         @if($categories->whereNotNull('store_id')->count() > 0)
-                        <optgroup label="🏪 Kategori Toko Anda">
+                        <optgroup label="Kategori Toko Anda">
                             @foreach($categories->whereNotNull('store_id') as $cat)
                             <option value="{{ $cat->id }}" {{ old('product_category_id', $sourceProduct->product_category_id ?? '') == $cat->id ? 'selected' : '' }}>{{ $cat->name }} (Toko Anda)</option>
                             @endforeach
@@ -194,13 +194,13 @@
                     </div>
                     <select id="type-select" name="product_type_id" class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#0c1220] border border-zinc-200 dark:border-zinc-800 rounded-xl text-xs md:text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500">
                         <option value="">-- Tanpa Tipe --</option>
-                        <optgroup label="🌐 Tipe Platform">
+                        <optgroup label="Tipe Platform">
                             @foreach($types->whereNull('store_id') as $type)
                             <option value="{{ $type->id }}" {{ old('product_type_id', $sourceProduct->product_type_id ?? '') == $type->id ? 'selected' : '' }}>{{ $type->name }}</option>
                             @endforeach
                         </optgroup>
                         @if($types->whereNotNull('store_id')->count() > 0)
-                        <optgroup label="🏪 Tipe Toko Anda">
+                        <optgroup label="Tipe Toko Anda">
                             @foreach($types->whereNotNull('store_id') as $type)
                             <option value="{{ $type->id }}" {{ old('product_type_id', $sourceProduct->product_type_id ?? '') == $type->id ? 'selected' : '' }}>{{ $type->name }} (Toko Anda)</option>
                             @endforeach
@@ -394,7 +394,7 @@
                     </p>
                     <span class="text-[10px] font-bold px-2 py-0.5 rounded-full"
                           :class="hasOversized ? 'bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300' : 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300'"
-                          x-text="hasOversized ? '⚠️ Ada foto > 2 MB' : '✓ Semua foto aman (< 2 MB)'"></span>
+                          x-text="hasOversized ? 'Ada foto > 2 MB' : '✓ Semua foto aman (< 2 MB)'"></span>
                 </div>
                 <div class="flex flex-wrap gap-2.5">
                     <template x-for="(f, i) in files" :key="i">
@@ -637,9 +637,9 @@
                         :disabled="generating"
                         class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-700/60 text-xs font-bold transition-all shrink-0 active:scale-95">
                     <span class="material-symbols-outlined text-[16px] text-amber-600 dark:text-amber-400" :class="{ 'animate-spin': generating }">
-                        auto_awesome
+                        label
                     </span>
-                    <span x-text="generating ? 'Menganalisis...' : '⚡ Generate Tags Otomatis'"></span>
+                    <span x-text="generating ? 'Menganalisis...' : 'Generate Tags Otomatis'"></span>
                 </button>
             </div>
 

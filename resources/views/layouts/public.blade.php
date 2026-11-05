@@ -209,7 +209,7 @@
                         <span>Login</span>
                     </a>
                     <a class="hidden md:inline-flex items-center justify-center gap-1.5 px-4 py-2 bg-sky-500 hover:bg-sky-600 text-white rounded-xl font-bold text-xs sm:text-sm active:scale-95 transition-all duration-150 shadow-none" href="{{ route('register') }}">
-                        <span class="material-symbols-outlined text-[17px]">rocket_launch</span>
+                        <span class="material-symbols-outlined text-[17px]">storefront</span>
                         <span>Buat Website / Project</span>
                     </a>
                 @else

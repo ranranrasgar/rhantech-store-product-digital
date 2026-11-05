@@ -553,7 +553,7 @@
                                             <div class="h-36 sm:h-40 rounded-xl bg-surface-container border border-outline-variant/60 p-4 flex flex-col justify-center items-center text-center">
                                                 <div class="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mb-2">
                                                     <span class="material-symbols-outlined text-2xl">
-                                                        {{ $tStore->store_mode === 'profile' ? 'link' : ($tStore->store_mode === 'hybrid' ? 'auto_awesome' : 'storefront') }}
+                                                        {{ $tStore->store_mode === 'profile' ? 'link' : ($tStore->store_mode === 'hybrid' ? 'layers' : 'storefront') }}
                                                     </span>
                                                 </div>
                                                 <p class="font-bold text-xs text-on-surface line-clamp-1">
@@ -615,7 +615,7 @@
                                  x-transition:leave-end="opacity-0 scale-95"
                                  class="flex items-center gap-2">
                                 <span class="w-5 h-5 rounded-full bg-teal-500/10 text-[#00838f] dark:text-teal-400 flex items-center justify-center shrink-0">
-                                    <span class="material-symbols-outlined text-[13px]">rocket_launch</span>
+                                    <span class="material-symbols-outlined text-[13px]">storefront</span>
                                 </span>
                                 <span class="font-black text-xs text-slate-800 dark:text-white leading-none whitespace-nowrap">{{ $heroStatsVal }}</span>
                                 <span class="text-slate-300 dark:text-slate-600 text-[10px]">•</span>

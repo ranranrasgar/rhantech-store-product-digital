@@ -112,7 +112,7 @@ class AdController extends Controller
             'description' => 'Bonus Voucher Pembukaan Toko Baru - Saldo Iklan Rp500.000 (Dukungan Promosi Kunjungan +30%)',
         ]);
 
-        return redirect()->back()->with('success', '🎉 Berhasil! Bonus Saldo Iklan Rp500.000 telah masuk ke tokomu! Gunakan sekarang untuk mempromosikan produkmu.');
+        return redirect()->back()->with('success', 'Berhasil! Bonus Saldo Iklan Rp500.000 telah masuk ke tokomu! Gunakan sekarang untuk mempromosikan produkmu.');
     }
 
     /**
@@ -317,7 +317,7 @@ class AdController extends Controller
                             ->update(['status' => 'active']);
                     }
 
-                    return redirect()->route('tenant.ads.index')->with('success', '🎉 Pembayaran Berhasil! Saldo Iklan Rp' . number_format($transaction->amount, 0, ',', '.') . ' telah masuk.');
+                    return redirect()->route('tenant.ads.index')->with('success', 'Pembayaran Berhasil! Saldo Iklan Rp' . number_format($transaction->amount, 0, ',', '.') . ' telah masuk.');
                 } elseif (in_array($transactionStatus, ['cancel', 'deny', 'expire'])) {
                     $transaction->update(['status' => 'failed']);
                     return redirect()->route('tenant.ads.top-up')->with('error', 'Pembayaran saldo iklan gagal atau telah kedaluwarsa.');
@@ -328,7 +328,7 @@ class AdController extends Controller
         }
 
         if ($transaction->status === 'completed') {
-            return redirect()->route('tenant.ads.index')->with('success', '🎉 Pembayaran Berhasil! Saldo Iklan Rp' . number_format($transaction->amount, 0, ',', '.') . ' telah masuk.');
+            return redirect()->route('tenant.ads.index')->with('success', 'Pembayaran Berhasil! Saldo Iklan Rp' . number_format($transaction->amount, 0, ',', '.') . ' telah masuk.');
         }
 
         return redirect()->route('tenant.ads.index')->with('warning', 'Transaksi Anda sedang menunggu pembayaran / diproses.');
@@ -461,7 +461,7 @@ class AdController extends Controller
             return redirect()->route('tenant.ads.index')->with('warning', "Berhasil membuat {$createdCount} kampanye iklan produk! Namun statusnya DIJEDA karena Saldo Iklan Anda Rp0. Silakan isi saldo agar iklan langsung tampil.");
         }
 
-        return redirect()->route('tenant.ads.index')->with('success', "🎉 Berhasil membuat {$createdCount} kampanye iklan produk! Iklan telah AKTIF dipromosikan di platform.");
+        return redirect()->route('tenant.ads.index')->with('success', "Berhasil membuat {$createdCount} kampanye iklan produk! Iklan telah AKTIF dipromosikan di platform.");
     }
 
     /**

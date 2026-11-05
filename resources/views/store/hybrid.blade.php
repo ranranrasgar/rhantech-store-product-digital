@@ -149,7 +149,7 @@
 
     {{-- Footer --}}
     <div class="text-center py-8 text-[11px] text-slate-400 dark:text-slate-600">
-        <a href="{{ route('home') }}" class="hover:text-primary transition-colors font-semibold">⚡ Powered by Rhantech</a>
+        <a href="{{ route('home') }}" class="hover:text-primary transition-colors font-semibold">Powered by Rhantech</a>
     </div>
 </div>
 @endsection

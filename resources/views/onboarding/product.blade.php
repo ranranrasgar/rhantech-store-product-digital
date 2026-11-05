@@ -4,8 +4,9 @@
 @section("content")
 <div x-data="{
     imagePreview: null,
-    priceRaw: 0,
-    priceFormatted: '',
+    priceRaw: @js(old('price', '')),
+    priceFormatted: @js(old('price') ? 'Rp ' . number_format((float) old('price'), 0, ',', '.') : ''),
+    submitting: false,
     formatPrice(val) {
         let num = val.replace(/[^0-9]/g, '');
         this.priceRaw = num;
@@ -21,23 +22,16 @@
     }
 }" class="max-w-xl mx-auto">
 
-    {{-- Header --}}
-    <div class="text-center mb-8 animate-fade-up">
-        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-teal-500/10 text-[#00838f] text-xs font-bold mb-4 border border-teal-500/20">
-            <span class="material-symbols-outlined text-[14px]">inventory_2</span>
-            Langkah 3 dari 3 — Buat Produk Pertama
-        </div>
-        <h1 class="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
-            Upload produk pertamamu 📦
-        </h1>
-        <p class="mt-2 text-slate-500 dark:text-slate-400 text-sm max-w-md mx-auto">
-            Isi info produk digital yang mau kamu jual. Tenang, produk perlu disetujui admin dulu sebelum tampil ke pembeli.
-        </p>
+    @include("onboarding._progress", ["step" => 3, "total" => 3])
+
+    <div class="mb-5 animate-fade-up">
+        <h1 class="text-2xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight">Upload produk pertamamu</h1>
+        <p class="mt-1.5 text-slate-500 dark:text-slate-400 text-sm">Boleh dilewati. Produk tampil setelah disetujui admin.</p>
     </div>
 
     {{-- Card --}}
-    <div class="bg-white dark:bg-[#111726] rounded-2xl border border-slate-200/80 dark:border-slate-700/60 p-6 sm:p-8 shadow-sm animate-fade-up-delay-1">
-        <form action="{{ route("onboarding.product.save") }}" method="POST" enctype="multipart/form-data" class="space-y-5">
+    <div class="bg-white dark:bg-[#111726] rounded-2xl border border-slate-200 dark:border-slate-700/60 p-4 sm:p-6 animate-fade-up-delay-1">
+        <form action="{{ route("onboarding.product.save") }}" method="POST" enctype="multipart/form-data" @submit="submitting = true" class="space-y-5">
             @csrf
 
             @if ($errors->any())
@@ -61,13 +55,13 @@
                         <template x-if="!imagePreview">
                             <div class="text-center py-8">
                                 <span class="material-symbols-outlined text-slate-300 dark:text-slate-600 text-[40px]">add_photo_alternate</span>
-                                <p class="text-xs text-slate-400 mt-2">Klik untuk pilih gambar produk</p>
+                                <p class="text-xs text-slate-400 mt-2">Ketuk untuk pilih gambar produk</p>
                                 <p class="text-[10px] text-slate-300 dark:text-slate-600 mt-1">JPG, PNG, WebP · Maks 5MB</p>
                             </div>
                         </template>
                     </div>
                 </label>
-                <input id="image" type="file" name="image" class="hidden" accept="image/*" @change="onImageChange($event)">
+                <input id="image" type="file" name="image" class="sr-only" accept="image/*" @change="onImageChange($event)">
             </div>
 
             {{-- Nama Produk --}}
@@ -82,7 +76,7 @@
             </div>
 
             {{-- Kategori + Harga --}}
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label for="category" class="block text-sm font-bold text-slate-700 dark:text-slate-200 mb-1.5">
                         Kategori
@@ -99,7 +93,7 @@
                     <label for="price_display" class="block text-sm font-bold text-slate-700 dark:text-slate-200 mb-1.5">
                         Harga (Rp) <span class="text-rose-500">*</span>
                     </label>
-                    <input type="text" id="price_display"
+                    <input type="text" id="price_display" inputmode="numeric"
                            :value="priceFormatted"
                            @input="formatPrice($event.target.value)"
                            placeholder="Rp 50.000"
@@ -126,25 +120,19 @@
                 </p>
             </div>
 
-            {{-- Actions --}}
-            <div class="flex gap-3 pt-2">
+            {{-- Actions: menempel di bawah layar pada mobile --}}
+            <div class="fixed md:static bottom-0 inset-x-0 z-30 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:p-0 bg-white/95 dark:bg-[#090d16]/95 md:bg-transparent backdrop-blur md:backdrop-blur-none border-t md:border-0 border-slate-200 dark:border-slate-800 flex gap-2">
                 <a href="{{ route("onboarding.complete") }}"
-                   class="flex-1 py-3 px-4 rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-sm transition-all hover:bg-slate-100 dark:hover:bg-slate-700 text-center active:scale-[0.98]">
-                    Lewati, nanti saja
+                   class="flex-1 py-3.5 px-3 rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-semibold text-sm text-center">
+                    Lewati dulu
                 </a>
-                <button type="submit"
-                        class="flex-1 py-3 px-4 rounded-2xl bg-slate-900 hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100 text-white font-bold text-sm transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2 active:scale-[0.98]">
-                    <span>Upload & Selesai</span>
-                    <span class="material-symbols-outlined text-[18px]">rocket_launch</span>
+                <button type="submit" :disabled="submitting"
+                        class="flex-[1.4] py-3.5 px-3 rounded-2xl bg-slate-900 hover:bg-slate-800 dark:bg-white dark:text-slate-900 text-white font-bold text-sm flex items-center justify-center gap-2">
+                    <i x-show="submitting" x-cloak class="ph ph-spinner-gap text-[18px] animate-spin"></i>
+                    <span x-text="submitting ? 'Mengunggah...' : 'Upload dan selesai'">Upload dan selesai</span>
                 </button>
             </div>
         </form>
-    </div>
-
-    {{-- Store info --}}
-    <div class="mt-4 text-center text-xs text-slate-400">
-        Produk untuk toko: <span class="font-bold text-slate-600 dark:text-slate-300">{{ $store->name }}</span>
-        — <a href="{{ route("onboarding.setup") }}" class="underline hover:text-slate-600 dark:hover:text-slate-200">Edit profil toko</a>
     </div>
 </div>
 @endsection

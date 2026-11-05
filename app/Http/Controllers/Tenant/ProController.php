@@ -180,7 +180,7 @@ class ProController extends Controller
                 'pro_plan' => $planSlug,
             ]);
 
-            return redirect()->route('tenant.pro.index')->with('success', '🎉 Selamat! Toko Anda kini telah resmi menjadi Toko PRO! Semua fitur eksklusif dan fee penarikan 1% telah aktif.');
+            return redirect()->route('tenant.pro.index')->with('success', 'Selamat! Toko Anda kini telah resmi menjadi Toko PRO! Semua fitur eksklusif dan fee penarikan 1% telah aktif.');
         }
 
         // 2. Opsi Pembayaran QRIS / Midtrans Instant
@@ -300,7 +300,7 @@ class ProController extends Controller
                         ]);
                     }
 
-                    return redirect()->route('tenant.pro.index')->with('success', '🎉 Pembayaran Berhasil! Toko Anda kini resmi menjadi Toko PRO! Nikmati seluruh keuntungan eksklusif.');
+                    return redirect()->route('tenant.pro.index')->with('success', 'Pembayaran Berhasil! Toko Anda kini resmi menjadi Toko PRO! Nikmati seluruh keuntungan eksklusif.');
                 }
             }
         } catch (\Exception $e) {

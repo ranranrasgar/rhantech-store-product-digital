@@ -27,9 +27,9 @@
                 <!-- iOS Safari Prompt Text -->
                 <div id="pwa-ios-text" class="text-[11.5px] text-white/85 leading-snug mb-3" style="display: none;">
                     Untuk memasang di iPhone/iPad: Tekan ikon <strong class="text-cyan-300">Bagikan (Share)</strong>
-                    <span class="inline-block align-middle mx-0.5 px-1 py-0.5 bg-white/10 rounded text-[10px]">📤</span>
+                    <span class="material-symbols-outlined text-[13px] align-middle">ios_share</span>
                     lalu pilih <strong class="text-cyan-300">'Tambah ke Layar Utama'</strong> (Add to Home Screen)
-                    <span class="inline-block align-middle mx-0.5 px-1 py-0.5 bg-white/10 rounded text-[10px]">➕</span>.
+                    <span class="material-symbols-outlined text-[13px] align-middle">add_box</span>.
                 </div>
 
                 <!-- Action Buttons -->

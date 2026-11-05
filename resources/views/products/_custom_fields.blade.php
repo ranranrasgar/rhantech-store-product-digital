@@ -135,11 +135,11 @@
                         <select name="highlights[{{ $idx }}][icon]" class="w-full px-2 py-1.5 bg-surface border border-outline-variant rounded-lg font-body-sm text-xs">
                             <option value="verified" {{ ($hl['icon'] ?? '') == 'verified' ? 'selected' : '' }}>✓ verified</option>
                             <option value="cloud_download" {{ ($hl['icon'] ?? '') == 'cloud_download' ? 'selected' : '' }}>⬇ cloud_download</option>
-                            <option value="security" {{ ($hl['icon'] ?? '') == 'security' ? 'selected' : '' }}>🛡 security</option>
-                            <option value="support_agent" {{ ($hl['icon'] ?? '') == 'support_agent' ? 'selected' : '' }}>🎧 support_agent</option>
-                            <option value="code" {{ ($hl['icon'] ?? '') == 'code' ? 'selected' : '' }}>💻 code</option>
-                            <option value="speed" {{ ($hl['icon'] ?? '') == 'speed' ? 'selected' : '' }}>⚡ speed</option>
-                            <option value="bolt" {{ ($hl['icon'] ?? '') == 'bolt' ? 'selected' : '' }}>⚡ bolt</option>
+                            <option value="security" {{ ($hl['icon'] ?? '') == 'security' ? 'selected' : '' }}>security</option>
+                            <option value="support_agent" {{ ($hl['icon'] ?? '') == 'support_agent' ? 'selected' : '' }}>support_agent</option>
+                            <option value="code" {{ ($hl['icon'] ?? '') == 'code' ? 'selected' : '' }}>code</option>
+                            <option value="speed" {{ ($hl['icon'] ?? '') == 'speed' ? 'selected' : '' }}>speed</option>
+                            <option value="bolt" {{ ($hl['icon'] ?? '') == 'bolt' ? 'selected' : '' }}>bolt</option>
                             <option value="check_circle" {{ ($hl['icon'] ?? '') == 'check_circle' ? 'selected' : '' }}>✔ check_circle</option>
                         </select>
                     </div>
@@ -317,11 +317,11 @@ function addHighlightRow() {
             <select name="highlights[${idx}][icon]" class="w-full px-2 py-1.5 bg-surface border border-outline-variant rounded-lg font-body-sm text-xs">
                 <option value="verified">✓ verified</option>
                 <option value="cloud_download">⬇ cloud_download</option>
-                <option value="security">🛡 security</option>
-                <option value="support_agent">🎧 support_agent</option>
-                <option value="code">💻 code</option>
-                <option value="speed">⚡ speed</option>
-                <option value="bolt">⚡ bolt</option>
+                <option value="security">security</option>
+                <option value="support_agent">support_agent</option>
+                <option value="code">code</option>
+                <option value="speed">speed</option>
+                <option value="bolt">bolt</option>
                 <option value="check_circle">✔ check_circle</option>
             </select>
         </div>

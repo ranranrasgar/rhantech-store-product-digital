@@ -365,8 +365,8 @@ document.addEventListener('alpine:init', () => {
             <!-- Filter Origin / Kepemilikan -->
             <select name="origin" class="px-3.5 py-2.5 text-xs md:text-sm bg-surface-container-lowest border border-outline-variant text-on-surface rounded-xl focus:outline-none">
                 <option value="">Semua Kepemilikan</option>
-                <option value="internal" {{ request('origin') === 'internal' ? 'selected' : '' }}>🏢 Milik Platform (Internal)</option>
-                <option value="tenant" {{ request('origin') === 'tenant' ? 'selected' : '' }}>🏪 Milik Tenant (Toko Luar)</option>
+                <option value="internal" {{ request('origin') === 'internal' ? 'selected' : '' }}>Milik Platform (Internal)</option>
+                <option value="tenant" {{ request('origin') === 'tenant' ? 'selected' : '' }}>Milik Tenant (Toko Luar)</option>
             </select>
 
             <!-- Filter Toko Tertentu -->
@@ -380,9 +380,9 @@ document.addEventListener('alpine:init', () => {
             <!-- Filter Status Approval -->
             <select name="approval_status" class="px-3.5 py-2.5 text-xs md:text-sm bg-surface-container-lowest border border-outline-variant text-on-surface rounded-xl focus:outline-none">
                 <option value="">Semua Status Review</option>
-                <option value="pending" {{ request('approval_status') === 'pending' ? 'selected' : '' }}>⏳ Menunggu Review</option>
-                <option value="approved" {{ request('approval_status') === 'approved' ? 'selected' : '' }}>✅ Disetujui (Approved)</option>
-                <option value="rejected" {{ request('approval_status') === 'rejected' ? 'selected' : '' }}>❌ Ditolak (Rejected)</option>
+                <option value="pending" {{ request('approval_status') === 'pending' ? 'selected' : '' }}>Menunggu Review</option>
+                <option value="approved" {{ request('approval_status') === 'approved' ? 'selected' : '' }}>Disetujui (Approved)</option>
+                <option value="rejected" {{ request('approval_status') === 'rejected' ? 'selected' : '' }}>Ditolak (Rejected)</option>
             </select>
 
             <button type="submit" class="px-4 py-2.5 text-xs md:text-sm font-bold bg-primary text-white rounded-xl hover:brightness-110 transition shadow flex items-center justify-center gap-1">
