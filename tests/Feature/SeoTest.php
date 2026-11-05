@@ -173,6 +173,33 @@ class SeoTest extends TestCase
             ->assertSee('<link rel="canonical" href="' . url('/' . $store->slug) . '"', false);
     }
 
+    public function test_store_slug_may_start_with_reserved_word(): void
+    {
+        $user = User::factory()->create();
+        Store::forceCreate(['user_id' => $user->id, 'name' => 'Toko Budi', 'slug' => 'toko-budi']);
+
+        $this->get('/toko-budi')->assertOk();
+    }
+
+    public function test_store_link_detail_slug_may_start_with_reserved_word(): void
+    {
+        $user = User::factory()->create();
+        Store::forceCreate(['user_id' => $user->id, 'name' => 'Toko Budi', 'slug' => 'toko-budi']);
+
+        // Toko ditemukan tetapi link tidak ada: dialihkan ke halaman toko, bukan 404 dari route.
+        $this->get('/toko-budi/link-tidak-ada')->assertRedirect('/toko-budi');
+    }
+
+    public function test_reserved_words_are_not_treated_as_store_slugs(): void
+    {
+        $user = User::factory()->create();
+        Store::forceCreate(['user_id' => $user->id, 'name' => 'Toko Bantuan', 'slug' => 'help']);
+
+        $this->get('/help')->assertViewIs('help.index');
+        $this->get('/products/tidak-ada')->assertNotFound();
+        $this->get('/help/tidak-ada')->assertNotFound();
+    }
+
     public function test_missing_page_returns_helpful_404(): void
     {
         $response = $this->get('/halaman-yang-tidak-ada');
