@@ -13,7 +13,9 @@ class SitemapController extends Controller
 {
     public function index(): Response
     {
-        $xml = Cache::remember('seo:sitemap', 3600, fn () => view('sitemap', ['urls' => $this->urls()])->render());
+        $xml = Cache::remember('seo:sitemap', 3600, function () {
+            return '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL . view('sitemap', ['urls' => $this->urls()])->render();
+        });
 
         return response($xml, 200, ['Content-Type' => 'application/xml; charset=UTF-8']);
     }
