@@ -18,12 +18,6 @@ class PublicController extends Controller
 {
     public function home(Request $request)
     {
-        if ($request->user()) {
-            $request->session()->reflash();
-
-            return redirect()->route('products.index');
-        }
-
         $services = Service::query()->where('is_active', true)->select(['id', 'name', 'slug', 'short_description', 'icon'])->get();
         $projects = Project::query()->with('projectCategory:id,name,slug')->where('status', 'published')->select(['id', 'project_category_id', 'title', 'slug', 'short_description', 'thumbnail', 'created_at'])->latest()->take(3)->get();
         $clients = Client::query()->where('is_active', true)->select(['id', 'name', 'logo', 'website'])->get();

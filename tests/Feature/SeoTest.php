@@ -88,22 +88,12 @@ class SeoTest extends TestCase
         $response->assertSee('<link rel="canonical" href="' . url('/') . '"', false);
     }
 
-    public function test_logged_in_user_is_sent_from_root_to_catalog(): void
+    public function test_logged_in_user_stays_on_root_landing_page(): void
     {
         CompanyProfile::forceCreate(['company_name' => 'R-Tech']);
         $user = User::factory()->create();
 
-        $this->actingAs($user)->get('/')->assertRedirect(route('products.index'));
-    }
-
-    public function test_flash_message_survives_root_redirect_after_login(): void
-    {
-        $user = User::factory()->create();
-
-        $this->actingAs($user)
-            ->withSession(['_flash.old' => ['success'], 'success' => 'Berhasil masuk'])
-            ->get('/')
-            ->assertSessionHas('success', 'Berhasil masuk');
+        $this->actingAs($user)->get('/')->assertOk()->assertViewIs('welcome');
     }
 
     public function test_bonus_launcher_is_hidden_on_mobile(): void
