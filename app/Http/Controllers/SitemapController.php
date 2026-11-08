@@ -25,8 +25,20 @@ class SitemapController extends Controller
      */
     private function urls(): array
     {
-        $urls = [];
+        return array_merge(
+            $this->staticUrls(),
+            $this->productUrls(),
+            $this->projectUrls(),
+            $this->helpUrls(),
+            $this->storeUrls()
+        );
+    }
 
+    /**
+     * @return array<int, array{loc: string, lastmod: string|null}>
+     */
+    private function staticUrls(): array
+    {
         $staticPages = [
             url('/'),
             route('products.index'),
@@ -41,38 +53,77 @@ class SitemapController extends Controller
             route('legal.refund'),
         ];
 
-        foreach ($staticPages as $loc) {
-            $urls[] = ['loc' => $loc, 'lastmod' => null];
-        }
+        return array_map(fn (string $loc): array => [
+            'loc' => $loc,
+            'lastmod' => null,
+        ], $staticPages);
+    }
 
-        $products = Product::query()->published()->get(['slug', 'updated_at']);
-        foreach ($products as $item) {
+    /**
+     * @return array<int, array{loc: string, lastmod: string|null}>
+     */
+    private function productUrls(): array
+    {
+        $urls = [];
+        $items = Product::query()->published()->get(['slug', 'updated_at']);
+
+        foreach ($items as $item) {
             $urls[] = [
                 'loc' => route('products.show', $item->slug),
                 'lastmod' => $item->updated_at?->toAtomString(),
             ];
         }
 
-        $projects = Project::query()->where('status', 'published')->get(['slug', 'updated_at']);
-        foreach ($projects as $item) {
+        return $urls;
+    }
+
+    /**
+     * @return array<int, array{loc: string, lastmod: string|null}>
+     */
+    private function projectUrls(): array
+    {
+        $urls = [];
+        $items = Project::query()->where('status', 'published')->get(['slug', 'updated_at']);
+
+        foreach ($items as $item) {
             $urls[] = [
                 'loc' => route('projects.show', $item->slug),
                 'lastmod' => $item->updated_at?->toAtomString(),
             ];
         }
 
-        $helpArticles = HelpArticle::query()->where('is_published', true)->get(['slug', 'updated_at']);
-        foreach ($helpArticles as $item) {
+        return $urls;
+    }
+
+    /**
+     * @return array<int, array{loc: string, lastmod: string|null}>
+     */
+    private function helpUrls(): array
+    {
+        $urls = [];
+        $items = HelpArticle::query()->where('is_published', true)->get(['slug', 'updated_at']);
+
+        foreach ($items as $item) {
             $urls[] = [
                 'loc' => route('help.show', $item->slug),
                 'lastmod' => $item->updated_at?->toAtomString(),
             ];
         }
 
-        $stores = Store::query()->where('status', 'active')
+        return $urls;
+    }
+
+    /**
+     * @return array<int, array{loc: string, lastmod: string|null}>
+     */
+    private function storeUrls(): array
+    {
+        $urls = [];
+        $items = Store::query()->where('status', 'active')
             ->whereHas('products', fn ($q) => $q->published())
             ->get(['id', 'slug', 'updated_at']);
-        foreach ($stores as $item) {
+
+        foreach ($items as $item) {
             $urls[] = [
                 'loc' => url('/' . $item->slug),
                 'lastmod' => $item->updated_at?->toAtomString(),
