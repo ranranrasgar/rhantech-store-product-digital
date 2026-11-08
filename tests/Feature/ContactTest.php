@@ -115,3 +115,4 @@ class ContactTest extends TestCase
         Mail::assertNothingSent();
     }
 }
+
