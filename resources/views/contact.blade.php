@@ -127,7 +127,7 @@
                     <input type="text" id="website_url" name="website_url" value="" autocomplete="off" tabindex="-1">
                 </div>
                 {{-- Timestamp untuk deteksi submit terlalu cepat --}}
-                <input type="hidden" name="form_loaded_at" id="form_loaded_at" value="">
+                <input type="hidden" name="form_loaded_at" id="form_loaded_at" value="{{ time() }}">
                 <div>
                     <label class="block font-label-md text-on-surface mb-xs">Nama Anda *</label>
                     <input type="text" name="name" required value="{{ old('name') }}" class="w-full pl-4 pr-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-primary focus:ring-1 focus:ring-primary/20">
@@ -155,6 +155,11 @@
                     <textarea name="message" required rows="5" class="w-full pl-4 pr-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md focus:border-primary focus:ring-1 focus:ring-primary/20">{{ old('message') }}</textarea>
                     @error('message')<span class="text-error text-xs">{{ $message }}</span>@enderror
                 </div>
+                {{-- Cloudflare Turnstile CAPTCHA --}}
+                <div class="my-xs">
+                    <div class="cf-turnstile" data-sitekey="{{ config('services.turnstile.site_key', env('TURNSTILE_SITE_KEY')) }}" data-theme="auto" data-size="flexible"></div>
+                </div>
+
                 <div class="pt-sm border-t border-outline-variant/30 mt-sm">
                     <button type="submit" class="w-full px-lg py-4 bg-primary text-white rounded-lg font-label-md font-bold hover:brightness-110 transition shadow text-lg">Kirim Pesan</button>
                 </div>
@@ -165,8 +170,12 @@
 @endsection
 
 @push('scripts')
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <script>
     // Set timestamp saat halaman dimuat — dipakai untuk deteksi bot yang submit terlalu cepat
-    document.getElementById('form_loaded_at').value = Math.floor(Date.now() / 1000);
+    const formLoaded = document.getElementById('form_loaded_at');
+    if (formLoaded) {
+        formLoaded.value = Math.floor(Date.now() / 1000);
+    }
 </script>
 @endpush

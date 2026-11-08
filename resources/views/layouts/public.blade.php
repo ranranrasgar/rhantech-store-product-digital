@@ -452,9 +452,9 @@
 
                 @php
                     $allSocial = [];
-                    if (!empty($company->social_links) && is_array($company->social_links)) {
+                    if (!empty($company?->social_links) && is_array($company->social_links)) {
                         $allSocial = $company->social_links;
-                    } else {
+                    } elseif ($company) {
                         if (!empty($company->website))   $allSocial[] = ['platform' => 'website',   'url' => $company->website,   'name' => 'Website'];
                         if (!empty($company->facebook ?? $company->facebook_url))  $allSocial[] = ['platform' => 'facebook',  'url' => $company->facebook ?? $company->facebook_url,  'name' => 'Facebook'];
                         if (!empty($company->instagram ?? $company->instagram_url)) $allSocial[] = ['platform' => 'instagram', 'url' => $company->instagram ?? $company->instagram_url, 'name' => 'Instagram'];

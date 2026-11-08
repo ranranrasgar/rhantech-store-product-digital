@@ -15,13 +15,15 @@ class ContactMessageNotification extends Mailable
     use Queueable, SerializesModels;
 
     public $contactMessage;
+    public bool $isAdminNotification;
 
     /**
      * Create a new message instance.
      */
-    public function __construct($contactMessage)
+    public function __construct($contactMessage, bool $isAdminNotification = false)
     {
         $this->contactMessage = $contactMessage;
+        $this->isAdminNotification = $isAdminNotification;
     }
 
     /**
@@ -30,7 +32,9 @@ class ContactMessageNotification extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Thank you for contacting us - We have received your message',
+            subject: $this->isAdminNotification
+                ? '[Pesan Baru Website] ' . ($this->contactMessage->subject ?? 'Pesan Kontak')
+                : 'Terima kasih telah menghubungi kami - Rhantech',
         );
     }
 
@@ -41,6 +45,9 @@ class ContactMessageNotification extends Mailable
     {
         return new Content(
             view: 'emails.contact_notification',
+            with: [
+                'isAdmin' => $this->isAdminNotification,
+            ],
         );
     }
 

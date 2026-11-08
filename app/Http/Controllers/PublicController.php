@@ -279,18 +279,39 @@ class PublicController extends Controller
         // ── 1. HONEYPOT CHECK — bot biasanya mengisi field tersembunyi ──────
         if (!empty($request->input('website_url'))) {
             Log::warning('Bot blocked (honeypot filled)', ['ip' => $request->ip()]);
-            // Kembalikan respons sukses palsu agar bot tidak tahu ia diblokir
             return redirect()->back()->with('success', 'Pesan Anda telah terkirim. Terima kasih!');
         }
 
-        // ── 2. TIME CHECK — bot submit terlalu cepat (< 3 detik) ────────────
+        // ── 2. TIME CHECK — bot submit instan atau tanpa timestamp ──────────
         $loadedAt = (int) $request->input('form_loaded_at', 0);
-        if ($loadedAt > 0 && (time() - $loadedAt) < 3) {
-            Log::warning('Bot blocked (submitted too fast)', ['ip' => $request->ip(), 'seconds' => time() - $loadedAt]);
+        $elapsed = time() - $loadedAt;
+        if ($loadedAt <= 0 || $elapsed < 3 || $elapsed > 7200) {
+            Log::warning('Bot blocked (invalid timestamp/submitted too fast)', [
+                'ip' => $request->ip(),
+                'elapsed' => $elapsed,
+            ]);
             return redirect()->back()->with('success', 'Pesan Anda telah terkirim. Terima kasih!');
         }
 
-        // ── 3. RATE LIMITING — max 3 pesan per IP per 10 menit ─────────────
+        // ── 3. CONTENT FILTER — Blokir Cyrillic & Domain Phishing/Spam ──────
+        $combinedText = $request->input('name', '') . ' ' . $request->input('subject', '') . ' ' . $request->input('message', '');
+        if (preg_match('/\p{Cyrillic}/u', $combinedText)) {
+            Log::warning('Bot blocked (Cyrillic script detected)', ['ip' => $request->ip()]);
+            return redirect()->back()->with('success', 'Pesan Anda telah terkirim. Terima kasih!');
+        }
+        if (preg_match('/(goo\.su|t\.me\/|\.ru\/|\.su\/|bit\.ly\/|tinyurl\.com\/|is\.gd\/|cutt\.ly\/)/i', $combinedText)) {
+            Log::warning('Bot blocked (Spam URL shortener detected)', ['ip' => $request->ip()]);
+            return redirect()->back()->with('success', 'Pesan Anda telah terkirim. Terima kasih!');
+        }
+
+        // ── 4. CLOUDFLARE TURNSTILE CAPTCHA ──────────────────────────────────
+        if (!$this->validateTurnstile($request->input('cf-turnstile-response'))) {
+            return back()
+                ->withInput()
+                ->withErrors(['message' => 'Verifikasi keamanan (Turnstile) gagal atau belum selesai. Silakan coba lagi.']);
+        }
+
+        // ── 5. RATE LIMITING — max 3 pesan per IP per 10 menit ─────────────
         $rateLimitKey = 'contact-form:' . $request->ip();
         if (RateLimiter::tooManyAttempts($rateLimitKey, 3)) {
             $seconds = RateLimiter::availableIn($rateLimitKey);
@@ -300,7 +321,7 @@ class PublicController extends Controller
         }
         RateLimiter::hit($rateLimitKey, 600); // Decay 10 menit
 
-        // ── 4. VALIDASI NORMAL ───────────────────────────────────────────────
+        // ── 6. VALIDASI DATA ─────────────────────────────────────────────────
         $validated = $request->validate([
             'name'    => 'required|string|max:255',
             'email'   => 'required|email|max:255',
@@ -311,13 +332,49 @@ class PublicController extends Controller
 
         $contactMessage = ContactMessage::create($validated);
 
-        // Send auto-reply email to the sender
+        // ── 7. EMAIL NOTIFIKASI & TANDA TERIMA ───────────────────────────────
         try {
-            \Illuminate\Support\Facades\Mail::to($contactMessage->email)->send(new \App\Mail\ContactMessageNotification($contactMessage));
+            // Notifikasi ke Admin (lengkap dengan isi pesan)
+            $company = \App\Models\CompanyProfile::first();
+            $adminEmail = $company?->email ?? config('mail.from.address');
+            if ($adminEmail) {
+                \Illuminate\Support\Facades\Mail::to($adminEmail)->send(new \App\Mail\ContactMessageNotification($contactMessage, true));
+            }
+
+            // Tanda terima aman ke Pengirim (statis tanpa menyertakan raw pesan untuk mencegah relay spam)
+            \Illuminate\Support\Facades\Mail::to($contactMessage->email)->send(new \App\Mail\ContactMessageNotification($contactMessage, false));
         } catch (\Exception $e) {
-            Log::error('Failed to send contact auto-reply email: ' . $e->getMessage());
+            Log::error('Failed to send contact notification email: ' . $e->getMessage());
         }
 
         return redirect()->back()->with('success', 'Pesan Anda telah terkirim. Kami akan menghubungi Anda segera!');
+    }
+
+    private function validateTurnstile(?string $token): bool
+    {
+        if (app()->environment('testing')) {
+            return true;
+        }
+
+        $secretKey = config('services.turnstile.secret_key', env('TURNSTILE_SECRET_KEY'));
+        if (empty($secretKey)) {
+            return true;
+        }
+
+        if (empty($token)) {
+            return false;
+        }
+
+        try {
+            $response = \Illuminate\Support\Facades\Http::asForm()->timeout(5)->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
+                'secret'   => $secretKey,
+                'response' => $token,
+            ]);
+
+            return $response->json('success') === true;
+        } catch (\Exception $e) {
+            Log::error('Turnstile verification error: ' . $e->getMessage());
+            return true;
+        }
     }
 }
