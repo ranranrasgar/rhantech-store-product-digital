@@ -207,6 +207,75 @@ class SeoTest extends TestCase
         $this->get('/toko-budi/link-tidak-ada')->assertRedirect('/toko-budi');
     }
 
+    public function test_store_link_detail_renders_redesigned_modern_view(): void
+    {
+        $user = User::factory()->create();
+        $store = Store::forceCreate([
+            'user_id' => $user->id,
+            'name' => 'Toko Budi',
+            'slug' => 'toko-budi',
+            'profile_links' => [
+                [
+                    'id' => 'chat-whatsapp',
+                    'url' => 'https://wa.me/+6281234567890',
+                    'icon' => 'chat',
+                    'slug' => 'chat-whatsapp',
+                    'badge' => 'RESPON CEPAT',
+                    'color' => '#059669',
+                    'image' => null,
+                    'title' => 'Chat WhatsApp',
+                    'layout' => 'list',
+                    'subtitle' => 'di +6281234567890',
+                    'is_active' => true,
+                    'has_detail' => true,
+                    'button_text' => 'Buka Tautan / Pesan',
+                    'description' => null,
+                ]
+            ]
+        ]);
+
+        $response = $this->get('/toko-budi/chat-whatsapp');
+
+        $response->assertOk();
+        $response->assertViewIs('store.link_detail');
+        $response->assertSee('Chat WhatsApp');
+        $response->assertSee('Mulai Chat di WhatsApp');
+        // Tidak lagi ada kalimat minta maaf robotik, box hijau raksasa, footer toko kedua, atau sticky bar
+        $response->assertDontSee('Tidak ada deskripsi tambahan. Silakan klik tombol di bawah untuk melanjutkan.');
+        $response->assertDontSee('w-full h-40 flex items-center justify-center text-white relative');
+        $response->assertDontSee('Kunjungi Profil Toko');
+        $response->assertDontSee('fixed bottom-0 inset-x-0');
+    }
+
+    public function test_store_bio_links_open_target_url_directly(): void
+    {
+        $user = User::factory()->create();
+        $store = Store::forceCreate([
+            'user_id' => $user->id,
+            'name' => 'Toko Budi',
+            'slug' => 'toko-budi',
+            'store_mode' => 'hybrid',
+            'profile_links' => [
+                [
+                    'id' => 'chat-whatsapp',
+                    'url' => 'https://wa.me/+6281234567890',
+                    'icon' => 'chat',
+                    'slug' => 'chat-whatsapp',
+                    'title' => 'Chat WhatsApp',
+                    'layout' => 'list',
+                    'is_active' => true,
+                ]
+            ]
+        ]);
+
+        $response = $this->get('/toko-budi');
+
+        $response->assertOk();
+        // Langsung link ke wa.me dengan target="_blank", tidak masuk dulu ke halaman detail
+        $response->assertSee('href="https://wa.me/+6281234567890"', false);
+        $response->assertSee('target="_blank"', false);
+    }
+
     public function test_reserved_words_are_not_treated_as_store_slugs(): void
     {
         $user = User::factory()->create();
@@ -253,5 +322,67 @@ class SeoTest extends TestCase
         $this->get('/about')
             ->assertSee('"@type":"Organization"', false)
             ->assertSee('"sameAs":["https://instagram.com/rhantech"]', false);
+    }
+
+    public function test_public_layout_has_website_search_action_schema(): void
+    {
+        CompanyProfile::forceCreate(['company_name' => 'R-Tech']);
+
+        $this->get('/')
+            ->assertSee('"@type":"WebSite"', false)
+            ->assertSee('"@type":"SearchAction"', false);
+    }
+
+    public function test_store_has_online_store_schema_and_meta_tags(): void
+    {
+        $user = User::factory()->create();
+        $store = Store::forceCreate([
+            'user_id' => $user->id,
+            'name' => 'Warung Digital',
+            'slug' => 'warung-digital',
+            'description' => 'Toko source code & aplikasi berkualitas.',
+        ]);
+
+        $response = $this->get('/warung-digital');
+
+        $response->assertOk();
+        $response->assertSee('"@type":"OnlineStore"', false);
+        $response->assertSee('"name":"Warung Digital"', false);
+        $response->assertSee('<meta property="og:site_name" content="Warung Digital"', false);
+        $response->assertSee('<meta name="twitter:card" content="summary_large_image"', false);
+        $response->assertSee('<link rel="canonical" href="' . url('/warung-digital') . '"', false);
+    }
+
+    public function test_sitemap_includes_priority_and_changefreq(): void
+    {
+        Cache::flush();
+        $this->makeProduct();
+
+        $response = $this->get('/sitemap.xml');
+
+        $response->assertOk();
+        $response->assertSee('<priority>1.0</priority>', false);
+        $response->assertSee('<changefreq>daily</changefreq>', false);
+        $response->assertSee('<priority>0.9</priority>', false);
+    }
+
+    public function test_help_article_has_tech_article_and_breadcrumb_schema(): void
+    {
+        $category = HelpCategory::forceCreate(['name' => 'Umum', 'slug' => 'umum']);
+        $article = HelpArticle::forceCreate([
+            'help_category_id' => $category->id,
+            'title' => 'Panduan Instalasi',
+            'slug' => 'panduan-instalasi',
+            'content' => '<p>Cara memasang aplikasi web.</p>',
+            'is_published' => true,
+        ]);
+
+        $response = $this->get(route('help.show', $article->slug));
+
+        $response->assertOk();
+        $response->assertSee('"@type":"TechArticle"', false);
+        $response->assertSee('"headline":"Panduan Instalasi"', false);
+        $response->assertSee('"@type":"BreadcrumbList"', false);
+        $response->assertSee('<meta property="og:type" content="article"', false);
     }
 }

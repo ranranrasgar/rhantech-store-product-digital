@@ -13,14 +13,10 @@
 
                 $detailUrl = route('store.link_detail', ['slug' => $store->slug, 'linkId' => $linkSlug]);
                 
-                // Masuk ke halaman detail dulu jika has_detail diaktifkan, atau punya deskripsi, atau berbentuk kartu/grid portofolio
-                $hasDetail = !isset($link['has_detail']) 
-                    ? (!empty($link['description']) || in_array($layout, ['grid', 'card']))
-                    : (bool)$link['has_detail'];
-
-                $url = $hasDetail ? $detailUrl : $rawUrl;
-                $isExternal = !$hasDetail && (str_starts_with($url, 'http://') || str_starts_with($url, 'https://'));
-                $actionLabel = $hasDetail ? 'Lihat Detail & Info' : 'Buka Tautan';
+                // Langsung buka link tujuan ketika diklik (tanpa masuk ke halaman detail) agar simpel
+                $url = (!empty($rawUrl) && $rawUrl !== '#') ? $rawUrl : $detailUrl;
+                $isExternal = str_starts_with($url, 'http://') || str_starts_with($url, 'https://');
+                $actionLabel = 'Buka Tautan';
             @endphp
 
             {{-- 1. LAYOUT: GRID (2 Kolom - Kartu Portofolio / Produk) --}}

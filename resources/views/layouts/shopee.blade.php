@@ -44,7 +44,7 @@
       }
     }
     </script>
-    @include('components.seo-organization', ['organizationType' => 'OnlineStore', 'organizationDescription' => 'Marketplace dan toko resmi penyedia source code, aplikasi web, sistem kasir, dan produk digital berkualitas di Indonesia.'])
+    @include('components.seo-organization', ['organizationType' => 'OnlineStore', 'organizationDescription' => 'Marketplace dan toko resmi penyedia source code, aplikasi web, sistem kasir, dan produk digital berkualitas di Indonesia.', 'skipWebSiteSchema' => true])
     @yield('schema_json_ld')
     @include('components.seo-tags')
     <link rel="icon" type="image/png" href="{{ isset($company) && $company->favicon ? '/storage/'.$company->favicon : '/favicon.ico' }}" />

@@ -1,5 +1,8 @@
 @extends('layouts.public')
 @section('title', ($company->company_name ?? 'rhantech') . ' - We Build Digital Experiences')
+@section('canonical_url', url('/'))
+@section('meta_description', $company->short_description ?? ($company->about_text ?? 'Solusi pembuatan website profesional, aplikasi mobile, sistem kasir (POS), dan penjualan source code berkualitas tinggi di Indonesia.'))
+@section('meta_keywords', 'software house indonesia, jasa pembuatan website, jual source code, aplikasi kasir, sistem informasi web, mobile app development, rhantech')
 
 @section('content')
 

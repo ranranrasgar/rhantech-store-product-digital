@@ -448,16 +448,16 @@
                     <div>
                         <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-2">Tambah tautan</span>
                         <div class="grid grid-cols-2 gap-1.5">
-                            <button type="button" @click="addProfileLink({ title: 'Chat WhatsApp', url: 'https://wa.me/', icon: 'chat', color: '#059669' })" class="px-2 py-3 rounded-xl text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 hover:bg-emerald-100 transition-colors flex items-center gap-1.5 text-left cursor-pointer">
+                            <button type="button" @click="addProfileLink({ title: 'Chat WhatsApp', url: 'https://wa.me/', icon: 'chat', color: '#059669', has_detail: false })" class="px-2 py-3 rounded-xl text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 hover:bg-emerald-100 transition-colors flex items-center gap-1.5 text-left cursor-pointer">
                                 <i class="ph ph-chat-circle text-[14px]"></i> WhatsApp
                             </button>
-                            <button type="button" @click="addProfileLink({ title: 'Channel Telegram', url: 'https://t.me/', icon: 'send', color: '#ea580c' })" class="px-2 py-3 rounded-xl text-xs font-semibold bg-orange-50 dark:bg-orange-950/30 text-orange-600 dark:text-orange-400 border border-orange-200 dark:border-orange-800 hover:bg-orange-100 transition-colors flex items-center gap-1.5 text-left cursor-pointer">
+                            <button type="button" @click="addProfileLink({ title: 'Channel Telegram', url: 'https://t.me/', icon: 'send', color: '#ea580c', has_detail: false })" class="px-2 py-3 rounded-xl text-xs font-semibold bg-orange-50 dark:bg-orange-950/30 text-orange-600 dark:text-orange-400 border border-orange-200 dark:border-orange-800 hover:bg-orange-100 transition-colors flex items-center gap-1.5 text-left cursor-pointer">
                                 <i class="ph ph-paper-plane-tilt text-[14px]"></i> Telegram
                             </button>
-                            <button type="button" @click="addProfileLink({ title: 'Website Portofolio', url: 'https://', icon: 'language', color: '#7c3aed' })" class="px-2 py-3 rounded-xl text-xs font-semibold bg-violet-50 dark:bg-violet-950/30 text-violet-600 dark:text-violet-400 border border-violet-200 dark:border-violet-800 hover:bg-violet-100 transition-colors flex items-center gap-1.5 text-left cursor-pointer">
+                            <button type="button" @click="addProfileLink({ title: 'Website Portofolio', url: 'https://', icon: 'language', color: '#7c3aed', has_detail: false })" class="px-2 py-3 rounded-xl text-xs font-semibold bg-violet-50 dark:bg-violet-950/30 text-violet-600 dark:text-violet-400 border border-violet-200 dark:border-violet-800 hover:bg-violet-100 transition-colors flex items-center gap-1.5 text-left cursor-pointer">
                                 <i class="ph ph-globe text-[14px]"></i> Portofolio
                             </button>
-                            <button type="button" @click="addProfileLink({ title: 'YouTube Channel', url: 'https://youtube.com/', icon: 'smart_display', color: '#e11d48' })" class="px-2 py-3 rounded-xl text-xs font-semibold bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800 hover:bg-rose-100 transition-colors flex items-center gap-1.5 text-left cursor-pointer">
+                            <button type="button" @click="addProfileLink({ title: 'YouTube Channel', url: 'https://youtube.com/', icon: 'smart_display', color: '#e11d48', has_detail: false })" class="px-2 py-3 rounded-xl text-xs font-semibold bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800 hover:bg-rose-100 transition-colors flex items-center gap-1.5 text-left cursor-pointer">
                                 <i class="ph ph-youtube-logo text-[14px]"></i> YouTube
                             </button>
                         </div>
@@ -554,13 +554,41 @@
                                         <textarea x-model="link.description" @input="hasUnsavedChanges = true" rows="3" placeholder="Tuliskan keterangan lengkap detail produk/jasa, fitur, penjelasan teks panjang, panduan, dll..." class="w-full px-2.5 py-1.5 text-xs bg-white dark:bg-[#0c1220] border border-zinc-200 dark:border-zinc-800 rounded-lg text-slate-700 dark:text-slate-200 focus:border-teal-500 outline-none leading-relaxed custom-scrollbar"></textarea>
                                     </div>
 
-                                    <!-- Input URL Link & Teks Tombol Aksi (CTA) -->
-                                    <div class="space-y-2">
+                                    <!-- Input URL Link & Perilaku Klik (Direct Link vs Halaman Detail) -->
+                                    <div class="space-y-2.5">
                                         <div>
                                             <label class="block text-[10px] font-bold text-zinc-500 dark:text-zinc-400 mb-1">URL Link Tujuan *</label>
                                             <input type="text" x-model="link.url" @input="hasUnsavedChanges = true" placeholder="URL Link: https://wa.me/... atau https://..." class="w-full px-2.5 py-1.5 text-xs bg-white dark:bg-[#0c1220] border border-zinc-200 dark:border-zinc-800 rounded-lg font-mono text-zinc-900 dark:text-zinc-100">
                                         </div>
-                                        <div>
+
+                                        <!-- Pilihan Aksi Klik: Direct Link vs Halaman Detail -->
+                                        <div class="bg-slate-100/80 dark:bg-[#0c1220] p-2.5 rounded-xl border border-zinc-200/80 dark:border-zinc-800">
+                                            <label class="block text-[10px] font-bold text-zinc-600 dark:text-zinc-300 mb-1.5">
+                                                Aksi Saat Tombol Diklik:
+                                            </label>
+                                            <div class="grid grid-cols-2 gap-1.5">
+                                                <button type="button" @click="link.has_detail = false; hasUnsavedChanges = true"
+                                                        :class="link.has_detail === false ? 'bg-white dark:bg-slate-800 text-teal-600 dark:text-teal-400 border-teal-500 shadow-xs font-bold' : 'bg-transparent text-slate-500 border-transparent hover:bg-white/50 font-medium'"
+                                                        class="py-1.5 px-2 rounded-lg text-[10px] border transition-all text-left flex items-start gap-1.5 cursor-pointer">
+                                                    <i class="ph ph-arrow-square-out text-[14px] mt-0.5 shrink-0"></i>
+                                                    <div>
+                                                        <span class="block leading-tight font-bold">Langsung ke URL</span>
+                                                        <span class="block text-[8px] opacity-75 leading-tight">Langsung buka link tujuan</span>
+                                                    </div>
+                                                </button>
+                                                <button type="button" @click="link.has_detail = true; hasUnsavedChanges = true"
+                                                        :class="link.has_detail !== false ? 'bg-white dark:bg-slate-800 text-teal-600 dark:text-teal-400 border-teal-500 shadow-xs font-bold' : 'bg-transparent text-slate-500 border-transparent hover:bg-white/50 font-medium'"
+                                                        class="py-1.5 px-2 rounded-lg text-[10px] border transition-all text-left flex items-start gap-1.5 cursor-pointer">
+                                                    <i class="ph ph-article text-[14px] mt-0.5 shrink-0"></i>
+                                                    <div>
+                                                        <span class="block leading-tight font-bold">Halaman Detail</span>
+                                                        <span class="block text-[8px] opacity-75 leading-tight">Buka showcase info & foto</span>
+                                                    </div>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div x-show="link.has_detail !== false">
                                             <label class="block text-[10px] font-bold text-zinc-500 dark:text-zinc-400 mb-1">Teks Tombol Aksi di Halaman Detail (CTA)</label>
                                             <input type="text" x-model="link.button_text" @input="hasUnsavedChanges = true" placeholder="Default: Buka Tautan / Pesan (Bisa: BOOK NOW, Hubungi WA, dll)" class="w-full px-2.5 py-1.5 text-xs bg-white dark:bg-[#0c1220] border border-zinc-200 dark:border-zinc-800 rounded-lg text-zinc-900 dark:text-zinc-100 font-bold">
                                         </div>
@@ -2309,7 +2337,7 @@
                     subtitle: preset.subtitle || '',
                     description: preset.description || '',
                     button_text: preset.button_text || 'Buka Tautan / Pesan',
-                    has_detail: preset.has_detail !== undefined ? preset.has_detail : true,
+                    has_detail: preset.has_detail !== undefined ? preset.has_detail : false,
                     url: preset.url || 'https://',
                     image: preset.image || null,
                     icon: preset.icon || 'link',
@@ -2322,7 +2350,7 @@
                     subtitle: '',
                     description: '',
                     button_text: 'Buka Tautan / Pesan',
-                    has_detail: true,
+                    has_detail: false,
                     url: 'https://',
                     image: null,
                     icon: 'link',

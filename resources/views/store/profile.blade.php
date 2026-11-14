@@ -1,7 +1,8 @@
 @extends('layouts.store')
 
 @section('title', $store->name . ' — Profile & Portofolio')
-@section('meta_description', $store->description ?? 'Kunjungi profil ' . $store->name)
+@section('meta_description', Str::limit(strip_tags($store->description ?: 'Kunjungi profil resmi ' . $store->name), 160))
+@section('canonical_url', url('/' . $store->slug))
 
 @section('content')
 <div class="min-h-screen bg-[#f8fafc] dark:bg-[#0d1117]"

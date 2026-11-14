@@ -2,6 +2,56 @@
 @section('title', $project->title . ' - ' . ($company->company_name ?? 'Rhantech'))
 @section('meta_description', Str::limit($project->short_description ?: strip_tags($project->description), 160))
 @section('meta_image', $project->thumbnail ? media_url($project->thumbnail) : '')
+@section('canonical_url', route('projects.show', $project->slug))
+@section('og_type', 'article')
+
+@section('schema_json_ld')
+@php
+    $projectSchema = array_filter([
+        '@context' => 'https://schema.org',
+        '@type' => 'CreativeWork',
+        'name' => $project->title,
+        'headline' => $project->title,
+        'description' => Str::limit($project->short_description ?: strip_tags($project->description), 160),
+        'url' => route('projects.show', $project->slug),
+        'image' => $project->thumbnail ? media_url($project->thumbnail) : null,
+        'datePublished' => $project->created_at?->toAtomString(),
+        'dateModified' => $project->updated_at?->toAtomString(),
+        'author' => [
+            '@type' => 'Organization',
+            'name' => $company->company_name ?? 'Rhantech',
+            'url' => url('/'),
+        ],
+    ]);
+
+    $breadcrumbSchema = [
+        '@context' => 'https://schema.org',
+        '@type' => 'BreadcrumbList',
+        'itemListElement' => [
+            [
+                '@type' => 'ListItem',
+                'position' => 1,
+                'name' => 'Beranda',
+                'item' => url('/'),
+            ],
+            [
+                '@type' => 'ListItem',
+                'position' => 2,
+                'name' => 'Portofolio Proyek',
+                'item' => route('projects.index'),
+            ],
+            [
+                '@type' => 'ListItem',
+                'position' => 3,
+                'name' => $project->title,
+                'item' => route('projects.show', $project->slug),
+            ],
+        ],
+    ];
+@endphp
+<script type="application/ld+json">{!! json_encode($projectSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) !!}</script>
+<script type="application/ld+json">{!! json_encode($breadcrumbSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) !!}</script>
+@endsection
 
 @section('content')
 @php

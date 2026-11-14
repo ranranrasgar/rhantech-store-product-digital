@@ -1,7 +1,8 @@
 @extends('layouts.store')
 
-@section('title', $store->name)
-@section('meta_description', $store->description ?? 'Kunjungi toko ' . $store->name)
+@section('title', $store->name . ' - Official Store & Portofolio')
+@section('meta_description', Str::limit(strip_tags($store->description ?: 'Kunjungi toko resmi ' . $store->name . '. Temukan berbagai produk digital dan portofolio berkualitas.'), 160))
+@section('canonical_url', url('/' . $store->slug))
 
 @section('content')
 @php

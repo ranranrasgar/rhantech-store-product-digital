@@ -4,8 +4,74 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $article->title }} - Pusat Bantuan</title>
-    <meta name="description" content="{{ Str::limit(trim(preg_replace('/\s+/', ' ', html_entity_decode(strip_tags($article->content)))), 160) }}"/>
-    <link rel="canonical" href="{{ route('help.show', $article->slug) }}"/>
+    @php
+        $cleanDesc = Str::limit(trim(preg_replace('/\s+/', ' ', html_entity_decode(strip_tags($article->content)))), 160);
+        $articleUrl = route('help.show', $article->slug);
+        $categoryName = $article->category->name ?? 'Pusat Bantuan';
+
+        $articleSchema = [
+            '@context' => 'https://schema.org',
+            '@type' => 'TechArticle',
+            'headline' => $article->title,
+            'description' => $cleanDesc,
+            'url' => $articleUrl,
+            'datePublished' => $article->created_at?->toAtomString() ?? date('c'),
+            'dateModified' => $article->updated_at?->toAtomString() ?? date('c'),
+            'articleSection' => $categoryName,
+            'inLanguage' => 'id-ID',
+            'publisher' => [
+                '@type' => 'Organization',
+                'name' => config('app.name', 'Rhantech'),
+                'url' => url('/'),
+            ],
+        ];
+
+        $breadcrumbSchema = [
+            '@context' => 'https://schema.org',
+            '@type' => 'BreadcrumbList',
+            'itemListElement' => [
+                [
+                    '@type' => 'ListItem',
+                    'position' => 1,
+                    'name' => 'Beranda',
+                    'item' => url('/'),
+                ],
+                [
+                    '@type' => 'ListItem',
+                    'position' => 2,
+                    'name' => 'Pusat Bantuan',
+                    'item' => route('help.index'),
+                ],
+                [
+                    '@type' => 'ListItem',
+                    'position' => 3,
+                    'name' => $article->title,
+                    'item' => $articleUrl,
+                ],
+            ],
+        ];
+    @endphp
+    <meta name="description" content="{{ $cleanDesc }}"/>
+    <meta name="robots" content="index, follow, max-image-preview:large"/>
+    <link rel="canonical" href="{{ $articleUrl }}"/>
+
+    {{-- Open Graph / WhatsApp / Facebook --}}
+    <meta property="og:locale" content="id_ID"/>
+    <meta property="og:type" content="article"/>
+    <meta property="og:site_name" content="{{ config('app.name', 'Rhantech') }} Pusat Bantuan"/>
+    <meta property="og:title" content="{{ $article->title }} - Pusat Bantuan"/>
+    <meta property="og:description" content="{{ $cleanDesc }}"/>
+    <meta property="og:url" content="{{ $articleUrl }}"/>
+
+    {{-- Twitter / X Cards --}}
+    <meta name="twitter:card" content="summary"/>
+    <meta name="twitter:title" content="{{ $article->title }} - Pusat Bantuan"/>
+    <meta name="twitter:description" content="{{ $cleanDesc }}"/>
+
+    {{-- Structured Data (Schema.org) --}}
+    <script type="application/ld+json">{!! json_encode($articleSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) !!}</script>
+    <script type="application/ld+json">{!! json_encode($breadcrumbSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) !!}</script>
+
     @include('components.seo-tags')
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap" rel="stylesheet">

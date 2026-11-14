@@ -1,6 +1,8 @@
 @extends('layouts.store')
 
-@section('title', $store->name)
+@section('title', $store->name . ' - Official Store & Katalog Produk')
+@section('meta_description', Str::limit(strip_tags($store->description ?: 'Kunjungi toko digital resmi ' . $store->name . '. Temukan berbagai produk, source code, dan layanan berkualitas.'), 160))
+@section('canonical_url', url('/' . $store->slug))
 
 @php
     $banner = $store->banner;

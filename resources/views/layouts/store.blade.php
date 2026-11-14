@@ -7,12 +7,53 @@
     @include('components.pwa-head')
     <title>@yield('title', $store->name ?? 'Toko Digital')</title>
     <meta name="description" content="@yield('meta_description', $store->description ?? 'Toko digital resmi penyedia produk dan template terpercaya.')"/>
+    <meta name="robots" content="@yield('meta_robots', 'index, follow, max-image-preview:large')"/>
     <link rel="canonical" href="@yield('canonical_url', url()->current())"/>
+
+    {{-- Open Graph / WhatsApp / Facebook --}}
+    <meta property="og:locale" content="id_ID"/>
+    <meta property="og:type" content="@yield('og_type', 'website')"/>
+    <meta property="og:site_name" content="{{ $store->name ?? 'Toko Digital' }}"/>
     <meta property="og:title" content="@yield('title', $store->name ?? 'Toko Digital')"/>
     <meta property="og:description" content="@yield('meta_description', $store->description ?? 'Toko digital resmi penyedia produk dan template terpercaya.')"/>
-    <meta property="og:image" content="@yield('meta_image', $store->logo ? asset('storage/'.$store->logo) : '')"/>
-    <meta property="og:type" content="website"/>
+    <meta property="og:url" content="@yield('canonical_url', url()->current())"/>
+    <meta property="og:image" content="@yield('meta_image', isset($store) && $store->logo ? asset('storage/'.$store->logo) : '')"/>
+
+    {{-- Twitter / X Cards --}}
+    <meta name="twitter:card" content="summary_large_image"/>
+    <meta name="twitter:title" content="@yield('title', $store->name ?? 'Toko Digital')"/>
+    <meta name="twitter:description" content="@yield('meta_description', $store->description ?? 'Toko digital resmi penyedia produk dan template terpercaya.')"/>
+    <meta name="twitter:image" content="@yield('meta_image', isset($store) && $store->logo ? asset('storage/'.$store->logo) : '')"/>
+
     @include('components.seo-tags')
+
+    {{-- Structured Data (Schema.org) --}}
+    @hasSection('schema_json_ld')
+        @yield('schema_json_ld')
+    @else
+        @if(isset($store))
+            @php
+                $storeSchema = array_filter([
+                    '@context' => 'https://schema.org',
+                    '@type' => 'OnlineStore',
+                    'name' => $store->name,
+                    'url' => url('/' . $store->slug),
+                    'description' => $store->description ?: 'Toko digital resmi penyedia produk dan template terpercaya.',
+                    'image' => $store->logo ? asset('storage/' . $store->logo) : null,
+                ]);
+                if (!empty($storeRating) && !empty($storeReviewCount) && $storeRating > 0 && $storeReviewCount > 0) {
+                    $storeSchema['aggregateRating'] = [
+                        '@type' => 'AggregateRating',
+                        'ratingValue' => round((float) $storeRating, 1),
+                        'ratingCount' => (int) $storeReviewCount,
+                        'bestRating' => 5,
+                        'worstRating' => 1,
+                    ];
+                }
+            @endphp
+            <script type="application/ld+json">{!! json_encode($storeSchema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG) !!}</script>
+        @endif
+    @endif
     <link rel="icon" type="image/png" href="{{ $store->logo ? asset('storage/'.$store->logo) : (isset($company) && $company->favicon ? '/storage/'.$company->favicon : '/favicon.ico') }}" />
     <link rel="shortcut icon" type="image/png" href="{{ $store->logo ? asset('storage/'.$store->logo) : (isset($company) && $company->favicon ? '/storage/'.$company->favicon : '/favicon.ico') }}" />
 

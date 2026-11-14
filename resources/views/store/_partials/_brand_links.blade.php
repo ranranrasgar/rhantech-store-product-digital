@@ -4,15 +4,13 @@
     <div class="bp-links">
         @foreach($profileLinks as $link)
             @php
-                $linkLayout = $link['layout'] ?? 'list';
+                $rawUrl = !empty($link['url']) ? $link['url'] : '#';
                 $linkSlug = $link['slug'] ?? ($link['id'] ?? (!empty($link['title']) ? \Illuminate\Support\Str::slug($link['title']) : 'item-' . ($loop->index + 1)));
-                $hasDetail = isset($link['has_detail'])
-                    ? (bool) $link['has_detail']
-                    : (!empty($link['description']) || in_array($linkLayout, ['grid', 'card']));
-                $linkUrl = $hasDetail
-                    ? route('store.link_detail', ['slug' => $store->slug, 'linkId' => $linkSlug])
-                    : ($link['url'] ?? '#');
-                $isExternal = !$hasDetail && str_starts_with($linkUrl, 'http');
+                // Langsung buka URL tujuan ketika diklik (tanpa perantara)
+                $linkUrl = (!empty($rawUrl) && $rawUrl !== '#')
+                    ? $rawUrl
+                    : route('store.link_detail', ['slug' => $store->slug, 'linkId' => $linkSlug]);
+                $isExternal = str_starts_with($linkUrl, 'http');
             @endphp
             <a href="{{ $linkUrl }}" class="bp-link" @if($isExternal) target="_blank" rel="noopener noreferrer" @endif>
                 <span class="bp-link-tile" style="background: {{ $link['color'] ?? 'var(--brand)' }};">
