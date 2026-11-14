@@ -154,6 +154,11 @@ class StorePageTest extends TestCase
             // Tidak boleh ada rating palsu AI-slop
             ->assertDontSee('★ 4.8')
             ->assertDontSee('4.8')
+            // Cukup icon share di pojok banner, tidak ada tombol text "Bagikan" di bawah profil
+            ->assertDontSee('Disalin!\' : \'Bagikan\'')
+            ->assertSee('title="Bagikan Tautan Profil"', false)
+            // Card biolink menggunakan border-radius: 2%
+            ->assertSee('border-radius: 2%', false)
             // Link biolink langsung membuka URL tujuan
             ->assertSee('href="https://wa.me/628123456789"', false)
             ->assertSee('Chat WhatsApp');

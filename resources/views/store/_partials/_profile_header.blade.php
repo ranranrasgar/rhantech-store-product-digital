@@ -29,6 +29,16 @@
          style="{{ $headerBgStyle }}">
         {{-- Subtle contrast overlay --}}
         <div class="absolute inset-0 bg-gradient-to-b from-black/25 via-transparent to-black/45"></div>
+
+        {{-- Floating Share Button (Cukup Icon Share di Pojok Atas) --}}
+        <div class="absolute top-3.5 left-3.5 sm:top-4 sm:left-4 z-30">
+            <button type="button"
+                    @click="copyProfileUrl()"
+                    class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-black/40 hover:bg-black/60 active:scale-90 backdrop-blur-md text-white flex items-center justify-center border border-white/20 shadow-sm transition-all cursor-pointer"
+                    title="Bagikan Tautan Profil">
+                <span class="material-symbols-outlined text-[18px] sm:text-[20px]" x-text="copiedLink ? 'check' : 'share'">share</span>
+            </button>
+        </div>
     </div>
 
     {{-- Avatar (Floating overlap di garis bawah banner, proporsional) --}}
@@ -104,7 +114,8 @@
     </div>
     @endif
 
-    {{-- Action Buttons (Chat, Follow, Share & Affiliate) --}}
+    {{-- Action Buttons (Chat & Follow untuk pengunjung, Affiliate jika aktif) --}}
+    @if((!auth()->check() || auth()->id() !== $store->user_id) || isset($myAffiliateLink))
     <div class="flex items-center justify-center gap-2 mt-4 flex-wrap">
         @if(!auth()->check() || auth()->id() !== $store->user_id)
             <button type="button"
@@ -121,15 +132,6 @@
             </button>
         @endif
 
-        {{-- Tombol Bagikan Profil --}}
-        <button type="button"
-                @click="copyProfileUrl()"
-                class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold transition-all flex items-center gap-1.5 border border-slate-200 dark:border-slate-700"
-                title="Bagikan Tautan Profil">
-            <span class="material-symbols-outlined text-[16px]" x-text="copiedLink ? 'check' : 'share'">share</span>
-            <span x-text="copiedLink ? 'Disalin!' : 'Bagikan'">Bagikan</span>
-        </button>
-
         @if(isset($myAffiliateLink))
             <div x-data="{ copied: false }" class="inline-flex">
                 <button type="button"
@@ -142,4 +144,5 @@
             </div>
         @endif
     </div>
+    @endif
 </div>

@@ -774,7 +774,8 @@
                                 <div :class="link.layout === 'grid' ? 'col-span-1' : 'col-span-2'">
                                     <!-- 1. GRID (2 Kolom) -->
                                     <template x-if="link.layout === 'grid'">
-                                        <div class="flex flex-col bg-white dark:bg-[#000000] border border-slate-200 dark:border-zinc-800 rounded-2xl overflow-hidden shadow-xs hover:shadow-none transition-all cursor-pointer text-left h-full"
+                                        <div class="flex flex-col bg-white dark:bg-[#000000] border border-slate-200 dark:border-zinc-800 overflow-hidden shadow-xs hover:shadow-none transition-all cursor-pointer text-left h-full"
+                                             style="border-radius: 2%;"
                                              @click="sidebarTab = 'biolink'; mobileTab = 'biolink'">
                                             <div class="w-full aspect-square bg-zinc-100 dark:bg-zinc-900 relative overflow-hidden flex items-center justify-center">
                                                 <template x-if="link.image">
@@ -786,7 +787,7 @@
                                                     </div>
                                                 </template>
                                                 <template x-if="link.badge">
-                                                    <span class="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded-md bg-black/60 backdrop-blur-md text-white text-[8px] font-black uppercase tracking-wider" x-text="link.badge"></span>
+                                                    <span class="absolute top-1.5 left-1.5 px-1.5 py-0.5 bg-black/60 backdrop-blur-md text-white text-[8px] font-black uppercase tracking-wider" style="border-radius: 2%;" x-text="link.badge"></span>
                                                 </template>
                                             </div>
                                             <div class="p-2.5 flex flex-col flex-1 justify-between bg-white dark:bg-[#000000]">
@@ -805,7 +806,8 @@
 
                                     <!-- 2. CARD (Gambar Besar 1 Kolom Penuh) -->
                                     <template x-if="link.layout === 'card'">
-                                        <div class="flex flex-col bg-white dark:bg-[#000000] border border-slate-200 dark:border-zinc-800 rounded-2xl overflow-hidden shadow-xs hover:shadow-none transition-all cursor-pointer text-left"
+                                        <div class="flex flex-col bg-white dark:bg-[#000000] border border-slate-200 dark:border-zinc-800 overflow-hidden shadow-xs hover:shadow-none transition-all cursor-pointer text-left"
+                                             style="border-radius: 2%;"
                                              @click="sidebarTab = 'biolink'; mobileTab = 'biolink'">
                                             <div class="w-full aspect-[16/9] bg-zinc-100 dark:bg-zinc-900 relative overflow-hidden flex items-center justify-center">
                                                 <template x-if="link.image">
@@ -817,14 +819,15 @@
                                                     </div>
                                                 </template>
                                                 <template x-if="link.badge">
-                                                    <span class="absolute top-2 left-2 px-2 py-0.5 rounded-lg bg-black/60 backdrop-blur-md text-white text-[9px] font-black uppercase tracking-wider" x-text="link.badge"></span>
+                                                    <span class="absolute top-2 left-2 px-2 py-0.5 bg-black/60 backdrop-blur-md text-white text-[9px] font-black uppercase tracking-wider" style="border-radius: 2%;" x-text="link.badge"></span>
                                                 </template>
                                             </div>
                                             <div class="p-3 bg-white dark:bg-[#000000]">
                                                 <h4 class="font-extrabold text-xs text-zinc-900 dark:text-zinc-100 leading-snug truncate" x-text="link.title || 'Judul Link'"></h4>
                                                 <p x-show="link.subtitle" class="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5 line-clamp-1" x-text="link.subtitle"></p>
                                                 <p x-show="link.description" class="text-[10px] text-zinc-600 dark:text-zinc-300 mt-1 line-clamp-2 leading-relaxed" x-text="link.description"></p>
-                                                <div class="mt-2.5 w-full py-1.5 px-3 rounded-xl text-white font-bold text-[10px] text-center flex items-center justify-center gap-1 shadow-xs"
+                                                <div class="mt-2.5 w-full py-1.5 px-3 text-white font-bold text-[10px] text-center flex items-center justify-center gap-1 shadow-xs"
+                                                     style="border-radius: 2%;"
                                                      :style="`background: ${link.color || '#ea580c'};`">
                                                     <span>Buka Tautan</span>
                                                     <i class="ph ph-arrow-right text-[13px]"></i>
@@ -835,7 +838,8 @@
 
                                     <!-- 3. LIST (Default 1 Baris) -->
                                     <template x-if="!link.layout || link.layout === 'list'">
-                                        <div class="flex items-center gap-2.5 w-full p-2.5 rounded-2xl text-white font-bold text-xs shadow-xs hover:shadow-none hover:scale-[1.01] transition-all cursor-pointer relative overflow-hidden"
+                                        <div class="flex items-center gap-2.5 w-full p-2.5 text-white font-bold text-xs shadow-xs hover:shadow-none hover:scale-[1.01] transition-all cursor-pointer relative overflow-hidden"
+                                             style="border-radius: 2%;"
                                              :style="`background: ${link.color || '#ea580c'};`"
                                              @click="sidebarTab = 'biolink'; mobileTab = 'biolink'">
                                             <template x-if="link.badge">
@@ -1083,7 +1087,8 @@
                                 <div :class="link.layout === 'grid' ? 'col-span-1' : 'col-span-2'">
                                     <!-- 1. GRID (2 Kolom) -->
                                     <template x-if="link.layout === 'grid'">
-                                        <div class="flex flex-col bg-white dark:bg-[#000000] border border-slate-200 dark:border-zinc-800 rounded-xl overflow-hidden shadow-xs hover:shadow-none transition-all cursor-pointer text-left h-full"
+                                        <div class="flex flex-col bg-white dark:bg-[#000000] border border-slate-200 dark:border-zinc-800 overflow-hidden shadow-xs hover:shadow-none transition-all cursor-pointer text-left h-full"
+                                             style="border-radius: 2%;"
                                              @click="sidebarTab = 'biolink'; mobileTab = 'biolink'">
                                             <div class="w-full aspect-square bg-zinc-100 dark:bg-zinc-900 relative overflow-hidden flex items-center justify-center">
                                                 <template x-if="link.image">
@@ -1095,7 +1100,7 @@
                                                     </div>
                                                 </template>
                                                 <template x-if="link.badge">
-                                                    <span class="absolute top-1 left-1 px-1 py-0.2 rounded bg-black/60 backdrop-blur-md text-white text-[7px] font-black uppercase tracking-wider" x-text="link.badge"></span>
+                                                    <span class="absolute top-1 left-1 px-1 py-0.2 bg-black/60 backdrop-blur-md text-white text-[7px] font-black uppercase tracking-wider" style="border-radius: 2%;" x-text="link.badge"></span>
                                                 </template>
                                             </div>
                                             <div class="p-2 flex flex-col flex-1 justify-between bg-white dark:bg-[#000000]">
@@ -1114,7 +1119,8 @@
 
                                     <!-- 2. CARD (Gambar Besar 1 Kolom Penuh) -->
                                     <template x-if="link.layout === 'card'">
-                                        <div class="flex flex-col bg-white dark:bg-[#000000] border border-slate-200 dark:border-zinc-800 rounded-xl overflow-hidden shadow-xs hover:shadow-none transition-all cursor-pointer text-left"
+                                        <div class="flex flex-col bg-white dark:bg-[#000000] border border-slate-200 dark:border-zinc-800 overflow-hidden shadow-xs hover:shadow-none transition-all cursor-pointer text-left"
+                                             style="border-radius: 2%;"
                                              @click="sidebarTab = 'biolink'; mobileTab = 'biolink'">
                                             <div class="w-full aspect-[16/9] bg-zinc-100 dark:bg-zinc-900 relative overflow-hidden flex items-center justify-center">
                                                 <template x-if="link.image">
@@ -1126,14 +1132,15 @@
                                                     </div>
                                                 </template>
                                                 <template x-if="link.badge">
-                                                    <span class="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded bg-black/60 backdrop-blur-md text-white text-[8px] font-black uppercase tracking-wider" x-text="link.badge"></span>
+                                                    <span class="absolute top-1.5 left-1.5 px-1.5 py-0.5 bg-black/60 backdrop-blur-md text-white text-[8px] font-black uppercase tracking-wider" style="border-radius: 2%;" x-text="link.badge"></span>
                                                 </template>
                                             </div>
                                             <div class="p-2.5 bg-white dark:bg-[#000000]">
                                                 <h4 class="font-extrabold text-[11px] text-zinc-900 dark:text-zinc-100 leading-snug truncate" x-text="link.title || 'Judul Link'"></h4>
                                                 <p x-show="link.subtitle" class="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5 line-clamp-1" x-text="link.subtitle"></p>
                                                 <p x-show="link.description" class="text-[9px] text-zinc-600 dark:text-zinc-300 mt-0.5 line-clamp-2 leading-tight" x-text="link.description"></p>
-                                                <div class="mt-2 w-full py-1 px-2.5 rounded-lg text-white font-bold text-[9px] text-center flex items-center justify-center gap-1 shadow-xs"
+                                                <div class="mt-2 w-full py-1 px-2.5 text-white font-bold text-[9px] text-center flex items-center justify-center gap-1 shadow-xs"
+                                                     style="border-radius: 2%;"
                                                      :style="`background: ${link.color || '#ea580c'};`">
                                                     <span>Buka Tautan</span>
                                                     <i class="ph ph-arrow-right text-[11px]"></i>
@@ -1144,7 +1151,8 @@
 
                                     <!-- 3. LIST (Default 1 Baris) -->
                                     <template x-if="!link.layout || link.layout === 'list'">
-                                        <div class="flex items-center gap-2 w-full px-3 py-2 rounded-xl text-white font-bold text-[11px] shadow-xs cursor-pointer relative overflow-hidden"
+                                        <div class="flex items-center gap-2 w-full px-3 py-2 text-white font-bold text-[11px] shadow-xs cursor-pointer relative overflow-hidden"
+                                             style="border-radius: 2%;"
                                              :style="`background: ${link.color || '#ea580c'};`"
                                              @click="sidebarTab = 'biolink'; mobileTab = 'biolink'">
                                             <template x-if="link.badge">
