@@ -392,8 +392,10 @@
                         @endif
                     </h1>
                     <div class="flex items-center gap-4 text-sm drop-shadow-md opacity-90">
-                        <span class="flex items-center gap-1"><span class="text-yellow-400 text-lg">★</span> 4.8</span>
-                        <span>•</span>
+                        @if($storeRating > 0 && $storeReviewCount > 0)
+                            <span class="flex items-center gap-1"><span class="text-yellow-400 text-lg">★</span> {{ number_format($storeRating, 1) }}</span>
+                            <span>•</span>
+                        @endif
                         <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">inventory_2</span> {{ $products->total() }} Produk</span>
                         <span>•</span>
                         <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">group</span> <span x-text="followersCount"></span> Pengikut</span>
@@ -494,9 +496,11 @@
 
                     <!-- Interactive Stats Pills -->
                     <div class="flex items-center gap-1.5 mt-2 flex-wrap text-[10px]">
-                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white/15 backdrop-blur-md border border-white/20 font-bold text-amber-300 shadow-2xs">
-                            <span>★</span> 4.8
-                        </span>
+                        @if($storeRating > 0 && $storeReviewCount > 0)
+                            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white/15 backdrop-blur-md border border-white/20 font-bold text-amber-300 shadow-2xs">
+                                <span>★</span> {{ number_format($storeRating, 1) }}
+                            </span>
+                        @endif
                         <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white/15 backdrop-blur-md border border-white/20 font-semibold text-white/90 shadow-2xs">
                             <span class="material-symbols-outlined text-[13px]">inventory_2</span>
                             <span>{{ $products->total() }} Produk</span>

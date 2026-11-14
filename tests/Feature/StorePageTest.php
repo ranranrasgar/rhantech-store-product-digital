@@ -126,4 +126,36 @@ class StorePageTest extends TestCase
         $this->assertSame('#ffffff', (new Store(['appearance_data' => ['brand_color' => '#0f172a']]))->brandInk());
         $this->assertSame('#0f172a', (new Store(['appearance_data' => ['brand_color' => '#fde047']]))->brandInk());
     }
+
+    public function test_biolink_mode_hides_top_navbar_and_has_no_fake_rating(): void
+    {
+        $store = $this->storeWith([]);
+        $store->update([
+            'store_mode' => 'profile',
+            'profile_links' => [
+                [
+                    'id' => 'wa-link',
+                    'title' => 'Chat WhatsApp',
+                    'url' => 'https://wa.me/628123456789',
+                    'layout' => 'list',
+                    'color' => '#25D366',
+                    'is_active' => true,
+                ]
+            ],
+        ]);
+
+        $response = $this->get('/gudang-uji');
+
+        $response->assertOk()
+            // Navbar pencarian, storefront, dan profile dropdown harus dihilangkan
+            ->assertDontSee('Cari produk di Gudang...')
+            ->assertDontSee('Jelajahi Toko Lain')
+            ->assertDontSee('rounded-b-2xl shadow-sm')
+            // Tidak boleh ada rating palsu AI-slop
+            ->assertDontSee('★ 4.8')
+            ->assertDontSee('4.8')
+            // Link biolink langsung membuka URL tujuan
+            ->assertSee('href="https://wa.me/628123456789"', false)
+            ->assertSee('Chat WhatsApp');
+    }
 }

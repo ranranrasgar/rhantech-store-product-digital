@@ -1,7 +1,7 @@
 {{-- Partial: Profile Links & Portofolio Showcase (Responsif Mobile, iPad & Desktop ala Lynk.id) --}}
 @if($profileLinks->isNotEmpty())
 <div class="w-full">
-    <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4">
+    <div class="grid grid-cols-2 gap-2.5 sm:gap-3.5">
         @foreach($profileLinks as $link)
             @php
                 $layout = $link['layout'] ?? 'list';
@@ -61,7 +61,7 @@
             @elseif($layout === 'card')
                 <a href="{{ $url }}"
                    @if($isExternal) target="_blank" rel="noopener noreferrer" @endif
-                   class="col-span-2 sm:col-span-2 md:col-span-3 lg:col-span-4 group flex flex-col bg-white dark:bg-[#161b22] border border-slate-200/80 dark:border-[#30363d] rounded-2xl overflow-hidden shadow-xs hover:shadow-xl hover:-translate-y-1 active:scale-[0.99] transition-all duration-200 text-left">
+                   class="col-span-2 group flex flex-col bg-white dark:bg-[#161b22] border border-slate-200/80 dark:border-[#30363d] rounded-2xl overflow-hidden shadow-xs hover:shadow-xl hover:-translate-y-1 active:scale-[0.99] transition-all duration-200 text-left">
                     <div class="w-full aspect-[16/9] bg-slate-100 dark:bg-slate-800 relative overflow-hidden flex items-center justify-center">
                         @if(!empty($link['image']))
                             <img src="{{ $link['image'] }}" alt="{{ $link['title'] }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
@@ -100,7 +100,7 @@
             @else
                 <a href="{{ $url }}"
                    @if($isExternal) target="_blank" rel="noopener noreferrer" @endif
-                   class="col-span-2 sm:col-span-2 md:col-span-3 lg:col-span-4 group flex items-center gap-2.5 sm:gap-3 w-full p-2.5 sm:p-3.5 rounded-2xl text-white shadow-sm hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.99] transition-all duration-200 relative overflow-hidden"
+                   class="col-span-2 group flex items-center gap-2.5 sm:gap-3 w-full p-2.5 sm:p-3.5 rounded-2xl text-white shadow-sm hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.99] transition-all duration-200 relative overflow-hidden"
                    style="background: {{ $color }};">
                     @if(!empty($link['badge']))
                         <span class="absolute top-1.5 right-2 px-2 py-0.5 rounded-full bg-white/25 backdrop-blur-md text-[8px] sm:text-[9px] font-black uppercase tracking-wider text-white">

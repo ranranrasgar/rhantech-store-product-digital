@@ -90,6 +90,7 @@
 </head>
 <body class="bg-background text-on-background antialiased flex flex-col min-h-screen">
 
+    @if(!View::hasSection('hide_store_navbar'))
     {{-- Top Store Navbar --}}
     <nav x-data="{ mobileMenuOpen: false }" class="bg-surface/90 dark:bg-slate-900/90 backdrop-blur-md sticky top-0 w-full z-50 border-b border-outline-variant/50 shadow-xs transition-colors">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
@@ -194,12 +195,14 @@
 
         </div>
     </nav>
+    @endif
 
     {{-- Main Store View Body --}}
     <main class="flex-1">
         @yield('content')
     </main>
 
+    @if(!View::hasSection('hide_store_footer'))
     {{-- Store Specific Footer --}}
     <footer class="bg-surface dark:bg-slate-900 border-t border-outline-variant/60 py-8 md:py-12 mt-auto text-on-surface-variant text-xs">
         <!-- Desktop Footer (Tetap lengkap) -->
@@ -279,6 +282,7 @@
             </div>
         </div>
     </footer>
+    @endif
 
     @include('components.theme-manager')
     @auth

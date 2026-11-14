@@ -4,11 +4,29 @@
 @section('meta_description', Str::limit(strip_tags($store->description ?: 'Kunjungi profil resmi ' . $store->name), 160))
 @section('canonical_url', url('/' . $store->slug))
 
+{{-- Hilangkan top navbar (pencarian, icon shop, avatar profile) dan footer marketplace pada mode BioLink --}}
+@section('hide_store_navbar', true)
+@section('hide_store_footer', true)
+
 @section('content')
-<div class="min-h-screen bg-[#f8fafc] dark:bg-[#0d1117]"
+<div class="min-h-screen bg-[#f8fafc] dark:bg-[#0d1117] text-slate-900 dark:text-slate-100 flex flex-col"
      x-data="{
          isFollowing: {{ $isFollowing ? 'true' : 'false' }},
          followersCount: {{ $store->followers()->count() }},
+         copiedLink: false,
+         copyProfileUrl() {
+             if (navigator.share) {
+                 navigator.share({
+                     title: '{{ addslashes($store->name) }}',
+                     text: '{{ addslashes(Str::limit(strip_tags($store->description ?: 'Kunjungi profil resmi ' . $store->name), 100)) }}',
+                     url: window.location.href
+                 }).catch(() => {});
+             } else {
+                 navigator.clipboard.writeText(window.location.href);
+                 this.copiedLink = true;
+                 setTimeout(() => this.copiedLink = false, 2500);
+             }
+         },
          toggleFollow() {
              @auth
              fetch('{{ route('store.follow', $store->id) }}', {
@@ -27,21 +45,17 @@
          }
      }">
 
-    {{-- Responsive Container: Mobile (max-w-md), iPad & Desktop (max-w-6xl/7xl Luas & Responsif) --}}
-    <div class="w-full max-w-md md:max-w-5xl lg:max-w-6xl xl:max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-5 sm:py-8 transition-all">
+    {{-- 1. Full-Bleed Profile Header (Banner edge-to-edge nembus ke status bar HP, proporsional, tanpa border radius kaku) --}}
+    @include('store._partials._profile_header')
 
-        {{-- Header Card: Banner + Avatar + Info Profil Toko --}}
-        <div class="bg-white dark:bg-[#111726] border border-slate-200/80 dark:border-[#222f49] rounded-3xl shadow-xs overflow-hidden mb-6 sm:mb-8">
-            @include('store._partials._profile_header')
-        </div>
-
-        {{-- Link & Portofolio Showcase (Tampil luas & grid 3-4 kolom di iPad & Desktop) --}}
+    {{-- 2. Bio Links & Showcase Container --}}
+    <div class="w-full max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto px-3.5 sm:px-6 pb-12 flex-1">
         @include('store._partials._profile_links', ['isSidebar' => false])
 
-        {{-- Footer --}}
-        <div class="text-center py-8 text-[11px] text-slate-400 dark:text-slate-600">
-            <a href="{{ route('home') }}" class="hover:text-primary transition-colors font-semibold">
-                Powered by Rhantech
+        {{-- Minimal Footer Bebas AI Slop --}}
+        <div class="text-center pt-10 pb-6 text-[11px] text-slate-400 dark:text-slate-600 font-medium">
+            <a href="{{ route('home') }}" class="hover:text-primary transition-colors inline-flex items-center gap-1 font-semibold">
+                <span>Ditenagai oleh {{ config('app.name', 'Rhantech') }}</span>
             </a>
         </div>
     </div>
